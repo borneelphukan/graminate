@@ -15,7 +15,7 @@
 </script>
 
 <div
-	class="absolute left-0 mt-2 bg-white border border-gray-300 rounded-md shadow-sm w-96 h-48 z-10 overflow-hidden"
+	class="absolute left-0 mt-1 bg-white border border-gray-300 rounded-md shadow-sm w-96 h-48 z-10 overflow-hidden"
 >
 	<!-- Search bar section -->
 	<div class="bg-green-300 py-1">

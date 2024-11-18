@@ -9,7 +9,7 @@
 		faShapes,
 		faWallet,
 		faBullhorn,
-		faAddressBook,
+		faAddressBook
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
 
@@ -33,7 +33,8 @@
 			subItems: [
 				{ label: 'Contacts', route: '/contacts' },
 				{ label: 'Companies', route: '/contacts?view=companies' },
-				{ label: 'Deals', route: '/contacts?view=deals' }
+				{ label: 'Deals', route: '/contacts?view=deals' },
+				{ label: 'Tickets', route: '/contacts?view=tickets' }
 			]
 		},
 		{
@@ -62,7 +63,7 @@
 			subItems: [
 				{ label: 'Overview', route: '/overview' },
 				{ label: 'Payments', route: '/payments' },
-				{ label: 'Invoices', route: '/invoices' },
+				{ label: 'Invoices', route: '/contacts?view=invoices' },
 				{ label: 'Payment Links', route: '/payment-links' },
 				{ label: 'Quotes', route: '/quotes' },
 				{ label: 'Products', route: '/products' },

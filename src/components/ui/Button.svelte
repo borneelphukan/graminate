@@ -18,7 +18,7 @@
 			case 'secondary':
 				return 'bg-transparent text-sm disabled:text-gray-400 disabled:bg-transparent disabled:border-gray-300 hover:bg-green-300 hover:bg-teal-50 text-green-200 hover:text-green-200 border border-green-200 justify-center';
 			case 'ghost':
-				return 'bg-transparent text-sm hover:bg-green-400 text-green-200 justify-center disabled:text-gray-400 disabled:bg-transparent';
+				return 'bg-transparent text-sm  text-gray-200 justify-center disabled:text-gray-400 disabled:bg-transparent';
 			default:
 				return '';
 		}

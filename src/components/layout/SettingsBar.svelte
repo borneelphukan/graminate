@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Button from '../ui/Button.svelte';
+
 	type MenuItem = {
 		label: string;
 		href?: string;
@@ -30,23 +32,18 @@
 			]
 		}
 	];
+
+	// Function to navigate back to the last visited page
+	function goBack() {
+		// Use history.back() to go to the previous page
+		history.back();
+	}
 </script>
 
 <div class="w-72 px-4 bg-gray-50 text-gray-800 border-r border-gray-400 min-h-screen -m-6">
 	<!-- Back Button -->
-	<div class=" py-3">
-		<button class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 mr-1"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-			</svg>
-			Back
-		</button>
+	<div class="flex items-center pt-8">
+		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
 
 	<!-- Settings Header -->

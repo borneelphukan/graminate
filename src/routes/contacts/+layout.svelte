@@ -25,7 +25,7 @@
 	];
 </script>
 
-<div class="flex justify-between items-center px-4 py-1 border-b bg-white relative">
+<div class="flex justify-between items-center px-4 py-1 bg-white relative">
 	<div class="relative">
 		<button
 			class="flex items-center text-lg font-semibold bg-white rounded py-2 focus:outline-none"
@@ -37,6 +37,10 @@
 				Companies
 			{:else if $view === 'deals'}
 				Deals
+			{:else if $view === 'invoices'}
+				Invoices
+			{:else if $view === 'tickets'}
+				Tickets
 			{:else}
 				Unknown View
 			{/if}
