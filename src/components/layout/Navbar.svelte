@@ -1,18 +1,24 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
 	let notificationCount: number = 0;
 	let notifications = [
 		{
-			title: '@Contact clicked link in your email.',
-			description: '5 opens, 2 clicks + other activity'
+			title: 'New Message.',
+			description: 'You have a new message'
 		},
-		{ title: '@Contact opened your email.', description: '7 opens' }
+		{ title: 'New customer request', description: 'A customer sent you a product request' }
 	];
 	let isNotificationBarOpen = false;
 
 	const toggleNotificationBar = () => {
 		isNotificationBarOpen = !isNotificationBarOpen;
 	};
+
+	const toUserPreferences = () => {
+		goto('/user-preferences');
+	};
+
 	const user = {
 		name: 'Borneel Bikash Phukan',
 		email: 'borneelphukan@gmail.com',
@@ -141,7 +147,10 @@
 
 					<!-- Settings Icon -->
 					<!-- svelte-ignore a11y_consider_explicit_label -->
-					<button class="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none">
+					<button
+						class="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
+						on:click={toUserPreferences}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -259,7 +268,7 @@
 										<p class="text-lg font-semibold text-gray-800">{user.name}</p>
 										<p class="text-sm text-gray-300">{user.email}</p>
 										<a
-											href="/profile-preferences"
+											href="/user-preferences"
 											class="text-sm font-medium text-green-600 hover:underline"
 										>
 											Profile & Preferences
