@@ -52,31 +52,6 @@
 	<!-- Settings Header -->
 	<div class="px-4 py-2 text-xl font-semibold">Settings</div>
 
-	<!-- Search Bar -->
-	<div class="px-4 py-2">
-		<div class="relative">
-			<input
-				type="text"
-				placeholder="Search"
-				class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:outline-none"
-			/>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="absolute w-5 h-5 text-gray-400 top-2.5 right-3"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M8 4a4 4 0 104 4 4 4 0 00-4-4zm8 16l-4-4"
-				/>
-			</svg>
-		</div>
-	</div>
-
 	<!-- Menu Items -->
 	<div class="px-4">
 		{#each settingsMenu as menu}
