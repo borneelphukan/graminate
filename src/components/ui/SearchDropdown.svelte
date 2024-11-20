@@ -1,7 +1,6 @@
 <script lang="ts">
-	import SearchBar from '../../components/ui/SearchBar.svelte';
+	import SearchBar from './SearchBar.svelte';
 	import { writable, derived } from 'svelte/store';
-
 	export let items: { label: string; view: string }[] = [];
 	export let navigateTo: (view: string) => void;
 

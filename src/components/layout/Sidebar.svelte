@@ -118,7 +118,7 @@
 		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0"
 	style="width: {isCollapsed ? '60px' : '230px'}"
 >
-	<nav class="space-y-4 py-4 flex flex-col relative">
+	<nav class="space-y-2  flex flex-col relative">
 		{#each sections as { icon, label, section, subItems }}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
