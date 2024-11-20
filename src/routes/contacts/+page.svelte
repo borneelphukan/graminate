@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import { writable, derived } from 'svelte/store';
 	import Button from '../../components/ui/Button.svelte';
-	import SearchDropDown from '../../components/ui/SearchDropDown.svelte';
 	import SearchDropdown from '../../components/ui/SearchDropDown.svelte';
 
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
@@ -11,8 +10,8 @@
 	const filtersMap: Record<View, { label: string; view: string }[]> = {
 		contacts: [
 			{ label: 'All Contacts', view: 'contacts' },
-			{ label: 'Newsletter Subscribers', view: 'newsletter' },
-			{ label: 'Unsubscribed', view: 'unsubscribed' },
+			{ label: 'Private Contacts', view: 'private' },
+			{ label: 'Business Contacts', view: 'business' },
 			{ label: 'All Customers', view: 'customers' }
 		],
 		companies: [
@@ -44,6 +43,10 @@
 
 	// Dropdown open state
 	let dropdownOpen = false;
+
+	// Pagination state
+	const currentPage = writable(1);
+	const itemsPerPage = writable(10);
 
 	// Function to navigate to a specific view
 	function navigateToView(view: string) {
@@ -156,13 +159,32 @@
 				return { columns: [], rows: [] };
 		}
 	});
+
+	// Derived store to calculate paginated data
+	const paginatedRows = derived(
+		[data, currentPage, itemsPerPage],
+		([$data, $currentPage, $itemsPerPage]) => {
+			const start = ($currentPage - 1) * $itemsPerPage;
+			const end = start + $itemsPerPage;
+			return $data.rows.slice(start, end);
+		},
+		[] as string[][] // Initial value and type
+	);
+
+	// Derived store to calculate the total record count
+	const totalRecordCount = derived(data, ($data) => $data.rows.length);
+
+	const recordCount = derived(data, ($data) => $data.rows.length);
 </script>
+
+<!-- UI elements and pagination remain the same -->
+<!-- Refer to the previous full code implementation -->
 
 <!-- Top Section with Dropdown and Action Buttons -->
 <div class="flex justify-between items-center px-4 py-1 bg-white relative mb-4">
 	<div class="relative">
 		<button
-			class="flex items-center text-lg font-semibold bg-white rounded py-2 focus:outline-none"
+			class="flex items-center text-lg font-semibold bg-white rounded focus:outline-none"
 			on:click={() => (dropdownOpen = !dropdownOpen)}
 		>
 			{#if $view === 'contacts'}
@@ -191,6 +213,7 @@
 		{#if dropdownOpen}
 			<SearchDropdown items={dropdownItems} {navigateTo} />
 		{/if}
+		<p class="text-xs text-gray-100">{$recordCount} Record(s)</p>
 	</div>
 
 	<div class="flex gap-2">
@@ -229,7 +252,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each $data.rows as row}
+		{#each $paginatedRows as row}
 			<tr>
 				{#each row as cell}
 					<td class="p-2 border">{cell}</td>
@@ -238,3 +261,41 @@
 		{/each}
 	</tbody>
 </table>
+
+<!-- Pagination -->
+<nav
+	class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+	aria-label="Pagination"
+>
+	<div class="hidden sm:block">
+		<p class="text-sm text-gray-700">
+			Showing
+			<span class="font-medium">{($currentPage - 1) * $itemsPerPage + 1}</span>
+			to
+			<span class="font-medium">
+				{Math.min($currentPage * $itemsPerPage, $totalRecordCount)}
+			</span>
+			of
+			<span class="font-medium">{$totalRecordCount}</span>
+			results
+		</p>
+	</div>
+	<div class="flex flex-1 justify-between sm:justify-end">
+		<button
+			on:click={() => $currentPage > 1 && currentPage.set($currentPage - 1)}
+			class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+			disabled={$currentPage === 1}
+		>
+			Previous
+		</button>
+		<button
+			on:click={() =>
+				$currentPage < Math.ceil($totalRecordCount / $itemsPerPage) &&
+				currentPage.set($currentPage + 1)}
+			class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+			disabled={$currentPage === Math.ceil($totalRecordCount / $itemsPerPage)}
+		>
+			Next
+		</button>
+	</div>
+</nav>
