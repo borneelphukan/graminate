@@ -3,6 +3,7 @@
 	import { writable, derived } from 'svelte/store';
 	import Button from '../../components/ui/Button.svelte';
 	import SearchDropdown from '../../components/ui/SearchDropDown.svelte';
+	import Dropdown from '../../components/ui/Dropdown.svelte';
 
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
 
@@ -46,7 +47,17 @@
 
 	// Pagination state
 	const currentPage = writable(1);
-	const itemsPerPage = writable(10);
+	const itemsPerPage = writable(25);
+	const paginationItems = ['25 per page', '50 per page', '100 per page'];
+
+	function handleSelect(event: CustomEvent<{ item: string }>) {
+		const selected = event.detail.item;
+
+		// Update itemsPerPage based on the selected item
+		if (selected === '25 per page') itemsPerPage.set(25);
+		else if (selected === '50 per page') itemsPerPage.set(50);
+		else if (selected === '100 per page') itemsPerPage.set(100);
+	}
 
 	// Function to navigate to a specific view
 	function navigateToView(view: string) {
@@ -177,9 +188,6 @@
 	const recordCount = derived(data, ($data) => $data.rows.length);
 </script>
 
-<!-- UI elements and pagination remain the same -->
-<!-- Refer to the previous full code implementation -->
-
 <!-- Top Section with Dropdown and Action Buttons -->
 <div class="flex justify-between items-center px-4 py-1 bg-white relative mb-4">
 	<div class="relative">
@@ -263,39 +271,27 @@
 </table>
 
 <!-- Pagination -->
-<nav
-	class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
-	aria-label="Pagination"
->
-	<div class="hidden sm:block">
-		<p class="text-sm text-gray-700">
-			Showing
-			<span class="font-medium">{($currentPage - 1) * $itemsPerPage + 1}</span>
-			to
-			<span class="font-medium">
-				{Math.min($currentPage * $itemsPerPage, $totalRecordCount)}
-			</span>
-			of
-			<span class="font-medium">{$totalRecordCount}</span>
-			results
-		</p>
-	</div>
-	<div class="flex flex-1 justify-between sm:justify-end">
-		<button
+<nav class="flex items-center justify-between bg-white px-4 py-3 sm:px-6" aria-label="Pagination">
+	<div class="flex mx-auto px-5">
+		<Button
+			text="Previous"
+			style="ghost"
+			arrow="left"
+			isDisabled={$currentPage === 1}
 			on:click={() => $currentPage > 1 && currentPage.set($currentPage - 1)}
-			class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-			disabled={$currentPage === 1}
-		>
-			Previous
-		</button>
-		<button
+		/>
+
+		<Button
+			text="Next"
+			style="ghost"
+			arrow="right"
+			isDisabled={$currentPage === Math.ceil($totalRecordCount / $itemsPerPage)}
 			on:click={() =>
 				$currentPage < Math.ceil($totalRecordCount / $itemsPerPage) &&
 				currentPage.set($currentPage + 1)}
-			class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-			disabled={$currentPage === Math.ceil($totalRecordCount / $itemsPerPage)}
-		>
-			Next
-		</button>
+		/>
+	</div>
+	<div class="relative">
+		<Dropdown items={paginationItems} selectedItem="25 per page" on:select={handleSelect} />
 	</div>
 </nav>
