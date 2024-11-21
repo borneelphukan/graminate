@@ -14,7 +14,7 @@
 	import { goto } from '$app/navigation';
 
 	export let isOpen: boolean;
-	export let toggleSidebar: () => void;
+
 
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
@@ -217,9 +217,7 @@
 			{/if}
 		</button>
 	</div>
-	<button class="absolute top-4 right-4 text-gray-600 lg:hidden" on:click={toggleSidebar}>
-		✕
-	</button>
+
 </div>
 
 <style>

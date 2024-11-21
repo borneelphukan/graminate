@@ -16,15 +16,13 @@
 <div
 	class="absolute left-0 mt-5 bg-white border border-gray-300 rounded-md shadow-sm w-96 h-48 z-10 overflow-hidden"
 >
-	<!-- Search bar section -->
-	<div class="bg-green-300 py-1">
+	<div class="bg-gray-400 py-1">
 		<div class="mx-3 my-1">
 			<!-- Pass searchQuery to the SearchBar -->
-			<SearchBar bind:query={$searchQuery} />
+			<SearchBar mode="type" bind:query={$searchQuery} />
 		</div>
 	</div>
 
-	<!-- Scrollable items -->
 	<ul class="overflow-y-auto h-[calc(100%-3rem)] pb-2">
 		{#if $filteredItems.length > 0}
 			{#each $filteredItems as item}
@@ -38,7 +36,7 @@
 				</li>
 			{/each}
 		{:else}
-			<li class="text-center text-gray-500 py-2">No items found</li>
+			<li class="text-center text-gray-300 py-2">No items found</li>
 		{/if}
 	</ul>
 </div>

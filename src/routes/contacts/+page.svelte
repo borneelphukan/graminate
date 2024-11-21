@@ -111,214 +111,6 @@
 							'+987654321',
 							'Subscriber',
 							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
-						],
-						[
-							'John',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St, Cityville'
-						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St, Townsville'
 						]
 					]
 				};
@@ -466,29 +258,44 @@
 </div>
 
 <!-- Data Table -->
-<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
-<table class="table-auto w-full border">
-	<thead>
-		<tr>
-			{#each $data.columns as column}
-				<th class="p-2 border">{column}</th>
-			{/each}
-		</tr>
-	</thead>
-	<tbody>
-		{#each $paginatedRows as row}
-			<tr>
-				{#each row as cell}
-					<td class="p-2 border">{cell}</td>
+<div>
+	<div class="flex p-1 bg-gray-400 justify-between border-t border-l border-r border-gray-300">
+		<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
+		<div class="flex justify-between">
+			<Button style="secondary" text="Export" />
+			<Button style="secondary" text="Edit Column" />
+		</div>
+	</div>
+	{#if $filteredRows.length > 0}
+		<table class="table-auto w-full border">
+			<thead>
+				<tr>
+					{#each $data.columns as column}
+						<th class="p-2 border border-gray-300 bg-gray-400">{column}</th>
+					{/each}
+				</tr>
+			</thead>
+			<tbody>
+				{#each $paginatedRows as row}
+					<tr>
+						{#each row as cell}
+							<td class="p-2 border border-gray-300 text-base font-light">{cell}</td>
+						{/each}
+					</tr>
 				{/each}
-			</tr>
-		{/each}
-	</tbody>
-</table>
+			</tbody>
+		</table>
+	{:else}
+		<div class="text-center p-4 text-gray-300">
+			<span class="text-lg">⚠️</span> Record(s) not Found
+		</div>
+	{/if}
+</div>
 
 <!-- Pagination -->
 <nav class="flex items-center justify-between bg-white px-4 py-3 sm:px-6" aria-label="Pagination">
-	<div class="flex mx-auto px-5">
+	<div class="flex mx-auto px-5 items-center">
+		<!-- Previous Button -->
 		<Button
 			text="Previous"
 			style="ghost"
@@ -497,6 +304,14 @@
 			on:click={() => $currentPage > 1 && currentPage.set($currentPage - 1)}
 		/>
 
+		<!-- Pagination Number -->
+		<p class="mx-3 text-sm text-gray-500">
+			<span class="bg-gray-400 p-1 border border-gray-200 text-gray-200 rounded-sm"
+				>{$currentPage}
+			</span>
+		</p>
+
+		<!-- Next Button -->
 		<Button
 			text="Next"
 			style="ghost"
