@@ -4,7 +4,9 @@
 	import Button from '../../components/ui/Button.svelte';
 	import SearchDropdown from '../../components/ui/SearchDropDown.svelte';
 	import Dropdown from '../../components/ui/Dropdown.svelte';
+	import SearchBar from '../../components/ui/SearchBar.svelte';
 
+	// Type for views
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
 
 	// Filters and data definitions
@@ -84,108 +86,321 @@
 		{ label: 'Tickets', view: 'tickets' }
 	];
 
-	// Table data for each view
-	const contactsData = {
-		columns: ['First Name', 'Last Name', 'Email', 'Phone Number', 'Type', 'Address'],
-		rows: [
-			['John', 'Doe', 'john.doe@example.com', '+123456789', 'Customer', '123 Main St, Cityville'],
-			[
-				'Jane',
-				'Smith',
-				'jane.smith@example.com',
-				'+987654321',
-				'Subscriber',
-				'456 Elm St, Townsville'
-			]
-		]
-	};
+	// Search state
+	const searchQuery = writable('');
 
-	const companiesData = {
-		columns: [
-			'Company Name',
-			'Owner Name',
-			'Email',
-			'Phone Number',
-			'Company Address',
-			'Item Type'
-		],
-		rows: [
-			[
-				'TechCorp',
-				'Alice Brown',
-				'contact@techcorp.com',
-				'+1122334455',
-				'789 Oak St, Metropolis',
-				'Software'
-			],
-			[
-				'Foodies Inc.',
-				'Bob Green',
-				'info@foodies.com',
-				'+9988776655',
-				'321 Pine St, Foodtown',
-				'Food Services'
-			]
-		]
-	};
-
-	const dealsData = {
-		columns: ['Deal Name', 'Owner', 'Amount', 'Stage', 'Close Date'],
-		rows: [
-			['Big Tech Deal', 'Alice Brown', '$500,000', 'Negotiation', '2024-12-01'],
-			['Startup Investment', 'Bob Green', '$250,000', 'Closed Won', '2024-11-15']
-		]
-	};
-
-	const invoicesData = {
-		columns: ['Invoice Number', 'Customer Name', 'Amount', 'Status', 'Due Date'],
-		rows: [
-			['INV-001', 'John Doe', '$1,000', 'Paid', '2024-11-01'],
-			['INV-002', 'Jane Smith', '$500', 'Unpaid', '2024-11-30']
-		]
-	};
-
-	const ticketsData = {
-		columns: ['Ticket ID', 'Subject', 'Status', 'Assigned To', 'Created Date'],
-		rows: [
-			['TCK-001', 'Login Issue', 'Open', 'Alice Brown', '2024-11-01'],
-			['TCK-002', 'Payment Failed', 'Closed', 'Bob Green', '2024-11-02']
-		]
-	};
-
-	// Derived store for table data based on view
+	// Derived stores for table data
 	const data = derived(view, ($view) => {
 		switch ($view) {
 			case 'contacts':
-				return contactsData;
+				return {
+					columns: ['First Name', 'Last Name', 'Email', 'Phone Number', 'Type', 'Address'],
+					rows: [
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						],
+						[
+							'John',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St, Cityville'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St, Townsville'
+						]
+					]
+				};
 			case 'companies':
-				return companiesData;
+				return {
+					columns: [
+						'Company Name',
+						'Owner Name',
+						'Email',
+						'Phone Number',
+						'Company Address',
+						'Item Type'
+					],
+					rows: [
+						[
+							'TechCorp',
+							'Alice Brown',
+							'contact@techcorp.com',
+							'+1122334455',
+							'789 Oak St, Metropolis',
+							'Software'
+						],
+						[
+							'Foodies Inc.',
+							'Bob Green',
+							'info@foodies.com',
+							'+9988776655',
+							'321 Pine St, Foodtown',
+							'Food Services'
+						]
+					]
+				};
 			case 'deals':
-				return dealsData;
+				return {
+					columns: ['Deal Name', 'Owner', 'Amount', 'Stage', 'Close Date'],
+					rows: [
+						['Big Tech Deal', 'Alice Brown', '$500,000', 'Negotiation', '2024-12-01'],
+						['Startup Investment', 'Bob Green', '$250,000', 'Closed Won', '2024-11-15']
+					]
+				};
 			case 'invoices':
-				return invoicesData;
+				return {
+					columns: ['Invoice Number', 'Customer Name', 'Amount', 'Status', 'Due Date'],
+					rows: [
+						['INV-001', 'John Doe', '$1,000', 'Paid', '2024-11-01'],
+						['INV-002', 'Jane Smith', '$500', 'Unpaid', '2024-11-30']
+					]
+				};
 			case 'tickets':
-				return ticketsData;
+				return {
+					columns: ['Ticket ID', 'Subject', 'Status', 'Assigned To', 'Created Date'],
+					rows: [
+						['TCK-001', 'Login Issue', 'Open', 'Alice Brown', '2024-11-01'],
+						['TCK-002', 'Payment Failed', 'Closed', 'Bob Green', '2024-11-02']
+					]
+				};
 			default:
 				return { columns: [], rows: [] };
 		}
 	});
 
+	// Derived store for filtered rows
+	const filteredRows = derived([data, searchQuery], ([$data, $searchQuery]) => {
+		if (!$searchQuery) return $data.rows;
+		const lowerCaseQuery = $searchQuery.toLowerCase();
+		return $data.rows.filter((row) =>
+			row.some((cell) => cell.toLowerCase().includes(lowerCaseQuery))
+		);
+	});
+
 	// Derived store to calculate paginated data
 	const paginatedRows = derived(
-		[data, currentPage, itemsPerPage],
-		([$data, $currentPage, $itemsPerPage]) => {
+		[filteredRows, currentPage, itemsPerPage],
+		([$filteredRows, $currentPage, $itemsPerPage]) => {
 			const start = ($currentPage - 1) * $itemsPerPage;
 			const end = start + $itemsPerPage;
-			return $data.rows.slice(start, end);
+			return $filteredRows.slice(start, end);
 		},
-		[] as string[][] // Initial value and type
+		[]
 	);
 
-	// Derived store to calculate the total record count
-	const totalRecordCount = derived(data, ($data) => $data.rows.length);
-
-	const recordCount = derived(data, ($data) => $data.rows.length);
+	const totalRecordCount = derived(filteredRows, ($filteredRows) => $filteredRows.length);
 </script>
 
 <!-- Top Section with Dropdown and Action Buttons -->
@@ -221,7 +436,7 @@
 		{#if dropdownOpen}
 			<SearchDropdown items={dropdownItems} {navigateTo} />
 		{/if}
-		<p class="text-xs text-gray-100">{$recordCount} Record(s)</p>
+		<p class="text-xs text-gray-100">{$totalRecordCount} Record(s)</p>
 	</div>
 
 	<div class="flex gap-2">
@@ -251,6 +466,7 @@
 </div>
 
 <!-- Data Table -->
+<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
 <table class="table-auto w-full border">
 	<thead>
 		<tr>

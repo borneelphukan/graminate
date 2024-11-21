@@ -1,8 +1,27 @@
 <script lang="ts">
   export let query: string = '';
+  export let placeholder: string = '';
+  export let mode: string = '';
+
+  if (mode === 'table' && !placeholder) {
+    throw new Error("The 'placeholder' parameter is mandatory when 'mode' is set to 'table'.");
+  }
 
   const handleSearch = () => {
-    console.log('Search query:', query);
+    dispatchSearchEvent();
+  };
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const dispatchSearchEvent = () => {
+    const searchEvent = new CustomEvent('search', {
+      detail: query,
+    });
+    dispatchEvent(searchEvent);
   };
 </script>
 
@@ -10,8 +29,9 @@
   <input
     type="text"
     bind:value={query}
-    placeholder="Search"
+    placeholder={placeholder}
     class="w-full px-4 py-2 border-2 border-green-200 rounded-md focus:outline-none"
+    on:keydown={handleKeyDown}
   />
   <button
     class="absolute inset-y-0 right-4 flex items-center"
