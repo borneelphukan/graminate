@@ -302,6 +302,22 @@
 		if ($view === 'tickets') return 'Create Ticket';
 		return '';
 	});
+
+	let selectAll: boolean = false;
+
+	let selectedRows: boolean[] = [];
+
+	$: if ($paginatedRows) {
+		selectedRows = Array($paginatedRows.length).fill(selectAll);
+	}
+
+	function updateSelectAll() {
+		selectAll = selectedRows.every((checked) => checked);
+	}
+
+	function handleSelectAllChange() {
+		selectedRows = Array($paginatedRows.length).fill(selectAll);
+	}
 </script>
 
 <!-- Top Section with Dropdown and Action Buttons -->
@@ -382,6 +398,14 @@
 		<table class="table-auto w-full border">
 			<thead>
 				<tr>
+					<!-- Header Checkbox -->
+					<th class="p-2 border border-gray-300 bg-gray-400 text-left">
+						<input
+							type="checkbox"
+							class="form-checkbox h-4 w-4 text-gray-600"
+							bind:checked={selectAll}
+						/>
+					</th>
 					{#each $data.columns as column, index}
 						<th
 							class="p-2 border border-gray-300 bg-gray-400 cursor-pointer text-left"
@@ -429,8 +453,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each $paginatedRows as row}
+				{#each $paginatedRows as row, rowIndex}
 					<tr>
+						<!-- Row Checkbox -->
+						<td class="p-2 border border-gray-300">
+							<input
+								type="checkbox"
+								class="form-checkbox h-4 w-4 text-gray-600"
+								bind:checked={selectedRows[rowIndex]}
+							/>
+						</td>
 						{#each row as cell}
 							<td class="p-2 border border-gray-300 text-base font-light">{cell}</td>
 						{/each}

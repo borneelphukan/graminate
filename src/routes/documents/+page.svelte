@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Button from '../../components/ui/Button.svelte';
 
-	// Mock data for documents
 	interface Document {
 		name: string;
 		linksCreated: number;
@@ -22,6 +21,17 @@
 
 	const totalDocuments = 1;
 	const maxDocuments = 5;
+
+	// Reactive variable for managing checkbox state
+	let selectAll = false;
+	let selectedDocuments: boolean[] = Array(documents.length).fill(false);
+
+	// Watch for changes in selectAll and update individual checkboxes
+	$: if (selectAll) {
+		selectedDocuments = Array(documents.length).fill(true);
+	} else {
+		selectedDocuments = Array(documents.length).fill(false);
+	}
 </script>
 
 <div class="flex items-center justify-between px-4 py-2 border-b">
@@ -42,7 +52,11 @@
 				<thead>
 					<tr class="border-b">
 						<th class="py-2 px-3 w-8">
-							<input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
+							<input
+								type="checkbox"
+								class="form-checkbox h-4 w-4 text-gray-600"
+								bind:checked={selectAll}
+							/>
 						</th>
 						<th class="py-2 px-3">Name</th>
 						<th class="py-2 px-3">Links Created</th>
@@ -52,10 +66,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each documents as document}
+					{#each documents as document, i}
 						<tr class="border-b hover:bg-gray-400">
 							<td class="py-2 px-3">
-								<input type="checkbox" class="form-checkbox h-4 w-4 text-gray-600" />
+								<input
+									type="checkbox"
+									class="form-checkbox h-4 w-4 text-gray-600"
+									bind:checked={selectedDocuments[i]}
+								/>
 							</td>
 							<td class="py-2 px-3 text-blue-500 underline">{document.name}</td>
 							<td class="py-2 px-3">{document.linksCreated}</td>
