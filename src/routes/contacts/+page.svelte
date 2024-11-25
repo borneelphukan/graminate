@@ -5,6 +5,20 @@
 	import SearchDropdown from '../../components/ui/SearchDropDown.svelte';
 	import Dropdown from '../../components/ui/Dropdown.svelte';
 	import SearchBar from '../../components/ui/SearchBar.svelte';
+	import FormElement from '../../components/forms/FormElement.svelte';
+
+	// Sidebar state
+	const isSidebarOpen = writable(false);
+
+	// Function to open the sidebar
+	function openSidebar() {
+		isSidebarOpen.set(true);
+	}
+
+	// Function to close the sidebar
+	function closeSidebar() {
+		isSidebarOpen.set(false);
+	}
 
 	// Type for views
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
@@ -227,6 +241,84 @@
 			sortOrder.set('asc');
 		}
 	}
+
+	// Dynamic fields for FormElement
+	const formFields = derived(view, ($view) => {
+		if ($view === 'contacts') {
+			return [
+				{ id: 'email', label: 'Email', placeholder: 'Enter email', type: 'email' },
+				{ id: 'firstName', label: 'First Name', placeholder: 'Enter first name', type: 'text' },
+				{ id: 'lastName', label: 'Last Name', placeholder: 'Enter last name', type: 'text' },
+				{
+					id: 'contactOwner',
+					label: 'Contact Owner',
+					placeholder: 'Enter contact owner',
+					type: 'text'
+				},
+				{ id: 'jobTitle', label: 'Job Title', placeholder: 'Enter job title', type: 'text' },
+				{
+					id: 'phoneNumber',
+					label: 'Phone Number',
+					placeholder: 'Enter phone number',
+					type: 'tel'
+				},
+				{
+					id: 'lifecycleStage',
+					label: 'Lifecycle Stage',
+					placeholder: 'Enter lifecycle stage',
+					type: 'text'
+				}
+			];
+		} else if ($view === 'companies') {
+			return [
+				{
+					id: 'domainName',
+					label: 'Company Domain Name',
+					placeholder: 'Enter domain',
+					type: 'text'
+				},
+				{
+					id: 'companyName',
+					label: 'Company Name',
+					placeholder: 'Enter company name',
+					type: 'text'
+				},
+				{ id: 'companyOwner', label: 'Company Owner', placeholder: 'Enter owner', type: 'text' },
+				{ id: 'industry', label: 'Industry', placeholder: 'Enter industry', type: 'text' },
+				{ id: 'type', label: 'Type', placeholder: 'Enter type', type: 'text' },
+				{ id: 'city', label: 'City', placeholder: 'Enter city', type: 'text' },
+				{ id: 'state', label: 'State/Region', placeholder: 'Enter state/region', type: 'text' }
+			];
+		} else if ($view === 'tickets') {
+			return [
+				{
+					id: 'domainName',
+					label: 'Company Domain Name',
+					placeholder: 'Enter domain',
+					type: 'text'
+				},
+				{
+					id: 'companyName',
+					label: 'Ticket Name',
+					placeholder: 'Enter company name',
+					type: 'text'
+				},
+				{ id: 'companyOwner', label: 'Company Owner', placeholder: 'Enter owner', type: 'text' },
+				{ id: 'industry', label: 'Industry', placeholder: 'Enter industry', type: 'text' },
+				{ id: 'type', label: 'Type', placeholder: 'Enter type', type: 'text' },
+				{ id: 'city', label: 'City', placeholder: 'Enter city', type: 'text' },
+				{ id: 'state', label: 'State/Region', placeholder: 'Enter state/region', type: 'text' }
+			];
+		}
+		return [];
+	});
+
+	const formTitle = derived(view, ($view) => {
+		if ($view === 'contacts') return 'Create Contact';
+		if ($view === 'companies') return 'Create Company';
+		if ($view === 'tickets') return 'Create Ticket';
+		return '';
+	});
 </script>
 
 <!-- Top Section with Dropdown and Action Buttons -->
@@ -268,28 +360,13 @@
 	<div class="flex gap-2">
 		<Button text="Actions" style="secondary" arrow="down" />
 		<Button text="Import" style="secondary" />
-		<Button text={`Create ${$view.charAt(0).toUpperCase() + $view.slice(1, -1)}`} style="primary" />
+		<Button
+			text={`Create ${$view.charAt(0).toUpperCase() + $view.slice(1, -1)}`}
+			style="primary"
+			on:click={openSidebar}
+		/>
 	</div>
 </div>
-
-<!-- Filters Section -->
-<!-- <div class="flex items-center ml-4 mb-4">
-	{#each $writableFilters as filter}
-		<div class="border-l border-gray-300 border-r">
-			<div class="flex items-center gap-12 border-t border-b border-gray-300 px-3 py-2">
-				<button on:click={() => navigateToView(filter.view)}>
-					{filter.label}
-				</button>
-				<button
-					class="focus:outline-none"
-					on:click={() => writableFilters.update((f) => f.filter((fil) => fil !== filter))}
-				>
-					&times;
-				</button>
-			</div>
-		</div>
-	{/each}
-</div> -->
 
 <!-- Data Table -->
 <div>
@@ -401,3 +478,8 @@
 		<Dropdown items={paginationItems} selectedItem="25 per page" on:select={handleSelect} />
 	</div>
 </nav>
+
+<!-- Render FormElement -->
+{#if $isSidebarOpen && ($view === 'contacts' || $view === 'companies' || $view === 'tickets')}
+	<FormElement fields={$formFields} title={$formTitle} on:close={closeSidebar} />
+{/if}
