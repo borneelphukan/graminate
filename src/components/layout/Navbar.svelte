@@ -214,7 +214,7 @@
 						<img class="h-7 w-7 rounded-full" src={user.imageUrl} alt={user.name} />
 						<span class="sr-only">Open user menu</span>
 					</button>
-					<span class="ml-2 text-white text-sm font-medium">Company Name</span>
+					<span class="ml-2 text-white text-sm font-medium">Borneel Bikash Phukan</span>
 					<button
 						class="ml-1 flex items-center text-gray-400 hover:text-white focus:outline-none"
 						on:click={toggleDropdown}

@@ -2,25 +2,20 @@
 	import { page } from '$app/stores';
 	import { writable, derived } from 'svelte/store';
 	import Button from '../../components/ui/Button.svelte';
-	import SearchDropdown from '../../components/ui/SearchDropDown.svelte';
+	import SearchDropdown from '../../components/ui/SearchDropdown.svelte';
 	import Dropdown from '../../components/ui/Dropdown.svelte';
 	import SearchBar from '../../components/ui/SearchBar.svelte';
 	import FormElement from '../../components/forms/FormElement.svelte';
 
-	// Sidebar state
 	const isSidebarOpen = writable(false);
 
-	// Function to open the sidebar
 	function openSidebar() {
 		isSidebarOpen.set(true);
 	}
 
-	// Function to close the sidebar
 	function closeSidebar() {
 		isSidebarOpen.set(false);
 	}
-
-	// Type for views
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
 
 	// Filters and data definitions
@@ -246,44 +241,32 @@
 	const formFields = derived(view, ($view) => {
 		if ($view === 'contacts') {
 			return [
-				{ id: 'email', label: 'Email', placeholder: 'Enter email', type: 'email' },
-				{ id: 'firstName', label: 'First Name', placeholder: 'Enter first name', type: 'text' },
-				{ id: 'lastName', label: 'Last Name', placeholder: 'Enter last name', type: 'text' },
-				{
-					id: 'contactOwner',
-					label: 'Contact Owner',
-					placeholder: 'Enter contact owner',
-					type: 'text'
-				},
-				{ id: 'jobTitle', label: 'Job Title', placeholder: 'Enter job title', type: 'text' },
+				{ id: 'firstName', label: 'First Name', placeholder: 'e.g. John', type: 'text' },
+				{ id: 'lastName', label: 'Last Name', placeholder: 'e.g. Doe', type: 'text' },
+				{ id: 'email', label: 'Email', placeholder: 'e.g. john.doe@gmail.com', type: 'email' },
 				{
 					id: 'phoneNumber',
 					label: 'Phone Number',
-					placeholder: 'Enter phone number',
+					placeholder: 'e.g. +91 XXXXX XXX XX',
 					type: 'tel'
 				},
-				{
-					id: 'lifecycleStage',
-					label: 'Lifecycle Stage',
-					placeholder: 'Enter lifecycle stage',
-					type: 'text'
-				}
+				// Add missing fields with appropriate default values
+				{ id: 'type', label: 'Type', placeholder: 'Enter type', type: 'text' }
 			];
 		} else if ($view === 'companies') {
 			return [
-				{
-					id: 'domainName',
-					label: 'Company Domain Name',
-					placeholder: 'Enter domain',
-					type: 'text'
-				},
 				{
 					id: 'companyName',
 					label: 'Company Name',
 					placeholder: 'Enter company name',
 					type: 'text'
 				},
-				{ id: 'companyOwner', label: 'Company Owner', placeholder: 'Enter owner', type: 'text' },
+				{
+					id: 'companyOwner',
+					label: 'Company Representative',
+					placeholder: 'e.g. John Doe',
+					type: 'text'
+				},
 				{ id: 'industry', label: 'Industry', placeholder: 'Enter industry', type: 'text' },
 				{ id: 'type', label: 'Type', placeholder: 'Enter type', type: 'text' },
 				{ id: 'city', label: 'City', placeholder: 'Enter city', type: 'text' },
@@ -367,6 +350,24 @@
 		/>
 	</div>
 </div>
+
+<!-- <div class="flex items-center ml-4 mb-4">
+	{#each $writableFilters as filter}
+		<div class="border-l border-gray-300 border-r">
+			<div class="flex items-center gap-12 border-t border-b border-gray-300 px-3 py-2">
+				<button on:click={() => navigateToView(filter.view)}>
+					{filter.label}
+				</button>
+				<button
+					class="focus:outline-none"
+					on:click={() => writableFilters.update((f) => f.filter((fil) => fil !== filter))}
+				>
+					&times;
+				</button>
+			</div>
+		</div>
+	{/each}
+</div> -->
 
 <!-- Data Table -->
 <div>
@@ -481,5 +482,5 @@
 
 <!-- Render FormElement -->
 {#if $isSidebarOpen && ($view === 'contacts' || $view === 'companies' || $view === 'tickets')}
-	<FormElement fields={$formFields} title={$formTitle} on:close={closeSidebar} />
+	<FormElement fields={$formFields} title={$formTitle} view={$view} on:close={closeSidebar} />
 {/if}

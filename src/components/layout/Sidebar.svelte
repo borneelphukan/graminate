@@ -15,7 +15,6 @@
 
 	export let isOpen: boolean;
 
-
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
 
@@ -24,7 +23,8 @@
 			icon: faHome,
 			label: 'Dashboard',
 			section: 'Dashboard',
-			subItems: [{ label: 'Help Desk', route: '/help-desk' }]
+			route: '/dashboard',
+			subItems: []
 		},
 		{
 			icon: faAddressBook,
@@ -54,6 +54,7 @@
 			icon: faChartPie,
 			label: 'Content',
 			section: 'Content',
+			route: '/content',
 			subItems: []
 		},
 		{
@@ -74,18 +75,23 @@
 			icon: faShapes,
 			label: 'Automations',
 			section: 'Automations',
+			route: '/automations',
 			subItems: []
 		},
 		{
 			icon: faChartLine,
-			label: 'Reporting',
-			section: 'Reporting',
-			subItems: []
+			label: 'Trends',
+			section: 'Trends',
+			subItems: [
+				{ label: 'Buyers Price', route: '/buyers-prices' },
+				{ label: 'Sellers Price ', route: '/sellers-prices' }
+			]
 		},
 		{
 			icon: faDatabase,
 			label: 'Data Management',
 			section: 'Data Management',
+			route: '/data-management',
 			subItems: []
 		},
 		{
@@ -118,15 +124,15 @@
 		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0"
 	style="width: {isCollapsed ? '60px' : '230px'}"
 >
-	<nav class="space-y-2  flex flex-col relative">
-		{#each sections as { icon, label, section, subItems }}
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<nav class="space-y-2 flex flex-col relative">
+		{#each sections as { icon, label, section, route, subItems }}
 			<div class="relative group">
 				<!-- Main Section -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="flex items-center mx-2 p-3 rounded-lg cursor-pointer hover:bg-blue-100 transition-all duration-200 group"
-					on:click={() => handleSectionChange(section)}
+					on:click={() => (route ? navigateTo(route) : handleSectionChange(section))}
 					style="justify-content: {isCollapsed ? 'center' : 'flex-start'};"
 				>
 					<div class="text-gray-400 flex justify-center items-center w-6 h-6">
@@ -134,27 +140,31 @@
 					</div>
 					{#if !isCollapsed}
 						<span class="text-gray-500 font-light text-base ml-2 flex-grow">{label}</span>
-						<div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-							<svg
-								fill="#ffffff"
-								height="12px"
-								width="12px"
-								version="1.1"
-								id="Layer_1"
-								xmlns="http://www.w3.org/2000/svg"
-								xmlns:xlink="http://www.w3.org/1999/xlink"
-								viewBox="0 0 330 330"
-								xml:space="preserve"
+						{#if subItems.length > 0}
+							<div
+								class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
 							>
-								<path
-									id="XMLID_222_"
-									d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
-	c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
-	C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
-	C255,161.018,253.42,157.202,250.606,154.389z"
-								/>
-							</svg>
-						</div>
+								<svg
+									fill="#ffffff"
+									height="12px"
+									width="12px"
+									version="1.1"
+									id="Layer_1"
+									xmlns="http://www.w3.org/2000/svg"
+									xmlns:xlink="http://www.w3.org/1999/xlink"
+									viewBox="0 0 330 330"
+									xml:space="preserve"
+								>
+									<path
+										id="XMLID_222_"
+										d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
+                c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+                C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+                C255,161.018,253.42,157.202,250.606,154.389z"
+									/>
+								</svg>
+							</div>
+						{/if}
 					{/if}
 				</div>
 
@@ -165,6 +175,8 @@
 						style="transform: translateX(10px);"
 					>
 						{#each subItems as { label, route }}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
 								class="text-gray-400 text-base py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
 								on:click={() => navigateTo(route)}
@@ -217,7 +229,6 @@
 			{/if}
 		</button>
 	</div>
-
 </div>
 
 <style>
