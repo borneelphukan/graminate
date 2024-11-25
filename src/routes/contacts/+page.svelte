@@ -89,6 +89,10 @@
 	// Search state
 	const searchQuery = writable('');
 
+	// Sorting state
+	const sortOrder = writable<'asc' | 'desc'>('asc');
+	const sortColumn = writable<number | null>(null);
+
 	// Derived stores for table data
 	const data = derived(view, ($view) => {
 		switch ($view) {
@@ -173,13 +177,34 @@
 	});
 
 	// Derived store for filtered rows
-	const filteredRows = derived([data, searchQuery], ([$data, $searchQuery]) => {
-		if (!$searchQuery) return $data.rows;
-		const lowerCaseQuery = $searchQuery.toLowerCase();
-		return $data.rows.filter((row) =>
-			row.some((cell) => cell.toLowerCase().includes(lowerCaseQuery))
-		);
-	});
+	const filteredRows = derived(
+		[data, searchQuery, sortOrder, sortColumn],
+		([$data, $searchQuery, $sortOrder, $sortColumn]) => {
+			let rows = $data.rows;
+
+			if ($searchQuery) {
+				const lowerCaseQuery = $searchQuery.toLowerCase();
+				rows = rows.filter((row) =>
+					row.some((cell) => cell.toLowerCase().includes(lowerCaseQuery))
+				);
+			}
+
+			if ($sortColumn !== null) {
+				rows = [...rows].sort((a, b) => {
+					const valueA = a[$sortColumn];
+					const valueB = b[$sortColumn];
+
+					if ($sortOrder === 'asc') {
+						return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+					} else {
+						return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+					}
+				});
+			}
+
+			return rows;
+		}
+	);
 
 	// Derived store to calculate paginated data
 	const paginatedRows = derived(
@@ -193,10 +218,19 @@
 	);
 
 	const totalRecordCount = derived(filteredRows, ($filteredRows) => $filteredRows.length);
+
+	function toggleSort(columnIndex: number) {
+		if (columnIndex === $sortColumn) {
+			sortOrder.set($sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			sortColumn.set(columnIndex);
+			sortOrder.set('asc');
+		}
+	}
 </script>
 
 <!-- Top Section with Dropdown and Action Buttons -->
-<div class="flex justify-between items-center px-4 py-1 bg-white relative mb-4">
+<div class="flex justify-between items-center py-1 bg-white relative mb-4">
 	<div class="relative">
 		<button
 			class="flex items-center text-lg font-semibold bg-white rounded focus:outline-none"
@@ -239,7 +273,7 @@
 </div>
 
 <!-- Filters Section -->
-<div class="flex items-center ml-4 mb-4">
+<!-- <div class="flex items-center ml-4 mb-4">
 	{#each $writableFilters as filter}
 		<div class="border-l border-gray-300 border-r">
 			<div class="flex items-center gap-12 border-t border-b border-gray-300 px-3 py-2">
@@ -255,7 +289,7 @@
 			</div>
 		</div>
 	{/each}
-</div>
+</div> -->
 
 <!-- Data Table -->
 <div>
@@ -270,8 +304,49 @@
 		<table class="table-auto w-full border">
 			<thead>
 				<tr>
-					{#each $data.columns as column}
-						<th class="p-2 border border-gray-300 bg-gray-400">{column}</th>
+					{#each $data.columns as column, index}
+						<th
+							class="p-2 border border-gray-300 bg-gray-400 cursor-pointer text-left"
+							on:click={() => toggleSort(index)}
+						>
+							<div class="flex items-center justify-between">
+								<span class="mr-2">{column}</span>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+									class="w-4 h-4"
+								>
+									{#if $sortColumn === index && $sortOrder === 'asc'}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width={$sortOrder === 'asc' ? '2.5' : '1.5'}
+											stroke="currentColor"
+											d="M8.25 9 12 5.25 15.75 9"
+											opacity="1"
+										/>
+									{:else if $sortColumn === index && $sortOrder === 'desc'}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width={$sortOrder === 'desc' ? '2.5' : '1.5'}
+											stroke="currentColor"
+											d="M8.25 15 12 18.75 15.75 15"
+											opacity="1"
+										/>
+									{:else}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+										/>
+									{/if}
+								</svg>
+							</div>
+						</th>
 					{/each}
 				</tr>
 			</thead>
@@ -306,7 +381,7 @@
 
 		<!-- Pagination Number -->
 		<p class="mx-3 text-sm text-gray-500">
-			<span class="bg-gray-400 p-1 border border-gray-200 text-gray-200 rounded-sm"
+			<span class="bg-green-300 p-1 border border-gray-300 text-green-100 rounded-sm"
 				>{$currentPage}
 			</span>
 		</p>
