@@ -303,20 +303,47 @@
 		return '';
 	});
 
+	// Header checkbox state
 	let selectAll: boolean = false;
 
-	let selectedRows: boolean[] = [];
+	// Row checkboxes state as a writable store
+	const selectedRows = writable<boolean[]>([]);
 
+	// Reactive update: Initialize `selectedRows` based on the number of paginated rows
 	$: if ($paginatedRows) {
-		selectedRows = Array($paginatedRows.length).fill(selectAll);
+		selectedRows.set(Array($paginatedRows.length).fill(selectAll));
 	}
 
+	// Derived store to calculate the count of selected rows
+	const selectedRowCount = derived(
+		selectedRows,
+		($selectedRows) => $selectedRows.filter((isSelected: boolean) => isSelected).length
+	);
+
+	// Update the `selectAll` state based on individual checkboxes
 	function updateSelectAll() {
-		selectAll = selectedRows.every((checked) => checked);
+		selectedRows.update(($selectedRows) => {
+			selectAll = $selectedRows.every((checked) => checked);
+			return $selectedRows;
+		});
 	}
 
+	// Handle change for the header checkbox
 	function handleSelectAllChange() {
-		selectedRows = Array($paginatedRows.length).fill(selectAll);
+		selectedRows.update(() => Array($paginatedRows.length).fill(selectAll));
+	}
+
+	// Handle change for individual row checkboxes
+	function handleRowCheckboxChange(rowIndex: number, event: Event) {
+		const target = event.target as HTMLInputElement; // Cast `event.target` to `HTMLInputElement`
+		if (target) {
+			const isChecked = target.checked; // Access the `checked` property
+			selectedRows.update(($selectedRows) => {
+				$selectedRows[rowIndex] = isChecked;
+				selectAll = $selectedRows.every((checked) => checked);
+				return $selectedRows;
+			});
+		}
 	}
 </script>
 
@@ -387,13 +414,28 @@
 
 <!-- Data Table -->
 <div>
-	<div class="flex p-1 bg-gray-400 justify-between border-t border-l border-r border-gray-300">
-		<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
-		<div class="flex justify-between">
+	<div
+		class="flex p-1 bg-gray-400 justify-between items-center border-t border-l border-r border-gray-300"
+	>
+		<div class="flex gap-2">
+			<!-- SearchBar -->
+			<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
+
+			<!-- Selected Row Count -->
+			{#if $selectedRowCount > 0}
+				<span class="ml-4 my-auto text-gray-700 text-sm font-medium">
+					{$selectedRowCount} selected
+				</span>
+			{/if}
+		</div>
+
+		<!-- Action Buttons -->
+		<div class="flex gap-2">
 			<Button style="secondary" text="Export" />
 			<Button style="secondary" text="Edit Column" />
 		</div>
 	</div>
+
 	{#if $filteredRows.length > 0}
 		<table class="table-auto w-full border">
 			<thead>
@@ -404,6 +446,7 @@
 							type="checkbox"
 							class="form-checkbox h-4 w-4 text-gray-600"
 							bind:checked={selectAll}
+							on:change={handleSelectAllChange}
 						/>
 					</th>
 					{#each $data.columns as column, index}
@@ -413,40 +456,6 @@
 						>
 							<div class="flex items-center justify-between">
 								<span class="mr-2">{column}</span>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-									class="w-4 h-4"
-								>
-									{#if $sortColumn === index && $sortOrder === 'asc'}
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width={$sortOrder === 'asc' ? '2.5' : '1.5'}
-											stroke="currentColor"
-											d="M8.25 9 12 5.25 15.75 9"
-											opacity="1"
-										/>
-									{:else if $sortColumn === index && $sortOrder === 'desc'}
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width={$sortOrder === 'desc' ? '2.5' : '1.5'}
-											stroke="currentColor"
-											d="M8.25 15 12 18.75 15.75 15"
-											opacity="1"
-										/>
-									{:else}
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-										/>
-									{/if}
-								</svg>
 							</div>
 						</th>
 					{/each}
@@ -460,7 +469,8 @@
 							<input
 								type="checkbox"
 								class="form-checkbox h-4 w-4 text-gray-600"
-								bind:checked={selectedRows[rowIndex]}
+								bind:checked={$selectedRows[rowIndex]}
+								on:change={(event) => handleRowCheckboxChange(rowIndex, event)}
 							/>
 						</td>
 						{#each row as cell}
