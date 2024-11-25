@@ -42,11 +42,11 @@
 			label: 'Marketing',
 			section: 'Marketing',
 			subItems: [
-				{ label: 'Campaigns', route: '/campaigns' },
-				{ label: 'Email', route: '/email' },
+				{ label: 'Campaigns', route: '/' },
+				{ label: 'Email', route: '/' },
 				{ label: 'Social', route: '/social' },
-				{ label: 'Ads', route: '/ads' },
-				{ label: 'Forms', route: '/forms' },
+				{ label: 'Ads', route: '/' },
+				{ label: 'Forms', route: '/' },
 				{ label: 'Buyer Intent', route: '/buyer-intent' }
 			]
 		},

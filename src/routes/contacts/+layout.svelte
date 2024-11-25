@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	
+
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
 	const view = derived(page, ($page) => ($page.url.searchParams.get('view') as View) || 'contacts');
 
-
 	export let data: { columns: string[]; rows: string[][] };
 </script>
+
+<slot />
 
 <table class="table-auto w-full border">
 	<thead>
@@ -27,5 +28,3 @@
 		{/each}
 	</tbody>
 </table>
-
-<slot />
