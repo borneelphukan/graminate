@@ -4,16 +4,14 @@
 	import Button from '../ui/Button.svelte';
 	import Dropdown from '../ui/Dropdown.svelte';
 
-	// Props
 	export let data: { columns: string[]; rows: any[][] };
-	export let filteredRows: Readable<any[][]>; // Ensure this is a Svelte store
+	export let filteredRows: Readable<any[][]>;
 	export let currentPage: Writable<number>;
 	export let itemsPerPage: Writable<number>;
 	export let paginationItems: string[];
 	export let searchQuery: Writable<string>;
 	export let totalRecordCount: number;
 
-	// Sorting state
 	const sortOrder = writable<'asc' | 'desc'>('asc');
 	const sortColumn = writable<number | null>(null);
 

@@ -3,7 +3,6 @@
 	import Button from '../../components/ui/Button.svelte';
 	import { writable } from 'svelte/store';
 
-	// Document data
 	interface Document {
 		name: string;
 		linksCreated: number;
@@ -22,7 +21,6 @@
 		}
 	];
 
-	// Table data setup
 	const columns = ['Name', 'Links Created', 'Views', 'Owner', 'Last Updated'];
 	const rows = documents.map((doc) => [
 		doc.name,
@@ -34,13 +32,11 @@
 
 	const data = { columns, rows };
 
-	// Pagination and search stores
 	const currentPage = writable(1);
-	const itemsPerPage = writable(25); // Default to 25 rows per page
+	const itemsPerPage = writable(25);
 	const searchQuery = writable('');
 	const filteredRows = writable(rows);
 
-	// Derived filtered rows based on the search query
 	$: {
 		filteredRows.set(
 			rows.filter((row) =>
@@ -49,10 +45,7 @@
 		);
 	}
 
-	// Dropdown items for pagination
 	const paginationItems = ['25 per page', '50 per page', '100 per page'];
-
-	// Total record count for the table
 	const totalRecordCount = rows.length;
 </script>
 
