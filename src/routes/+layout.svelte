@@ -4,26 +4,21 @@
 	import Navbar from '../components/layout/Navbar.svelte';
 
 	let isOpen = false;
-
-	function toggleSidebar() {
-		isOpen = !isOpen;
-	}
-
-	function handleSectionChange(event: CustomEvent) {
+	function handleSectionChange(event: CustomEvent<string>) {
 		const section = event.detail;
 		console.log(`Navigating to section: ${section}`);
 	}
 </script>
 
 <svelte:head>
-	<title>RootWave CRM</title>
+	<title>FarmHub CRM</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
 	<Navbar />
 
 	<div class="flex flex-1">
-		<Sidebar {isOpen} {toggleSidebar} on:onSectionChange={handleSectionChange} />
+		<Sidebar {isOpen} on:onSectionChange={handleSectionChange} />
 
 		<!-- Main Content -->
 		<div class="flex-1 p-6">

@@ -327,23 +327,24 @@
 			return $selectedRows;
 		});
 	}
-
-	// Handle change for the header checkbox
 	function handleSelectAllChange() {
 		selectedRows.update(() => Array($paginatedRows.length).fill(selectAll));
 	}
 
-	// Handle change for individual row checkboxes
 	function handleRowCheckboxChange(rowIndex: number, event: Event) {
-		const target = event.target as HTMLInputElement; // Cast `event.target` to `HTMLInputElement`
+		const target = event.target as HTMLInputElement;
 		if (target) {
-			const isChecked = target.checked; // Access the `checked` property
+			const isChecked = target.checked;
 			selectedRows.update(($selectedRows) => {
 				$selectedRows[rowIndex] = isChecked;
 				selectAll = $selectedRows.every((checked) => checked);
 				return $selectedRows;
 			});
 		}
+	}
+
+	function deleteSelectedRows() {
+		// To be implemented
 	}
 </script>
 
@@ -423,9 +424,18 @@
 
 			<!-- Selected Row Count -->
 			{#if $selectedRowCount > 0}
-				<span class="ml-4 my-auto text-gray-700 text-sm font-medium">
-					{$selectedRowCount} selected
-				</span>
+				<div class="flex items-center ml-4">
+					<span class="text-gray-700 text-sm font-medium">
+						{$selectedRowCount} selected
+					</span>
+					<a
+						href="/"
+						class="ml-2 text-blue-600 text-sm hover:underline cursor-pointer"
+						on:click={deleteSelectedRows}
+					>
+						Delete
+					</a>
+				</div>
 			{/if}
 		</div>
 
@@ -455,12 +465,27 @@
 							on:click={() => toggleSort(index)}
 						>
 							<div class="flex items-center justify-between">
-								<span class="mr-2">{column}</span>
+								<span class="mr-2 font-semibold">{column}</span>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+									class="size-6"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+									/>
+								</svg>
 							</div>
 						</th>
 					{/each}
 				</tr>
 			</thead>
+
 			<tbody>
 				{#each $paginatedRows as row, rowIndex}
 					<tr>

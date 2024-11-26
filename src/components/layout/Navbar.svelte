@@ -26,7 +26,7 @@
 	};
 
 	const accountDetails = {
-		accountName: 'RootWave',
+		accountName: 'FarmHub',
 		accountNumber: '145660264',
 		progress: 0
 	};
