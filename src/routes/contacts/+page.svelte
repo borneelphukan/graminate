@@ -346,6 +346,11 @@
 	function deleteSelectedRows() {
 		// To be implemented
 	}
+
+	function handleFormSubmit(values: Record<string, string>) {
+		console.log('Form submitted:', values);
+		closeSidebar();
+	}
 </script>
 
 <!-- Top Section with Dropdown and Action Buttons -->
@@ -441,8 +446,7 @@
 
 		<!-- Action Buttons -->
 		<div class="flex gap-2">
-			<Button style="secondary" text="Export" />
-			<Button style="secondary" text="Edit Column" />
+			<Button style="secondary" text="Export Data" />
 		</div>
 	</div>
 
@@ -548,6 +552,6 @@
 </nav>
 
 <!-- Render FormElement -->
-{#if $isSidebarOpen && ($view === 'contacts' || $view === 'companies' || $view === 'tickets')}
-	<FormElement fields={$formFields} title={$formTitle} view={$view} on:close={closeSidebar} />
+{#if $isSidebarOpen}
+	<FormElement view={$view} onClose={closeSidebar} onSubmit={handleFormSubmit} />
 {/if}
