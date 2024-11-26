@@ -52,7 +52,7 @@
 			<div class="relative z-10 flex px-2 lg:px-0">
 				<div class="flex flex-shrink-0 items-center">
 					<a href="/" class="text-left text-3xl font-semibold mb-2 text-white">
-						<span class="text-green-500">Root</span>Wave
+						<span class="text-green-500">Farm</span>Hub
 					</a>
 				</div>
 			</div>

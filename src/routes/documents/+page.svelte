@@ -1,6 +1,9 @@
 <script lang="ts">
+	import Table from '../../components/tables/Table.svelte';
 	import Button from '../../components/ui/Button.svelte';
+	import { writable } from 'svelte/store';
 
+	// Document data
 	interface Document {
 		name: string;
 		linksCreated: number;
@@ -13,25 +16,44 @@
 		{
 			name: 'FarmHub.pdf',
 			linksCreated: 0,
-			views: 0,
+			views: 1,
 			owner: 'Borneel Bikash Phukan',
 			lastUpdated: 'Nov 25, 2024'
 		}
 	];
 
-	const totalDocuments = 1;
-	const maxDocuments = 5;
+	// Table data setup
+	const columns = ['Name', 'Links Created', 'Views', 'Owner', 'Last Updated'];
+	const rows = documents.map((doc) => [
+		doc.name,
+		doc.linksCreated,
+		doc.views,
+		doc.owner,
+		doc.lastUpdated
+	]);
 
-	// Reactive variable for managing checkbox state
-	let selectAll = false;
-	let selectedDocuments: boolean[] = Array(documents.length).fill(false);
+	const data = { columns, rows };
 
-	// Watch for changes in selectAll and update individual checkboxes
-	$: if (selectAll) {
-		selectedDocuments = Array(documents.length).fill(true);
-	} else {
-		selectedDocuments = Array(documents.length).fill(false);
+	// Pagination and search stores
+	const currentPage = writable(1);
+	const itemsPerPage = writable(25); // Default to 25 rows per page
+	const searchQuery = writable('');
+	const filteredRows = writable(rows);
+
+	// Derived filtered rows based on the search query
+	$: {
+		filteredRows.set(
+			rows.filter((row) =>
+				row.some((cell) => String(cell).toLowerCase().includes($searchQuery.toLowerCase()))
+			)
+		);
 	}
+
+	// Dropdown items for pagination
+	const paginationItems = ['25 per page', '50 per page', '100 per page'];
+
+	// Total record count for the table
+	const totalRecordCount = rows.length;
 </script>
 
 <div class="flex items-center justify-between px-4 py-2 border-b">
@@ -45,45 +67,12 @@
 	</div>
 </div>
 
-<div class="bg-white shadow-md rounded overflow-hidden">
-	<div class="p-4">
-		<div class="overflow-x-auto">
-			<table class="w-full border-collapse text-left">
-				<thead>
-					<tr class="border-b">
-						<th class="py-2 px-3 w-8">
-							<input
-								type="checkbox"
-								class="form-checkbox h-4 w-4 text-gray-600"
-								bind:checked={selectAll}
-							/>
-						</th>
-						<th class="py-2 px-3">Name</th>
-						<th class="py-2 px-3">Links Created</th>
-						<th class="py-2 px-3">Views</th>
-						<th class="py-2 px-3">Owner</th>
-						<th class="py-2 px-3">Last Updated</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each documents as document, i}
-						<tr class="border-b hover:bg-gray-400">
-							<td class="py-2 px-3">
-								<input
-									type="checkbox"
-									class="form-checkbox h-4 w-4 text-gray-600"
-									bind:checked={selectedDocuments[i]}
-								/>
-							</td>
-							<td class="py-2 px-3 text-blue-500 underline">{document.name}</td>
-							<td class="py-2 px-3">{document.linksCreated}</td>
-							<td class="py-2 px-3">{document.views}</td>
-							<td class="py-2 px-3">{document.owner}</td>
-							<td class="py-2 px-3">{document.lastUpdated}</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
+<Table
+	{data}
+	{filteredRows}
+	{currentPage}
+	{itemsPerPage}
+	{paginationItems}
+	{searchQuery}
+	{totalRecordCount}
+/>
