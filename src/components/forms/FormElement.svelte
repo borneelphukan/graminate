@@ -44,9 +44,9 @@
 			{ id: 'state', label: 'State/Region', placeholder: 'Enter state/region', type: 'text' }
 		],
 		tickets: [
-			{ id: 'domainName', label: 'Company Domain Name', placeholder: 'Enter domain', type: 'text' },
-			{ id: 'ticketName', label: 'Ticket Name', placeholder: 'Enter ticket name', type: 'text' },
-			{ id: 'companyOwner', label: 'Company Owner', placeholder: 'Enter owner', type: 'text' },
+			{ id: 'ticketName', label: 'Ticket Name', placeholder: 'e.g. Name of the task', type: 'text' },
+			{ id: 'category', label: 'Work Category', placeholder: 'e.g. Your work', type: 'text' },
+			{ id: 'status', label: 'Ticket Status', placeholder: 'Ticket Status', type: 'dropdown' },
 			{ id: 'industry', label: 'Industry', placeholder: 'Enter industry', type: 'text' },
 			{ id: 'type', label: 'Type', placeholder: 'Select type', type: 'dropdown' },
 			{ id: 'city', label: 'City', placeholder: 'Enter city', type: 'text' },
@@ -61,7 +61,19 @@
 		}, {} as Record<string, string>) || {}
 	);
 
-	const typeOptions = [
+	const contactTypes = [
+		'Mandi',
+		'Trader',
+		'Cooperative',
+		'Government',
+		'Exporter',
+		'Industry',
+		'Retailer',
+		'Vendor',
+		'NGO'
+	];
+
+	const ticketStatus = [
 		'Mandi',
 		'Trader',
 		'Cooperative',
@@ -101,7 +113,7 @@
 			{#each fieldsMap[view] || [] as field}
 				{#if field.type === 'dropdown'}
 					<Dropdown
-						items={typeOptions}
+						items={contactTypes}
 						bind:selectedItem={$fieldValues[field.id]}
 						type="form"
 						label={field.label}

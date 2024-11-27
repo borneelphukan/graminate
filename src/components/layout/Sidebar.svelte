@@ -99,7 +99,7 @@
 			label: 'Library',
 			section: 'Library',
 			subItems: [
-				{ label: 'Meeting Scheduler', route: '/meeting-scheduler' },
+				{ label: 'Meeting Scheduler', route: '/meetings' },
 				{ label: 'Documents', route: '/documents' }
 			]
 		}
@@ -204,11 +204,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
 				</svg>
 			{/if}
 			{#if !isCollapsed}
@@ -220,11 +216,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
 				</svg>
 			{/if}
 		</button>

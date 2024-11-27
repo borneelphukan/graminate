@@ -2,32 +2,33 @@
 	import Table from '../../components/tables/Table.svelte';
 	import Button from '../../components/ui/Button.svelte';
 	import { writable } from 'svelte/store';
+	import MeetingModal from '../../components/modals/MeetingModal.svelte';
 
-	interface Document {
-		name: string;
-		linksCreated: number;
-		views: number;
-		owner: string;
-		lastUpdated: string;
+	interface Meeting {
+		meetingName: string;
+		organizer: string;
+		type: string;
+		duration: string;
+		platform: string;
 	}
 
-	const documents: Document[] = [
+	const meetings: Meeting[] = [
 		{
-			name: 'FarmHub.pdf',
-			linksCreated: 0,
-			views: 1,
-			owner: 'Borneel Bikash Phukan',
-			lastUpdated: 'Nov 25, 2024'
+			meetingName: 'Morning Meeting',
+			organizer: 'Borneel Bikash Phukan',
+			type: 'One-to-One',
+			duration: '30 Minutes',
+			platform: 'Google Meet'
 		}
 	];
 
-	const columns = ['Name', 'Links Created', 'Views', 'Owner', 'Last Updated'];
-	const rows = documents.map((doc) => [
-		doc.name,
-		doc.linksCreated,
-		doc.views,
-		doc.owner,
-		doc.lastUpdated
+	const columns = ['Meeting Name', 'Organizer', 'Type', 'Duration', 'Platform'];
+	const rows = meetings.map((meet) => [
+		meet.meetingName,
+		meet.organizer,
+		meet.type,
+		meet.duration,
+		meet.platform
 	]);
 
 	const data = { columns, rows };
@@ -47,14 +48,25 @@
 
 	const paginationItems = ['25 per page', '50 per page', '100 per page'];
 	const totalRecordCount = rows.length;
+
+	// Modal State
+	const isModalOpen = writable(false);
+
+	const openModal = () => {
+		isModalOpen.set(true);
+	};
+
+	const closeModal = () => {
+		isModalOpen.set(false);
+	};
 </script>
 
 <div class="flex items-center justify-between border-b mb-4">
-	<h2 class="text-lg font-bold">Document</h2>
+	<h2 class="text-lg font-bold">Meetings</h2>
 
 	<div class="flex justify-between items-center py-1 bg-white relative mb-4">
 		<div class="flex gap-2">
-			<Button text="Upload Document" style="primary" add />
+			<Button text="Create Meeting" style="primary" add on:click={openModal} />
 		</div>
 	</div>
 </div>
@@ -68,3 +80,8 @@
 	{searchQuery}
 	{totalRecordCount}
 />
+
+<!-- Render Modal -->
+{#if $isModalOpen}
+	<MeetingModal on:close={closeModal} />
+{/if}
