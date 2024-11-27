@@ -12,7 +12,7 @@
 	let lastName = 'Phukan';
 </script>
 
-<div class="py-8">
+<div class="py-6">
 	<p class="text-gray-600 pb-4 mb-6 border-b border-gray-300">
 		These preferences only apply to you.
 	</p>
