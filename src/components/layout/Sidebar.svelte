@@ -99,7 +99,7 @@
 			label: 'Library',
 			section: 'Library',
 			subItems: [
-				{ label: 'Meeting Scheduler', route: '/meeting-scheduler' },
+				{ label: 'Meeting Scheduler', route: '/meetings' },
 				{ label: 'Documents', route: '/documents' }
 			]
 		}
@@ -139,7 +139,7 @@
 						<Fa {icon} />
 					</div>
 					{#if !isCollapsed}
-						<span class="text-gray-500 font-light text-base ml-2 flex-grow">{label}</span>
+						<span class="text-gray-500 font-light text-sm ml-2 flex-grow">{label}</span>
 						{#if subItems.length > 0}
 							<div
 								class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -178,7 +178,7 @@
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
-								class="text-gray-400 text-base py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
+								class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
 								on:click={() => navigateTo(route)}
 							>
 								{label}
@@ -204,11 +204,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
 				</svg>
 			{/if}
 			{#if !isCollapsed}
@@ -220,11 +216,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
 				</svg>
 			{/if}
 		</button>

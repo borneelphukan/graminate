@@ -16,13 +16,13 @@
 	};
 
 	const toUserPreferences = () => {
-		goto('/user-preferences');
+		goto('/settings/general');
 	};
 
 	const user = {
 		name: 'Borneel Bikash Phukan',
 		email: 'borneelphukan@gmail.com',
-		imageUrl: 'https://eu.ui-avatars.com/api/?name=John+Doe&size=250'
+		imageUrl: 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'
 	};
 
 	const accountDetails = {
@@ -268,7 +268,7 @@
 										<p class="text-lg font-semibold text-gray-800">{user.name}</p>
 										<p class="text-sm text-gray-300">{user.email}</p>
 										<a
-											href="/user-preferences"
+											href="/settings/general"
 											class="text-sm font-medium text-green-600 hover:underline"
 										>
 											Profile & Preferences
