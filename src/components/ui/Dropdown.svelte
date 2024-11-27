@@ -21,7 +21,7 @@
 		dispatch('select', { item });
 	};
 
-	$: displayLabel = type === 'form' && !selectedItem ? 'Please select' : selectedItem;
+	$: displayLabel = type === 'form' && !selectedItem ? 'Please Select' : selectedItem;
 </script>
 
 <div>
@@ -39,6 +39,7 @@
 		<button
 			class="flex items-center justify-between px-4 py-2 text-sm bg-white hover:underline w-full"
 			on:click={toggleDropdown}
+			type="button"
 		>
 			{displayLabel}
 			<svg
