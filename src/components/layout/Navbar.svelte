@@ -22,7 +22,7 @@
 	const user = {
 		name: 'Borneel Bikash Phukan',
 		email: 'borneelphukan@gmail.com',
-		imageUrl: 'https://eu.ui-avatars.com/api/?name=John+Doe&size=250'
+		imageUrl: 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'
 	};
 
 	const accountDetails = {

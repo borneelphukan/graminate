@@ -139,7 +139,7 @@
 						<Fa {icon} />
 					</div>
 					{#if !isCollapsed}
-						<span class="text-gray-500 font-light text-base ml-2 flex-grow">{label}</span>
+						<span class="text-gray-500 font-light text-sm ml-2 flex-grow">{label}</span>
 						{#if subItems.length > 0}
 							<div
 								class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -178,7 +178,7 @@
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
-								class="text-gray-400 text-base py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
+								class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
 								on:click={() => navigateTo(route)}
 							>
 								{label}

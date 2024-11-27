@@ -30,7 +30,7 @@
 				<div class="flex items-center">
 					<!-- svelte-ignore a11y_img_redundant_alt -->
 					<img
-						src={'https://via.placeholder.com/50'}
+						src={'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'}
 						alt="Profile Image"
 						class="w-16 h-16 rounded-full border border-gray-400"
 					/>

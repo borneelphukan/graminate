@@ -67,7 +67,7 @@
 							<li>
 								<a
 									href={subItem.href || '#'}
-									class="block px-2 py-1 text-base text-gray-700 rounded hover:bg-gray-400"
+									class="block px-2 py-1 text-sm text-gray-700 rounded hover:bg-gray-400"
 								>
 									{subItem.label}
 								</a>
