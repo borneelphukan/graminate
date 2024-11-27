@@ -8,27 +8,33 @@
 	};
 
 	const settingsMenu: MenuItem[] = [
-		{ label: 'Your Preferences', subItems: [{ label: 'General' }, { label: 'Notifications' }] },
+		{
+			label: 'Your Preferences',
+			subItems: [
+				{ label: 'General', href: '/settings/general/' },
+				{ label: 'Notifications', href: '/settings/notifications' }
+			]
+		},
 		{
 			label: 'Account Management',
 			subItems: [
-				{ label: 'Account Defaults' },
-				{ label: 'Audit Log' },
-				{ label: 'Users & Teams' },
-				{ label: 'Tracking Code' },
-				{ label: 'Privacy & Consent' },
-				{ label: 'Security' }
+				{ label: 'Account Defaults', href: '/account/defaults' },
+				{ label: 'Audit Log', href: '/account/audit-log' },
+				{ label: 'Users & Teams', href: '/account/users-teams' },
+				{ label: 'Tracking Code', href: '/account/tracking-code' },
+				{ label: 'Privacy & Consent', href: '/account/privacy-consent' },
+				{ label: 'Security', href: '/account/security' }
 			]
 		},
 		{
 			label: 'Tools',
 			subItems: [
-				{ label: 'Meetings' },
-				{ label: 'Calling' },
-				{ label: 'Inbox' },
-				{ label: 'Marketing' },
-				{ label: 'Content' },
-				{ label: 'Payments' }
+				{ label: 'Meetings', href: '/tools/meetings' },
+				{ label: 'Calling', href: '/tools/calling' },
+				{ label: 'Inbox', href: '/tools/inbox' },
+				{ label: 'Marketing', href: '/tools/marketing' },
+				{ label: 'Content', href: '/tools/content' },
+				{ label: 'Payments', href: '/tools/payments' }
 			]
 		}
 	];
