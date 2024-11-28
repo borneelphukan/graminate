@@ -3,47 +3,55 @@
 	import { loadGoogleMaps } from '$lib/utils/loadGoogleMaps';
 
 	export let apiKey: string;
+	export let initialCenter = { lat: 26.244156, lng: 92.537842 }; // Default centre to Assam
+	export let initialZoom = 8;
+
+	export let onStateChange: (state: { center: google.maps.LatLngLiteral; zoom: number }) => void;
 
 	let mapContainer: HTMLDivElement | null = null;
+	let map: google.maps.Map | null = null;
 
 	onMount(async () => {
 		await loadGoogleMaps(apiKey);
 
 		if (navigator.geolocation) {
-			// Get the user's current location
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
 					const { latitude, longitude } = position.coords;
-
-					if (mapContainer) {
-						const map = new google.maps.Map(mapContainer, {
-							center: { lat: latitude, lng: longitude },
-							zoom: 12,
-							mapTypeControl: false,
-							fullscreenControl: false,
-							streetViewControl: false
-						});
-					}
+					initializeMap({ lat: latitude, lng: longitude }, 12);
 				},
 				(error) => {
 					console.error('Error getting location', error);
-					initializeDefaultMap();
+					initializeMap(initialCenter, initialZoom);
 				}
 			);
 		} else {
 			console.warn('Geolocation is not supported by this browser.');
-			initializeDefaultMap();
+			initializeMap(initialCenter, initialZoom);
 		}
 	});
 
-	function initializeDefaultMap() {
+	function initializeMap(center: google.maps.LatLngLiteral, zoom: number) {
 		if (mapContainer) {
-			const map = new google.maps.Map(mapContainer, {
-				center: { lat: 51.1657, lng: 10.4515 }, // Default location (Germany)
-				zoom: 6,
+			map = new google.maps.Map(mapContainer, {
+				center,
+				zoom,
 				mapTypeControl: false,
 				fullscreenControl: false,
 				streetViewControl: false
+			});
+
+			map.addListener('idle', () => {
+				if (map) {
+					const center = map.getCenter();
+					const zoom = map.getZoom();
+					if (center && zoom !== undefined && onStateChange) {
+						onStateChange({
+							center: center.toJSON(),
+							zoom: zoom
+						});
+					}
+				}
 			});
 		}
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SettingsBar from '../../components/layout/SettingsBar.svelte';
+	import Finderbar from '../../components/layout/Finderbar.svelte';
 	import NavPanel from '../../components/layout/NavPanel.svelte';
 
 	const buttons = [
@@ -20,20 +20,17 @@
 	<title>Finder</title>
 </svelte:head>
 
-<div class="flex flex-col min-h-screen">
-	<div class="flex flex-1">
-		<!-- Sidebar -->
-		<!-- <SettingsBar /> -->
+<div class="flex">
+	<Finderbar />
 
-		<!-- Main Content -->
-		<div class="flex-1 relative">
-			<div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
-				<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
-			</div>
-
-			<!-- Map Content -->
-			<slot />
+	<!-- Main Content -->
+	<div class="flex-1 relative">
+		<div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
+			<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
 		</div>
+
+		<!-- Map Content -->
+		<slot />
 	</div>
 </div>
 
