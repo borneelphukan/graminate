@@ -2,15 +2,17 @@
 	import Finderbar from '../../components/layout/Finderbar.svelte';
 	import NavPanel from '../../components/layout/NavPanel.svelte';
 
-	const buttons = [
+	type View = 'distributor' | 'supplier' | 'factories'; // Define a type for views
+
+	const buttons: { name: string; view: View }[] = [
 		{ name: 'Distributor', view: 'distributor' },
 		{ name: 'Supplier', view: 'supplier' },
 		{ name: 'Factories', view: 'factories' }
 	];
 
-	let activeView = 'distributor';
+	let activeView: View = 'distributor'; // Explicitly type activeView
 
-	const handleNavigation = (event: CustomEvent<{ view: string }>) => {
+	const handleNavigation = (event: CustomEvent<{ view: View }>) => {
 		activeView = event.detail.view;
 		console.log('Active view:', activeView);
 	};
@@ -21,7 +23,7 @@
 </svelte:head>
 
 <div class="flex">
-	<Finderbar />
+	<Finderbar {activeView} />
 
 	<!-- Main Content -->
 	<div class="flex-1 relative">
@@ -33,6 +35,3 @@
 		<slot />
 	</div>
 </div>
-
-<style>
-</style>
