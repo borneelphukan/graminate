@@ -3,7 +3,7 @@
 	export let stars: number;
 	export let address: string;
 	export let open: boolean;
-	export let imageUrl: string; // New prop for the image URL
+	export let imageUrl: string;
 
 	const renderStars = (rating: number) => {
 		const roundedRating = Math.round(rating);
@@ -13,7 +13,7 @@
 	};
 </script>
 
-<div class="max-w-md flex rounded-md shadow-md bg-white p-4 my-2">
+<div class="max-w-md flex shadow-md bg-white p-3 my-2 overflow-y-auto">
 	<div class="flex-1 flex flex-col justify-between">
 		<div>
 			<h2 class="text-lg font-semibold text-gray-800">{businessName}</h2>

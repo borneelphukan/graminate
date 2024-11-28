@@ -75,19 +75,17 @@
 		</div>
 	</div>
 
-	<div class="px-4">
-		<div class="mt-4">
-			<ul>
-				{#each businessData[activeView] as business}
-					<BusinessCard
-						businessName={business.name}
-						stars={business.stars}
-						address={business.address}
-						open={business.open}
-						imageUrl={business.imageUrl}
-					/>
-				{/each}
-			</ul>
-		</div>
+	<div class="">
+		<ul>
+			{#each businessData[activeView] as business}
+				<BusinessCard
+					businessName={business.name}
+					stars={business.stars}
+					address={business.address}
+					open={business.open}
+					imageUrl={business.imageUrl}
+				/>
+			{/each}
+		</ul>
 	</div>
 </div>

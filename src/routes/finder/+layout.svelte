@@ -2,7 +2,7 @@
 	import Finderbar from '../../components/layout/Finderbar.svelte';
 	import NavPanel from '../../components/layout/NavPanel.svelte';
 
-	type View = 'distributor' | 'supplier' | 'factories'; // Define a type for views
+	type View = 'distributor' | 'supplier' | 'factories';
 
 	const buttons: { name: string; view: View }[] = [
 		{ name: 'Distributor', view: 'distributor' },
@@ -10,7 +10,7 @@
 		{ name: 'Factories', view: 'factories' }
 	];
 
-	let activeView: View = 'distributor'; // Explicitly type activeView
+	let activeView: View = 'distributor';
 
 	const handleNavigation = (event: CustomEvent<{ view: View }>) => {
 		activeView = event.detail.view;

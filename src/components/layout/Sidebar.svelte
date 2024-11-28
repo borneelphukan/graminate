@@ -12,11 +12,13 @@
 		faAddressBook
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
+	import { onMount, onDestroy } from 'svelte';
 
 	export let isOpen: boolean;
 
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
+	let sidebarRef: HTMLDivElement;
 
 	const sections = [
 		{
@@ -108,7 +110,6 @@
 	function handleSectionChange(section: string) {
 		expandedSection = expandedSection === section ? null : section;
 	}
-
 	function toggleCollapse() {
 		isCollapsed = !isCollapsed;
 	}
@@ -116,6 +117,20 @@
 	function navigateTo(route: string) {
 		goto(route);
 	}
+
+	function handleClickOutside(event: MouseEvent) {
+		if (sidebarRef && !sidebarRef.contains(event.target as Node)) {
+			expandedSection = null; // Close any expanded section
+		}
+	}
+
+	onMount(() => {
+		document.addEventListener('click', handleClickOutside);
+	});
+
+	onDestroy(() => {
+		document.removeEventListener('click', handleClickOutside);
+	});
 </script>
 
 <div
@@ -123,6 +138,7 @@
 		? 'translate-x-0'
 		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0"
 	style="width: {isCollapsed ? '60px' : '230px'}"
+	bind:this={sidebarRef}
 >
 	<nav class="space-y-2 flex flex-col relative">
 		{#each sections as { icon, label, section, route, subItems }}
