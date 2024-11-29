@@ -48,7 +48,7 @@
 
 <div class="w-72 px-4 bg-gray-50 text-gray-800 border-r border-gray-400 min-h-screen -m-6">
 	<!-- Back Button -->
-	<div class="flex items-center pt-8">
+	<div class="flex items-center pt-4">
 		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
 

@@ -52,9 +52,9 @@
 		},
 		{
 			icon: faChartPie,
-			label: 'Content',
-			section: 'Content',
-			route: '/content',
+			label: 'Finder',
+			section: 'Finder',
+			route: '/finder',
 			subItems: []
 		},
 		{
