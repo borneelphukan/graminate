@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SettingsBar from '../../components/layout/SettingsBar.svelte';
+	import SettingsBar from '../../../components/layout/SettingsBar.svelte';
 </script>
 
 <svelte:head>

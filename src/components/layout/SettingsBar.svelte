@@ -11,8 +11,8 @@
 		{
 			label: 'Your Preferences',
 			subItems: [
-				{ label: 'General', href: '/settings/general/' },
-				{ label: 'Notifications', href: '/settings/notifications' }
+				{ label: 'General', href: '/platform/settings/general/' },
+				{ label: 'Notifications', href: '/platform/settings/notifications' }
 			]
 		},
 		{

@@ -8,7 +8,6 @@
 		faDatabase,
 		faShapes,
 		faWallet,
-		faBullhorn,
 		faAddressBook
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
@@ -23,7 +22,7 @@
 			icon: faHome,
 			label: 'Dashboard',
 			section: 'Dashboard',
-			route: '/dashboard',
+			route: '/platform/dashboard',
 			subItems: []
 		},
 		{
@@ -31,30 +30,17 @@
 			label: 'CRM',
 			section: 'CRM',
 			subItems: [
-				{ label: 'Contacts', route: '/contacts' },
-				{ label: 'Companies', route: '/contacts?view=companies' },
-				{ label: 'Deals', route: '/contacts?view=deals' },
-				{ label: 'Tickets', route: '/contacts?view=tickets' }
-			]
-		},
-		{
-			icon: faBullhorn,
-			label: 'Marketing',
-			section: 'Marketing',
-			subItems: [
-				{ label: 'Campaigns', route: '/' },
-				{ label: 'Email', route: '/' },
-				{ label: 'Social', route: '/social' },
-				{ label: 'Ads', route: '/' },
-				{ label: 'Forms', route: '/' },
-				{ label: 'Buyer Intent', route: '/buyer-intent' }
+				{ label: 'Contacts', route: '/platform/contacts' },
+				{ label: 'Companies', route: '/platform/contacts?view=companies' },
+				{ label: 'Deals', route: '/platform/contacts?view=deals' },
+				{ label: 'Tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},
 		{
 			icon: faChartPie,
 			label: 'Finder',
 			section: 'Finder',
-			route: '/finder',
+			route: '/platform/finder',
 			subItems: []
 		},
 		{
@@ -62,22 +48,22 @@
 			label: 'Commerce',
 			section: 'Commerce',
 			subItems: [
-				{ label: 'Overview', route: '/overview' },
-				{ label: 'Payments', route: '/payments' },
-				{ label: 'Invoices', route: '/contacts?view=invoices' },
-				{ label: 'Payment Links', route: '/payment-links' },
-				{ label: 'Quotes', route: '/quotes' },
-				{ label: 'Products', route: '/products' },
-				{ label: 'Subscriptions', route: '/subscriptions' }
+				{ label: 'Overview', route: '/platform/overview' },
+				{ label: 'Payments', route: '/platform/payments' },
+				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
+				{ label: 'Payment Links', route: '/platform/payment-links' },
+				{ label: 'Quotes', route: '/platform/quotes' },
+				{ label: 'Products', route: '/platform/products' },
+				{ label: 'Subscriptions', route: '/platform/subscriptions' }
 			]
 		},
-		{
-			icon: faShapes,
-			label: 'Automations',
-			section: 'Automations',
-			route: '/automations',
-			subItems: []
-		},
+		// {
+		// 	icon: faShapes,
+		// 	label: 'Automations',
+		// 	section: 'Automations',
+		// 	route: '/platform/automations',
+		// 	subItems: []
+		// },
 		{
 			icon: faChartLine,
 			label: 'Trends',
@@ -91,7 +77,7 @@
 			icon: faDatabase,
 			label: 'Data Management',
 			section: 'Data Management',
-			route: '/data-management',
+			route: '/platform/data-management',
 			subItems: []
 		},
 		{
@@ -99,8 +85,8 @@
 			label: 'Library',
 			section: 'Library',
 			subItems: [
-				{ label: 'Meeting Scheduler', route: '/meetings' },
-				{ label: 'Documents', route: '/documents' }
+				{ label: 'Meeting Scheduler', route: '/platform/meetings' },
+				{ label: 'Documents', route: '/platform/documents' }
 			]
 		}
 	];

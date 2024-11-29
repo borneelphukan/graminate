@@ -16,7 +16,7 @@
 	};
 
 	const toUserPreferences = () => {
-		goto('/settings/general');
+		goto('/platform/settings/general');
 	};
 
 	const user = {
@@ -268,7 +268,7 @@
 										<p class="text-lg font-semibold text-gray-800">{user.name}</p>
 										<p class="text-sm text-gray-300">{user.email}</p>
 										<a
-											href="/settings/general"
+											href="/platform/settings/general"
 											class="text-sm font-medium text-green-600 hover:underline"
 										>
 											Profile & Preferences
@@ -363,7 +363,7 @@
 							<div
 								class="flex items-center justify-between px-4 py-3 text-sm text-gray-600 border-t border-gray-300"
 							>
-								<a href="/signout" class="hover:underline">Sign out</a>
+								<a href="/" class="hover:underline">Sign out</a>
 								<a href="/privacy-policy" class="hover:underline">Privacy policy</a>
 							</div>
 						</div>

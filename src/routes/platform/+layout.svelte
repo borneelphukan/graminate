@@ -1,7 +1,7 @@
 <script lang="ts">
-	import '../app.css';
-	import Sidebar from '../components/layout/Sidebar.svelte';
-	import Navbar from '../components/layout/Navbar.svelte';
+	import Navbar from '../../components/layout/Navbar.svelte';
+	import Sidebar from '../../components/layout/Sidebar.svelte';
+	import '../../app.css';
 
 	let isOpen = false;
 	function handleSectionChange(event: CustomEvent<string>) {
