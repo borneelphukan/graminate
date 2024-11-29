@@ -2,11 +2,11 @@
 	import Finderbar from '../../components/layout/Finderbar.svelte';
 	import NavPanel from '../../components/layout/NavPanel.svelte';
 
-	type View = 'distributor' | 'supplier' | 'factories';
+	type View = 'distributor' | 'exporter' | 'factories';
 
 	const buttons: { name: string; view: View }[] = [
 		{ name: 'Distributor', view: 'distributor' },
-		{ name: 'Supplier', view: 'supplier' },
+		{ name: 'Exporter', view: 'exporter' },
 		{ name: 'Factories', view: 'factories' }
 	];
 
@@ -22,16 +22,20 @@
 	<title>Finder</title>
 </svelte:head>
 
-<div class="flex">
-	<Finderbar {activeView} />
-
-	<!-- Main Content -->
-	<div class="flex-1 relative">
-		<div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
-			<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
-		</div>
-
-		<!-- Map Content -->
+<!-- Fullscreen layout -->
+<div class="relative h-screen">
+	<!-- Map Content -->
+	<div class="absolute inset-0">
 		<slot />
+	</div>
+
+	<!-- Floating Finderbar -->
+	<div class="absolute top-0 left-0 h-screen w-72 shadow-lg z-30">
+		<Finderbar {activeView} />
+	</div>
+
+	<!-- Floating NavPanel -->
+	<div class="absolute top-4 left-1/2 transform -translate-x-1/2">
+		<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
 	</div>
 </div>

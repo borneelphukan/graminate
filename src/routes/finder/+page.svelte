@@ -14,6 +14,7 @@
 	}
 </script>
 
+<!-- Fullscreen Map -->
 <Maps
 	{apiKey}
 	initialCenter={mapState.center}

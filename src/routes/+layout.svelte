@@ -21,7 +21,7 @@
 		<Sidebar {isOpen} on:onSectionChange={handleSectionChange} />
 
 		<!-- Main Content -->
-		<div class="flex-1 p-6">
+		<div class="flex-1">
 			<slot />
 		</div>
 	</div>

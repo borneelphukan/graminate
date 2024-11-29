@@ -13,17 +13,17 @@
 	};
 </script>
 
-<div class="max-w-md flex shadow-md bg-white p-3 my-2 overflow-y-auto">
+<div class="max-w-md flex shadow-md bg-white p-3 my-0.5 overflow-y-auto">
 	<div class="flex-1 flex flex-col justify-between">
 		<div>
 			<h2 class="text-lg font-semibold text-gray-800">{businessName}</h2>
 			<div class="flex items-center">
-				<div class="flex space-x-1 text-yellow-500">
+				<div class="flex text-yellow-500">
 					{#each renderStars(stars) as star}
 						<span>{star}</span>
 					{/each}
 				</div>
-				<span class="text-sm text-gray-600 ml-2">({stars.toFixed(1)})</span>
+				<span class="text-sm text-gray-600 ml-1">({stars.toFixed(1)})</span>
 			</div>
 			<p class="text-gray-700 text-sm">{address}</p>
 			<div class="text-sm font-medium">
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="w-24 h-24 ml-2">
+	<div>
 		<img src={imageUrl} alt={businessName} class="w-full h-full object-cover rounded-md" />
 	</div>
 </div>
