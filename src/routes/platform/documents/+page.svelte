@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Table from '../../components/tables/Table.svelte';
-	import Button from '../../components/ui/Button.svelte';
 	import { writable } from 'svelte/store';
+	import Table from '../../../components/tables/Table.svelte';
+	import Button from '../../../components/ui/Button.svelte';
 
 	interface Document {
 		name: string;

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import Dropdown from '../../../components/ui/Dropdown.svelte';
-	import TextField from '../../../components/ui/TextField.svelte';
+	import Dropdown from '../../../../components/ui/Dropdown.svelte';
+	import TextField from '../../../../components/ui/TextField.svelte';
+
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'German', 'French', 'Spanish'];
 	let countries = ['India', 'Bangladesh', 'Myanmar', 'Thailand', 'Pakistan'];

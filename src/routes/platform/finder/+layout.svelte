@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Finderbar from '../../components/layout/Finderbar.svelte';
-	import NavPanel from '../../components/layout/NavPanel.svelte';
+	import Finderbar from '../../../components/layout/Finderbar.svelte';
+	import NavPanel from '../../../components/layout/NavPanel.svelte';
 
 	type View = 'distributor' | 'exporter' | 'factories';
 
@@ -30,7 +30,7 @@
 	</div>
 
 	<!-- Floating Finderbar -->
-	<div class="absolute top-0 left-0 h-screen w-72 shadow-lg z-30">
+	<div class="absolute top-0 left-0 h-screen w-72 z-30">
 		<Finderbar {activeView} />
 	</div>
 

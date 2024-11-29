@@ -1,8 +1,8 @@
 <script lang="ts">
-	import NavPanel from '../../../components/layout/NavPanel.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { derived } from 'svelte/store';
+	import NavPanel from '../../../../components/layout/NavPanel.svelte';
 
 	const navButtons = [
 		{ name: 'Profile', view: 'profile' },
