@@ -4,6 +4,7 @@
 	export let address: string;
 	export let open: boolean;
 	export let imageUrl: string;
+	export let price: number;
 
 	const renderStars = (rating: number) => {
 		const roundedRating = Math.round(rating);
@@ -26,6 +27,7 @@
 				<span class="text-sm text-gray-600 ml-1">({stars.toFixed(1)})</span>
 			</div>
 			<p class="text-gray-700 text-sm">{address}</p>
+			<p class="text-gray-700 text-sm">Selling Price: <span class="font-bold">₹{price}/kg</span></p>
 			<div class="text-sm font-medium">
 				{#if open}
 					<span class="text-green-500">Open</span>
