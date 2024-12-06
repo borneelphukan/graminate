@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Button from '../ui/Button.svelte';
 	import BusinessCard from '../cards/BusinessCard.svelte';
 	import { onMount } from 'svelte';
 
@@ -30,7 +29,7 @@
 				address: 'Kolkata, West Bengal',
 				open: false,
 				imageUrl: 'https://via.placeholder.com/100',
-				price: 56
+				price: 25
 			},
 			{
 				name: 'Basundhara Tea',
@@ -38,7 +37,7 @@
 				address: 'Sonitpur, Assam',
 				open: false,
 				imageUrl: 'https://via.placeholder.com/100',
-				price: 56
+				price: 45
 			},
 			{
 				name: 'Assamica Agro',
@@ -46,7 +45,7 @@
 				address: 'Assam, India',
 				open: false,
 				imageUrl: 'https://via.placeholder.com/100',
-				price: 56
+				price: 65
 			}
 		],
 		exporter: [
