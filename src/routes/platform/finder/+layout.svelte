@@ -14,7 +14,6 @@
 
 	const handleNavigation = (event: CustomEvent<{ view: View }>) => {
 		activeView = event.detail.view;
-		console.log('Active view:', activeView);
 	};
 </script>
 
@@ -22,20 +21,19 @@
 	<title>Finder</title>
 </svelte:head>
 
-<!-- Fullscreen layout -->
 <div class="relative h-screen">
 	<!-- Map Content -->
 	<div class="absolute inset-0">
 		<slot />
 	</div>
 
-	<!-- Floating Finderbar -->
-	<div class="absolute top-0 left-0 h-screen w-72 z-30">
+	<!-- Finderbar (responsive for larger screens) -->
+	<div class="absolute top-12 left-0 h-[calc(100%-4rem)] w-64 z-30 hidden lg:block">
 		<Finderbar {activeView} />
 	</div>
 
-	<!-- Floating NavPanel -->
-	<div class="absolute top-4 left-1/2 transform -translate-x-1/2">
+	<!-- NavPanel (responsive) -->
+	<div class="absolute top-2 left-2 w-72 sm:w-96 z-40">
 		<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
 	</div>
 </div>

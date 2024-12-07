@@ -36,6 +36,7 @@
 		"@fortawesome/fontawesome-svg-core": "^6.6.0",
 		"@fortawesome/free-solid-svg-icons": "^6.6.0",
 		"@types/google.maps": "^3.58.1",
+		"chart.js": "^4.4.7",
 		"svelte-fa": "^4.0.3"
 	}
 }

@@ -40,7 +40,7 @@
 <main class="min-h-screen text-white relative">
 	<!-- Dashboard Header -->
 	<header class=" px-6 py-4">
-		<h1 class="text-3xl font-bold text-gray-100">Dashboard</h1>
+		<h1 class="text-3xl font-bold text-gray-100">Weather</h1>
 		<hr class="mt-4 border-gray-600" />
 	</header>
 

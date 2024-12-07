@@ -7,7 +7,7 @@
 	export let debug: boolean = false;
 	export let lat: number | null = null;
 	export let lon: number | null = null;
-	export let city: string = 'FarmHub HQ';
+	export let city: string = 'Tinsukia';
 	export let currentTemp: number = 5;
 	export let weatherDescription: string = 'Cloudy';
 	export let highTemp: number = 6;
@@ -100,13 +100,14 @@
 </script>
 
 <div
-	class="max-w-md mx-auto p-6 bg-gradient-to-br from-gray-500 to-gray-400 text-gray-100 rounded-lg shadow-lg"
+	class="relative max-w-md mx-auto p-6 bg-gradient-to-br from-gray-500 to-gray-400 text-gray-100 rounded-lg shadow-lg"
 >
-	<div class="absolute top-4 right-4">
+	<!-- Dropdown Menu -->
+	<div class="absolute top-2 right-2">
 		<div class="relative">
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<div class="dot-button pb-4" on:click={() => (dropdownOpen = !dropdownOpen)}>
+			<div class="dot-button" on:click={() => (dropdownOpen = !dropdownOpen)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -127,26 +128,17 @@
 				<div class="dropdown-menu">
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div
-						class="cursor-pointer hover:bg-gray-700 px-4 py-2"
-						on:click={() => changeView('Large')}
-					>
+					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Large')}>
 						Large
 					</div>
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="cursor-pointer hover:bg-gray-700 px-4 py-2"
-						on:click={() => changeView('Medium')}
-					>
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Medium')}>
 						Medium
 					</div>
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="cursor-pointer hover:bg-gray-700 px-4 py-2"
-						on:click={() => changeView('Small')}
-					>
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Small')}>
 						Small
 					</div>
 				</div>
@@ -161,26 +153,25 @@
 			<div class="flex items-center justify-between">
 				<!-- City and Current Temperature -->
 				<div class="flex flex-col">
-					<h2 class="text-xl font-bold">{city}</h2>
-					<p class="text-5xl font-bold">{currentTemp}°</p>
+					<h2 class="text-xl font-bold break-normal">{city}</h2>
+					<p class="text-5xl font-bold">{currentTemp}°C</p>
 				</div>
 
 				<!-- Weather Description and High/Low Temperatures -->
 				<div class="flex flex-col items-end">
-					<p class="text-sm capitalize">{weatherDescription}</p>
-					<p class="text-sm">H:{highTemp}° L:{lowTemp}°</p>
+					<p class="text-sm capitalize"><span class="px-2 text-2xl my-auto flex-col items-center">☁️</span>{weatherDescription}</p>
+					<p class="text-sm">H:{highTemp}°C L:{lowTemp}°C</p>
 				</div>
 			</div>
 		{/if}
 
 		<!-- Hourly Forecast -->
-		<hr class="my-4 border-gray-600" />
 		{#if view === 'Large' || view === 'Medium'}
 			<div class="flex space-x-4 overflow-x-auto py-2">
 				{#each hourlyForecast as hour}
 					<div class="text-center flex-shrink-0">
 						<p class="text-sm">{hour.time}:00</p>
-						<p class="text-lg font-semibold">{hour.temp}°</p>
+						<p class="text-lg font-semibold">{hour.temp}°C</p>
 					</div>
 				{/each}
 			</div>
@@ -189,6 +180,7 @@
 		<!-- Daily Forecast -->
 		{#if view === 'Large'}
 			<div>
+				<hr class="my-4 border-gray-600" />
 				{#each dailyForecast as day}
 					<div class="flex items-center justify-between py-1">
 						<div class="flex items-center space-x-4">
@@ -196,14 +188,14 @@
 							<span>{day.icon}</span>
 						</div>
 						<div class="flex space-x-2 items-center">
-							<p class="text-sm">{day.min}°</p>
+							<p class="text-sm">{day.min}°C</p>
 							<div class="h-2 w-24 bg-gray-700 rounded-full">
 								<div
 									class="h-2 bg-blue-500 rounded-full"
 									style="width: calc({(day.max - day.min) / 10} * 100%)"
 								></div>
 							</div>
-							<p class="text-sm">{day.max}°</p>
+							<p class="text-sm">{day.max}°C</p>
 						</div>
 					</div>
 				{/each}
@@ -212,12 +204,12 @@
 
 		<!-- Small View -->
 		{#if view === 'Small'}
-			<div class="flex flex-col space-y-2">
+			<div class="flex flex-col space-y-1">
 				<!-- City -->
-				<h2 class="text-xl font-bold">{city}</h2>
+				<h2 class="text-xl font-bold break-words">{city}</h2>
 
 				<!-- Current Temperature -->
-				<p class="text-5xl font-bold">{currentTemp}°</p>
+				<p class="text-5xl font-bold">{currentTemp}°C</p>
 
 				<!-- Weather Icon and Description -->
 				<div class="flex items-center space-x-2">
@@ -225,7 +217,7 @@
 					<!-- Placeholder icon -->
 					<div>
 						<p class="text-sm capitalize">{weatherDescription}</p>
-						<p class="text-sm">H:{highTemp}° L:{lowTemp}°</p>
+						<p class="text-sm">H:{highTemp}°C L:{lowTemp}°C</p>
 					</div>
 				</div>
 			</div>
@@ -235,7 +227,7 @@
 
 <style>
 	.dropdown-menu {
-		@apply absolute top-4 right-2 bg-gray-800 text-white rounded w-36 p-2 z-50;
+		@apply absolute top-4 right-2 bg-gray-800 text-white rounded w-52 p-2 z-50;
 	}
 	.dot-button {
 		@apply cursor-pointer w-6 h-6 flex items-center justify-center;

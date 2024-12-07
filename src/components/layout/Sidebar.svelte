@@ -5,9 +5,9 @@
 		faChartPie,
 		faChartLine,
 		faFolder,
-		faDatabase,
 		faWallet,
-		faAddressBook
+		faAddressBook,
+		faCloud
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -22,7 +22,7 @@
 			icon: faHome,
 			label: 'Dashboard',
 			section: 'Dashboard',
-			route: '/platform/dashboard',
+			route: '/platform',
 			subItems: []
 		},
 		{
@@ -74,10 +74,10 @@
 			]
 		},
 		{
-			icon: faDatabase,
-			label: 'Data Management',
-			section: 'Data Management',
-			route: '/platform/data-management',
+			icon: faCloud,
+			label: 'Weather Monitor',
+			section: 'Weather Monitor',
+			route: '/platform/weather',
 			subItems: []
 		},
 		{
