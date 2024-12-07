@@ -6,11 +6,11 @@
 		faChartLine,
 		faFolder,
 		faDatabase,
-		faShapes,
 		faWallet,
 		faAddressBook
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let isOpen: boolean;
 
@@ -91,6 +91,10 @@
 		}
 	];
 
+	function navigateTo(route: string) {
+		goto(route);
+	}
+
 	function handleSectionChange(section: string) {
 		expandedSection = expandedSection === section ? null : section;
 	}
@@ -99,15 +103,36 @@
 		isCollapsed = !isCollapsed;
 	}
 
-	function navigateTo(route: string) {
-		goto(route);
+	function closeSubMenu() {
+		expandedSection = null;
 	}
+
+	// Close submenu on outside click
+	onMount(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			const sidebar = document.querySelector('.sidebar');
+			const navbar = document.querySelector('.navbar');
+
+			if (
+				(!sidebar || !sidebar.contains(event.target as Node)) &&
+				(!navbar || !navbar.contains(event.target as Node))
+			) {
+				closeSubMenu();
+			}
+		};
+
+		document.addEventListener('click', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	});
 </script>
 
 <div
 	class="fixed py-3 inset-y-0 left-0 bg-gray-800 shadow-lg transform lg:translate-x-0 {isOpen
 		? 'translate-x-0'
-		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0"
+		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0 sidebar"
 	style="width: {isCollapsed ? '60px' : '230px'}"
 >
 	<nav class="space-y-2 flex flex-col relative">
@@ -144,9 +169,9 @@
 									<path
 										id="XMLID_222_"
 										d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
-                c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
-                C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
-                C255,161.018,253.42,157.202,250.606,154.389z"
+                        c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+                        C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+                        C255,161.018,253.42,157.202,250.606,154.389z"
 									/>
 								</svg>
 							</div>
@@ -175,6 +200,7 @@
 			</div>
 		{/each}
 	</nav>
+
 	<!-- Back Button -->
 	<div class="absolute bottom-4 right-4">
 		<button

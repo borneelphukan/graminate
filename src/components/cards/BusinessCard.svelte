@@ -14,7 +14,9 @@
 	};
 </script>
 
-<div class="max-w-md flex shadow-md bg-white p-3 my-0.5 overflow-y-auto">
+<div
+	class="max-w-md flex shadow-md bg-white hover:bg-gray-50 focus:bg-gray-50 p-3 my-0.5 overflow-y-auto"
+>
 	<div class="flex-1 flex flex-col justify-between">
 		<div>
 			<h2 class="text-lg font-semibold text-gray-800">{businessName}</h2>
