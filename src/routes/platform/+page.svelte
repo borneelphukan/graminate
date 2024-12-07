@@ -16,7 +16,7 @@
 		'Routine Maintainance',
 		'Harvest'
 	];
-	let currentStep = 3;
+	let currentStep = 4;
 
 	onMount(() => {
 		getCurrentLocation()
