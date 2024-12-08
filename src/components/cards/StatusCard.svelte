@@ -3,41 +3,42 @@
 	import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
 	import NavPanel from '../layout/NavPanel.svelte';
 
+	export let lastWatered: string = '01.12.2024';
+	export let nextWateringDate: string = '11.12.2024';
+	export let lastPesticideDone: string = '02.12.2024';
+	export let nextPesticideDate: string = '07.12.2024';
+	export let lastFertilizingDone: string = '03.12.2024';
+	export let nextManuringDate: string = '10.12.2024';
+
 	Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
-	export let visible: boolean = false;
-
 	let chart: Chart | null = null;
-	let activeView: string = 'Watering';
+	let activeView: string = 'Irrigation';
 
-	// Button data for the NavPanel
 	const buttons = [
-		{ name: 'Watering', view: 'Watering' },
+		{ name: 'Irrigation', view: 'Irrigation' },
 		{ name: 'Pesticide', view: 'Pesticide' },
-		{ name: 'Fertilizers', view: 'Fertilizers' }
+		{ name: 'Manuring', view: 'Manuring' }
 	];
 
-	// Chart data with days left and descriptions
-	const chartData: Record<
-		string,
-		{ data: number[]; backgroundColor: string[]; daysLeftText: string }
-	> = {
-		Watering: {
-			data: [90, 10],
-			backgroundColor: ['#3B82F6', '#E5E7EB'], // Blue and gray
-			daysLeftText: '10 days left for Watering'
-		},
-		Pesticide: {
-			data: [30, 70],
-			backgroundColor: ['#EF4444', '#E5E7EB'],
-			daysLeftText: '5 days left for Pest control'
-		},
-		Fertilizers: {
-			data: [50, 50],
-			backgroundColor: ['#F59E0B', '#E5E7EB'], // Yellow and gray
-			daysLeftText: '7 days left for Manuring'
-		}
-	};
+	const chartData: Record<string, { data: number[]; backgroundColor: string[]; daysLeft: number }> =
+		{
+			Irrigation: {
+				data: [90, 10],
+				backgroundColor: ['#3B82F6', '#E5E7EB'],
+				daysLeft: 10
+			},
+			Pesticide: {
+				data: [30, 70],
+				backgroundColor: ['#EF4444', '#E5E7EB'],
+				daysLeft: 5
+			},
+			Manuring: {
+				data: [50, 50],
+				backgroundColor: ['#F59E0B', '#E5E7EB'],
+				daysLeft: 7
+			}
+		};
 
 	function updateChart() {
 		if (chart) {
@@ -51,7 +52,6 @@
 	onMount(() => {
 		const ctx = document.getElementById('status-doughnut') as HTMLCanvasElement;
 
-		// Initialize chart
 		chart = new Chart(ctx, {
 			type: 'doughnut',
 			data: {
@@ -68,7 +68,7 @@
 				plugins: {
 					tooltip: {
 						callbacks: {
-							label: () => chartData[activeView].daysLeftText // Display formatted days left
+							label: () => `${chartData[activeView].daysLeft} Days Remaining`
 						}
 					},
 					legend: {
@@ -82,7 +82,6 @@
 		});
 	});
 
-	// Clean up the chart on destroy
 	onDestroy(() => {
 		if (chart) {
 			chart.destroy();
@@ -96,16 +95,39 @@
 	}
 </script>
 
-{#if visible}
-	<div
-		class="bg-white bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 w-1/2 text-gray-800"
-	>
-		<!-- NavPanel -->
-		<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
+<div
+	class="bg-white bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 text-gray-800"
+>
+	<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
 
-		<!-- Doughnut Chart -->
-		<div class="relative flex justify-center h-48 mt-6">
+	<div class="flex flex-col items-center">
+		<div class="text-left w-full my-3">
+			{#if activeView === 'Irrigation'}
+				<p class="text-gray-100">
+					Last Irrigation: <span class="font-extralight">{lastWatered}</span>
+				</p>
+				<p class="text-gray-100">
+					Next Irrigation: <span class="font-extralight">{nextWateringDate}</span>
+				</p>
+			{:else if activeView === 'Pesticide'}
+				<p class="text-gray-100">
+					Last Pesticide: <span class="font-extralight">{lastPesticideDone}</span>
+				</p>
+				<p class="text-gray-100">
+					Next Pesticide: <span class="font-extralight">{nextPesticideDate}</span>
+				</p>
+			{:else if activeView === 'Manuring'}
+				<p class="text-gray-100">
+					Last Manuring: <span class="font-extralight">{lastFertilizingDone}</span>
+				</p>
+				<p class="text-gray-100">
+					Next Manuring: <span class="font-extralight">{nextManuringDate}</span>
+				</p>
+			{/if}
+		</div>
+
+		<div class="relative flex justify-center w-40 h-40">
 			<canvas id="status-doughnut"></canvas>
 		</div>
 	</div>
-{/if}
+</div>

@@ -4,6 +4,7 @@
 	import StatusCard from '../../components/cards/StatusCard.svelte';
 	import { onMount } from 'svelte';
 	import Loader from '../../components/ui/Loader.svelte';
+	import Calendar from '../../components/ui/Calendar.svelte';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
@@ -70,8 +71,22 @@
 				<div class="flex-grow">
 					<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
 					<ProgressCard {steps} {currentStep} />
-					<div class="mt-6">
-						<StatusCard visible={currentStep === 4} />
+					<div class="mt-6 grid grid-cols-2 gap-6">
+						<!-- StatusCard -->
+						<div>
+							<StatusCard
+								lastWatered="01.12.2024"
+								nextWateringDate="11.12.2024"
+								lastPesticideDone="02.12.2024"
+								nextPesticideDate="07.12.2024"
+								lastFertilizingDone="03.12.2024"
+								nextManuringDate="10.12.2024"
+							/>
+						</div>
+						<!-- Calendar Component -->
+						<div>
+							<Calendar />
+						</div>
 					</div>
 				</div>
 			</div>
