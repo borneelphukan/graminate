@@ -28,20 +28,13 @@
 
 	function handleDateChange(date: Date | undefined) {
 		if (date) {
-			selectedDate.set(date);
+			selectedDate.set(date); // Set the selected date directly
 
-			// Remove day for non-current dates
-			if (!isToday(selectedDate)) {
-				const selected = get(selectedDate);
-				selected.setDate(1);
-				selectedDate.set(selected);
-			}
-
+			// Show tasks for the selected date
 			showTasks = true;
 			showAddTask = false;
 		}
 	}
-
 	let isTaskNameValid = true;
 
 	function addTask() {
@@ -174,14 +167,24 @@
 		showAddTask = false;
 	}
 
-	function isToday(date: typeof selectedDate): boolean {
+	function getDayStatus(date: typeof selectedDate): string {
 		const today = new Date();
 		const selected = get(date);
-		return (
-			today.getFullYear() === selected.getFullYear() &&
-			today.getMonth() === selected.getMonth() &&
-			today.getDate() === selected.getDate()
-		);
+
+		// Normalize today's date
+		const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+		// Calculate tomorrow's date
+		const tomorrowDateOnly = new Date(todayDateOnly);
+		tomorrowDateOnly.setDate(todayDateOnly.getDate() + 1);
+
+		if (selected.getTime() === todayDateOnly.getTime()) {
+			return 'Today';
+		} else if (selected.getTime() === tomorrowDateOnly.getTime()) {
+			return 'Tomorrow';
+		}
+
+		return selected.toDateString();
 	}
 </script>
 
@@ -193,7 +196,7 @@
 
 		<h3 class="text-lg font-bold mb-4">
 			Add Task for
-			{#if isToday(selectedDate)}
+			{#if getDayStatus(selectedDate)}
 				today
 			{:else}
 				{get(selectedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
@@ -239,7 +242,7 @@
 		</div>
 	{:else if showTasks}
 		<!-- Task List -->
-		<h3 class="text-lg font-bold mb-4">Tasks for {get(selectedDate).toDateString()}</h3>
+		<h3 class="text-lg font-bold mb-4">Tasks for {getDayStatus(selectedDate)}</h3>
 		<ul class="list-disc pl-5 space-y-2">
 			{#each get(tasks)[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
 				<li class="flex items-center justify-between">
@@ -264,7 +267,7 @@
 			{/each}
 		</ul>
 		{#if !(get(tasks)[get(selectedDate).toISOString().split('T')[0]] || []).length}
-			<p>No tasks for this date.</p>
+			<p>Task list Empty</p>
 		{/if}
 		<div class="mt-4 flex space-x-4">
 			<!-- svelte-ignore a11y_consider_explicit_label -->
