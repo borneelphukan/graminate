@@ -96,12 +96,13 @@
 </script>
 
 <div
-	class="bg-white bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 text-gray-800"
+	class="bg-white bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
 >
 	<NavPanel {buttons} {activeView} on:navigate={handleNavigation} />
 
-	<div class="flex flex-col items-center">
-		<div class="text-left w-full my-3">
+	<div class="flex flex-col items-center sm:items-center md:items-start">
+		<!-- Irrigation, Pesticide, Manuring -->
+		<div class="text-center w-full sm:mt-3">
 			{#if activeView === 'Irrigation'}
 				<p class="text-gray-100">
 					Last Irrigation: <span class="font-extralight">{lastWatered}</span>
@@ -126,7 +127,8 @@
 			{/if}
 		</div>
 
-		<div class="relative flex justify-center w-40 h-40">
+		<!-- Canvas -->
+		<div class="relative mx-auto flex justify-center w-40 h-40 md:mt-6 sm:my-3">
 			<canvas id="status-doughnut"></canvas>
 		</div>
 	</div>

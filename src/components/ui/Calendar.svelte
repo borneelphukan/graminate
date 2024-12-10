@@ -3,18 +3,30 @@
 
 	import ClockPicker from './ClockPicker.svelte';
 	import TextField from './TextField.svelte';
+
 	let isClockVisible = false;
 
 	type Task = { name: string; time: string };
 	type Tasks = { [key: string]: Task[] };
 
-	const tasks = writable<Tasks>(JSON.parse(localStorage.getItem('tasks') || '{}'));
+	// Initialize tasks with a writable store
+	const tasks = writable<Tasks>({});
 
-	// Subscribe to the store and save changes to localStorage
-	tasks.subscribe((value) => {
-		console.log('Updated Tasks:', value);
-		localStorage.setItem('tasks', JSON.stringify(value));
-	});
+	// Check if running in the browser
+	const isBrowser = typeof window !== 'undefined';
+
+	if (isBrowser) {
+		// Load tasks from localStorage
+		const storedTasks = localStorage.getItem('tasks');
+		if (storedTasks) {
+			tasks.set(JSON.parse(storedTasks));
+		}
+
+		// Subscribe to the store and save changes to localStorage
+		tasks.subscribe((value) => {
+			localStorage.setItem('tasks', JSON.stringify(value));
+		});
+	}
 
 	const selectedDate = writable<Date>(new Date());
 	let newTask = '';
@@ -35,6 +47,7 @@
 			showAddTask = false;
 		}
 	}
+
 	let isTaskNameValid = true;
 
 	function addTask() {
@@ -61,6 +74,7 @@
 				t[dateKey] = [];
 			}
 			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
+
 			// Sort tasks by time
 			t[dateKey].sort((a, b) => {
 				const timeA = convertTo24Hour(a.time);
@@ -80,21 +94,14 @@
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
-		console.log('Before Update:', get(tasks));
 		tasks.update((t) => {
-			const updated = { ...t };
-			if (updated[dateKey]) {
-				const tasksForDate = [...updated[dateKey]];
-				tasksForDate.splice(index, 1);
-				if (tasksForDate.length === 0) {
-					console.log(`Deleting dateKey: ${dateKey}`);
-					delete updated[dateKey];
-				} else {
-					updated[dateKey] = tasksForDate;
+			if (t[dateKey]) {
+				t[dateKey].splice(index, 1);
+				if (t[dateKey].length === 0) {
+					delete t[dateKey];
 				}
 			}
-			console.log('After Update:', updated);
-			return updated;
+			return t;
 		});
 	}
 
@@ -166,7 +173,6 @@
 		showTasks = false;
 		showAddTask = false;
 	}
-
 	function getDayStatus(date: typeof selectedDate): string {
 		const today = new Date();
 		const selected = get(date);
@@ -187,6 +193,8 @@
 		return selected.toDateString();
 	}
 </script>
+
+<!-- Rest of your Calendar markup remains the same -->
 
 <div
 	class="bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 w-full text-gray-200 relative"
