@@ -1,18 +1,24 @@
 <script lang="ts">
 	import { writable, get } from 'svelte/store';
 
-	type Tasks = { [key: string]: string[] };
+	import ClockPicker from './ClockPicker.svelte';
+	import TextField from './TextField.svelte';
+	let isClockVisible = false;
 
-	// Load tasks from localStorage or initialize with an empty object
+	type Task = { name: string; time: string };
+	type Tasks = { [key: string]: Task[] };
+
 	const tasks = writable<Tasks>(JSON.parse(localStorage.getItem('tasks') || '{}'));
 
 	// Subscribe to the store and save changes to localStorage
 	tasks.subscribe((value) => {
+		console.log('Updated Tasks:', value);
 		localStorage.setItem('tasks', JSON.stringify(value));
 	});
 
 	const selectedDate = writable<Date>(new Date());
 	let newTask = '';
+	let newTaskTime = '12:00 PM'; // Default time input
 	let showTasks = false;
 	let showAddTask = false;
 
@@ -23,37 +29,94 @@
 	function handleDateChange(date: Date | undefined) {
 		if (date) {
 			selectedDate.set(date);
+
+			// Remove day for non-current dates
+			if (!isToday(selectedDate)) {
+				const selected = get(selectedDate);
+				selected.setDate(1);
+				selectedDate.set(selected);
+			}
+
 			showTasks = true;
 			showAddTask = false;
 		}
 	}
 
-	function addTask() {
-		// Get the current selected date as a key
-		const dateKey = get(selectedDate).toISOString().split('T')[0];
+	let isTaskNameValid = true;
 
-		// Update the tasks store and prepend the new task
+	function addTask() {
+		if (!newTask.trim()) {
+			isTaskNameValid = false;
+			return;
+		}
+
+		isTaskNameValid = true; // Reset validation state if the task name is valid
+		const today = new Date();
+		const selected = get(selectedDate);
+
+		// Prevent adding tasks to past dates
+		if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+			alert('You cannot add tasks to past dates.');
+			return;
+		}
+
+		const dateKey = selected.toISOString().split('T')[0];
+
+		// Add the task with name and time
 		tasks.update((t) => {
 			if (!t[dateKey]) {
 				t[dateKey] = [];
 			}
-			t[dateKey].unshift(newTask.trim()); // Add the task to the top
+			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
+			// Sort tasks by time
+			t[dateKey].sort((a, b) => {
+				const timeA = convertTo24Hour(a.time);
+				const timeB = convertTo24Hour(b.time);
+				return (
+					new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
+				);
+			});
 			return t;
 		});
 
 		newTask = '';
+		newTaskTime = '12:00 PM';
 		showAddTask = false;
-		showTasks = true; // Ensure task list is shown
+		showTasks = true;
 	}
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
+		console.log('Before Update:', get(tasks));
 		tasks.update((t) => {
-			if (t[dateKey]) {
-				t[dateKey].splice(index, 1); // Remove the task at the specified index
+			const updated = { ...t };
+			if (updated[dateKey]) {
+				const tasksForDate = [...updated[dateKey]];
+				tasksForDate.splice(index, 1);
+				if (tasksForDate.length === 0) {
+					console.log(`Deleting dateKey: ${dateKey}`);
+					delete updated[dateKey];
+				} else {
+					updated[dateKey] = tasksForDate;
+				}
 			}
-			return t;
+			console.log('After Update:', updated);
+			return updated;
 		});
+	}
+
+	function convertTo24Hour(time: string): string {
+		const [hoursMinutes, modifier] = time.split(' ');
+		let [hours, minutes] = hoursMinutes.split(':').map(Number);
+
+		if (modifier === 'PM' && hours < 12) {
+			hours += 12;
+		}
+		if (modifier === 'AM' && hours === 12) {
+			hours = 0;
+		}
+
+		return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 	}
 
 	function generateCalendar(month: number, year: number) {
@@ -65,6 +128,11 @@
 			.concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
 
 		return calendar;
+	}
+
+	function handleTimeSelected(event: CustomEvent<{ time: string }>) {
+		newTaskTime = event.detail.time;
+		isClockVisible = false; // Close the clock after selection
 	}
 
 	$: calendarDays = generateCalendar(selectedMonth, selectedYear);
@@ -105,6 +173,16 @@
 		showTasks = false;
 		showAddTask = false;
 	}
+
+	function isToday(date: typeof selectedDate): boolean {
+		const today = new Date();
+		const selected = get(date);
+		return (
+			today.getFullYear() === selected.getFullYear() &&
+			today.getMonth() === selected.getMonth() &&
+			today.getDate() === selected.getDate()
+		);
+	}
 </script>
 
 <div
@@ -112,67 +190,115 @@
 >
 	{#if showAddTask}
 		<!-- Add Task Section -->
-		<div class="bg-white text-black p-6 rounded-lg shadow-lg">
-			<h3 class="text-lg font-bold mb-4">Add Task for {get(selectedDate).toDateString()}</h3>
-			<div class="space-y-4">
-				<input
-					type="text"
-					placeholder="Task name"
-					bind:value={newTask}
-					class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-				/>
-				<div class="flex space-x-4">
-					<button
-						class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded"
-						on:click={addTask}
-						disabled={!newTask.trim()}
-					>
-						Add Task
-					</button>
-					<button
-						class="bg-gray-600 hover:bg-gray-800 text-white px-4 py-2 rounded"
-						on:click={() => (showAddTask = false)}
-					>
-						Cancel
-					</button>
-				</div>
+
+		<h3 class="text-lg font-bold mb-4">
+			Add Task for
+			{#if isToday(selectedDate)}
+				today
+			{:else}
+				{get(selectedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+			{/if}
+		</h3>
+		<div class="space-y-4">
+			<TextField
+				placeholder="Task name"
+				bind:value={newTask}
+				type={isTaskNameValid ? '' : 'error'}
+				error_message="Task name cannot be empty"
+			/>
+			<div>
+				<button
+					class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
+					on:click={() => (isClockVisible = true)}
+				>
+					{newTaskTime}
+				</button>
+				{#if isClockVisible}
+					<ClockPicker
+						bind:selectedTime={newTaskTime}
+						on:timeSelected={handleTimeSelected}
+						on:cancel={() => (isClockVisible = false)}
+					/>
+				{/if}
+			</div>
+			<div class="flex space-x-4">
+				<button
+					class="bg-green-200 hover:bg-green-800 text-white px-4 py-2 rounded"
+					on:click={addTask}
+					disabled={!newTask.trim() || !newTaskTime.trim()}
+				>
+					Add
+				</button>
+				<button
+					class="bg-gray-600 hover:bg-gray-800 text-white px-4 py-2 rounded"
+					on:click={() => (showAddTask = false)}
+				>
+					Cancel
+				</button>
 			</div>
 		</div>
 	{:else if showTasks}
 		<!-- Task List -->
-		<div class="bg-white text-black p-6 rounded-lg shadow-lg">
-			<h3 class="text-lg font-bold mb-4">Tasks for {get(selectedDate).toDateString()}</h3>
-			<ul class="list-disc pl-5 space-y-2">
-				{#each get(tasks)[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
-					<li class="flex items-center justify-between">
-						<span>{task}</span>
-						<button
-							class="text-red-600 hover:text-red-800"
-							on:click={() => removeTask(index)}
-							aria-label="Remove task"
+		<h3 class="text-lg font-bold mb-4">Tasks for {get(selectedDate).toDateString()}</h3>
+		<ul class="list-disc pl-5 space-y-2">
+			{#each get(tasks)[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
+				<li class="flex items-center justify-between">
+					<span>{task.time} - {task.name}</span>
+					<button
+						class="text-red-600 hover:text-red-800"
+						on:click={() => removeTask(index)}
+						aria-label="Remove task"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-5"
 						>
-							&times;
-						</button>
-					</li>
-				{/each}
-			</ul>
-			{#if !(get(tasks)[get(selectedDate).toISOString().split('T')[0]] || []).length}
-				<p>No tasks for this date.</p>
-			{/if}
-			<div class="mt-4 flex space-x-4">
-				<button
-					class="bg-gray-600 hover:bg-gray-800 text-white px-4 py-2 rounded"
-					on:click={() => (showTasks = false)}
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</li>
+			{/each}
+		</ul>
+		{#if !(get(tasks)[get(selectedDate).toISOString().split('T')[0]] || []).length}
+			<p>No tasks for this date.</p>
+		{/if}
+		<div class="mt-4 flex space-x-4">
+			<!-- svelte-ignore a11y_consider_explicit_label -->
+			<button
+				class="bg-green-200 hover:bg-green-100 text-white p-2 rounded"
+				on:click={() => (showTasks = false)}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="size-4"
 				>
-					Back
-				</button>
-				<button
-					class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded"
-					on:click={() => (showAddTask = true)}
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+				</svg>
+			</button>
+			<!-- svelte-ignore a11y_consider_explicit_label -->
+			<button
+				class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
+				on:click={() => (showAddTask = true)}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="size-4"
 				>
-					+
-				</button>
-			</div>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+				</svg>
+			</button>
 		</div>
 	{:else}
 		<!-- Calendar -->
@@ -222,15 +348,11 @@
 
 			<div class="grid grid-cols-7 gap-1">
 				{#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as dayAbbreviation, index}
-					<div
-						class="flex items-center justify-center font-semibold text-sm
-						{index === 0 || index === 6 ? 'text-red-200' : 'text-gray-200'}"
-					>
+					<div class="flex items-center justify-center font-semibold text-sm text-gray-200">
 						{dayAbbreviation}
 					</div>
 				{/each}
 
-				<!-- Calendar dates -->
 				{#each calendarDays as day}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
