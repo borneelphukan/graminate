@@ -1,235 +1,155 @@
-<!-- THINGS TO DO -->
-<!-- 1. Stitch weather data into the component properly -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getWeather } from '../../lib/utils/loadWeather';
 
-	export let debug: boolean = false;
-	export let lat: number | null = null;
-	export let lon: number | null = null;
-	export let city: string = 'Tinsukia';
-	export let currentTemp: number = 5;
-	export let weatherDescription: string = 'Cloudy';
-	export let highTemp: number = 6;
-	export let lowTemp: number = 3;
+	export let lat: number | undefined;
+	export let lon: number | undefined;
 
-	export let hourlyForecast = [
-		{ time: '00', temp: 5 },
-		{ time: '01', temp: 5 },
-		{ time: '02', temp: 5 },
-		{ time: '03', temp: 5 },
-		{ time: '04', temp: 4 },
-		{ time: '05', temp: 4 }
-	];
-
-	export let dailyForecast = [
-		{ day: 'Sat', min: 2, max: 5, icon: '🌧' },
-		{ day: 'Sun', min: 2, max: 6, icon: '☁️' },
-		{ day: 'Mon', min: 0, max: 2, icon: '☁️' },
-		{ day: 'Tue', min: -1, max: 1, icon: '☁️' },
-		{ day: 'Wed', min: -1, max: 1, icon: '☁️' }
-	];
-
+	let temperature: number | null = null;
+	let apparentTemperature: number | null = null;
+	let maxTemp: number | null = null;
+	let minTemp: number | null = null;
+	let locationName: string | null = null;
+	let isDay: number | null = null;
+	let rain: number | null = null;
+	let snowfall: number | null = null;
+	let cloudCover: number | null = null;
 	let error: string | null = null;
 
-	onMount(async () => {
-		if (!debug) {
-			try {
-				if (lat === null || lon === null) {
-					throw new Error('Latitude and Longitude must be provided when debug is false.');
-				}
+	type HourlyForecast = {
+		time: string;
+		temperature: number;
+		date: string;
+	};
 
-				const data = await getWeather(lat, lon);
+	let hourlyForecast: HourlyForecast[] = [];
 
-				city = data.timezone.split('/')[1].replace('_', ' ');
-				currentTemp = data.current.temp;
-				weatherDescription = data.current.weather[0].description;
-				highTemp = data.daily[0].temp.max;
-				lowTemp = data.daily[0].temp.min;
+	const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-				hourlyForecast = data.hourly.slice(0, 6).map((hour: any) => ({
-					time: new Date(hour.dt * 1000).getHours().toString().padStart(2, '0'),
-					temp: Math.round(hour.temp)
-				}));
-
-				dailyForecast = data.daily.slice(0, 5).map((day: any) => ({
-					day: new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-					min: Math.round(day.temp.min),
-					max: Math.round(day.temp.max),
-					icon: getWeatherIcon(day.weather[0].icon)
-				}));
-			} catch (err: any) {
-				error = `Cannot fetch API data: ${err.message}`;
-				console.error(error);
+	async function fetchWeather(latitude: number, longitude: number) {
+		try {
+			const response = await fetch(`/api/weather?lat=${latitude}&lon=${longitude}`);
+			if (!response.ok) {
+				throw new Error(`Error fetching weather data: ${response.statusText}`);
 			}
+			const data = await response.json();
+			const currentHour = new Date(data.current.time).getHours();
+			const currentDate = new Date(data.current.time).toISOString().split('T')[0];
+
+			const hourlyTime = data.hourly.time;
+			const hourlyTemperature = Object.values(data.hourly.temperature2m);
+
+			const hourlyData: HourlyForecast[] = hourlyTime.map((time: string, index: number) => ({
+				time: time.split('T')[1].split(':')[0],
+				date: time.split('T')[0],
+				temperature: Math.round(hourlyTemperature[index] as number)
+			}));
+
+			const filteredHourlyData = hourlyData.filter(
+				(hour) => hour.date === currentDate && parseInt(hour.time) >= currentHour
+			);
+
+			return {
+				temperature: Math.round(data.current.temperature2m),
+				apparentTemperature: Math.round(data.current.apparentTemperature),
+				isDay: data.current.isDay,
+				rain: data.current.rain,
+				snowfall: data.current.snowfall,
+				cloudCover: data.current.cloudCover,
+				maxTemp: Math.round(data.daily.temperature2mMax[0]),
+				minTemp: Math.round(data.daily.temperature2mMin[0]),
+				hourlyForecast: filteredHourlyData
+			};
+		} catch (err: any) {
+			console.error(err.message);
+			throw new Error('Failed to fetch weather data');
+		}
+	}
+
+	async function fetchCityName(latitude: number, longitude: number) {
+		try {
+			const response = await fetch(
+				`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+			);
+			if (!response.ok) {
+				throw new Error(`Error fetching location data: ${response.statusText}`);
+			}
+			const data = await response.json();
+			const cityComponent = data.results[0]?.address_components.find((component: any) =>
+				component.types.includes('locality')
+			);
+			return cityComponent?.long_name || 'Unknown city';
+		} catch (err: any) {
+			console.error(err.message);
+			return 'Unknown city';
+		}
+	}
+
+	function getWeatherIcon(): string {
+		if (rain && rain > 0) return '🌧';
+		if (snowfall && snowfall > 0) return '❄️';
+		if (cloudCover && cloudCover > 0) return '☁️';
+		return '☀️';
+	}
+
+	onMount(async () => {
+		if (lat !== undefined && lon !== undefined) {
+			try {
+				const [weatherData, city] = await Promise.all([
+					fetchWeather(lat, lon),
+					fetchCityName(lat, lon)
+				]);
+				temperature = weatherData.temperature;
+				apparentTemperature = weatherData.apparentTemperature;
+				isDay = weatherData.isDay;
+				rain = weatherData.rain;
+				snowfall = weatherData.snowfall;
+				cloudCover = weatherData.cloudCover;
+				maxTemp = weatherData.maxTemp;
+				minTemp = weatherData.minTemp;
+				hourlyForecast = weatherData.hourlyForecast;
+				locationName = city;
+			} catch (err: any) {
+				error = err.message;
+			}
+		} else {
+			error = 'Latitude and Longitude are required to fetch weather data.';
 		}
 	});
-
-	function getWeatherIcon(iconCode: string): string {
-		const iconMap: { [key: string]: string } = {
-			'01d': '☀️', // Clear day
-			'01n': '🌙', // Clear night
-			'02d': '⛅', // Few clouds day
-			'02n': '☁️', // Few clouds night
-			'03d': '☁️', // Cloudy
-			'03n': '☁️',
-			'04d': '☁️',
-			'04n': '☁️',
-			'09d': '🌧', // Rain
-			'09n': '🌧',
-			'10d': '🌦', // Rain day
-			'10n': '🌦', // Rain night
-			'11d': '⛈', // Thunderstorm
-			'11n': '⛈',
-			'13d': '❄️', // Snow
-			'13n': '❄️',
-			'50d': '🌫', // Mist
-			'50n': '🌫'
-		};
-
-		return iconMap[iconCode] || '☁️'; // Default to cloudy
-	}
-
-	let view: string = 'Large';
-	let dropdownOpen = false;
-
-	function changeView(selectedView: string) {
-		view = selectedView;
-		dropdownOpen = false;
-	}
 </script>
 
 <div
-	class="relative max-w-md mx-auto p-6 bg-gradient-to-br from-gray-500 to-gray-400 text-gray-100 rounded-lg shadow-lg"
+	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center"
+	class:bg-blue-400={isDay === 1}
+	class:bg-gray-200={isDay === 0}
+	class:text-gray-100={isDay === 1}
+	class:text-white={isDay === 0}
 >
-	<!-- Dropdown Menu -->
-	<div class="absolute top-2 right-2">
-		<div class="relative">
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<div class="dot-button" on:click={() => (dropdownOpen = !dropdownOpen)}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="currentColor"
-					class="size-6"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-					/>
-				</svg>
-			</div>
-
-			{#if dropdownOpen}
-				<div class="dropdown-menu">
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Large')}>
-						Large
-					</div>
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Medium')}>
-						Medium
-					</div>
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<div class="cursor-pointer hover:bg-gray-700 p-2" on:click={() => changeView('Small')}>
-						Small
-					</div>
-				</div>
-			{/if}
-		</div>
-	</div>
-
 	{#if error}
-		<p class="text-red-500">{error}</p>
+		<p class="text-red-500 text-center">Error: {error}</p>
+	{:else if temperature === null}
+		<p class="text-center text-lg">Loading...</p>
 	{:else}
-		{#if view === 'Large' || view === 'Medium'}
-			<div class="flex items-center justify-between">
-				<!-- City and Current Temperature -->
-				<div class="flex flex-col">
-					<h2 class="text-xl font-bold break-normal">{city}</h2>
-					<p class="text-5xl font-bold">{currentTemp}°C</p>
-				</div>
-
-				<!-- Weather Description and High/Low Temperatures -->
-				<div class="flex flex-col items-end">
-					<p class="text-sm capitalize"><span class="px-2 text-2xl my-auto flex-col items-center">☁️</span>{weatherDescription}</p>
-					<p class="text-sm">H:{highTemp}°C L:{lowTemp}°C</p>
-				</div>
+		<div class="flex justify-between w-full">
+			<div class="text-center">
+				<p class="text-lg font-bold">{locationName}</p>
+				<p class="text-4xl font-extrabold">{temperature}°C</p>
 			</div>
-		{/if}
+			<div class="text-center">
+				<p class="text-5xl">{getWeatherIcon()}</p>
+				<p class="mt-2 text-sm">H: {maxTemp}°C L: {minTemp}°C</p>
+			</div>
+		</div>
 
-		<!-- Hourly Forecast -->
-		{#if view === 'Large' || view === 'Medium'}
-			<div class="flex space-x-4 overflow-x-auto py-2">
-				{#each hourlyForecast as hour}
+		<hr class="my-4 w-full border-gray-600" />
+		<div class="w-full overflow-x-auto">
+			<div class="flex space-x-4">
+				{#each hourlyForecast as hour (hour.time)}
 					<div class="text-center flex-shrink-0">
 						<p class="text-sm">{hour.time}:00</p>
-						<p class="text-lg font-semibold">{hour.temp}°C</p>
+						<p class="text-lg font-semibold">{hour.temperature}°C</p>
 					</div>
 				{/each}
 			</div>
-		{/if}
-
-		<!-- Daily Forecast -->
-		{#if view === 'Large'}
-			<div>
-				<hr class="my-4 border-gray-600" />
-				{#each dailyForecast as day}
-					<div class="flex items-center justify-between py-1">
-						<div class="flex items-center space-x-4">
-							<p class="text-sm">{day.day}</p>
-							<span>{day.icon}</span>
-						</div>
-						<div class="flex space-x-2 items-center">
-							<p class="text-sm">{day.min}°C</p>
-							<div class="h-2 w-24 bg-gray-700 rounded-full">
-								<div
-									class="h-2 bg-blue-500 rounded-full"
-									style="width: calc({(day.max - day.min) / 10} * 100%)"
-								></div>
-							</div>
-							<p class="text-sm">{day.max}°C</p>
-						</div>
-					</div>
-				{/each}
-			</div>
-		{/if}
-
-		<!-- Small View -->
-		{#if view === 'Small'}
-			<div class="flex flex-col space-y-1">
-				<!-- City -->
-				<h2 class="text-xl font-bold break-words">{city}</h2>
-
-				<!-- Current Temperature -->
-				<p class="text-5xl font-bold">{currentTemp}°C</p>
-
-				<!-- Weather Icon and Description -->
-				<div class="flex items-center space-x-2">
-					<p class="text-4xl">☁️</p>
-					<!-- Placeholder icon -->
-					<div>
-						<p class="text-sm capitalize">{weatherDescription}</p>
-						<p class="text-sm">H:{highTemp}°C L:{lowTemp}°C</p>
-					</div>
-				</div>
-			</div>
-		{/if}
+		</div>
 	{/if}
 </div>
-
-<style>
-	.dropdown-menu {
-		@apply absolute top-4 right-2 bg-gray-800 text-white rounded w-52 p-2 z-50;
-	}
-	.dot-button {
-		@apply cursor-pointer w-6 h-6 flex items-center justify-center;
-	}
-</style>

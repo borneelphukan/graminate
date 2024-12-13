@@ -58,9 +58,9 @@
 	</header>
 
 	<div class="flex gap-4 px-6 items-start">
-		{#if locationServiceEnabled}
+		{#if locationServiceEnabled && location}
 			<div class="flex-shrink-0 w-1/3">
-				<WeatherCard lat={location?.lat} lon={location?.lon} debug={true} />
+				<WeatherCard lat={location.lat} lon={location.lon} />
 			</div>
 		{/if}
 

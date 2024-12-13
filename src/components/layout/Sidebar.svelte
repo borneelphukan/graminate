@@ -68,10 +68,7 @@
 			icon: faChartLine,
 			label: 'Trends',
 			section: 'Trends',
-			subItems: [
-				{ label: 'Buyers Price', route: '/buyers-prices' },
-				{ label: 'Sellers Price ', route: '/sellers-prices' }
-			]
+			subItems: []
 		},
 		{
 			icon: faCloud,

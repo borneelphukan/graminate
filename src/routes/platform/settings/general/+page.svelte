@@ -11,13 +11,26 @@
 	let selectedFormat = 'India';
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
+	let selectedFile: File | null = null;
+
+	function handleFileUpload(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files[0]) {
+			selectedFile = input.files[0];
+			console.log('File selected:', selectedFile.name);
+			// Add your logic to handle the file (e.g., upload to the server or display a preview)
+		}
+	}
+
+	function triggerFileUpload() {
+		const fileInput = document.getElementById('fileInput') as HTMLInputElement | null;
+		if (fileInput) {
+			fileInput.click();
+		}
+	}
 </script>
 
 <div class="py-6">
-	<p class="text-gray-600 pb-4 mb-6 border-b border-gray-300">
-		These preferences only apply to you.
-	</p>
-
 	{#if $view === 'profile'}
 		<!-- Profile Section -->
 		<div class="border-gray-300 rounded-lg">
@@ -26,19 +39,31 @@
 
 			<!-- Profile Image -->
 			<div class="mb-6">
-				<!-- svelte-ignore a11y_label_has_associated_control -->
-				<label class="block font-semibold text-gray-700 mb-2">Profile Image</label>
+				<label for="fileInput" class="block font-semibold text-gray-700 mb-2">Profile Image</label>
 				<div class="flex items-center">
 					<!-- svelte-ignore a11y_img_redundant_alt -->
 					<img
-						src={'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'}
-						alt="Profile Image"
+						src="https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250"
+						alt="User profile picture of Borneel Phukan"
 						class="w-16 h-16 rounded-full border border-gray-400"
 					/>
-					<button class="ml-4 text-sm font-medium text-blue-600 hover:underline focus:outline-none">
+					<button
+						class="ml-4 text-sm font-medium text-blue-600 hover:underline focus:outline-none"
+						on:click={triggerFileUpload}
+					>
 						Upload
 					</button>
+					<input
+						id="fileInput"
+						type="file"
+						class="hidden"
+						accept="image/*"
+						on:change={handleFileUpload}
+					/>
 				</div>
+				{#if selectedFile}
+					<p class="mt-2 text-sm text-green-600">Selected File: {selectedFile.name}</p>
+				{/if}
 			</div>
 
 			<!-- First Name -->
@@ -79,8 +104,9 @@
 
 	{#if $view === 'email'}
 		<!-- Email Section -->
-		<div class="mt-8">
-			<p>Email section</p>
+		<div class="border-gray-300 rounded-lg">
+			<h2 class="text-lg font-semibold mb-4">Email</h2>
+			<p class="text-gray-300 mb-6">This applies across your FarmHub account.</p>
 		</div>
 	{/if}
 

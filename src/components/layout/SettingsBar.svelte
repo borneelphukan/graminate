@@ -30,9 +30,6 @@
 			label: 'Tools',
 			subItems: [
 				{ label: 'Meetings', href: '/tools/meetings' },
-				{ label: 'Calling', href: '/tools/calling' },
-				{ label: 'Inbox', href: '/tools/inbox' },
-				{ label: 'Marketing', href: '/tools/marketing' },
 				{ label: 'Content', href: '/tools/content' },
 				{ label: 'Payments', href: '/tools/payments' }
 			]

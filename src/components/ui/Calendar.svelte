@@ -94,14 +94,18 @@
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
+
 		tasks.update((t) => {
 			if (t[dateKey]) {
+				// Remove the task at the specified index
 				t[dateKey].splice(index, 1);
+
+				// Remove the date key if no tasks remain for that date
 				if (t[dateKey].length === 0) {
 					delete t[dateKey];
 				}
 			}
-			return t;
+			return t; // Return the updated tasks object
 		});
 	}
 
@@ -252,7 +256,7 @@
 		<!-- Task List -->
 		<h3 class="text-lg font-bold mb-4">Tasks for {getDayStatus(selectedDate)}</h3>
 		<ul class="list-disc pl-5 space-y-2">
-			{#each get(tasks)[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
+			{#each $tasks[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
 				<li class="flex items-center justify-between">
 					<span>{task.time} - {task.name}</span>
 					<button
