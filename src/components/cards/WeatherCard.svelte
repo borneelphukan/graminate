@@ -94,7 +94,10 @@
 			);
 
 			const filteredHourlyData = hourlyData.filter(
-				(hour) => hour.date === currentDate && parseInt(hour.time) >= currentHour
+				(hour) =>
+					new Date(`${hour.date}T${hour.time}:00Z`) >= new Date(data.current.time) &&
+					new Date(`${hour.date}T${hour.time}:00Z`) <
+						new Date(new Date(data.current.time).getTime() + 24 * 60 * 60 * 1000)
 			);
 
 			return {
@@ -176,11 +179,8 @@
 </script>
 
 <div
-	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative"
-	class:bg-blue-400={isDay === 1}
-	class:bg-gray-200={isDay === 0}
-	class:text-gray-100={isDay === 1}
-	class:text-white={isDay === 0}
+	class={`p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative 
+        ${isDay === 1 ? 'bg-gradient-to-t from-blue-300 to-blue-200 text-white' : 'bg-gradient-to-t from-blue-950 to-blue-100 text-white'}`}
 >
 	<!-- Dropdown Toggle -->
 	<div class="absolute top-2 right-2 z-10">
@@ -213,7 +213,7 @@
 		{#if dropdownOpen}
 			<div class="absolute top-8 right-0 bg-white text-black rounded-lg shadow-lg z-20 w-32">
 				<button
-					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
 					type="button"
 					on:click={() => {
 						$displayMode = 'Small';
@@ -233,7 +233,7 @@
 					Medium
 				</button>
 				<button
-					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
 					type="button"
 					on:click={() => {
 						$displayMode = 'Large';
@@ -256,7 +256,7 @@
 			<div class="flex justify-between w-full">
 				<div class="text-center">
 					<p class="text-lg font-bold">{locationName}</p>
-					<p class="text-4xl font-extrabold">{temperature}°</p>
+					<p class="text-4xl font-bold">{temperature}°</p>
 				</div>
 				<div class="text-center">
 					<p class="text-5xl">{getWeatherIcon()}</p>
@@ -268,7 +268,7 @@
 
 		{#if $displayMode === 'Medium' || $displayMode === 'Large'}
 			<!-- Second Section -->
-			<hr class="my-4 w-full border-gray-600" />
+			<hr class="my-4 w-full" />
 			<div class="w-full overflow-x-auto">
 				<div class="flex space-x-4">
 					{#each hourlyForecast as hour (hour.time)}
@@ -284,11 +284,11 @@
 
 		{#if $displayMode === 'Large'}
 			<!-- Third Section -->
-			<hr class="my-4 w-full border-gray-600" />
-			<div class="w-full flex flex-col items-center space-y-2">
+			<hr class="my-3 w-full" />
+			<div class="w-full flex flex-col items-center">
 				{#each dailyForecast as day}
 					<div class="flex justify-between items-center w-full">
-						<p class="text-lg font-bold w-1/3 text-center">{day.day}</p>
+						<p class="text-lg font-semibold w-1/3 text-center">{day.day}</p>
 						<p class="text-3xl w-1/3 text-center">{day.icon}</p>
 						<p class="text-lg w-1/3 text-center">{day.minTemp}°C</p>
 						<p class="text-lg w-1/3 text-center">{day.maxTemp}°C</p>
