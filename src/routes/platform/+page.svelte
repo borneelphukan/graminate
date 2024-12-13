@@ -3,11 +3,13 @@
 	import ProgressCard from '../../components/cards/ProgressCard.svelte';
 	import StatusCard from '../../components/cards/StatusCard.svelte';
 	import Calendar from '../../components/ui/Calendar.svelte';
+	import Loader from '../../components/ui/Loader.svelte'; // Import the Loader component
 	import { onMount } from 'svelte';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
 	let locationServiceEnabled = true;
+	let isLoading = true; // State to track loading
 
 	// Progress data
 	const steps = [
@@ -27,6 +29,9 @@
 			.catch((err) => {
 				locationServiceEnabled = false;
 				error = err;
+			})
+			.finally(() => {
+				isLoading = false; // Set loading to false after fetching location
 			});
 	});
 
@@ -57,31 +62,40 @@
 		<hr class="mt-4 border-gray-600" />
 	</header>
 
-	<div class="flex gap-4 px-6 items-start">
-		{#if locationServiceEnabled && location}
-			<div class="flex-shrink-0 w-1/3">
-				<WeatherCard lat={location.lat} lon={location.lon} />
-			</div>
-		{/if}
-
-		<div class="flex-grow">
-			<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
-			<ProgressCard {steps} {currentStep} />
-			<div class="mt-6 grid grid-cols-2 gap-6">
-				<div>
-					<StatusCard
-						lastWatered="01.12.2024"
-						nextWateringDate="11.12.2024"
-						lastPesticideDone="02.12.2024"
-						nextPesticideDate="07.12.2024"
-						lastFertilizingDone="03.12.2024"
-						nextManuringDate="10.12.2024"
-					/>
+	{#if isLoading}
+		<!-- Show loader while loading -->
+		<div class="flex justify-center items-center min-h-screen">
+			<Loader />
+		</div>
+	{:else}
+		<div class="flex gap-4 px-6 items-start">
+			{#if locationServiceEnabled && location}
+				<div class="flex-shrink-0 w-1/3">
+					<WeatherCard lat={location.lat} lon={location.lon} />
 				</div>
-				<div>
-					<Calendar />
+			{/if}
+
+			<div class="flex-grow">
+				<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
+				<ProgressCard {steps} {currentStep} />
+				<div class="mt-6 grid grid-cols-2 gap-6">
+					{#if !error}
+						<div>
+							<StatusCard
+								lastWatered="01.12.2024"
+								nextWateringDate="11.12.2024"
+								lastPesticideDone="02.12.2024"
+								nextPesticideDate="07.12.2024"
+								lastFertilizingDone="03.12.2024"
+								nextManuringDate="10.12.2024"
+							/>
+						</div>
+					{/if}
+					<div>
+						<Calendar />
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	{/if}
 </main>

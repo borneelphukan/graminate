@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;
@@ -22,9 +23,20 @@
 		icon: string;
 	};
 
+	type DailyForecast = {
+		day: string;
+		maxTemp: number;
+		minTemp: number;
+		icon: string;
+	};
+
 	let hourlyForecast: HourlyForecast[] = [];
+	let dailyForecast: DailyForecast[] = [];
 
 	const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+	let dropdownOpen = false;
+	let displayMode = writable('Large');
 
 	async function fetchWeather(latitude: number, longitude: number) {
 		try {
@@ -33,22 +45,53 @@
 				throw new Error(`Error fetching weather data: ${response.statusText}`);
 			}
 			const data = await response.json();
+
+			const todayDate = new Date(data.current.time).toISOString().split('T')[0];
+
+			const dailyData: DailyForecast[] = data.daily.time
+				.map((date: string, index: number): DailyForecast => {
+					const day = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+
+					let icon = '☀️';
+					if (data.daily.snowfallSum[index] > 0) {
+						icon = '❄️';
+					} else if (data.daily.rainSum[index] > 0) {
+						icon = '🌧';
+					} else if (data.daily.showersSum[index] > 0) {
+						icon = '🌦';
+					} else if (data.daily.precipitationSum[index] > 0) {
+						icon = '🌧';
+					} else if (data.daily.cloudCover?.[index] > 0) {
+						icon = '☁️';
+					}
+
+					return {
+						day,
+						maxTemp: Math.round(data.daily.temperature2mMax[index]),
+						minTemp: Math.round(data.daily.temperature2mMin[index]),
+						icon
+					};
+				})
+				.filter((_: any, index: number) => data.daily.time[index] > todayDate);
+
 			const currentHour = new Date(data.current.time).getHours();
 			const currentDate = new Date(data.current.time).toISOString().split('T')[0];
 
 			const hourlyTime = data.hourly.time;
 			const hourlyTemperature = Object.values(data.hourly.temperature2m);
 
-			const hourlyData: HourlyForecast[] = hourlyTime.map((time: string, index: number) => ({
-				time: time.split('T')[1].split(':')[0],
-				date: time.split('T')[0],
-				temperature: Math.round(hourlyTemperature[index] as number),
-				icon: getHourlyWeatherIcon(
-					data.hourly.rain?.[index],
-					data.hourly.snowfall?.[index],
-					data.hourly.cloudCover?.[index]
-				)
-			}));
+			const hourlyData: HourlyForecast[] = hourlyTime.map(
+				(time: string, index: number): HourlyForecast => ({
+					time: time.split('T')[1].split(':')[0],
+					date: time.split('T')[0],
+					temperature: Math.round(hourlyTemperature[index] as number),
+					icon: getHourlyWeatherIcon(
+						data.hourly.rain?.[index],
+						data.hourly.snowfall?.[index],
+						data.hourly.cloudCover?.[index]
+					)
+				})
+			);
 
 			const filteredHourlyData = hourlyData.filter(
 				(hour) => hour.date === currentDate && parseInt(hour.time) >= currentHour
@@ -63,7 +106,8 @@
 				cloudCover: data.current.cloudCover,
 				maxTemp: Math.round(data.daily.temperature2mMax[0]),
 				minTemp: Math.round(data.daily.temperature2mMin[0]),
-				hourlyForecast: filteredHourlyData
+				hourlyForecast: filteredHourlyData,
+				dailyForecast: dailyData
 			};
 		} catch (err: any) {
 			console.error(err.message);
@@ -120,6 +164,7 @@
 				maxTemp = weatherData.maxTemp;
 				minTemp = weatherData.minTemp;
 				hourlyForecast = weatherData.hourlyForecast;
+				dailyForecast = weatherData.dailyForecast;
 				locationName = city;
 			} catch (err: any) {
 				error = err.message;
@@ -131,39 +176,125 @@
 </script>
 
 <div
-	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center"
+	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative"
 	class:bg-blue-400={isDay === 1}
 	class:bg-gray-200={isDay === 0}
 	class:text-gray-100={isDay === 1}
 	class:text-white={isDay === 0}
 >
+	<!-- Dropdown Toggle -->
+	<div class="absolute top-2 right-2 z-10">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+			class="w-6 h-6 cursor-pointer"
+			on:click={() => (dropdownOpen = !dropdownOpen)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					dropdownOpen = !dropdownOpen;
+					event.preventDefault();
+				}
+			}}
+			tabindex="0"
+			role="button"
+			aria-label="Toggle dropdown"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+			/>
+		</svg>
+
+		<!-- Dropdown Menu -->
+		{#if dropdownOpen}
+			<div class="absolute top-8 right-0 bg-white text-black rounded-lg shadow-lg z-20 w-32">
+				<button
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					type="button"
+					on:click={() => {
+						$displayMode = 'Small';
+						dropdownOpen = false;
+					}}
+				>
+					Small
+				</button>
+				<button
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					type="button"
+					on:click={() => {
+						$displayMode = 'Medium';
+						dropdownOpen = false;
+					}}
+				>
+					Medium
+				</button>
+				<button
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					type="button"
+					on:click={() => {
+						$displayMode = 'Large';
+						dropdownOpen = false;
+					}}
+				>
+					Large
+				</button>
+			</div>
+		{/if}
+	</div>
+
 	{#if error}
 		<p class="text-red-500 text-center">Error: {error}</p>
 	{:else if temperature === null}
 		<p class="text-center text-lg">Loading...</p>
 	{:else}
-		<div class="flex justify-between w-full">
-			<div class="text-center">
-				<p class="text-lg font-bold">{locationName}</p>
-				<p class="text-4xl font-extrabold">{temperature}°C</p>
+		{#if $displayMode === 'Small' || $displayMode === 'Medium' || $displayMode === 'Large'}
+			<!-- First Section -->
+			<div class="flex justify-between w-full">
+				<div class="text-center">
+					<p class="text-lg font-bold">{locationName}</p>
+					<p class="text-4xl font-extrabold">{temperature}°</p>
+				</div>
+				<div class="text-center">
+					<p class="text-5xl">{getWeatherIcon()}</p>
+					<p class="mt-2 text-sm">H: {maxTemp}°C L: {minTemp}°C</p>
+					<p class="mt-1 text-sm">Feels like: {apparentTemperature}°C</p>
+				</div>
 			</div>
-			<div class="text-center">
-				<p class="text-5xl">{getWeatherIcon()}</p>
-				<p class="mt-2 text-sm">H: {maxTemp}°C L: {minTemp}°C</p>
-			</div>
-		</div>
+		{/if}
 
-		<hr class="my-4 w-full border-gray-600" />
-		<div class="w-full overflow-x-auto">
-			<div class="flex space-x-4">
-				{#each hourlyForecast as hour (hour.time)}
-					<div class="text-center flex-shrink-0">
-						<p class="text-sm">{hour.time}:00</p>
-						<p class="text-3xl">{hour.icon}</p>
-						<p class="text-lg font-semibold">{hour.temperature}°C</p>
+		{#if $displayMode === 'Medium' || $displayMode === 'Large'}
+			<!-- Second Section -->
+			<hr class="my-4 w-full border-gray-600" />
+			<div class="w-full overflow-x-auto">
+				<div class="flex space-x-4">
+					{#each hourlyForecast as hour (hour.time)}
+						<div class="text-center flex-shrink-0">
+							<p class="text-sm">{hour.time}:00</p>
+							<p class="text-3xl">{hour.icon}</p>
+							<p class="text-lg font-semibold">{hour.temperature}°</p>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/if}
+
+		{#if $displayMode === 'Large'}
+			<!-- Third Section -->
+			<hr class="my-4 w-full border-gray-600" />
+			<div class="w-full flex flex-col items-center space-y-2">
+				{#each dailyForecast as day}
+					<div class="flex justify-between items-center w-full">
+						<p class="text-lg font-bold w-1/3 text-center">{day.day}</p>
+						<p class="text-3xl w-1/3 text-center">{day.icon}</p>
+						<p class="text-lg w-1/3 text-center">{day.minTemp}°C</p>
+						<p class="text-lg w-1/3 text-center">{day.maxTemp}°C</p>
 					</div>
 				{/each}
 			</div>
-		</div>
+		{/if}
 	{/if}
 </div>
