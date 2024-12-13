@@ -19,6 +19,7 @@
 		time: string;
 		temperature: number;
 		date: string;
+		icon: string;
 	};
 
 	let hourlyForecast: HourlyForecast[] = [];
@@ -41,7 +42,12 @@
 			const hourlyData: HourlyForecast[] = hourlyTime.map((time: string, index: number) => ({
 				time: time.split('T')[1].split(':')[0],
 				date: time.split('T')[0],
-				temperature: Math.round(hourlyTemperature[index] as number)
+				temperature: Math.round(hourlyTemperature[index] as number),
+				icon: getHourlyWeatherIcon(
+					data.hourly.rain?.[index],
+					data.hourly.snowfall?.[index],
+					data.hourly.cloudCover?.[index]
+				)
 			}));
 
 			const filteredHourlyData = hourlyData.filter(
@@ -82,6 +88,13 @@
 			console.error(err.message);
 			return 'Unknown city';
 		}
+	}
+
+	function getHourlyWeatherIcon(rain?: number, snowfall?: number, cloudCover?: number): string {
+		if (rain && rain > 0) return '🌧';
+		if (snowfall && snowfall > 0) return '❄️';
+		if (cloudCover && cloudCover > 0) return '☁️';
+		return '☀️';
 	}
 
 	function getWeatherIcon(): string {
@@ -146,6 +159,7 @@
 				{#each hourlyForecast as hour (hour.time)}
 					<div class="text-center flex-shrink-0">
 						<p class="text-sm">{hour.time}:00</p>
+						<p class="text-3xl">{hour.icon}</p>
 						<p class="text-lg font-semibold">{hour.temperature}°C</p>
 					</div>
 				{/each}
