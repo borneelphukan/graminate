@@ -19,7 +19,7 @@
 		'Routine Maintenance',
 		'Harvest'
 	];
-	let currentStep = 4;
+	let currentStep = 3;
 
 	onMount(() => {
 		checkLocationService()
@@ -77,11 +77,13 @@
 
 			<div class="flex-grow">
 				<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
-				<ProgressCard {steps} {currentStep} />
+				<ProgressCard {steps} bind:currentStep />
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					{#if !error}
 						<div>
 							<StatusCard
+								{steps}
+								{currentStep}
 								lastWatered="01.12.2024"
 								nextWateringDate="11.12.2024"
 								lastPesticideDone="02.12.2024"

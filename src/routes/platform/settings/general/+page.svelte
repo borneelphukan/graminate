@@ -102,32 +102,35 @@
 		</div>
 	{/if}
 
-	{#if $view === 'email'}
-		<!-- Email Section -->
+	{#if $view === 'weather'}
+		<!-- Weather Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Email</h2>
+			<h2 class="text-lg font-semibold mb-4">Weather Settings</h2>
 			<p class="text-gray-300 mb-6">This applies across your FarmHub account.</p>
 		</div>
 	{/if}
 
-	{#if $view === 'calling'}
-		<!-- Calling Section -->
-		<div class="mt-8">
-			<p>Calling section</p>
+	{#if $view === 'milestones'}
+		<!-- Milestones Section -->
+		<div class="border-gray-300 rounded-lg">
+			<h2 class="text-lg font-semibold mb-4">Milestones Settings</h2>
+			<p class="text-gray-300 mb-6">This changes your farming steps and sets your milestones.</p>
 		</div>
 	{/if}
 
 	{#if $view === 'calendar'}
 		<!-- Calendar Section -->
-		<div class="mt-8">
-			<p>Calendar section</p>
+		<div class="border-gray-300 rounded-lg">
+			<h2 class="text-lg font-semibold mb-4">Calendar Settings</h2>
+			<p class="text-gray-300 mb-6">This changes your calendar settings.</p>
 		</div>
 	{/if}
 
 	{#if $view === 'tasks'}
 		<!-- Tasks Section -->
-		<div class="mt-8">
-			<p>Tasks section</p>
+		<div class="border-gray-300 rounded-lg">
+			<h2 class="text-lg font-semibold mb-4">Tasks Settings</h2>
+			<p class="text-gray-300 mb-6">This changes your task settings.</p>
 		</div>
 	{/if}
 

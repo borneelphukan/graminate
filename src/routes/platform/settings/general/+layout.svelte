@@ -6,8 +6,8 @@
 
 	const navButtons = [
 		{ name: 'Profile', view: 'profile' },
-		{ name: 'Email', view: 'email' },
-		{ name: 'Calling', view: 'calling' },
+		{ name: 'Weather', view: 'weather' },
+		{ name: 'Milestones', view: 'milestones' },
 		{ name: 'Calendar', view: 'calendar' },
 		{ name: 'Tasks', view: 'tasks' },
 		{ name: 'Security', view: 'security' }

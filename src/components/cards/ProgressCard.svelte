@@ -28,7 +28,8 @@
 	const dispatch = createEventDispatcher();
 
 	const navigateToStep = (stepIndex: number) => {
-		dispatch('stepChange', { step: stepIndex + 1 });
+		currentStep = stepIndex + 1; // Update the current step directly
+		dispatch('stepChange', { step: currentStep });
 	};
 
 	const toggleView = (mode: 'Large' | 'Small') => {
@@ -115,7 +116,7 @@
 			<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between">
 				{#each limitedSteps as { step, icon: Icon }, index}
 					<div
-						class="relative w-8 h-8 rounded-full flex items-center justify-center"
+						class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
 						class:bg-green-200={index + 1 === currentStep}
 						class:bg-green-100={index + 1 < currentStep}
 						class:bg-gray-300={index + 1 > currentStep}
