@@ -28,8 +28,9 @@
 	const dispatch = createEventDispatcher();
 
 	const navigateToStep = (stepIndex: number) => {
-		currentStep = stepIndex + 1; // Update the current step directly
+		currentStep = stepIndex + 1;
 		dispatch('stepChange', { step: currentStep });
+		localStorage.setItem('currentStep', currentStep.toString());
 	};
 
 	const toggleView = (mode: 'Large' | 'Small') => {
@@ -97,23 +98,19 @@
 		{/if}
 	</div>
 
-	<!-- Step Header -->
-	<p class="text-sm font-medium text-gray-200 text-center mb-4"></p>
-
-	<!-- Progress Bar -->
+	<!-- Progress Bar with Navigation -->
 	<div class="relative">
-		<div class="relative h-2 bg-gray-300 rounded-full">
-			<div
-				class="absolute top-0 left-0 h-2 bg-green-100 rounded-full"
-				style="width: {viewMode === 'Large'
-					? calculateProgress(currentStep, limitedSteps.length)
-					: calculateProgress(currentStep, 1)}%;"
-			></div>
-		</div>
-
 		<!-- Step Icons -->
 		{#if viewMode === 'Large'}
-			<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between">
+			<div class="relative h-2 bg-gray-300 rounded-full mt-5">
+				<div
+					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full"
+					style="width: {viewMode === 'Large'
+						? calculateProgress(currentStep, limitedSteps.length)
+						: calculateProgress(currentStep, 1)}%;"
+				></div>
+			</div>
+			<div class="absolute top-2 transform -translate-y-1/2 w-full flex justify-between">
 				{#each limitedSteps as { step, icon: Icon }, index}
 					<div
 						class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
@@ -136,14 +133,58 @@
 				{/each}
 			</div>
 		{:else}
-			<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-center">
-				<div class="relative w-8 h-8 rounded-full flex items-center justify-center bg-green-200">
+			<!-- Small View Navigation -->
+			<div class="relative flex items-center justify-between">
+				<!-- Left Navigation Button -->
+				<button
+					class="flex items-center justify-center rounded-full text-gray-200"
+					aria-label="Previous step"
+					on:click={() => {
+						if (currentStep > 1) navigateToStep(currentStep - 2);
+					}}
+					disabled={currentStep === 1}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-8"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+					</svg>
+				</button>
+
+				<!-- Current Step Icon -->
+				<div class="w-10 h-10 flex items-center justify-center bg-green-200 rounded-full">
 					<img
 						src={limitedSteps[currentStep - 1]?.icon}
 						alt={limitedSteps[currentStep - 1]?.step}
-						class="size-5"
+						class="size-6"
 					/>
 				</div>
+
+				<!-- Right Navigation Button -->
+				<button
+					class="flex items-center justify-center rounded-full text-gray-200"
+					aria-label="Next step"
+					on:click={() => {
+						if (currentStep < limitedSteps.length) navigateToStep(currentStep);
+					}}
+					disabled={currentStep === limitedSteps.length}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-8"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+					</svg>
+				</button>
 			</div>
 		{/if}
 	</div>

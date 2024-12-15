@@ -3,15 +3,14 @@
 	import ProgressCard from '../../components/cards/ProgressCard.svelte';
 	import StatusCard from '../../components/cards/StatusCard.svelte';
 	import Calendar from '../../components/ui/Calendar.svelte';
-	import Loader from '../../components/ui/Loader.svelte'; // Import the Loader component
+	import Loader from '../../components/ui/Loader.svelte';
 	import { onMount } from 'svelte';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
 	let locationServiceEnabled = true;
-	let isLoading = true; // State to track loading
+	let isLoading = true;
 
-	// Progress data
 	const steps = [
 		'Plant Preparation',
 		'Soil Preparation',
@@ -19,9 +18,15 @@
 		'Routine Maintenance',
 		'Harvest'
 	];
-	let currentStep = 3;
+
+	let currentStep: number = 1;
 
 	onMount(() => {
+		const savedStep = localStorage.getItem('currentStep');
+		if (savedStep) {
+			currentStep = parseInt(savedStep, 10);
+		}
+
 		checkLocationService()
 			.then((coords) => {
 				location = coords;
@@ -31,9 +36,13 @@
 				error = err;
 			})
 			.finally(() => {
-				isLoading = false; // Set loading to false after fetching location
+				isLoading = false;
 			});
 	});
+
+	$: if (typeof window !== 'undefined') {
+		localStorage.setItem('currentStep', currentStep.toString());
+	}
 
 	async function checkLocationService(): Promise<{ lat: number; lon: number }> {
 		return new Promise((resolve, reject) => {
@@ -63,7 +72,6 @@
 	</header>
 
 	{#if isLoading}
-		<!-- Show loader while loading -->
 		<div class="flex justify-center items-center min-h-screen">
 			<Loader />
 		</div>

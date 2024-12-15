@@ -43,7 +43,7 @@
 		};
 
 	async function createChart() {
-		await tick(); // Ensure the DOM is updated before initializing the chart
+		await tick();
 		const ctx = document.getElementById('status-doughnut') as HTMLCanvasElement;
 		if (!ctx) return;
 
@@ -93,19 +93,17 @@
 	}
 
 	$: {
-		// Recreate the chart when switching to step 4
 		if (currentStep === 4) {
 			if (!chart) {
 				createChart();
 			} else {
-				updateChart(); // Update the chart if already created
+				updateChart();
 			}
 		} else {
-			destroyChart(); // Clean up when switching away from step 4
+			destroyChart();
 		}
 	}
 
-	// Update chart when activeView changes
 	$: if (currentStep === 4) {
 		updateChart();
 	}
@@ -127,12 +125,11 @@
 			{activeView}
 			on:navigate={(event) => {
 				activeView = event.detail.view;
+				updateChart();
 			}}
 		/>
 
 		<div class="flex flex-col items-center sm:items-center md:items-start">
-			<!-- Irrigation, Pesticide, Manuring -->
-
 			<div class="text-center w-full sm:mt-3">
 				{#if activeView === 'Irrigation'}
 					<p class="text-gray-100">
@@ -158,7 +155,6 @@
 				{/if}
 			</div>
 
-			<!-- Canvas -->
 			<div class="relative mx-auto flex justify-center w-40 h-40 md:mt-6 sm:my-3">
 				<canvas id="status-doughnut"></canvas>
 			</div>
