@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Loader from '../../components/ui/Loader.svelte';
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;
@@ -249,7 +250,7 @@
 	{#if error}
 		<p class="text-red-500 text-center">Error: {error}</p>
 	{:else if temperature === null}
-		<p class="text-center text-lg">Loading...</p>
+		<Loader />
 	{:else}
 		{#if $displayMode === 'Small' || $displayMode === 'Medium' || $displayMode === 'Large'}
 			<!-- First Section -->

@@ -16,6 +16,9 @@
 		icon: icons[index % icons.length]
 	}));
 
+	let dropdownOpen = false;
+	let viewMode: 'Large' | 'Small' = 'Large';
+
 	const calculateProgress = (current: number, total: number): number => {
 		if (total <= 1) return 100;
 		return Math.min(((current - 1) / (total - 1)) * 100, 100);
@@ -27,53 +30,144 @@
 	const navigateToStep = (stepIndex: number) => {
 		dispatch('stepChange', { step: stepIndex + 1 });
 	};
+
+	const toggleView = (mode: 'Large' | 'Small') => {
+		viewMode = mode;
+		dropdownOpen = false;
+	};
 </script>
 
-<div class="w-full bg-gradient-to-br from-gray-500 to-gray-400 p-6 shadow-lg rounded-lg">
-	<p class="text-sm font-medium text-gray-200 text-center mb-4">
-		{limitedSteps[currentStep - 1]?.step || `Step ${currentStep}`}
-	</p>
+<div
+	class={`bg-gradient-to-br from-gray-500 to-gray-400 p-6 shadow-lg rounded-lg relative ${
+		viewMode === 'Small' ? 'w-1/2' : 'w-full'
+	} my-3`}
+>
+	<!-- Dropdown Icon -->
+	<div class="absolute top-2 right-2">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+			class="w-6 h-6 cursor-pointer text-gray-200"
+			on:click={() => (dropdownOpen = !dropdownOpen)}
+			on:keydown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					dropdownOpen = !dropdownOpen;
+					event.preventDefault();
+				}
+			}}
+			tabindex="0"
+			role="button"
+			aria-label="Toggle dropdown"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+			/>
+		</svg>
 
+		<!-- Dropdown Menu -->
+		{#if dropdownOpen}
+			<div class="absolute right-0 top-8 w-24 bg-white text-gray-100 shadow-lg rounded-md z-10">
+				<ul>
+					<li class="px-4 py-2">
+						<button
+							class="w-full text-left hover:bg-gray-500 cursor-pointer"
+							aria-label="Switch to Large view"
+							on:click={() => toggleView('Large')}
+						>
+							Large
+						</button>
+					</li>
+					<li class="px-4 py-2">
+						<button
+							class="w-full text-left hover:bg-gray-500 cursor-pointer"
+							aria-label="Switch to Small view"
+							on:click={() => toggleView('Small')}
+						>
+							Small
+						</button>
+					</li>
+				</ul>
+			</div>
+		{/if}
+	</div>
+
+	<!-- Step Header -->
+	<p class="text-sm font-medium text-gray-200 text-center mb-4"></p>
+
+	<!-- Progress Bar -->
 	<div class="relative">
 		<div class="relative h-2 bg-gray-300 rounded-full">
 			<div
 				class="absolute top-0 left-0 h-2 bg-green-100 rounded-full"
-				style="width: {calculateProgress(currentStep, limitedSteps.length)}%;"
+				style="width: {viewMode === 'Large'
+					? calculateProgress(currentStep, limitedSteps.length)
+					: calculateProgress(currentStep, 1)}%;"
 			></div>
 		</div>
 
-		<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between">
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			{#each limitedSteps as { step, icon: Icon }, index}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div
-					class="relative w-8 h-8 rounded-full flex items-center justify-center"
-					class:bg-green-200={index + 1 === currentStep}
-					class:bg-green-100={index + 1 < currentStep}
-					class:bg-gray-300={index + 1 > currentStep}
-					on:click={() => navigateToStep(index)}
-				>
-					<img src={Icon} alt={step} class="size-5" />
+		<!-- Step Icons -->
+		{#if viewMode === 'Large'}
+			<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-between">
+				{#each limitedSteps as { step, icon: Icon }, index}
+					<div
+						class="relative w-8 h-8 rounded-full flex items-center justify-center"
+						class:bg-green-200={index + 1 === currentStep}
+						class:bg-green-100={index + 1 < currentStep}
+						class:bg-gray-300={index + 1 > currentStep}
+						tabindex="0"
+						role="button"
+						aria-label={`Navigate to step ${index + 1}`}
+						on:click={() => navigateToStep(index)}
+						on:keydown={(event) => {
+							if (event.key === 'Enter' || event.key === ' ') {
+								navigateToStep(index);
+								event.preventDefault();
+							}
+						}}
+					>
+						<img src={Icon} alt={step} class="size-5" />
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<div class="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-center">
+				<div class="relative w-8 h-8 rounded-full flex items-center justify-center bg-green-200">
+					<img
+						src={limitedSteps[currentStep - 1]?.icon}
+						alt={limitedSteps[currentStep - 1]?.step}
+						class="size-5"
+					/>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/if}
 	</div>
 
+	<!-- Steps Text -->
 	<div class="flex justify-between mt-6">
-		{#each limitedSteps as { step }, index}
-			<div
-				class={`text-center text-sm font-medium ${
-					index + 1 === currentStep
-						? 'text-green-200'
-						: index + 1 < currentStep
-							? 'text-green-100'
-							: 'text-gray-100'
-				}`}
-				style="width: calc(100% / {limitedSteps.length});"
-			>
-				<span>{step}</span>
+		{#if viewMode === 'Large'}
+			{#each limitedSteps as { step }, index}
+				<div
+					class={`text-center text-sm font-medium ${
+						index + 1 === currentStep
+							? 'text-green-200'
+							: index + 1 < currentStep
+								? 'text-green-100'
+								: 'text-gray-100'
+					}`}
+					style="width: calc(100% / {limitedSteps.length});"
+				>
+					<span>{step}</span>
+				</div>
+			{/each}
+		{:else}
+			<div class="text-center text-sm font-medium text-green-200 w-full">
+				<span>{limitedSteps[currentStep - 1]?.step || `Step ${currentStep}`}</span>
 			</div>
-		{/each}
+		{/if}
 	</div>
 </div>

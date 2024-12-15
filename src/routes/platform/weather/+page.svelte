@@ -1,7 +1,6 @@
 <script lang="ts">
 	import WeatherCard from '../../../components/cards/WeatherCard.svelte';
 	import { onMount } from 'svelte';
-	import Loader from '../../../components/ui/Loader.svelte';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
@@ -52,12 +51,7 @@
 		{:else if location}
 			<!-- Render WeatherCard in top-left corner -->
 			<div class="absolute left-4">
-				<WeatherCard lat={location.lat} lon={location.lon} debug={true} />
-			</div>
-		{:else}
-			<!-- Loading state centered -->
-			<div class="absolute inset-0 flex items-center justify-center">
-				<Loader />
+				<WeatherCard lat={location.lat} lon={location.lon} />
 			</div>
 		{/if}
 	</div>

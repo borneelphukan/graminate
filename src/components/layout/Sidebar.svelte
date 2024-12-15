@@ -66,8 +66,9 @@
 		// },
 		{
 			icon: faChartLine,
-			label: 'Trends',
-			section: 'Trends',
+			label: 'Commodity Prices',
+			section: 'Commodity Prices',
+			route: '/platform/commodity',
 			subItems: []
 		},
 		{
