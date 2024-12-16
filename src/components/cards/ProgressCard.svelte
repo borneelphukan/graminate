@@ -2,23 +2,22 @@
 	export let steps: string[] = [];
 	export let currentStep: number = 1;
 
-	import HomeIcon from '../../icons/prepare.svg';
-	import UserIcon from '../../icons/soil.svg';
-	import SettingsIcon from '../../icons/plant.svg';
-	import BellIcon from '../../icons/routine.svg';
-	import StarIcon from '../../icons/harvest.svg';
+	import Step1 from '../../icons/prepare.svg';
+	import Step2 from '../../icons/soil.svg';
+	import Step3 from '../../icons/plant.svg';
+	import Step4 from '../../icons/routine.svg';
+	import Step5 from '../../icons/harvest.svg';
 	import { fly } from 'svelte/transition';
 
-	const icons = [HomeIcon, UserIcon, SettingsIcon, BellIcon, StarIcon];
+	const icons = [Step1, Step2, Step3, Step4, Step5];
 
-	let limitedSteps: { step: string; icon: typeof HomeIcon }[] = [];
+	let limitedSteps: { step: string; icon: typeof Step1 }[] = [];
+	let progress = 0;
+	$: progress = calculateProgress(currentStep, limitedSteps.length);
 	$: limitedSteps = steps.slice(0, 5).map((step, index) => ({
 		step,
 		icon: icons[index % icons.length]
 	}));
-
-	let progressWidth = 0;
-	$: progressWidth = calculateProgress(currentStep, limitedSteps.length);
 
 	let dropdownOpen = false;
 	let slideDirection: 'left' | 'right' = 'right';
@@ -51,30 +50,32 @@
 >
 	<!-- Dropdown Icon -->
 	<div class="absolute top-2 right-2">
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			stroke-width="1.5"
-			stroke="currentColor"
-			class="w-6 h-6 cursor-pointer text-gray-200"
-			on:click={() => (dropdownOpen = !dropdownOpen)}
-			on:keydown={(event) => {
-				if (event.key === 'Enter' || event.key === ' ') {
-					dropdownOpen = !dropdownOpen;
-					event.preventDefault();
-				}
-			}}
-			tabindex="0"
-			role="button"
-			aria-label="Toggle dropdown"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-			/>
-		</svg>
+		<button aria-label="dropdown-open" type="button">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="1.5"
+				stroke="currentColor"
+				class="w-6 h-6 cursor-pointer text-gray-200"
+				onclick={() => (dropdownOpen = !dropdownOpen)}
+				onkeydown={(event) => {
+					if (event.key === 'Enter' || event.key === ' ') {
+						dropdownOpen = !dropdownOpen;
+						event.preventDefault();
+					}
+				}}
+				tabindex="0"
+				role="button"
+				aria-label="Toggle dropdown"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+				/>
+			</svg>
+		</button>
 
 		<!-- Dropdown Menu -->
 		{#if dropdownOpen}
@@ -84,7 +85,7 @@
 						<button
 							class="w-full text-left hover:bg-gray-500 cursor-pointer"
 							aria-label="Switch to Large view"
-							on:click={() => toggleView('Large')}
+							onclick={() => toggleView('Large')}
 						>
 							Large
 						</button>
@@ -93,7 +94,7 @@
 						<button
 							class="w-full text-left hover:bg-gray-500 cursor-pointer"
 							aria-label="Switch to Small view"
-							on:click={() => toggleView('Small')}
+							onclick={() => toggleView('Small')}
 						>
 							Small
 						</button>
@@ -110,33 +111,25 @@
 			<div class="relative h-2 bg-gray-300 rounded-full mt-5">
 				<div
 					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full transition-all duration-300"
-					style="width: {progressWidth}%;"
+					style="width: {progress}%;"
 				></div>
 			</div>
 			<div class="absolute top-2 transform -translate-y-1/2 w-full flex justify-between">
 				{#each limitedSteps as { step, icon: Icon }, index}
-					<div
+					<button
 						class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
 						class:bg-green-200={index + 1 === currentStep}
 						class:bg-green-100={index + 1 < currentStep}
 						class:bg-gray-300={index + 1 > currentStep}
 						tabindex="0"
-						role="button"
 						aria-label={`Navigate to step ${index + 1}`}
-						on:click={() => {
+						onclick={() => {
 							const direction = index + 1 < currentStep ? 'left' : 'right';
 							navigateToStep(index, direction);
 						}}
-						on:keydown={(event) => {
-							if (event.key === 'Enter' || event.key === ' ') {
-								const direction = index + 1 < currentStep ? 'left' : 'right';
-								navigateToStep(index, direction);
-								event.preventDefault();
-							}
-						}}
 					>
 						<img src={Icon} alt={step} class="size-5" />
-					</div>
+					</button>
 				{/each}
 			</div>
 		{:else}
@@ -145,7 +138,7 @@
 				<!-- Left Navigation Button -->
 				<button
 					aria-label="left-navigation"
-					on:click={() => {
+					onclick={() => {
 						if (currentStep > 1) navigateToStep(currentStep - 2, 'left');
 					}}
 					disabled={currentStep === 1}
@@ -179,7 +172,7 @@
 				<!-- Right Navigation Button -->
 				<button
 					aria-label="right-navigation"
-					on:click={() => {
+					onclick={() => {
 						if (currentStep < limitedSteps.length) navigateToStep(currentStep, 'right');
 					}}
 					disabled={currentStep === limitedSteps.length}

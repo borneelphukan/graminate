@@ -28,7 +28,7 @@
 					{activeView === view
 					? 'border-b-transparent bg-white font-semibold'
 					: 'text-gray-600 font-thin'}"
-				on:click={() => setActive(view)}
+				onclick={() => setActive(view)}
 			>
 				{name}
 			</button>
@@ -41,7 +41,7 @@
 			<!-- Hamburger Icon -->
 			<button
 				class="p-2 rounded-md focus:outline-none text-gray-100"
-				on:click={() => (isMenuOpen = !isMenuOpen)}
+				onclick={() => (isMenuOpen = !isMenuOpen)}
 				aria-label="Open menu"
 			>
 				<svg
@@ -60,7 +60,7 @@
 			{#if isMenuOpen}
 				<div class="absolute top-full left-0 z-50 w-full bg-white text-gray-100">
 					{#each buttons as { name, view }}
-						<button class="w-full px-4 py-2 text-left text-sm" on:click={() => setActive(view)}>
+						<button class="w-full px-4 py-2 text-left text-sm" onclick={() => setActive(view)}>
 							{name}
 						</button>
 					{/each}

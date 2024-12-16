@@ -163,7 +163,7 @@
 		<div class="relative">
 			<button
 				class="flex items-center gap-2 text-gray-500 rounded-lg px-3"
-				on:click={() => (showDropdown = !showDropdown)}
+				onclick={() => (showDropdown = !showDropdown)}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +216,7 @@
 							name="sort"
 							value="relevance"
 							bind:group={sortOption}
-							on:change={() => handleSort('relevance')}
+							onchange={() => handleSort('relevance')}
 						/>
 						Relevance
 					</label>
@@ -226,7 +226,7 @@
 							name="sort"
 							value="rating"
 							bind:group={sortOption}
-							on:change={() => handleSort('rating')}
+							onchange={() => handleSort('rating')}
 						/>
 						Rating
 					</label>
@@ -236,7 +236,7 @@
 							name="sort"
 							value="price"
 							bind:group={sortOption}
-							on:change={() => handleSort('price')}
+							onchange={() => handleSort('price')}
 						/>
 						Price
 					</label>

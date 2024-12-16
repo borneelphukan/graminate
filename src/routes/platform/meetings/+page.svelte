@@ -85,5 +85,5 @@
 
 <!-- Render Modal -->
 {#if $isModalOpen}
-	<MeetingModal on:close={closeModal} />
+	<MeetingModal onClose={closeModal} />
 {/if}

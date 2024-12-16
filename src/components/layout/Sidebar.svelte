@@ -141,7 +141,7 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="flex items-center mx-2 p-3 rounded-lg cursor-pointer hover:bg-blue-100 transition-all duration-200 group"
-					on:click={() => (route ? navigateTo(route) : handleSectionChange(section))}
+					onclick={() => (route ? navigateTo(route) : handleSectionChange(section))}
 					style="justify-content: {isCollapsed ? 'center' : 'flex-start'};"
 				>
 					<div class="text-gray-400 flex justify-center items-center w-6 h-6">
@@ -188,7 +188,7 @@
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
 								class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
-								on:click={() => navigateTo(route)}
+								onclick={() => navigateTo(route)}
 							>
 								{label}
 							</div>
@@ -203,7 +203,7 @@
 	<div class="absolute bottom-4 right-4">
 		<button
 			class="flex items-center justify-center p-1 rounded-full bg-gray-400 text-gray-800 dark:text-white shadow-lg"
-			on:click={toggleCollapse}
+			onclick={toggleCollapse}
 		>
 			{#if isCollapsed}
 				<svg

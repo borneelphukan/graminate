@@ -49,7 +49,7 @@
 					/>
 					<button
 						class="ml-4 text-sm font-medium text-blue-600 hover:underline focus:outline-none"
-						on:click={triggerFileUpload}
+						onclick={triggerFileUpload}
 					>
 						Upload
 					</button>
@@ -58,7 +58,7 @@
 						type="file"
 						class="hidden"
 						accept="image/*"
-						on:change={handleFileUpload}
+						onchange={handleFileUpload}
 					/>
 				</div>
 				{#if selectedFile}

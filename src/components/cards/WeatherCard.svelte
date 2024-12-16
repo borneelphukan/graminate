@@ -75,9 +75,6 @@
 				})
 				.filter((_: any, index: number) => data.daily.time[index] > todayDate);
 
-			const currentHour = new Date(data.current.time).getHours();
-			const currentDate = new Date(data.current.time).toISOString().split('T')[0];
-
 			const hourlyTime = data.hourly.time;
 			const hourlyTemperature = Object.values(data.hourly.temperature2m);
 
@@ -192,8 +189,8 @@
 			stroke-width="1.5"
 			stroke="currentColor"
 			class="w-6 h-6 cursor-pointer"
-			on:click={() => (dropdownOpen = !dropdownOpen)}
-			on:keydown={(event) => {
+			onclick={() => (dropdownOpen = !dropdownOpen)}
+			onkeydown={(event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
 					dropdownOpen = !dropdownOpen;
 					event.preventDefault();
@@ -216,7 +213,7 @@
 				<button
 					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
 					type="button"
-					on:click={() => {
+					onclick={() => {
 						$displayMode = 'Small';
 						dropdownOpen = false;
 					}}
@@ -226,7 +223,7 @@
 				<button
 					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
 					type="button"
-					on:click={() => {
+					onclick={() => {
 						$displayMode = 'Medium';
 						dropdownOpen = false;
 					}}
@@ -236,7 +233,7 @@
 				<button
 					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
 					type="button"
-					on:click={() => {
+					onclick={() => {
 						$displayMode = 'Large';
 						dropdownOpen = false;
 					}}

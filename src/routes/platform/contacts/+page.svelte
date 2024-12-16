@@ -165,7 +165,7 @@
 	<div class="relative">
 		<button
 			class="flex items-center text-lg font-semibold bg-white rounded focus:outline-none"
-			on:click={() => (dropdownOpen = !dropdownOpen)}
+			onclick={() => (dropdownOpen = !dropdownOpen)}
 		>
 			{#if $view === 'contacts'}
 				Contacts
@@ -211,12 +211,12 @@
 	{#each $writableFilters as filter}
 		<div class="border-l border-gray-300 border-r">
 			<div class="flex items-center gap-12 border-t border-b border-gray-300 px-3 py-2">
-				<button on:click={() => navigateToView(filter.view)}>
+				<button onclick={() => navigateToView(filter.view)}>
 					{filter.label}
 				</button>
 				<button
 					class="focus:outline-none"
-					on:click={() => writableFilters.update((f) => f.filter((fil) => fil !== filter))}
+					onclick={() => writableFilters.update((f) => f.filter((fil) => fil !== filter))}
 				>
 					&times;
 				</button>

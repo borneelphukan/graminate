@@ -1,19 +1,13 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import ScheduleCard from '../cards/ScheduleCard.svelte';
-
-	const dispatch = createEventDispatcher();
-
-	const close = () => {
-		dispatch('close');
-	};
+	export let onClose: () => void; // Accept a callback function as a prop
 </script>
 
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 bg-opacity-75">
 	<div class="bg-white rounded-lg shadow-lg p-6 max-w-full max-h-full overflow-auto">
 		<div class="flex justify-between items-center border-b pb-4 mb-4">
 			<h2 class="text-xl font-bold text-gray-800">Choose Meeting Type</h2>
-			<button class="text-gray-400 hover:text-gray-600" on:click={close} aria-label="Close Modal">
+			<button class="text-gray-400 hover:text-gray-600" onclick={onClose} aria-label="Close Modal">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"

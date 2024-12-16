@@ -54,7 +54,7 @@
 
 	<div class="mt-4 flex justify-center space-x-4">
 		<!-- svelte-ignore a11y_consider_explicit_label -->
-		<button class="bg-green-200 text-white py-2 px-4 rounded hover:bg-green-100" on:click={setTime}>
+		<button class="bg-green-200 text-white py-2 px-4 rounded hover:bg-green-100" onclick={setTime}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
@@ -67,7 +67,7 @@
 			</svg>
 		</button>
 		<!-- svelte-ignore a11y_consider_explicit_label -->
-		<button class="bg-red-200 text-white py-2 px-4 rounded hover:bg-red-100" on:click={cancel}>
+		<button class="bg-red-200 text-white py-2 px-4 rounded hover:bg-red-100" onclick={cancel}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"

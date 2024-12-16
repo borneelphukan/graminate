@@ -35,7 +35,7 @@
 		<!-- svelte-ignore a11y_consider_explicit_label -->
 		<button
 			class="text-gray-300 hover:bg-gray-400 p-1 rounded-full focus:outline-none"
-			on:click={closeNotificationBar}
+			onclick={closeNotificationBar}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@
 				<div class="relative">
 					<button
 						class="bg-gray-400 px-3 py-1 mb-1 text-sm rounded-md text-gray-700 hover:bg-gray-300 flex items-center"
-						on:click={toggleFilterDropdown}
+						onclick={toggleFilterDropdown}
 					>
 						Filter
 						<span class="ml-2">
@@ -135,7 +135,7 @@
 				<div class="relative">
 					<button
 						class="bg-gray-400 px-3 py-1 mb-1 text-sm rounded-md text-gray-700 hover:bg-gray-300 flex items-center"
-						on:click={toggleActionsDropdown}
+						onclick={toggleActionsDropdown}
 					>
 						Actions
 						<span class="ml-2">

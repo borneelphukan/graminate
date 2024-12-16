@@ -149,7 +149,7 @@
 					<!-- svelte-ignore a11y_consider_explicit_label -->
 					<button
 						class="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
-						on:click={toUserPreferences}
+						onclick={toUserPreferences}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -177,7 +177,7 @@
 					<!-- Notifications Icon -->
 					<button
 						class="relative text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
-						on:click={toggleNotificationBar}
+						onclick={toggleNotificationBar}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +209,7 @@
 					<button
 						class="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
 						aria-expanded={isDropdownOpen}
-						on:click={toggleDropdown}
+						onclick={toggleDropdown}
 					>
 						<img class="h-7 w-7 rounded-full" src={user.imageUrl} alt={user.name} />
 						<span class="sr-only">Open user menu</span>
@@ -217,7 +217,7 @@
 					<span class="ml-2 text-white text-sm font-medium">Borneel Bikash Phukan</span>
 					<button
 						class="ml-1 flex items-center text-gray-400 hover:text-white focus:outline-none"
-						on:click={toggleDropdown}
+						onclick={toggleDropdown}
 					>
 						{#if isDropdownOpen}
 							<!-- Up Icon -->

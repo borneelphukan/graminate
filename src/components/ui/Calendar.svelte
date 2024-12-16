@@ -9,20 +9,16 @@
 	type Task = { name: string; time: string };
 	type Tasks = { [key: string]: Task[] };
 
-	// Initialize tasks with a writable store
 	const tasks = writable<Tasks>({});
 
-	// Check if running in the browser
 	const isBrowser = typeof window !== 'undefined';
 
 	if (isBrowser) {
-		// Load tasks from localStorage
 		const storedTasks = localStorage.getItem('tasks');
 		if (storedTasks) {
 			tasks.set(JSON.parse(storedTasks));
 		}
 
-		// Subscribe to the store and save changes to localStorage
 		tasks.subscribe((value) => {
 			localStorage.setItem('tasks', JSON.stringify(value));
 		});
@@ -30,7 +26,7 @@
 
 	const selectedDate = writable<Date>(new Date());
 	let newTask = '';
-	let newTaskTime = '12:00 PM'; // Default time input
+	let newTaskTime = '12:00 PM';
 	let showTasks = false;
 	let showAddTask = false;
 
@@ -40,9 +36,8 @@
 
 	function handleDateChange(date: Date | undefined) {
 		if (date) {
-			selectedDate.set(date); // Set the selected date directly
+			selectedDate.set(date);
 
-			// Show tasks for the selected date
 			showTasks = true;
 			showAddTask = false;
 		}
@@ -181,10 +176,8 @@
 		const today = new Date();
 		const selected = get(date);
 
-		// Normalize today's date
 		const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-		// Calculate tomorrow's date
 		const tomorrowDateOnly = new Date(todayDateOnly);
 		tomorrowDateOnly.setDate(todayDateOnly.getDate() + 1);
 
@@ -198,14 +191,11 @@
 	}
 </script>
 
-<!-- Rest of your Calendar markup remains the same -->
-
 <div
 	class="bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 w-full text-gray-200 relative"
 >
 	{#if showAddTask}
 		<!-- Add Task Section -->
-
 		<h3 class="text-lg font-bold mb-4">
 			Add Task for
 			{#if getDayStatus(selectedDate)}
@@ -224,7 +214,7 @@
 			<div>
 				<button
 					class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
-					on:click={() => (isClockVisible = true)}
+					onclick={() => (isClockVisible = true)}
 				>
 					{newTaskTime}
 				</button>
@@ -239,14 +229,14 @@
 			<div class="flex space-x-4">
 				<button
 					class="bg-green-200 hover:bg-green-800 text-white px-4 py-2 rounded"
-					on:click={addTask}
+					onclick={addTask}
 					disabled={!newTask.trim() || !newTaskTime.trim()}
 				>
 					Add
 				</button>
 				<button
 					class="bg-gray-600 hover:bg-gray-800 text-white px-4 py-2 rounded"
-					on:click={() => (showAddTask = false)}
+					onclick={() => (showAddTask = false)}
 				>
 					Cancel
 				</button>
@@ -261,7 +251,7 @@
 					<span>{task.time} - {task.name}</span>
 					<button
 						class="text-red-600 hover:text-red-800"
-						on:click={() => removeTask(index)}
+						onclick={() => removeTask(index)}
 						aria-label="Remove task"
 					>
 						<svg
@@ -285,7 +275,7 @@
 			<!-- svelte-ignore a11y_consider_explicit_label -->
 			<button
 				class="bg-green-200 hover:bg-green-100 text-white p-2 rounded"
-				on:click={() => (showTasks = false)}
+				onclick={() => (showTasks = false)}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -301,7 +291,7 @@
 			<!-- svelte-ignore a11y_consider_explicit_label -->
 			<button
 				class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
-				on:click={() => (showAddTask = true)}
+				onclick={() => (showAddTask = true)}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -321,7 +311,7 @@
 			<div class="flex items-center justify-between mb-4">
 				<button
 					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
-					on:click={previousMonth}
+					onclick={previousMonth}
 					aria-label="Previous month"
 				>
 					<svg
@@ -345,7 +335,7 @@
 
 				<button
 					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
-					on:click={nextMonth}
+					onclick={nextMonth}
 					aria-label="Next month"
 				>
 					<svg
@@ -387,7 +377,7 @@
 								? 'hover:bg-gray-300'
 								: ''} 
 						{day === null ? 'text-gray-400 cursor-not-allowed' : ''}"
-						on:click={() => day && handleDateChange(new Date(selectedYear, selectedMonth, day))}
+						onclick={() => day && handleDateChange(new Date(selectedYear, selectedMonth, day))}
 					>
 						{day || ''}
 					</div>
