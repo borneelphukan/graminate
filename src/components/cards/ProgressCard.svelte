@@ -7,6 +7,7 @@
 	import SettingsIcon from '../../icons/plant.svg';
 	import BellIcon from '../../icons/routine.svg';
 	import StarIcon from '../../icons/harvest.svg';
+	import { fly } from 'svelte/transition';
 
 	const icons = [HomeIcon, UserIcon, SettingsIcon, BellIcon, StarIcon];
 
@@ -16,7 +17,11 @@
 		icon: icons[index % icons.length]
 	}));
 
+	let progressWidth = 0;
+	$: progressWidth = calculateProgress(currentStep, limitedSteps.length);
+
 	let dropdownOpen = false;
+	let slideDirection: 'left' | 'right' = 'right';
 	let viewMode: 'Large' | 'Small' = 'Large';
 
 	const calculateProgress = (current: number, total: number): number => {
@@ -24,12 +29,12 @@
 		return Math.min(((current - 1) / (total - 1)) * 100, 100);
 	};
 
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
+	export let onStepChange: (event: { step: number }) => void = () => {};
 
-	const navigateToStep = (stepIndex: number) => {
+	const navigateToStep = (stepIndex: number, direction: 'left' | 'right') => {
+		slideDirection = direction;
 		currentStep = stepIndex + 1;
-		dispatch('stepChange', { step: currentStep });
+		onStepChange({ step: currentStep });
 		localStorage.setItem('currentStep', currentStep.toString());
 	};
 
@@ -104,10 +109,8 @@
 		{#if viewMode === 'Large'}
 			<div class="relative h-2 bg-gray-300 rounded-full mt-5">
 				<div
-					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full"
-					style="width: {viewMode === 'Large'
-						? calculateProgress(currentStep, limitedSteps.length)
-						: calculateProgress(currentStep, 1)}%;"
+					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full transition-all duration-300"
+					style="width: {progressWidth}%;"
 				></div>
 			</div>
 			<div class="absolute top-2 transform -translate-y-1/2 w-full flex justify-between">
@@ -120,10 +123,14 @@
 						tabindex="0"
 						role="button"
 						aria-label={`Navigate to step ${index + 1}`}
-						on:click={() => navigateToStep(index)}
+						on:click={() => {
+							const direction = index + 1 < currentStep ? 'left' : 'right';
+							navigateToStep(index, direction);
+						}}
 						on:keydown={(event) => {
 							if (event.key === 'Enter' || event.key === ' ') {
-								navigateToStep(index);
+								const direction = index + 1 < currentStep ? 'left' : 'right';
+								navigateToStep(index, direction);
 								event.preventDefault();
 							}
 						}}
@@ -134,13 +141,12 @@
 			</div>
 		{:else}
 			<!-- Small View Navigation -->
-			<div class="relative flex items-center justify-between">
+			<div class="relative flex items-center justify-between text-gray-100 mt-5">
 				<!-- Left Navigation Button -->
 				<button
-					class="flex items-center justify-center rounded-full text-gray-200"
-					aria-label="Previous step"
+					aria-label="left-navigation"
 					on:click={() => {
-						if (currentStep > 1) navigateToStep(currentStep - 2);
+						if (currentStep > 1) navigateToStep(currentStep - 2, 'left');
 					}}
 					disabled={currentStep === 1}
 				>
@@ -157,20 +163,24 @@
 				</button>
 
 				<!-- Current Step Icon -->
-				<div class="w-10 h-10 flex items-center justify-center bg-green-200 rounded-full">
-					<img
-						src={limitedSteps[currentStep - 1]?.icon}
-						alt={limitedSteps[currentStep - 1]?.step}
-						class="size-6"
-					/>
+				<div
+					class="relative w-10 h-10 flex items-center justify-center bg-green-200 rounded-full overflow-hidden"
+				>
+					{#key currentStep}
+						<img
+							src={limitedSteps[currentStep - 1]?.icon}
+							alt={limitedSteps[currentStep - 1]?.step}
+							class="absolute size-6"
+							transition:fly={{ x: slideDirection === 'left' ? -100 : 100, duration: 300 }}
+						/>
+					{/key}
 				</div>
 
 				<!-- Right Navigation Button -->
 				<button
-					class="flex items-center justify-center rounded-full text-gray-200"
-					aria-label="Next step"
+					aria-label="right-navigation"
 					on:click={() => {
-						if (currentStep < limitedSteps.length) navigateToStep(currentStep);
+						if (currentStep < limitedSteps.length) navigateToStep(currentStep, 'right');
 					}}
 					disabled={currentStep === limitedSteps.length}
 				>

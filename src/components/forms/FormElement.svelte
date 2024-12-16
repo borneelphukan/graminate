@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import { createEventDispatcher } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import TextField from '../ui/TextField.svelte';
 	import Dropdown from '../ui/Dropdown.svelte';
@@ -11,13 +10,6 @@
 	export let onSubmit: (values: Record<string, string>) => void = () => {
 		console.warn('onSubmit is not provided');
 	};
-
-	type FormElementEvents = {
-		submit: Record<string, string>;
-		close: void;
-	};
-
-	const dispatch = createEventDispatcher<FormElementEvents>();
 
 	let contactValues = writable<Record<string, string>>({
 		firstName: '',
@@ -59,13 +51,11 @@
 	];
 
 	const companyType = ['Supplier', 'Distributor', 'Factories', 'Buyer'];
-
 	const ticketStatus = ['Open', 'In Progress', 'Completed', 'On Hold', 'Cancelled'];
 
 	function handleSubmitContacts() {
 		contactValues.subscribe((values) => {
 			onSubmit(values);
-			dispatch('submit', values);
 			console.log('Contact Form Submitted:', values);
 		})();
 	}
@@ -73,7 +63,6 @@
 	function handleSubmitCompanies() {
 		companyValues.subscribe((values) => {
 			onSubmit(values);
-			dispatch('submit', values);
 			console.log('Company Form Submitted:', values);
 		})();
 	}
@@ -81,14 +70,12 @@
 	function handleSubmitTickets() {
 		ticketValues.subscribe((values) => {
 			onSubmit(values);
-			dispatch('submit', values);
 			console.log('Ticket Form Submitted:', values);
 		})();
 	}
 
 	function handleClose() {
 		onClose();
-		dispatch('close');
 	}
 </script>
 

@@ -85,7 +85,7 @@
 
 			<div class="flex-grow">
 				<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
-				<ProgressCard {steps} bind:currentStep />
+				<ProgressCard {steps} {currentStep} onStepChange={({ step }) => (currentStep = step)} />
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					{#if !error}
 						<div>
