@@ -29,7 +29,7 @@
 				<li>
 					<button
 						class="w-full text-sm text-gray-200 text-left px-4 py-2 hover:bg-green-400"
-						on:click={() => navigateTo(item.view)}
+						onclick={() => navigateTo(item.view)}
 					>
 						{item.label}
 					</button>

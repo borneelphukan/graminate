@@ -21,7 +21,7 @@
 		dispatch('select', { item });
 	};
 
-	$: displayLabel = type === 'form' && !selectedItem ? 'Please select' : selectedItem;
+	$: displayLabel = type === 'form' && !selectedItem ? 'Please Select' : selectedItem;
 </script>
 
 <div>
@@ -38,7 +38,8 @@
 		<!-- Selected Item Button -->
 		<button
 			class="flex items-center justify-between px-4 py-2 text-sm bg-white hover:underline w-full"
-			on:click={toggleDropdown}
+			onclick={toggleDropdown}
+			type="button"
 		>
 			{displayLabel}
 			<svg
@@ -66,7 +67,7 @@
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<li
 						class="px-4 py-2 text-blue-100 text-sm font-medium cursor-pointer hover:bg-gray-400"
-						on:click={() => selectItem(item)}
+						onclick={() => selectItem(item)}
 					>
 						{item}
 					</li>

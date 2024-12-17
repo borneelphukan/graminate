@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Table from '../../components/tables/Table.svelte';
-	import Button from '../../components/ui/Button.svelte';
 	import { writable } from 'svelte/store';
+	import Table from '../../../components/tables/Table.svelte';
+	import Button from '../../../components/ui/Button.svelte';
 
 	interface Document {
 		name: string;
@@ -49,23 +49,24 @@
 	const totalRecordCount = rows.length;
 </script>
 
-<div class="flex items-center justify-between px-4 py-2 border-b">
-	<h2 class="text-lg font-medium">Documents</h2>
+<div class="container mx-auto p-4">
+	<div class="flex items-center justify-between border-b mb-4">
+		<h2 class="text-lg font-bold">Document</h2>
 
-	<div class="flex justify-between items-center py-1 bg-white relative mb-4">
-		<div class="flex gap-2">
-			<Button text="New Folder" style="secondary" add />
-			<Button text="Upload Document" style="primary" />
+		<div class="flex justify-between items-center py-1 bg-white relative mb-4">
+			<div class="flex gap-2">
+				<Button text="Upload Document" style="primary" add />
+			</div>
 		</div>
 	</div>
-</div>
 
-<Table
-	{data}
-	{filteredRows}
-	{currentPage}
-	{itemsPerPage}
-	{paginationItems}
-	{searchQuery}
-	{totalRecordCount}
-/>
+	<Table
+		{data}
+		{filteredRows}
+		{currentPage}
+		{itemsPerPage}
+		{paginationItems}
+		{searchQuery}
+		{totalRecordCount}
+	/>
+</div>

@@ -35,11 +35,11 @@
 		bind:value={query}
 		{placeholder}
 		class="w-full px-4 py-1 border border-gray-300 focus:border-green-200 rounded-md focus:outline-none"
-		on:keydown={handleKeyDown}
+		onkeydown={handleKeyDown}
 	/>
 	<button
 		class="absolute inset-y-0 right-4 flex items-center"
-		on:click={handleSearch}
+		onclick={handleSearch}
 		aria-label="Search"
 	>
 		<svg

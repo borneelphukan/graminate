@@ -8,27 +8,30 @@
 	};
 
 	const settingsMenu: MenuItem[] = [
-		{ label: 'Your Preferences', subItems: [{ label: 'General' }, { label: 'Notifications' }] },
+		{
+			label: 'Your Preferences',
+			subItems: [
+				{ label: 'General', href: '/platform/settings/general/' },
+				{ label: 'Notifications', href: '/platform/settings/notifications' }
+			]
+		},
 		{
 			label: 'Account Management',
 			subItems: [
-				{ label: 'Account Defaults' },
-				{ label: 'Audit Log' },
-				{ label: 'Users & Teams' },
-				{ label: 'Tracking Code' },
-				{ label: 'Privacy & Consent' },
-				{ label: 'Security' }
+				{ label: 'Account Defaults', href: '/account/defaults' },
+				{ label: 'Audit Log', href: '/account/audit-log' },
+				{ label: 'Users & Teams', href: '/account/users-teams' },
+				{ label: 'Tracking Code', href: '/account/tracking-code' },
+				{ label: 'Privacy & Consent', href: '/account/privacy-consent' },
+				{ label: 'Security', href: '/account/security' }
 			]
 		},
 		{
 			label: 'Tools',
 			subItems: [
-				{ label: 'Meetings' },
-				{ label: 'Calling' },
-				{ label: 'Inbox' },
-				{ label: 'Marketing' },
-				{ label: 'Content' },
-				{ label: 'Payments' }
+				{ label: 'Meetings', href: '/tools/meetings' },
+				{ label: 'Content', href: '/tools/content' },
+				{ label: 'Payments', href: '/tools/payments' }
 			]
 		}
 	];
@@ -42,7 +45,7 @@
 
 <div class="w-72 px-4 bg-gray-50 text-gray-800 border-r border-gray-400 min-h-screen -m-6">
 	<!-- Back Button -->
-	<div class="flex items-center pt-8">
+	<div class="flex items-center pt-4">
 		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
 
@@ -61,7 +64,7 @@
 							<li>
 								<a
 									href={subItem.href || '#'}
-									class="block px-2 py-1 text-base text-gray-700 rounded hover:bg-gray-400"
+									class="block px-2 py-1 text-sm text-gray-700 rounded hover:bg-gray-400"
 								>
 									{subItem.label}
 								</a>

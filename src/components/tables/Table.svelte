@@ -128,7 +128,7 @@
 					<a
 						href="/"
 						class="ml-2 text-blue-600 text-sm hover:underline cursor-pointer"
-						on:click={deleteSelectedRows}
+						onclick={deleteSelectedRows}
 					>
 						Delete
 					</a>
@@ -150,13 +150,13 @@
 							type="checkbox"
 							class="form-checkbox h-4 w-4 text-gray-600"
 							bind:checked={selectAll}
-							on:change={handleSelectAllChange}
+							onchange={handleSelectAllChange}
 						/>
 					</th>
 					{#each data.columns as column, index}
 						<th
 							class="p-2 border border-gray-300 bg-gray-400 cursor-pointer text-left"
-							on:click={() => toggleSort(index)}
+							onclick={() => toggleSort(index)}
 						>
 							<div class="flex items-center justify-between">
 								<span class="mr-2 font-semibold">{column}</span>
@@ -188,7 +188,7 @@
 								type="checkbox"
 								class="form-checkbox h-4 w-4 text-gray-600"
 								bind:checked={$selectedRows[rowIndex]}
-								on:change={(event) => handleRowCheckboxChange(rowIndex, event)}
+								onchange={(event) => handleRowCheckboxChange(rowIndex, event)}
 							/>
 						</td>
 						{#each row as cell}

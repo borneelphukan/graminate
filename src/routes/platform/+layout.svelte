@@ -1,7 +1,7 @@
 <script lang="ts">
-	import '../app.css';
-	import Sidebar from '../components/layout/Sidebar.svelte';
-	import Navbar from '../components/layout/Navbar.svelte';
+	import Navbar from '../../components/layout/Navbar.svelte';
+	import Sidebar from '../../components/layout/Sidebar.svelte';
+	import '../../app.css';
 
 	let isOpen = false;
 	function handleSectionChange(event: CustomEvent<string>) {
@@ -21,7 +21,7 @@
 		<Sidebar {isOpen} on:onSectionChange={handleSectionChange} />
 
 		<!-- Main Content -->
-		<div class="flex-1 p-6">
+		<div class="flex-1">
 			<slot />
 		</div>
 	</div>

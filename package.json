@@ -25,6 +25,7 @@
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.6",
 		"svelte": "^5.0.0",
+		"svelte-calendar": "^3.1.6",
 		"svelte-check": "^4.0.0",
 		"svelte-preprocess": "^6.0.3",
 		"tailwindcss": "^3.4.15",
@@ -35,6 +36,10 @@
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^6.6.0",
 		"@fortawesome/free-solid-svg-icons": "^6.6.0",
-		"svelte-fa": "^4.0.3"
+		"@types/google.maps": "^3.58.1",
+		"chart.js": "^4.4.7",
+		"openmeteo": "^1.1.4",
+		"svelte-fa": "^4.0.3",
+		"svelty-picker": "^5.2.10"
 	}
 }

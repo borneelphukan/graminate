@@ -5,13 +5,12 @@
 		faChartPie,
 		faChartLine,
 		faFolder,
-		faDatabase,
-		faShapes,
 		faWallet,
-		faBullhorn,
-		faAddressBook
+		faAddressBook,
+		faCloud
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let isOpen: boolean;
 
@@ -23,7 +22,7 @@
 			icon: faHome,
 			label: 'Dashboard',
 			section: 'Dashboard',
-			route: '/dashboard',
+			route: '/platform',
 			subItems: []
 		},
 		{
@@ -31,30 +30,17 @@
 			label: 'CRM',
 			section: 'CRM',
 			subItems: [
-				{ label: 'Contacts', route: '/contacts' },
-				{ label: 'Companies', route: '/contacts?view=companies' },
-				{ label: 'Deals', route: '/contacts?view=deals' },
-				{ label: 'Tickets', route: '/contacts?view=tickets' }
-			]
-		},
-		{
-			icon: faBullhorn,
-			label: 'Marketing',
-			section: 'Marketing',
-			subItems: [
-				{ label: 'Campaigns', route: '/' },
-				{ label: 'Email', route: '/' },
-				{ label: 'Social', route: '/social' },
-				{ label: 'Ads', route: '/' },
-				{ label: 'Forms', route: '/' },
-				{ label: 'Buyer Intent', route: '/buyer-intent' }
+				{ label: 'Contacts', route: '/platform/contacts' },
+				{ label: 'Companies', route: '/platform/contacts?view=companies' },
+				{ label: 'Deals', route: '/platform/contacts?view=deals' },
+				{ label: 'Tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},
 		{
 			icon: faChartPie,
-			label: 'Content',
-			section: 'Content',
-			route: '/content',
+			label: 'Finder',
+			section: 'Finder',
+			route: '/platform/finder',
 			subItems: []
 		},
 		{
@@ -62,36 +48,34 @@
 			label: 'Commerce',
 			section: 'Commerce',
 			subItems: [
-				{ label: 'Overview', route: '/overview' },
-				{ label: 'Payments', route: '/payments' },
-				{ label: 'Invoices', route: '/contacts?view=invoices' },
-				{ label: 'Payment Links', route: '/payment-links' },
-				{ label: 'Quotes', route: '/quotes' },
-				{ label: 'Products', route: '/products' },
-				{ label: 'Subscriptions', route: '/subscriptions' }
+				{ label: 'Overview', route: '/platform/overview' },
+				{ label: 'Payments', route: '/platform/payments' },
+				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
+				{ label: 'Payment Links', route: '/platform/payment-links' },
+				{ label: 'Quotes', route: '/platform/quotes' },
+				{ label: 'Products', route: '/platform/products' },
+				{ label: 'Subscriptions', route: '/platform/subscriptions' }
 			]
 		},
+		// {
+		// 	icon: faShapes,
+		// 	label: 'Automations',
+		// 	section: 'Automations',
+		// 	route: '/platform/automations',
+		// 	subItems: []
+		// },
 		{
-			icon: faShapes,
-			label: 'Automations',
-			section: 'Automations',
-			route: '/automations',
+			icon: faChartLine,
+			label: 'Commodity Prices',
+			section: 'Commodity Prices',
+			route: '/platform/commodity',
 			subItems: []
 		},
 		{
-			icon: faChartLine,
-			label: 'Trends',
-			section: 'Trends',
-			subItems: [
-				{ label: 'Buyers Price', route: '/buyers-prices' },
-				{ label: 'Sellers Price ', route: '/sellers-prices' }
-			]
-		},
-		{
-			icon: faDatabase,
-			label: 'Data Management',
-			section: 'Data Management',
-			route: '/data-management',
+			icon: faCloud,
+			label: 'Weather Monitor',
+			section: 'Weather Monitor',
+			route: '/platform/weather',
 			subItems: []
 		},
 		{
@@ -99,11 +83,15 @@
 			label: 'Library',
 			section: 'Library',
 			subItems: [
-				{ label: 'Meeting Scheduler', route: '/meeting-scheduler' },
-				{ label: 'Documents', route: '/documents' }
+				{ label: 'Meeting Scheduler', route: '/platform/meetings' },
+				{ label: 'Documents', route: '/platform/documents' }
 			]
 		}
 	];
+
+	function navigateTo(route: string) {
+		goto(route);
+	}
 
 	function handleSectionChange(section: string) {
 		expandedSection = expandedSection === section ? null : section;
@@ -113,15 +101,36 @@
 		isCollapsed = !isCollapsed;
 	}
 
-	function navigateTo(route: string) {
-		goto(route);
+	function closeSubMenu() {
+		expandedSection = null;
 	}
+
+	// Close submenu on outside click
+	onMount(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			const sidebar = document.querySelector('.sidebar');
+			const navbar = document.querySelector('.navbar');
+
+			if (
+				(!sidebar || !sidebar.contains(event.target as Node)) &&
+				(!navbar || !navbar.contains(event.target as Node))
+			) {
+				closeSubMenu();
+			}
+		};
+
+		document.addEventListener('click', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	});
 </script>
 
 <div
 	class="fixed py-3 inset-y-0 left-0 bg-gray-800 shadow-lg transform lg:translate-x-0 {isOpen
 		? 'translate-x-0'
-		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0"
+		: '-translate-x-full'} transition-transform duration-300 ease-in-out z-50 lg:relative lg:translate-x-0 sidebar"
 	style="width: {isCollapsed ? '60px' : '230px'}"
 >
 	<nav class="space-y-2 flex flex-col relative">
@@ -132,14 +141,14 @@
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class="flex items-center mx-2 p-3 rounded-lg cursor-pointer hover:bg-blue-100 transition-all duration-200 group"
-					on:click={() => (route ? navigateTo(route) : handleSectionChange(section))}
+					onclick={() => (route ? navigateTo(route) : handleSectionChange(section))}
 					style="justify-content: {isCollapsed ? 'center' : 'flex-start'};"
 				>
 					<div class="text-gray-400 flex justify-center items-center w-6 h-6">
 						<Fa {icon} />
 					</div>
 					{#if !isCollapsed}
-						<span class="text-gray-500 font-light text-base ml-2 flex-grow">{label}</span>
+						<span class="text-gray-500 font-light text-sm ml-2 flex-grow">{label}</span>
 						{#if subItems.length > 0}
 							<div
 								class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -158,9 +167,9 @@
 									<path
 										id="XMLID_222_"
 										d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
-                c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
-                C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
-                C255,161.018,253.42,157.202,250.606,154.389z"
+                        c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+                        C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+                        C255,161.018,253.42,157.202,250.606,154.389z"
 									/>
 								</svg>
 							</div>
@@ -178,8 +187,8 @@
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div
-								class="text-gray-400 text-base py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
-								on:click={() => navigateTo(route)}
+								class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
+								onclick={() => navigateTo(route)}
 							>
 								{label}
 							</div>
@@ -189,11 +198,12 @@
 			</div>
 		{/each}
 	</nav>
+
 	<!-- Back Button -->
 	<div class="absolute bottom-4 right-4">
 		<button
 			class="flex items-center justify-center p-1 rounded-full bg-gray-400 text-gray-800 dark:text-white shadow-lg"
-			on:click={toggleCollapse}
+			onclick={toggleCollapse}
 		>
 			{#if isCollapsed}
 				<svg
@@ -204,11 +214,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
 				</svg>
 			{/if}
 			{#if !isCollapsed}
@@ -220,11 +226,7 @@
 					stroke="currentColor"
 					class="size-4"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-					/>
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
 				</svg>
 			{/if}
 		</button>
