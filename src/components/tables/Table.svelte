@@ -79,7 +79,6 @@
 	function handleSelect(event: CustomEvent<{ item: string }>) {
 		const selected = event.detail.item;
 
-
 		if (selected === '25 per page') itemsPerPage.set(25);
 		else if (selected === '50 per page') itemsPerPage.set(50);
 		else if (selected === '100 per page') itemsPerPage.set(100);
@@ -115,19 +114,19 @@
 
 <div>
 	<div
-		class="flex p-1 bg-gray-400 justify-between items-center border-t border-l border-r border-gray-300"
+		class="flex p-1 justify-between items-center border-t border-l border-r border-gray-300 dark:border-gray-200"
 	>
 		<div class="flex gap-2">
 			<SearchBar mode="table" placeholder="Search anything" bind:query={$searchQuery} />
 
 			{#if $selectedRowCount > 0}
 				<div class="flex items-center ml-4">
-					<span class="text-gray-700 text-sm font-medium">
+					<span class="text-gray-200 dark:text-gray-400 text-sm font-medium">
 						{$selectedRowCount} selected
 					</span>
 					<a
 						href="/"
-						class="ml-2 text-blue-600 text-sm hover:underline cursor-pointer"
+						class="ml-2 text-blue-200 text-sm hover:underline cursor-pointer"
 						onclick={deleteSelectedRows}
 					>
 						Delete
@@ -145,7 +144,7 @@
 		<table class="table-auto w-full border">
 			<thead>
 				<tr>
-					<th class="p-2 border border-gray-300 bg-gray-400 text-left">
+					<th class="p-2 border border-gray-300 dark:border-gray-200 bg-gray-400 dark:bg-gray-800 text-left">
 						<input
 							type="checkbox"
 							class="form-checkbox h-4 w-4 text-gray-600"
@@ -155,7 +154,7 @@
 					</th>
 					{#each data.columns as column, index}
 						<th
-							class="p-2 border border-gray-300 bg-gray-400 cursor-pointer text-left"
+							class="p-2 border border-gray-300 dark:border-gray-200 bg-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-pointer text-left"
 							onclick={() => toggleSort(index)}
 						>
 							<div class="flex items-center justify-between">
@@ -183,16 +182,19 @@
 			<tbody>
 				{#each $sortedAndPaginatedRows as row, rowIndex}
 					<tr>
-						<td class="p-2 border border-gray-300">
+						<td class="p-2 border border-gray-300 dark:border-gray-200">
 							<input
 								type="checkbox"
-								class="form-checkbox h-4 w-4 text-gray-600"
+								class="form-checkbox h-4 w-4 text-gray-200 dark:text-light"
 								bind:checked={$selectedRows[rowIndex]}
 								onchange={(event) => handleRowCheckboxChange(rowIndex, event)}
 							/>
 						</td>
 						{#each row as cell}
-							<td class="p-2 border border-gray-300 text-base font-light">{cell}</td>
+							<td
+								class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
+								>{cell}</td
+							>
 						{/each}
 					</tr>
 				{/each}
@@ -204,7 +206,7 @@
 		</div>
 	{/if}
 
-	<nav class="flex items-center justify-between bg-white px-4 py-3 sm:px-6" aria-label="Pagination">
+	<nav class="flex items-center justify-between px-4 py-3 sm:px-6" aria-label="Pagination">
 		<div class="flex mx-auto px-5 items-center">
 			<Button
 				text="Previous"
@@ -214,10 +216,8 @@
 				on:click={() => $currentPage > 1 && currentPage.set($currentPage - 1)}
 			/>
 
-			<p class="mx-3 text-sm text-gray-500">
-				<span class="bg-green-300 p-1 border border-gray-300 text-green-100 rounded-sm"
-					>{$currentPage}
-				</span>
+			<p class="mx-3 text-sm dark:text-light text-dark">
+				<span class=" px-2 py-1 border border-gray-300 rounded-sm">{$currentPage} </span>
 			</p>
 
 			<Button

@@ -5,7 +5,7 @@
 
 	interface Document {
 		name: string;
-		linksCreated: number;
+		type: string;
 		views: number;
 		owner: string;
 		lastUpdated: string;
@@ -14,17 +14,17 @@
 	const documents: Document[] = [
 		{
 			name: 'FarmHub.pdf',
-			linksCreated: 0,
+			type: 'Properietary',
 			views: 1,
 			owner: 'Borneel Bikash Phukan',
 			lastUpdated: 'Nov 25, 2024'
 		}
 	];
 
-	const columns = ['Name', 'Links Created', 'Views', 'Owner', 'Last Updated'];
+	const columns = ['Name', 'Type', 'Views', 'Owner', 'Last Updated'];
 	const rows = documents.map((doc) => [
 		doc.name,
-		doc.linksCreated,
+		doc.type,
 		doc.views,
 		doc.owner,
 		doc.lastUpdated
@@ -51,9 +51,9 @@
 
 <div class="container mx-auto p-4">
 	<div class="flex items-center justify-between border-b mb-4">
-		<h2 class="text-lg font-bold">Document</h2>
+		<h2 class="text-lg font-bold dark:text-light">Document</h2>
 
-		<div class="flex justify-between items-center py-1 bg-white relative mb-4">
+		<div class="flex justify-between items-center relative mb-4">
 			<div class="flex gap-2">
 				<Button text="Upload Document" style="primary" add />
 			</div>

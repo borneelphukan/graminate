@@ -161,10 +161,10 @@
 	}
 </script>
 
-<div class="flex justify-between items-center bg-white relative mb-4">
+<div class="flex justify-between items-center bg-white dark:bg-dark relative mb-4">
 	<div class="relative">
 		<button
-			class="flex items-center text-lg font-semibold bg-white rounded focus:outline-none"
+			class="flex items-center text-lg font-semibold dark:text-white rounded focus:outline-none"
 			onclick={() => (dropdownOpen = !dropdownOpen)}
 		>
 			{#if $view === 'contacts'}
@@ -193,7 +193,7 @@
 		{#if dropdownOpen}
 			<SearchDropdown items={dropdownItems} {navigateTo} />
 		{/if}
-		<p class="text-xs text-gray-100">{$totalRecordCount} Record(s)</p>
+		<p class="text-xs text-gray-100 dark:text-light">{$totalRecordCount} Record(s)</p>
 	</div>
 
 	<div class="flex gap-2">

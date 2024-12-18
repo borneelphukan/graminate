@@ -27,7 +27,7 @@
 <div>
 	{#if type === 'form' && label}
 		<!-- svelte-ignore a11y_label_has_associated_control -->
-		<label class="block mb-1 text-sm font-medium text-gray-700">{label}</label>
+		<label class="block mb-1 text-sm font-medium text-dark dark:text-light">{label}</label>
 	{/if}
 
 	<div
@@ -37,7 +37,7 @@
 	>
 		<!-- Selected Item Button -->
 		<button
-			class="flex items-center justify-between px-4 py-2 text-sm bg-white hover:underline w-full"
+			class="flex text-dark dark:text-light items-center justify-between px-4 py-2 text-sm hover:underline w-full"
 			onclick={toggleDropdown}
 			type="button"
 		>
@@ -59,14 +59,14 @@
 		<!-- Dropdown Menu -->
 		{#if isOpen}
 			<ul
-				class="absolute z-10 mt-2 bg-white rounded-md shadow-lg text-center max-h-40 overflow-y-auto w-full"
+				class="absolute z-10 mt-2 bg-white dark:bg-dark rounded-md shadow-lg text-center max-h-40 overflow-y-auto w-full"
 			>
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				{#each items as item}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<li
-						class="px-4 py-2 text-blue-100 text-sm font-medium cursor-pointer hover:bg-gray-400"
+						class="px-4 py-2 text-dark dark:text-light text-sm font-medium cursor-pointer hover:bg-dark-100"
 						onclick={() => selectItem(item)}
 					>
 						{item}

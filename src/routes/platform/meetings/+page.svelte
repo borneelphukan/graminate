@@ -48,8 +48,6 @@
 
 	const paginationItems = ['25 per page', '50 per page', '100 per page'];
 	const totalRecordCount = rows.length;
-
-	// Modal State
 	const isModalOpen = writable(false);
 
 	const openModal = () => {
@@ -63,9 +61,9 @@
 
 <div class="container mx-auto p-4">
 	<div class="flex items-center justify-between border-b mb-4">
-		<h2 class="text-lg font-bold">Meetings</h2>
+		<h2 class="text-lg font-bold dark:text-light">Meetings</h2>
 
-		<div class="flex justify-between items-center py-1 bg-white relative mb-4">
+		<div class="flex justify-between items-center relative mb-4">
 			<div class="flex gap-2">
 				<Button text="Create Meeting" style="primary" add on:click={openModal} />
 			</div>

@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
+	import ToggleSwitch from '../ui/ToggleSwitch.svelte';
+	let isDarkMode = false;
+
+	function toggleTheme() {
+		isDarkMode = !isDarkMode;
+		document.documentElement.classList.toggle('dark', isDarkMode);
+	}
+
 	let notificationCount: number = 0;
 	let notifications = [
 		{
@@ -255,7 +263,7 @@
 					</button>
 					{#if isDropdownOpen}
 						<div
-							class="origin-top-right absolute right-0 top-16 w-96 rounded-md shadow-lg py-4 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+							class="origin-top-right absolute right-0 top-16 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-dark-100 ring-1 ring-black ring-opacity-5 focus:outline-none"
 							role="menu"
 							aria-orientation="vertical"
 							aria-labelledby="user-menu"
@@ -264,15 +272,19 @@
 							<div class="px-4 pb-3 border-b border-gray-300">
 								<div class="flex items-center">
 									<img class="h-12 w-12 rounded-full" src={user.imageUrl} alt={user.name} />
-									<div class="ml-3">
-										<p class="text-lg font-semibold text-gray-800">{user.name}</p>
+									<div class="ml-3 flex-1">
+										<p class="text-lg font-semibold text-gray-100 dark:text-white">{user.name}</p>
 										<p class="text-sm text-gray-300">{user.email}</p>
-										<a
-											href="/platform/settings/general"
-											class="text-sm font-medium text-green-600 hover:underline"
-										>
-											Profile & Preferences
-										</a>
+										<!-- Flex container for left-right alignment -->
+										<div class="flex items-center justify-between">
+											<a
+												href="/platform/settings/general"
+												class="text-sm font-medium text-green-600 hover:underline"
+											>
+												Profile & Preferences
+											</a>
+											<ToggleSwitch switchAction={toggleTheme} />
+										</div>
 									</div>
 								</div>
 							</div>
@@ -280,7 +292,7 @@
 							<!-- Share Feedback -->
 							<a
 								href="/feedback"
-								class="flex items-center px-4 py-3 border-b border-gray-300 text-sm font-medium text-gray-600 hover:bg-gray-400"
+								class="flex items-center px-4 py-3 border-b border-gray-300 text-sm font-medium text-gray-200 dark:text-gray-500 hover:bg-gray-400 dark:hover:bg-gray-200"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +300,7 @@
 									viewBox="0 0 24 24"
 									stroke-width="1.5"
 									stroke="currentColor"
-									class="h-5 w-5 text-gray-300 mr-2"
+									class="h-5 w-5 mr-2"
 								>
 									<path
 										stroke-linecap="round"
@@ -296,46 +308,44 @@
 										d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
 									/>
 								</svg>
-
 								Share navigation feedback
 							</a>
 
 							<!-- Account Section -->
 							<div class="px-4 py-3 border-b border-gray-300">
-								<p class="text-sm font-semibold text-gray-600">Account</p>
-								<p class="text-sm py-1 font-medium text-gray-200">{accountDetails.accountName}</p>
-								<p class="text-sm text-gray-200">{accountDetails.accountNumber}</p>
+								<p class="text-sm font-semibold text-gray-100 dark:text-gray-500">Account</p>
+								<p class="text-sm py-1 font-medium text-gray-200 dark:text-gray-400">
+									{accountDetails.accountName}
+								</p>
+								<p class="text-sm text-gray-200 dark:text-gray-400">
+									{accountDetails.accountNumber}
+								</p>
 							</div>
 
 							<!-- Invite Team -->
 							<a
 								href="/invite-team"
-								class="flex items-center px-4 py-3 border-b border-gray-300 text-sm font-medium text-gray-600 hover:bg-gray-400"
+								class="flex items-center px-4 py-3 border-b border-gray-300 text-sm font-medium text-gray-200 dark:text-gray-500 hover:bg-gray-400 dark:hover:bg-gray-200"
 							>
 								<svg
-									width="800px"
-									height="800px"
 									viewBox="0 0 24 24"
 									xmlns="http://www.w3.org/2000/svg"
-									class="h-5 w-5 mr-2"
+									class="h-5 w-5 mr-2 bg-white dark:bg-gray-500 rounded"
 								>
-									<g>
-										<path fill="none" d="M0 0h24v24H0z" />
-										<path
-											fill-rule="nonzero"
-											d="M12 11a5 5 0 0 1 5 5v6h-2v-6a3 3 0 0 0-2.824-2.995L12 13a3 3 0 0 0-2.995 2.824L9 16v6H7v-6a5 5 0 0 1 5-5zm-6.5 3c.279 0 .55.033.81.094a5.947 5.947 0 0 0-.301 1.575L6 16v.086a1.492 1.492 0 0 0-.356-.08L5.5 16a1.5 1.5 0 0 0-1.493 1.356L4 17.5V22H2v-4.5A3.5 3.5 0 0 1 5.5 14zm13 0a3.5 3.5 0 0 1 3.5 3.5V22h-2v-4.5a1.5 1.5 0 0 0-1.356-1.493L18.5 16c-.175 0-.343.03-.5.085V16c0-.666-.108-1.306-.309-1.904.259-.063.53-.096.809-.096zm-13-6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm13 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm-13 2a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zm13 0a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zM12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
-										/>
-									</g>
+									<path fill="none" d="M0 0h24v24H0z" />
+									<path
+										fill-rule="nonzero"
+										d="M12 11a5 5 0 0 1 5 5v6h-2v-6a3 3 0 0 0-2.824-2.995L12 13a3 3 0 0 0-2.995 2.824L9 16v6H7v-6a5 5 0 0 1 5-5zm-6.5 3c.279 0 .55.033.81.094a5.947 5.947 0 0 0-.301 1.575L6 16v.086a1.492 1.492 0 0 0-.356-.08L5.5 16a1.5 1.5 0 0 0-1.493 1.356L4 17.5V22H2v-4.5A3.5 3.5 0 0 1 5.5 14zm13 0a3.5 3.5 0 0 1 3.5 3.5V22h-2v-4.5a1.5 1.5 0 0 0-1.356-1.493L18.5 16c-.175 0-.343.03-.5.085V16c0-.666-.108-1.306-.309-1.904.259-.063.53-.096.809-.096zm-13-6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm13 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm-13 2a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zm13 0a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zM12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+									/>
 								</svg>
 								Invite your team
 							</a>
-
 							<!-- Navigation Links -->
 							<div class="px-4 py-3">
 								{#each userNavigation as item}
 									<a
 										href={item.href}
-										class="flex items-center mb-2 text-sm font-medium text-gray-600 hover:underline"
+										class="flex items-center mb-2 text-sm font-medium text-gray-200 dark:text-gray-500 hover:underline"
 										target={item.external ? '_blank' : '_self'}
 									>
 										{item.name}
@@ -361,7 +371,7 @@
 
 							<!-- Footer -->
 							<div
-								class="flex items-center justify-between px-4 py-3 text-sm text-gray-600 border-t border-gray-300"
+								class="flex items-center justify-between px-4 py-3 text-sm text-gray-200 dark:text-gray-500 border-t border-gray-300"
 							>
 								<a href="/" class="hover:underline">Sign out</a>
 								<a href="/privacy-policy" class="hover:underline">Privacy policy</a>

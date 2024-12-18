@@ -44,7 +44,7 @@
 </script>
 
 <div
-	class={`bg-gradient-to-br from-gray-500 to-gray-400 p-6 shadow-lg rounded-lg relative ${
+	class={`bg-gradient-to-br from-gray-500 to-gray-400 dark:from-dark-100 to-bg-gray-100 p-6 shadow-lg rounded-lg relative ${
 		viewMode === 'Small' ? 'w-1/2' : 'w-full'
 	} my-3`}
 >
@@ -57,7 +57,7 @@
 				viewBox="0 0 24 24"
 				stroke-width="1.5"
 				stroke="currentColor"
-				class="w-6 h-6 cursor-pointer text-gray-200"
+				class="w-6 h-6 cursor-pointer text-dark dark:text-light"
 				onclick={() => (dropdownOpen = !dropdownOpen)}
 				onkeydown={(event) => {
 					if (event.key === 'Enter' || event.key === ' ') {
@@ -202,7 +202,7 @@
 							? 'text-green-200'
 							: index + 1 < currentStep
 								? 'text-green-100'
-								: 'text-gray-100'
+								: 'text-gray-100 dark:text-gray-300'
 					}`}
 					style="width: calc(100% / {limitedSteps.length});"
 				>

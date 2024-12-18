@@ -34,7 +34,7 @@
 		type="text"
 		bind:value={query}
 		{placeholder}
-		class="w-full px-4 py-1 border border-gray-300 focus:border-green-200 rounded-md focus:outline-none"
+		class="w-full px-4 py-1 border border-gray-300 dark:border-gray-200 focus:border-green-200 rounded-md dark:bg-dark-100 focus:outline-none dark:text-gray-500"
 		onkeydown={handleKeyDown}
 	/>
 	<button
@@ -48,7 +48,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="size-6"
+			class="size-5 stroke-gray-800 dark:stroke-white"
 		>
 			<path
 				stroke-linecap="round"

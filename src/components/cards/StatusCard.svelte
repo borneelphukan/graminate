@@ -114,10 +114,10 @@
 </script>
 
 <div
-	class="bg-white bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
+	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-dark-100 to-bg-gray-100 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
 >
 	{#if currentStep === 4}
-		<p class="text-gray-100 text-xl font-semibold flex justify-center items-center h-full my-2">
+		<p class="dark:text-light text-xl font-semibold flex justify-center items-center h-full my-2">
 			{steps[currentStep - 1] || `Step ${currentStep}`}
 		</p>
 		<NavPanel
@@ -132,24 +132,24 @@
 		<div class="flex flex-col items-center sm:items-center md:items-start">
 			<div class="text-center w-full sm:mt-3">
 				{#if activeView === 'Irrigation'}
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Last Irrigation: <span class="font-extralight">{lastWatered}</span>
 					</p>
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Next Irrigation: <span class="font-extralight">{nextWateringDate}</span>
 					</p>
 				{:else if activeView === 'Pesticide'}
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Last Pesticide: <span class="font-extralight">{lastPesticideDone}</span>
 					</p>
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Next Pesticide: <span class="font-extralight">{nextPesticideDate}</span>
 					</p>
 				{:else if activeView === 'Manuring'}
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Last Manuring: <span class="font-extralight">{lastFertilizingDone}</span>
 					</p>
-					<p class="text-gray-100">
+					<p class="text-dark dark:text-light">
 						Next Manuring: <span class="font-extralight">{nextManuringDate}</span>
 					</p>
 				{/if}
@@ -161,7 +161,9 @@
 		</div>
 	{:else}
 		<div class="flex justify-center items-center h-full">
-			<p class="text-gray-100 text-xl font-semibold flex justify-center items-center h-full my-2">
+			<p
+				class="text-gray-100 dark:text-light text-xl font-semibold flex justify-center items-center h-full my-2"
+			>
 				{steps[currentStep - 1] || `Step ${currentStep}`}
 			</p>
 		</div>

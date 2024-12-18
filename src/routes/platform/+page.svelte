@@ -67,7 +67,7 @@
 
 <main class="min-h-screen text-white relative">
 	<header class="px-6 py-4">
-		<h1 class="text-3xl font-bold text-gray-100">Dashboard</h1>
+		<h1 class="text-3xl font-bold text-dark dark:text-light">Dashboard</h1>
 		<hr class="mt-4 border-gray-600" />
 	</header>
 
@@ -84,7 +84,7 @@
 			{/if}
 
 			<div class="flex-grow">
-				<h2 class="text-xl font-semibold text-gray-200 mb-2">Farming Milestones</h2>
+				<h2 class="text-xl font-semibold text-dark dark:text-light mb-2">Farming Milestones</h2>
 				<ProgressCard {steps} {currentStep} onStepChange={({ step }) => (currentStep = step)} />
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					{#if !error}

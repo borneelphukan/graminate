@@ -202,7 +202,7 @@
 	<!-- Back Button -->
 	<div class="absolute bottom-4 right-4">
 		<button
-			class="flex items-center justify-center p-1 rounded-full bg-gray-400 text-gray-800 dark:text-white shadow-lg"
+			class="flex items-center justify-center p-1 rounded-full bg-gray-400 text-gray-200 shadow-lg"
 			onclick={toggleCollapse}
 		>
 			{#if isCollapsed}
