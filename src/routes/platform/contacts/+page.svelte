@@ -161,7 +161,7 @@
 	}
 </script>
 
-<div class="flex justify-between items-center bg-white dark:bg-dark relative mb-4">
+<div class="flex justify-between items-center dark:bg-dark relative mb-4">
 	<div class="relative">
 		<button
 			class="flex items-center text-lg font-semibold dark:text-white rounded focus:outline-none"

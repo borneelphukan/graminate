@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
-	import ToggleSwitch from '../ui/ToggleSwitch.svelte';
+	import ThemeSwitch from '../ui/ThemeSwitch.svelte';
 
 	function toggleThemeHandler() {
 		console.log('Theme toggled');
@@ -281,7 +281,7 @@
 											>
 												Profile & Preferences
 											</a>
-											<ToggleSwitch switchAction={toggleThemeHandler} />
+											<ThemeSwitch switchAction={toggleThemeHandler} />
 										</div>
 									</div>
 								</div>

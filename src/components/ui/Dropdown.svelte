@@ -66,7 +66,7 @@
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<li
-						class="px-4 py-2 text-dark dark:text-light text-sm font-medium cursor-pointer hover:bg-dark-100"
+						class="px-4 py-2 text-dark dark:text-light text-sm font-medium cursor-pointer hover:bg-gray-400 dark:hover:bg-dark-100"
 						onclick={() => selectItem(item)}
 					>
 						{item}

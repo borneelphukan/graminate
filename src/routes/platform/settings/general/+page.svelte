@@ -3,6 +3,7 @@
 	import { derived } from 'svelte/store';
 	import Dropdown from '../../../../components/ui/Dropdown.svelte';
 	import TextField from '../../../../components/ui/TextField.svelte';
+	import { writable } from 'svelte/store';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'German', 'French', 'Spanish'];
@@ -11,7 +12,10 @@
 	let selectedFormat = 'India';
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
+	let defaultLocation = 'Duliajan';
 	let selectedFile: File | null = null;
+
+	const temperatureScale = ['Celsius', 'Farenheit', 'Kelvin'];
 
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -107,6 +111,21 @@
 		<div class="border-gray-300 rounded-lg">
 			<h2 class="text-lg font-semibold mb-4">Weather Settings</h2>
 			<p class="text-gray-300 mb-6">This applies across your FarmHub account.</p>
+		</div>
+
+		<div class="grid grid-cols-2 gap-2">
+			<TextField
+				bind:value={defaultLocation}
+				label="Farm Location"
+				placeholder="Region of your Farmland"
+			/>
+			<Dropdown
+				items={temperatureScale}
+		
+				type="form"
+				label="Temperature Unit Scale"
+				width="full"
+			/>
 		</div>
 	{/if}
 
