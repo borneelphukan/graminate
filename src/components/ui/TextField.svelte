@@ -25,7 +25,7 @@
 		}
 	};
 
-	$: fieldClass = `${getFieldClass()} py-2 px-4 rounded`;
+	$: fieldClass = `${getFieldClass()} py-1 px-2 rounded`;
 	$: iconPos = icon === 'left' ? 'left' : icon === 'right' ? 'right' : '';
 	$: iconColor = type === 'error' ? 'text-red-200' : 'text-gray-300';
 </script>

@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
+	import Button from '../../../components/ui/Button.svelte';
+	import TextArea from '../../../components/ui/TextArea.svelte';
+	import TextField from '../../../components/ui/TextField.svelte';
 
 	type Task = {
 		id: string;
@@ -98,9 +101,14 @@
 			}
 		];
 
-		// Reset input and state
 		newColumnTitle = '';
 		isAddingColumn = false;
+	}
+
+	function cancelColumn() {
+		// Reset the state for adding a new column
+		newColumnTitle = ''; // Clear the input field
+		isAddingColumn = false; // Close the create column section
 	}
 </script>
 
@@ -116,13 +124,13 @@
 >
 	<div class="max-w-6xl mx-auto">
 		<h2 class="text-sm">Project / Project_Name</h2>
-		<h1 class="text-lg font-bold mt-2 mb-6">KANBAN board</h1>
+		<h1 class="text-lg font-bold mt-2 mb-6">TASK board</h1>
 
 		<!-- Add horizontal scrolling container -->
-		<div class="flex gap-6 overflow-x-auto scrollbar-hide">
+		<div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
 			{#each columns as column, colIndex}
 				<div
-					class="bg-white shadow rounded-lg p-4 relative flex-none w-72"
+					class="bg-white shadow rounded-lg p-2 relative flex-none w-72"
 					on:click|stopPropagation
 				>
 					{#if $editingColumn === colIndex}
@@ -195,65 +203,88 @@
 						{/each}
 					</div>
 					{#if $addingTask === colIndex}
-						<div class="mt-4 bg-gray-500 p-4 rounded-lg shadow-sm">
-							<textarea
-								class="w-full p-2 rounded-lg text-sm resize-none"
-								placeholder="Task title"
-								bind:value={newTaskTitle}
-							></textarea>
+						<div class="mt-2 bg-gray-500 p-2 rounded-lg shadow-sm">
+							<TextArea placeholder="What needs to be done?" bind:value={newTaskTitle} />
 							<div
 								class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0"
 							>
-								<input
-									type="text"
-									class="p-2 rounded-lg text-sm w-full md:flex-1 md:mr-2"
-									placeholder="Task Type"
-									bind:value={newTaskType}
-								/>
-								<button
-									class="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-									on:click={() => addTask(colIndex)}
-								>
-									Create
-								</button>
+								<TextField type="text" placeholder="Task Type" bind:value={newTaskType} />
+
+								<Button text="Create" style="secondary" on:click={() => addTask(colIndex)} />
 							</div>
 						</div>
 					{:else}
-						<button
-							class="mt-4 w-full bg-gray-500 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-400 focus:outline-none"
-							on:click={() => startAddingTask(colIndex)}
-						>
-							+ Create issue
-						</button>
+						<div class="mt-4 w-full py-2 mx-auto">
+							<Button
+								text="Create issue"
+								style="primary"
+								on:click={() => startAddingTask(colIndex)}
+								add
+								width="large"
+							/>
+						</div>
 					{/if}
 				</div>
 			{/each}
 
 			<!-- Add New Column Button -->
-			<div class="bg-white shadow rounded-lg p-4 flex-none w-72 flex items-center justify-center">
+			<div class="rounded-lg p-4 flex-none flex items-center justify-center">
 				{#if isAddingColumn}
 					<div class="w-full">
-						<input
-							type="text"
-							class="p-2 rounded-lg text-sm w-full border border-gray-300"
-							placeholder="Column title"
-							bind:value={newColumnTitle}
-						/>
-						<button
-							class="mt-2 w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-							on:click={addNewColumn}
-						>
-							Confirm
-						</button>
+						<TextField type="text" placeholder="Column title" bind:value={newColumnTitle} />
+						<div class="flex flex-1 flex-row gap-2 items-end justify-end">
+							<button
+								aria-label="create"
+								class="mt-2 bg-gray-300 text-white p-1 rounded-lg text-sm shadow-md"
+								on:click={addNewColumn}
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+									class="size-6"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+								</svg>
+							</button>
+							<button
+								aria-label="cancel"
+								class="mt-2 bg-gray-300 text-white p-1 rounded-lg text-sm shadow-md"
+								on:click={cancelColumn}
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+									class="size-6"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
 					</div>
 				{:else}
 					<button
-						class="w-full bg-gray-500 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-400"
+						aria-label="add"
+						class="w-full bg-gray-500 text-gray-600 p-2 rounded-lg text-sm hover:bg-gray-400"
 						on:click={() => {
 							isAddingColumn = true;
 						}}
 					>
-						+ Add column
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+						</svg>
 					</button>
 				{/if}
 			</div>

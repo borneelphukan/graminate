@@ -1,15 +1,29 @@
-<script>
-	export let text = 'Button';
-	export let arrow = ''; // "up", "down", "left", "right"
-	export let style = 'primary'; // "primary", "secondary", "ghost"
-	export let isDisabled = false;
-	export let add = false; // "Add" icon
+<script lang="ts">
+	export let text: string = 'Button';
+	export let arrow: '' | 'up' | 'down' | 'left' | 'right' = '';
+	export let style: 'primary' | 'secondary' | 'ghost' | 'delete' = 'primary';
+	export let isDisabled: boolean = false;
+	export let width: 'small' | 'medium' | 'large' | undefined = undefined;
+	export let add: boolean = false;
+
+	const getWidth = (): string => {
+		switch (width) {
+			case 'small':
+				return 'w-1/12';
+			case 'medium':
+				return 'w-1/6';
+			case 'large':
+				return 'w-full';
+			default:
+				return ''; // Default empty class for undefined
+		}
+	};
 
 	let buttonClass = '';
 	let arrowIcon = '';
 	let addIcon = '';
 
-	const getButtonClass = () => {
+	const getButtonClass = (): string => {
 		switch (style) {
 			case 'delete':
 				return 'bg-red-200 text-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:opacity-50 text-white justify-center ';
@@ -24,15 +38,19 @@
 		}
 	};
 
-	$: buttonClass = `${getButtonClass()} py-1 pl-3 pr-2 rounded rounded-md}`;
+	$: buttonClass = `${getButtonClass()} py-1 pl-3 pr-2 rounded rounded-md ${getWidth()}`;
 
 	// Define SVG path for arrows based on the direction
-	$: arrowIcon = 
-		arrow === 'up' ? 'M5 15l5-5 5 5' :           // Up arrow (inverted V)
-		arrow === 'down' ? 'M5 11l5 5 5-5' :        // Down arrow (V)
-		arrow === 'left' ? 'M15 19l-7-7 7-7' :      // Left arrow (<)
-		arrow === 'right' ? 'M9 5l7 7-7 7' :        // Right arrow (>)
-		'';
+	$: arrowIcon =
+		arrow === 'up'
+			? 'M5 15l5-5 5 5' // Up arrow (inverted V)
+			: arrow === 'down'
+				? 'M5 11l5 5 5-5' // Down arrow (V)
+				: arrow === 'left'
+					? 'M15 19l-7-7 7-7' // Left arrow (<)
+					: arrow === 'right'
+						? 'M9 5l7 7-7 7' // Right arrow (>)
+						: '';
 
 	// Add icon for "Add" functionality
 	$: addIcon = add ? 'M12 4.5v15m7.5-7.5h-15' : '';
@@ -47,7 +65,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6 mr-2"
+			class="w-4 h-4 mr-2"
 		>
 			<path stroke-linecap="round" stroke-linejoin="round" d={addIcon} />
 		</svg>
