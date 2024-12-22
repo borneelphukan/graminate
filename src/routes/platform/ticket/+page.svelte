@@ -12,7 +12,7 @@
 		tasks: Task[];
 	};
 
-	const columns: Column[] = [
+	let columns: Column[] = [
 		{
 			title: 'TO DO',
 			tasks: [{ id: 'FAR-1', title: 'Make Ticket section similar to Jira interface', type: 'feat' }]
@@ -33,6 +33,9 @@
 	let newTaskTitle = '';
 	let newTaskType = '';
 	let totalTaskCount = 3;
+
+	let isAddingColumn = false; // Track if a new column is being added
+	let newColumnTitle = ''; // Track the title of the new column
 
 	function startAddingTask(index: number) {
 		newTaskTitle = '';
@@ -80,9 +83,27 @@
 		}
 		editingColumn.set(null);
 	}
+
+	function addNewColumn() {
+		if (!newColumnTitle.trim()) {
+			alert('Column title is required');
+			return;
+		}
+
+		columns = [
+			...columns,
+			{
+				title: newColumnTitle.trim(),
+				tasks: []
+			}
+		];
+
+		// Reset input and state
+		newColumnTitle = '';
+		isAddingColumn = false;
+	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
@@ -96,9 +117,14 @@
 	<div class="max-w-6xl mx-auto">
 		<h2 class="text-sm">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6">KANBAN board</h1>
-		<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+		<!-- Add horizontal scrolling container -->
+		<div class="flex gap-6 overflow-x-auto scrollbar-hide">
 			{#each columns as column, colIndex}
-				<div class="bg-white shadow rounded-lg p-4 relative" on:click|stopPropagation>
+				<div
+					class="bg-white shadow rounded-lg p-4 relative flex-none w-72"
+					on:click|stopPropagation
+				>
 					{#if $editingColumn === colIndex}
 						<input
 							type="text"
@@ -202,6 +228,35 @@
 					{/if}
 				</div>
 			{/each}
+
+			<!-- Add New Column Button -->
+			<div class="bg-white shadow rounded-lg p-4 flex-none w-72 flex items-center justify-center">
+				{#if isAddingColumn}
+					<div class="w-full">
+						<input
+							type="text"
+							class="p-2 rounded-lg text-sm w-full border border-gray-300"
+							placeholder="Column title"
+							bind:value={newColumnTitle}
+						/>
+						<button
+							class="mt-2 w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+							on:click={addNewColumn}
+						>
+							Confirm
+						</button>
+					</div>
+				{:else}
+					<button
+						class="w-full bg-gray-500 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-400"
+						on:click={() => {
+							isAddingColumn = true;
+						}}
+					>
+						+ Add column
+					</button>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
