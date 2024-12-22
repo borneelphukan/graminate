@@ -134,7 +134,7 @@
 			</div>
 		{:else}
 			<!-- Small View Navigation -->
-			<div class="relative flex items-center justify-between text-gray-100 mt-5">
+			<div class="relative flex items-center justify-between text-dark dark:text-light mt-5">
 				<!-- Left Navigation Button -->
 				<button
 					aria-label="left-navigation"
@@ -142,6 +142,9 @@
 						if (currentStep > 1) navigateToStep(currentStep - 2, 'left');
 					}}
 					disabled={currentStep === 1}
+					class={`p-2 rounded-full ${
+						currentStep === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-dark hover:bg-gray-400'
+					}`}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -176,6 +179,11 @@
 						if (currentStep < limitedSteps.length) navigateToStep(currentStep, 'right');
 					}}
 					disabled={currentStep === limitedSteps.length}
+					class={`p-2 rounded-full ${
+						currentStep === limitedSteps.length
+							? 'text-gray-300 cursor-not-allowed'
+							: 'text-dark hover:bg-gray-400'
+					}`}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

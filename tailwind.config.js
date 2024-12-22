@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+	darkMode: 'class', // Enable class-based dark mode
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
@@ -53,7 +54,6 @@ export default {
 					300: '#CFFAFE',
 					400: '#E0FCFF'
 				},
-
 				light: '#F9FAFB',
 				dark: {
 					DEFAULT: '#111827', // Primary dark color

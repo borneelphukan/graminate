@@ -1,30 +1,49 @@
 <script lang="ts">
-	// Define switchAction as a function that accepts a boolean argument
-	export let switchAction: (isDark: boolean) => void = () => {};
+	import { onMount } from 'svelte';
 
+	export let switchAction: () => void;
+
+	// Reactive variable to manage the toggle state
 	let isDarkMode = false;
 
-	// Function to toggle light/dark theme
+	// Function to toggle the theme and update the reactive variable
 	function toggleTheme() {
 		isDarkMode = !isDarkMode;
-
-		// Toggle "dark" class on <html>
-		document.documentElement.classList.toggle('dark', isDarkMode);
-
-		// Call any external action passed as a prop
-		switchAction(isDarkMode);
+		const htmlElement = document.documentElement;
+		if (isDarkMode) {
+			htmlElement.classList.add('dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			htmlElement.classList.remove('dark');
+			localStorage.setItem('theme', 'light');
+		}
+		switchAction?.();
 	}
+
+	// Apply the saved theme on page load
+	onMount(() => {
+		const savedTheme = localStorage.getItem('theme');
+		if (savedTheme === 'dark') {
+			isDarkMode = true;
+			document.documentElement.classList.add('dark');
+		} else {
+			isDarkMode = false;
+			document.documentElement.classList.remove('dark');
+		}
+	});
 </script>
 
 <label class="inline-flex flex-col cursor-pointer">
-	<input
-		type="checkbox"
-		value=""
-		checked={isDarkMode}
-		on:change={toggleTheme}
-		class="sr-only peer"
-	/>
+	<!-- Bind the "checked" state to the reactive variable -->
+	<input type="checkbox" on:change={toggleTheme} class="sr-only peer" bind:checked={isDarkMode} />
 	<div
-		class="relative w-11 h-5 bg-gray-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:bg-green-100 peer-checked:after:border-green-200 after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all after:shadow-md peer-checked:bg-green-200 dark:bg-gray-200 peer-checked:dark:bg-green-100"
-	></div>
+		class="relative w-14 h-6 bg-gray-400 peer-focus:outline-none rounded-full
+    peer peer-checked:bg-blue-100 peer-checked:dark:bg-gray-100
+    after:content-[''] after:absolute after:top-0 after:left-0 after:bg-white
+    after:rounded-full after:h-6 after:w-8 after:transition-all
+    after:shadow-md peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"
+	>
+		<span class="absolute left-2 top-1/2 -translate-y-1/2 text-yellow-400 text-base"> ☀️ </span>
+		<span class="absolute right-2 top-1/2 -translate-y-1/2 text-blue-400 text-base"> 🌙 </span>
+	</div>
 </label>

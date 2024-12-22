@@ -6,7 +6,7 @@
 	<title>Settings</title>
 </svelte:head>
 
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-3">
 	<div class="flex flex-col min-h-screen">
 		<div class="flex flex-1">
 			<!-- Sidebar -->

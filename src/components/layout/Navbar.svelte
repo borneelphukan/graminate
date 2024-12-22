@@ -2,11 +2,9 @@
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
 	import ToggleSwitch from '../ui/ToggleSwitch.svelte';
-	let isDarkMode = false;
 
-	function toggleTheme() {
-		isDarkMode = !isDarkMode;
-		document.documentElement.classList.toggle('dark', isDarkMode);
+	function toggleThemeHandler() {
+		console.log('Theme toggled');
 	}
 
 	let notificationCount: number = 0;
@@ -283,7 +281,7 @@
 											>
 												Profile & Preferences
 											</a>
-											<ToggleSwitch switchAction={toggleTheme} />
+											<ToggleSwitch switchAction={toggleThemeHandler} />
 										</div>
 									</div>
 								</div>
