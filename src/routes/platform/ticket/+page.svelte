@@ -28,10 +28,11 @@
 	];
 
 	const addingTask = writable<number | null>(null);
-	const dropdownOpen = writable<{ colIndex: number; taskIndex: number } | null>(null); // Keep track of which dropdown is open
+	const editingColumn = writable<number | null>(null);
+	const dropdownOpen = writable<{ colIndex: number; taskIndex: number } | null>(null);
 	let newTaskTitle = '';
 	let newTaskType = '';
-	let totalTaskCount = 3; // To ensure global task numbering across all columns
+	let totalTaskCount = 3;
 
 	function startAddingTask(index: number) {
 		newTaskTitle = '';
@@ -52,16 +53,13 @@
 			type: newTaskType.trim() || ''
 		};
 
-		// Add the new task to the column
 		columns[index].tasks = [...columns[index].tasks, newTask];
-
-		// Close the input box
 		addingTask.set(null);
 	}
 
 	function deleteTask(colIndex: number, taskIndex: number) {
 		columns[colIndex].tasks = columns[colIndex].tasks.filter((_, i) => i !== taskIndex);
-		dropdownOpen.set(null); // Close dropdown
+		dropdownOpen.set(null);
 	}
 
 	function toggleDropdown(colIndex: number, taskIndex: number) {
@@ -71,35 +69,64 @@
 				: { colIndex, taskIndex }
 		);
 	}
+
+	function startEditingColumn(index: number) {
+		editingColumn.set(index);
+	}
+
+	function saveColumnTitle(index: number, newTitle: string) {
+		if (newTitle.trim()) {
+			columns[index].title = newTitle.trim();
+		}
+		editingColumn.set(null);
+	}
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
 	on:click={() => {
 		addingTask.set(null);
 		dropdownOpen.set(null);
+		editingColumn.set(null);
 	}}
 	class="min-h-screen"
 >
 	<div class="max-w-6xl mx-auto">
 		<h2 class="text-sm">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6">KANBAN board</h1>
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 			{#each columns as column, colIndex}
 				<div class="bg-white shadow rounded-lg p-4 relative" on:click|stopPropagation>
-					<h3 class="text-lg font-semibold text-gray-200 mb-2">{column.title}</h3>
+					{#if $editingColumn === colIndex}
+						<input
+							type="text"
+							class="text-sm text-gray-900 mb-4 border-b-2 border-gray-300 w-full focus:outline-none"
+							bind:value={column.title}
+							on:blur={() => saveColumnTitle(colIndex, column.title)}
+						/>
+					{:else}
+						<button
+							type="button"
+							class="text-sm text-gray-200 mb-4 cursor-pointer focus:outline-none"
+							on:click={() => startEditingColumn(colIndex)}
+						>
+							{column.title}
+						</button>
+					{/if}
 					<div class="space-y-4">
 						{#each column.tasks as task, taskIndex}
 							<div class="bg-gray-500 p-3 rounded-md shadow-sm relative">
-								<div class="flex items-start justify-between">
-									<div>
+								<div class="flex flex-row items-start justify-between">
+									<div class="mr-2 break-words max-w-xs">
 										<p class="text-gray-200">{task.title}</p>
 									</div>
 									<div class="relative">
-										<!-- svelte-ignore a11y_consider_explicit_label -->
-										<button on:click={() => toggleDropdown(colIndex, taskIndex)}>
+										<button
+											aria-label="ellipsis"
+											on:click={() => toggleDropdown(colIndex, taskIndex)}
+										>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												fill="none"
@@ -132,11 +159,11 @@
 								</div>
 								<div class="flex justify-between items-end mt-2">
 									{#if task.type}
-										<span class="text-sm font-semibold text-white bg-blue-600 rounded px-2 py-1">
+										<span class="text-xs font-semibold text-white bg-blue-600 rounded px-2 py-1">
 											{task.type}
 										</span>
 									{/if}
-									<span class="text-xs text-gray-300">{task.id}</span>
+									<span class="text-xs text-gray-300 ml-auto">{task.id}</span>
 								</div>
 							</div>
 						{/each}
@@ -144,19 +171,21 @@
 					{#if $addingTask === colIndex}
 						<div class="mt-4 bg-gray-500 p-4 rounded-lg shadow-sm">
 							<textarea
-								class="w-full border-gray-300 p-2 rounded-lg text-sm"
+								class="w-full p-2 rounded-lg text-sm resize-none"
 								placeholder="Task title"
 								bind:value={newTaskTitle}
 							></textarea>
-							<div class="mt-2 flex justify-between items-center">
+							<div
+								class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0"
+							>
 								<input
 									type="text"
-									class="border-gray-300 p-2 rounded-lg text-sm flex-1 mr-2"
-									placeholder="Type (e.g. feat, bug)"
+									class="p-2 rounded-lg text-sm w-full md:flex-1 md:mr-2"
+									placeholder="Task Type"
 									bind:value={newTaskType}
 								/>
 								<button
-									class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+									class="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
 									on:click={() => addTask(colIndex)}
 								>
 									Create
@@ -165,7 +194,7 @@
 						</div>
 					{:else}
 						<button
-							class="mt-4 w-full bg-gray-500 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+							class="mt-4 w-full bg-gray-500 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-400 focus:outline-none"
 							on:click={() => startAddingTask(colIndex)}
 						>
 							+ Create issue
