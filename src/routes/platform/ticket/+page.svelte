@@ -5,6 +5,11 @@
 	import TextField from '../../../components/ui/TextField.svelte';
 	import DropdownSmall from '../../../components/ui/Dropdown/DropdownSmall.svelte';
 	import TicketModal from '../../../components/modals/TicketModal.svelte';
+	import { dndzone } from 'svelte-dnd-action';
+
+	function handleDrop(event: { detail: { items: Column[] } }) {
+		columns = event.detail.items;
+	}
 
 	type Task = {
 		id: string;
@@ -13,20 +18,24 @@
 	};
 
 	type Column = {
+		id: string;
 		title: string;
 		tasks: Task[];
 	};
 
 	let columns: Column[] = [
 		{
+			id: '1',
 			title: 'TO DO',
 			tasks: [{ id: 'FAR-1', title: 'Make Ticket section similar to Jira interface', type: 'feat' }]
 		},
 		{
+			id: '2',
 			title: 'IN PROGRESS',
 			tasks: [{ id: 'FAR-2', title: 'Complete CRM entry forms', type: '' }]
 		},
 		{
+			id: '3',
 			title: 'DONE',
 			tasks: [{ id: 'FAR-3', title: 'Make landing page for FarmHub', type: '' }]
 		}
@@ -74,6 +83,13 @@
 	}
 
 	function addTask(index: number) {
+		const columnLimit = parseInt(columnLimits[index] || '0', 10);
+
+		if (columnLimit > 0 && columns[index].tasks.length >= columnLimit) {
+			alert(`Task limit reached for the column "${columns[index].title}".`);
+			return;
+		}
+
 		if (!newTaskTitle.trim()) {
 			alert('Task title is required');
 			return;
@@ -138,13 +154,13 @@
 			return;
 		}
 
-		columns = [
-			...columns,
-			{
-				title: newColumnTitle.trim(),
-				tasks: []
-			}
-		];
+		const newColumn: Column = {
+			id: `${Date.now()}`,
+			title: newColumnTitle.trim(),
+			tasks: []
+		};
+
+		columns = [...columns, newColumn];
 
 		newColumnTitle = '';
 		isAddingColumn = false;
@@ -172,13 +188,19 @@
 		<h2 class="text-sm dark:text-light">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 
-		<div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative">
-			{#each columns as column, colIndex}
+		<div
+			class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative"
+			use:dndzone={{ items: columns, flipDurationMs: 200 }}
+			on:consider={handleDrop}
+			on:finalize={handleDrop}
+		>
+			{#each columns as column, colIndex (column.id)}
 				<div
 					class="bg-gray-500 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-700 shadow rounded-lg p-2 relative flex-none w-1/4"
+					style="flex-shrink: 0;"
 					on:click|stopPropagation
 				>
-					<div class="flex justify-between items-center">
+					<div class="flex justify-between items-center cursor-grab drag-handle">
 						{#if $editingColumn === colIndex}
 							<input
 								type="text"
@@ -324,9 +346,20 @@
 							<Button
 								text="Create issue"
 								style="primary"
-								on:click={() => startAddingTask(colIndex)}
+								on:click={() => {
+									if (
+										!(
+											columnLimits[colIndex] &&
+											columns[colIndex].tasks.length >= parseInt(columnLimits[colIndex], 10)
+										)
+									) {
+										startAddingTask(colIndex);
+									}
+								}}
 								add
 								width="large"
+								isDisabled={!!columnLimits[colIndex] &&
+									columns[colIndex].tasks.length >= parseInt(columnLimits[colIndex] || '0', 10)}
 							/>
 						</div>
 					{/if}
