@@ -170,6 +170,10 @@
 		newColumnTitle = '';
 		isAddingColumn = false;
 	}
+
+	function goBack() {
+		history.back();
+	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -184,8 +188,9 @@
 	}}
 	class="min-h-screen"
 >
+	<div class="mb-4"><Button text="Back" style="ghost" arrow="left" on:click={goBack} /></div>
 	<div class="max-w-6xl mx-auto">
-		<h2 class="text-sm dark:text-light">Project / Project_Name</h2>
+		<h2 class="text-md dark:text-light mb-4">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 
 		<div
@@ -336,7 +341,12 @@
 								class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 z-20"
 							>
 								<!-- Task Type Dropdown -->
-								<DropdownSmall items={dropdownItems} direction="up" bind:selected={newTaskType} />
+								<DropdownSmall
+									items={dropdownItems}
+									direction="up"
+									placeholder="Task Type"
+									bind:selected={newTaskType}
+								/>
 								<!-- Create Button -->
 								<Button text="Create" style="secondary" on:click={() => addTask(colIndex)} />
 							</div>

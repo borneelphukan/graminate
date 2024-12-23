@@ -3,6 +3,7 @@
 	export let selected: string = '';
 	export let direction: 'up' | 'down' = 'down';
 	export let label: string | null = null;
+	export let placeholder: string = 'Select an option'; // New placeholder parameter
 	let labelOpen: boolean = false;
 	const dropdownId = `dropdown-${Math.random().toString(36).substring(2, 15)}`;
 </script>
@@ -21,7 +22,8 @@
 		aria-haspopup="listbox"
 		aria-expanded={labelOpen}
 	>
-		{selected || 'Select an option'}
+		{selected || placeholder}
+		<!-- Use the placeholder parameter -->
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
