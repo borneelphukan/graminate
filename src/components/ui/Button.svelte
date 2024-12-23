@@ -32,13 +32,13 @@
 			case 'secondary':
 				return 'bg-white dark:bg-transparent m-1 text-sm disabled:text-gray-400 disabled:bg-transparent disabled:border-gray-300 hover:bg-green-300 dark:hover:bg-transparent hover:bg-teal-50 text-green-200 hover:text-green-200 border border-green-200 justify-center';
 			case 'ghost':
-				return 'bg-transparent text-sm font-semibold text-gray-200 justify-center disabled:text-gray-300 disabled:bg-transparent';
+				return 'bg-transparent hover:bg-gray-500 text-sm font-semibold text-gray-200 justify-center disabled:text-gray-300 disabled:bg-transparent';
 			default:
 				return '';
 		}
 	};
 
-	$: buttonClass = `${getButtonClass()} py-1 pl-3 pr-2 rounded rounded-md ${getWidth()}`;
+	$: buttonClass = `${getButtonClass()} py-1 px-2 rounded rounded-md ${getWidth()}`;
 
 	// Define SVG path for arrows based on the direction
 	$: arrowIcon =

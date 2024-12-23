@@ -9,11 +9,14 @@
 	export let calendar = false;
 	export let password = false;
 	export let value = ''; // Add this prop for two-way binding
+	export let width = ''; // Add this prop for setting width (small, medium, large)
 
 	let fieldClass = '';
 	let iconPos = '';
 	let iconColor = '';
+	let widthClass = 'w-auto'; // Default width
 
+	// Function to determine the input field styling based on type
 	const getFieldClass = () => {
 		switch (type) {
 			case 'error':
@@ -25,12 +28,27 @@
 		}
 	};
 
+	// Function to determine the width class
+	const getWidthClass = () => {
+		switch (width) {
+			case 'small':
+				return 'w-1/4';
+			case 'medium':
+				return 'w-1/2';
+			case 'large':
+				return 'w-full';
+			default:
+				return 'w-auto';
+		}
+	};
+
 	$: fieldClass = `${getFieldClass()} py-1 px-2 rounded`;
 	$: iconPos = icon === 'left' ? 'left' : icon === 'right' ? 'right' : '';
 	$: iconColor = type === 'error' ? 'text-red-200' : 'text-gray-300';
+	$: widthClass = getWidthClass();
 </script>
 
-<div class="w-full">
+<div class="w-full {widthClass}">
 	<label
 		for={calendar ? 'calendar' : password ? 'password' : 'text'}
 		class="block mb-1 text-sm font-medium text-gray-200 dark:text-gray-300"
