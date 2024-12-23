@@ -10,13 +10,13 @@
 
 <div class="relative w-full md:w-auto">
 	{#if label}
-		<label for={dropdownId} class="block mb-1 text-sm font-medium text-dark dark:text-light"
+		<label for={dropdownId} class="block mb-1 text-sm font-medium text-dark dark:text-gray-300"
 			>{label}</label
 		>
 	{/if}
 
 	<button
-		class="w-full bg-white dark:bg-slate-800 dark:text-light text-sm p-1 rounded flex justify-between items-center"
+		class="w-full bg-white dark:bg-gray-700 dark:text-light text-sm p-1 rounded flex justify-between items-center"
 		on:click={() => (labelOpen = !labelOpen)}
 		style="min-width: 180px; max-width: 90%; box-sizing: border-box;"
 		aria-haspopup="listbox"

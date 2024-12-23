@@ -34,7 +34,7 @@
 		type="text"
 		bind:value={query}
 		{placeholder}
-		class="w-full px-4 py-1 border border-gray-300 dark:border-gray-200 focus:border-green-200 rounded-md dark:bg-dark-100 focus:outline-none dark:text-gray-500"
+		class="w-full px-4 py-1 border border-gray-300 dark:border-gray-200 focus:border-green-200 rounded-md dark:bg-gray-700 focus:outline-none dark:text-gray-500"
 		onkeydown={handleKeyDown}
 	/>
 	<button

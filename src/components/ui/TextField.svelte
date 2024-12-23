@@ -1,22 +1,20 @@
 <script>
 	export let label = '';
 	export let placeholder = '';
-	export let optional_message = '';
 	export let error_message = "That's an error!";
 	export let isDisabled = false;
 	export let type = ''; // "success", "error", "disabled"
 	export let icon = ''; // "left", "right"
 	export let calendar = false;
 	export let password = false;
-	export let value = ''; // Add this prop for two-way binding
-	export let width = ''; // Add this prop for setting width (small, medium, large)
+	export let value = '';
+	export let width = '';
 
 	let fieldClass = '';
 	let iconPos = '';
 	let iconColor = '';
-	let widthClass = 'w-auto'; // Default width
+	let widthClass = 'w-auto';
 
-	// Function to determine the input field styling based on type
 	const getFieldClass = () => {
 		switch (type) {
 			case 'error':
@@ -24,11 +22,10 @@
 			case 'disabled':
 				return 'border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200 ';
 			default:
-				return 'border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200';
+				return 'border border-gray-400 dark:border-gray-200 text-gray-100 placeholder-gray-300 text-sm dark:bg-gray-700 dark:text-light rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200';
 		}
 	};
 
-	// Function to determine the width class
 	const getWidthClass = () => {
 		switch (width) {
 			case 'small':
@@ -119,11 +116,6 @@
 				</svg>
 			</span>
 			<p class="text-sm text-red-200">{error_message}</p>
-		</div>
-	{/if}
-	{#if optional_message}
-		<div class="flex items-center mt-1">
-			<p class="text-sm text-gray-300">{optional_message}</p>
 		</div>
 	{/if}
 </div>

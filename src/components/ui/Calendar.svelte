@@ -51,11 +51,10 @@
 			return;
 		}
 
-		isTaskNameValid = true; // Reset validation state if the task name is valid
+		isTaskNameValid = true;
 		const today = new Date();
 		const selected = get(selectedDate);
 
-		// Prevent adding tasks to past dates
 		if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
 			alert('You cannot add tasks to past dates.');
 			return;
@@ -63,14 +62,12 @@
 
 		const dateKey = selected.toISOString().split('T')[0];
 
-		// Add the task with name and time
 		tasks.update((t) => {
 			if (!t[dateKey]) {
 				t[dateKey] = [];
 			}
 			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
 
-			// Sort tasks by time
 			t[dateKey].sort((a, b) => {
 				const timeA = convertTo24Hour(a.time);
 				const timeB = convertTo24Hour(b.time);
@@ -92,15 +89,13 @@
 
 		tasks.update((t) => {
 			if (t[dateKey]) {
-				// Remove the task at the specified index
 				t[dateKey].splice(index, 1);
 
-				// Remove the date key if no tasks remain for that date
 				if (t[dateKey].length === 0) {
 					delete t[dateKey];
 				}
 			}
-			return t; // Return the updated tasks object
+			return t;
 		});
 	}
 
@@ -131,7 +126,7 @@
 
 	function handleTimeSelected(event: CustomEvent<{ time: string }>) {
 		newTaskTime = event.detail.time;
-		isClockVisible = false; // Close the clock after selection
+		isClockVisible = false;
 	}
 
 	$: calendarDays = generateCalendar(selectedMonth, selectedYear);
@@ -192,7 +187,7 @@
 </script>
 
 <div
-	class="bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 w-full text-gray-200 relative"
+	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-700 rounded-lg shadow-lg p-6 w-full dark:text-light relative"
 >
 	{#if showAddTask}
 		<!-- Add Task Section -->
@@ -272,8 +267,8 @@
 			<p>Task list Empty</p>
 		{/if}
 		<div class="mt-4 flex space-x-4">
-			<!-- svelte-ignore a11y_consider_explicit_label -->
 			<button
+				aria-label="back to calendar"
 				class="bg-green-200 hover:bg-green-100 text-white p-2 rounded"
 				onclick={() => (showTasks = false)}
 			>
@@ -288,8 +283,9 @@
 					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
 				</svg>
 			</button>
-			<!-- svelte-ignore a11y_consider_explicit_label -->
+
 			<button
+				aria-label="add tasks"
 				class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
 				onclick={() => (showAddTask = true)}
 			>
@@ -310,7 +306,7 @@
 		<div>
 			<div class="flex items-center justify-between mb-4">
 				<button
-					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
+					class="text-gray-600 hover:text-gray-100 dark:text-gray-300 dark:hover:text-light px-2 focus:outline-none"
 					onclick={previousMonth}
 					aria-label="Previous month"
 				>
@@ -334,7 +330,7 @@
 				</div>
 
 				<button
-					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
+					class="text-gray-200 hover:text-gray-100 dark:text-gray-300 dark:hover:text-light px-2 focus:outline-none"
 					onclick={nextMonth}
 					aria-label="Next month"
 				>
@@ -352,8 +348,8 @@
 			</div>
 
 			<div class="grid grid-cols-7 gap-1">
-				{#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as dayAbbreviation, index}
-					<div class="flex items-center justify-center font-semibold text-sm text-gray-200">
+				{#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as dayAbbreviation}
+					<div class="flex items-center justify-center font-semibold text-sm dark:text-light">
 						{dayAbbreviation}
 					</div>
 				{/each}
@@ -374,7 +370,7 @@
 						selectedYear === get(selectedDate).getFullYear()
 							? 'bg-green-200 text-white'
 							: day !== null
-								? 'hover:bg-gray-300'
+								? 'hover:bg-gray-300 dark:hover:bg-blue-100'
 								: ''} 
 						{day === null ? 'text-gray-400 cursor-not-allowed' : ''}"
 						onclick={() => day && handleDateChange(new Date(selectedYear, selectedMonth, day))}

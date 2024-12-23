@@ -12,7 +12,7 @@
 	let defaultLocation = 'Duliajan';
 	let selectedFile: File | null = null;
 
-	const temperatureScale = ['Celsius', 'Farenheit', 'Kelvin'];
+	const temperatureScale = ['Celsius', 'Farenheit'];
 
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -34,12 +34,13 @@
 	{#if $view === 'profile'}
 		<!-- Profile Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Global</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Global</h2>
 			<p class="text-gray-300 mb-6">This applies across your FarmHub account.</p>
 
 			<!-- Profile Image -->
 			<div class="mb-6">
-				<label for="fileInput" class="block font-semibold text-gray-700 mb-2">Profile Image</label>
+				<label for="fileInput" class="block font-semibold dark:text-light mb-2">Profile Image</label
+				>
 				<div class="flex items-center">
 					<!-- svelte-ignore a11y_img_redundant_alt -->
 					<img
@@ -77,7 +78,7 @@
 			</div>
 
 			<!-- Language -->
-			<div class="mb-6">
+			<div class="mb-6 w-1/2">
 				<DropdownSmall
 					bind:selected={selectedLanguage}
 					items={languages}
@@ -91,7 +92,7 @@
 	{#if $view === 'weather'}
 		<!-- Weather Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Weather Settings</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Weather Settings</h2>
 			<p class="text-gray-300 mb-6">This applies across your FarmHub account.</p>
 		</div>
 
@@ -108,7 +109,7 @@
 	{#if $view === 'milestones'}
 		<!-- Milestones Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Milestones Settings</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Milestones Settings</h2>
 			<p class="text-gray-300 mb-6">This changes your farming steps and sets your milestones.</p>
 		</div>
 	{/if}
@@ -116,7 +117,7 @@
 	{#if $view === 'calendar'}
 		<!-- Calendar Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Calendar Settings</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Calendar Settings</h2>
 			<p class="text-gray-300 mb-6">This changes your calendar settings.</p>
 		</div>
 	{/if}
@@ -124,15 +125,16 @@
 	{#if $view === 'tasks'}
 		<!-- Tasks Section -->
 		<div class="border-gray-300 rounded-lg">
-			<h2 class="text-lg font-semibold mb-4">Tasks Settings</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Tasks Settings</h2>
 			<p class="text-gray-300 mb-6">This changes your task settings.</p>
 		</div>
 	{/if}
 
 	{#if $view === 'security'}
 		<!-- Email Section -->
-		<div class="mt-8">
-			<p>Security section</p>
+		<div class="border-gray-300 rounded-lg">
+			<h2 class="text-lg font-semibold mb-4 dark:text-light">Security Settings</h2>
+			<p class="text-gray-300 mb-6">This changes your security settings.</p>
 		</div>
 	{/if}
 </div>

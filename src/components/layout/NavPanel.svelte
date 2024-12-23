@@ -24,7 +24,7 @@
 		{#each buttons as { name, view }}
 			<button
 				class="flex-1 px-4 py-2 text-center text-sm font-medium
-					border border-gray-400 bg-neutral-100 dark:bg-dark dark:text-light focus:outline-none
+					border border-gray-400 dark:border-gray-200 hover:bg-gray-500 dark:hover:bg-gray-100 bg-neutral-100 dark:bg-dark dark:text-light focus:outline-none
 					{activeView === view ? 'border-b-transparent bg-white font-semibold' : 'text-gray-600 font-thin'}"
 				onclick={() => setActive(view)}
 			>

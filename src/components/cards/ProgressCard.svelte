@@ -44,7 +44,7 @@
 </script>
 
 <div
-	class={`bg-gradient-to-br from-gray-500 to-gray-400 dark:from-dark-100 to-bg-gray-100 p-6 shadow-lg rounded-lg relative ${
+	class={`bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-700 p-6 shadow-lg rounded-lg relative ${
 		viewMode === 'Small' ? 'w-1/2' : 'w-full'
 	} my-3`}
 >
@@ -79,20 +79,22 @@
 
 		<!-- Dropdown Menu -->
 		{#if dropdownOpen}
-			<div class="absolute right-0 top-8 w-24 bg-white text-gray-100 shadow-lg rounded-md z-10">
+			<div
+				class="absolute right-0 top-8 w-24 bg-white dark:bg-gray-700 dark:text-light shadow-lg rounded-md z-10"
+			>
 				<ul>
-					<li class="px-4 py-2">
+					<li>
 						<button
-							class="w-full text-left hover:bg-gray-500 cursor-pointer"
+							class="w-full text-left hover:bg-gray-500 dark:hover:bg-blue-100 px-4 py-2 rounded-b-md cursor-pointer"
 							aria-label="Switch to Large view"
 							onclick={() => toggleView('Large')}
 						>
 							Large
 						</button>
 					</li>
-					<li class="px-4 py-2">
+					<li>
 						<button
-							class="w-full text-left hover:bg-gray-500 cursor-pointer"
+							class="w-full text-left hover:bg-gray-500 dark:hover:bg-blue-100 px-4 py-2 rounded-b-md cursor-pointer"
 							aria-label="Switch to Small view"
 							onclick={() => toggleView('Small')}
 						>
@@ -143,7 +145,9 @@
 					}}
 					disabled={currentStep === 1}
 					class={`p-2 rounded-full ${
-						currentStep === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-dark hover:bg-gray-400'
+						currentStep === 1
+							? 'text-gray-300 cursor-not-allowed'
+							: 'text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-dark'
 					}`}
 				>
 					<svg
@@ -182,7 +186,7 @@
 					class={`p-2 rounded-full ${
 						currentStep === limitedSteps.length
 							? 'text-gray-300 cursor-not-allowed'
-							: 'text-dark hover:bg-gray-400'
+							: 'text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-dark'
 					}`}
 				>
 					<svg
