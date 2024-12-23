@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { derived } from 'svelte/store';
 	import NavPanel from '../../../../components/layout/NavPanel.svelte';
+	import Button from '../../../../components/ui/Button.svelte';
 
 	const navButtons = [
 		{ name: 'Profile', view: 'profile' },
@@ -41,5 +42,8 @@
 		<section>
 			<slot />
 		</section>
+		<div class="flex flex-1 gap-2 mb-6">
+			<Button text="Save Changes" width="medium" style="primary" on:click={() => {}} />
+		</div>
 	</main>
 </div>

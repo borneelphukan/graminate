@@ -3,6 +3,7 @@
 	import Button from '../../../components/ui/Button.svelte';
 	import TextArea from '../../../components/ui/TextArea.svelte';
 	import TextField from '../../../components/ui/TextField.svelte';
+	import DropdownSmall from '../../../components/ui/Dropdown/DropdownSmall.svelte';
 
 	type Task = {
 		id: string;
@@ -36,9 +37,12 @@
 	let newTaskTitle = '';
 	let newTaskType = '';
 	let totalTaskCount = 3;
+	let selectedTaskType = '';
+	let dropdownItems = ['Finance', 'Management', 'Research', 'Urgent'];
 
-	let isAddingColumn = false; // Track if a new column is being added
-	let newColumnTitle = ''; // Track the title of the new column
+	let isAddingColumn = false;
+	let newColumnTitle = '';
+	let labelOpen = false;
 
 	function startAddingTask(index: number) {
 		newTaskTitle = '';
@@ -127,10 +131,10 @@
 		<h1 class="text-lg font-bold mt-2 mb-6">TASK board</h1>
 
 		<!-- Add horizontal scrolling container -->
-		<div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+		<div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative">
 			{#each columns as column, colIndex}
 				<div
-					class="bg-white shadow rounded-lg p-2 relative flex-none w-72"
+					class="bg-gray-500 shadow rounded-lg p-2 relative flex-none w-72"
 					on:click|stopPropagation
 				>
 					{#if $editingColumn === colIndex}
@@ -151,7 +155,7 @@
 					{/if}
 					<div class="space-y-4">
 						{#each column.tasks as task, taskIndex}
-							<div class="bg-gray-500 p-3 rounded-md shadow-sm relative">
+							<div class="bg-white p-3 rounded-md shadow-sm relative">
 								<div class="flex flex-row items-start justify-between">
 									<div class="mr-2 break-words max-w-xs">
 										<p class="text-gray-200">{task.title}</p>
@@ -193,7 +197,16 @@
 								</div>
 								<div class="flex justify-between items-end mt-2">
 									{#if task.type}
-										<span class="text-xs font-semibold text-white bg-blue-600 rounded px-2 py-1">
+										<span
+											class={`text-xs font-semibold text-white rounded px-2 py-1 ${
+												{
+													Finance: 'bg-green-100 text-white',
+													Research: 'bg-blue-300 text-blue-100',
+													Maintenance: 'bg-yellow-300 text-yellow-100',
+													Urgent: 'bg-red-300 text-red-100'
+												}[task.type] || 'bg-gray-300 text-gray-100'
+											}`}
+										>
 											{task.type}
 										</span>
 									{/if}
@@ -203,13 +216,22 @@
 						{/each}
 					</div>
 					{#if $addingTask === colIndex}
-						<div class="mt-2 bg-gray-500 p-2 rounded-lg shadow-sm">
+						<div
+							class="mt-2 bg-gray-500 p-2 rounded-lg shadow-sm overflow-visible"
+							style="box-sizing: border-box; max-width: 100%;"
+						>
 							<TextArea placeholder="What needs to be done?" bind:value={newTaskTitle} />
 							<div
-								class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0"
+								class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 z-20"
 							>
-								<TextField type="text" placeholder="Task Type" bind:value={newTaskType} />
+								<!-- Task Type Dropdown -->
+								<DropdownSmall
+									items={dropdownItems}
+									direction="up"
+									bind:selected={selectedTaskType}
+								/>
 
+								<!-- Create Button -->
 								<Button text="Create" style="secondary" on:click={() => addTask(colIndex)} />
 							</div>
 						</div>
@@ -228,7 +250,7 @@
 			{/each}
 
 			<!-- Add New Column Button -->
-			<div class="rounded-lg p-4 flex-none flex items-center justify-center">
+			<div class="rounded-lg flex-none flex flex-col items-center justify-top">
 				{#if isAddingColumn}
 					<div class="w-full">
 						<TextField type="text" placeholder="Column title" bind:value={newColumnTitle} />

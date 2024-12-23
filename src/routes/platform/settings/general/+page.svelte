@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import Dropdown from '../../../../components/ui/Dropdown.svelte';
 	import TextField from '../../../../components/ui/TextField.svelte';
-	import { writable } from 'svelte/store';
+	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
-	let languages = ['English', 'German', 'French', 'Spanish'];
-	let countries = ['India', 'Bangladesh', 'Myanmar', 'Thailand', 'Pakistan'];
+	let languages = ['English', 'Hindi', 'Assamese'];
 	let selectedLanguage = 'English';
-	let selectedFormat = 'India';
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
@@ -22,7 +19,6 @@
 		if (input.files && input.files[0]) {
 			selectedFile = input.files[0];
 			console.log('File selected:', selectedFile.name);
-			// Add your logic to handle the file (e.g., upload to the server or display a preview)
 		}
 	}
 
@@ -82,25 +78,11 @@
 
 			<!-- Language -->
 			<div class="mb-6">
-				<Dropdown
-					bind:selectedItem={selectedLanguage}
+				<DropdownSmall
+					bind:selected={selectedLanguage}
 					items={languages}
 					label="Language"
-					type="form"
-					width="half"
 					on:select={(e) => console.log('Selected language:', e.detail.item)}
-				/>
-			</div>
-
-			<!-- Date, Time and Format -->
-			<div class="mb-6">
-				<Dropdown
-					bind:selectedItem={selectedFormat}
-					items={countries}
-					label="Date, Time and Format"
-					type="form"
-					width="half"
-					on:select={(e) => console.log('Selected format:', e.detail.item)}
 				/>
 			</div>
 		</div>
@@ -119,13 +101,7 @@
 				label="Farm Location"
 				placeholder="Region of your Farmland"
 			/>
-			<Dropdown
-				items={temperatureScale}
-		
-				type="form"
-				label="Temperature Unit Scale"
-				width="full"
-			/>
+			<DropdownSmall items={temperatureScale} label="Temperature Scale" />
 		</div>
 	{/if}
 

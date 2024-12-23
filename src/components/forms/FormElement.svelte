@@ -2,7 +2,7 @@
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
 	import TextField from '../ui/TextField.svelte';
-	import Dropdown from '../ui/Dropdown.svelte';
+	import DropdownLarge from '../ui/Dropdown/DropdownLarge.svelte';
 	import Button from '../ui/Button.svelte';
 
 	export let view: string;
@@ -122,7 +122,7 @@
 					type="tel"
 					bind:value={$contactValues.phoneNumber}
 				/>
-				<Dropdown
+				<DropdownLarge
 					items={contactTypes}
 					bind:selectedItem={$contactValues.type}
 					type="form"
@@ -160,7 +160,7 @@
 					type="text"
 					bind:value={$companyValues.industry}
 				/>
-				<Dropdown
+				<DropdownLarge
 					items={companyType}
 					bind:selectedItem={$companyValues.type}
 					type="form"
@@ -204,7 +204,7 @@
 					type="text"
 					bind:value={$ticketValues.category}
 				/>
-				<Dropdown
+				<DropdownLarge
 					items={ticketStatus}
 					bind:selectedItem={$ticketValues.status}
 					type="form"
@@ -217,7 +217,7 @@
 					type="text"
 					bind:value={$ticketValues.industry}
 				/>
-				<Dropdown
+				<DropdownLarge
 					items={contactTypes}
 					bind:selectedItem={$ticketValues.type}
 					type="form"

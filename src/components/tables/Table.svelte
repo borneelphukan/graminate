@@ -2,7 +2,7 @@
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
 	import SearchBar from '../ui/SearchBar.svelte';
 	import Button from '../ui/Button.svelte';
-	import Dropdown from '../ui/Dropdown.svelte';
+	import Dropdown from '../ui/Dropdown/DropdownLarge.svelte';
 
 	export let data: { columns: string[]; rows: any[][] };
 	export let filteredRows: Readable<any[][]>;

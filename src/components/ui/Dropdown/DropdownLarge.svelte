@@ -5,7 +5,7 @@
 	export let selectedItem: string = '';
 	export let type: string = '';
 	export let label: string = '';
-	export let width: 'full' | 'half' | 'auto' = 'auto'; // Added 'half' as an option
+	export let width: 'full' | 'half' | 'auto' = 'auto';
 
 	const dispatch = createEventDispatcher();
 
@@ -25,7 +25,7 @@
 </script>
 
 <div>
-	{#if type === 'form' && label}
+	{#if label}
 		<!-- svelte-ignore a11y_label_has_associated_control -->
 		<label class="block mb-1 text-sm font-medium text-dark dark:text-light">{label}</label>
 	{/if}
