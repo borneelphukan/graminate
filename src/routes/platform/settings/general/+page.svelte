@@ -11,17 +11,43 @@
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
 	let selectedFile: File | null = null;
+	let profileImageUrl = 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250';
 
-	const temperatureScale = ['Celsius', 'Farenheit'];
+	const temperatureScale = ['Celsius', 'Fahrenheit'];
 
+	// Validate uploaded file
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files[0]) {
-			selectedFile = input.files[0];
-			console.log('File selected:', selectedFile.name);
+			const file = input.files[0];
+			const fileReader = new FileReader();
+
+			// Check file type
+			if (!file.type.startsWith('image/')) {
+				alert('Please upload a valid image file.');
+				return;
+			}
+
+			// Check dimensions after loading the image
+			fileReader.onload = function (e) {
+				const img = new Image();
+				img.src = e.target?.result as string;
+				img.onload = () => {
+					if (img.width > 4260 || img.height > 4260) {
+						alert('Image dimensions should not exceed 4260px by 4260px.');
+					} else {
+						selectedFile = file;
+						profileImageUrl = e.target?.result as string; // Set uploaded image as profile picture
+						console.log('File selected:', selectedFile.name);
+					}
+				};
+			};
+
+			fileReader.readAsDataURL(file);
 		}
 	}
 
+	// Trigger file input click
 	function triggerFileUpload() {
 		const fileInput = document.getElementById('fileInput') as HTMLInputElement | null;
 		if (fileInput) {
@@ -42,10 +68,16 @@
 				<label for="fileInput" class="block font-semibold dark:text-light mb-2">Profile Image</label
 				>
 				<div class="flex items-center">
-					<!-- svelte-ignore a11y_img_redundant_alt -->
-					<img
+					<!-- Profile image -->
+					<!-- <img
 						src="https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250"
 						alt="User profile picture of Borneel Phukan"
+						class="w-16 h-16 rounded-full border border-gray-400"
+					/> -->
+					<!-- svelte-ignore a11y_img_redundant_alt -->
+					<img
+						src={profileImageUrl}
+						alt="User profile picture"
 						class="w-16 h-16 rounded-full border border-gray-400"
 					/>
 					<button
@@ -63,7 +95,7 @@
 					/>
 				</div>
 				{#if selectedFile}
-					<p class="mt-2 text-sm text-green-600">Selected File: {selectedFile.name}</p>
+					<p class="mt-2 text-sm text-green-600">{selectedFile.name}</p>
 				{/if}
 			</div>
 

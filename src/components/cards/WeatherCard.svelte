@@ -209,9 +209,11 @@
 
 		<!-- Dropdown Menu -->
 		{#if dropdownOpen}
-			<div class="absolute top-8 right-0 bg-white text-black rounded-lg shadow-lg z-20 w-32">
+			<div
+				class="absolute top-8 right-0 bg-white dark:bg-gray-700 dark:text-light text-black rounded-lg shadow-lg z-20 w-32"
+			>
 				<button
-					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 dark:hover:bg-blue-100 hover:rounded-lg cursor-pointer"
 					type="button"
 					onclick={() => {
 						$displayMode = 'Small';
@@ -221,7 +223,7 @@
 					Small
 				</button>
 				<button
-					class="w-full text-left px-4 py-2 hover:bg-gray-500 cursor-pointer"
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 dark:hover:bg-blue-100 cursor-pointer"
 					type="button"
 					onclick={() => {
 						$displayMode = 'Medium';
@@ -231,7 +233,7 @@
 					Medium
 				</button>
 				<button
-					class="w-full text-left px-4 py-2 hover:bg-gray-500 hover:rounded-lg cursor-pointer"
+					class="w-full text-left px-4 py-2 hover:bg-gray-500 dark:hover:bg-blue-100 hover:rounded-lg cursor-pointer"
 					type="button"
 					onclick={() => {
 						$displayMode = 'Large';

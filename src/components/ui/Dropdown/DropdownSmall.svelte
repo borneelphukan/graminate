@@ -16,7 +16,7 @@
 	{/if}
 
 	<button
-		class="w-full bg-white dark:bg-gray-700 dark:text-light text-sm p-1 rounded flex justify-between items-center"
+		class="w-full border border-gray-300 text-dark dark:text-light dark:bg-gray-700 text-sm p-1 rounded flex justify-between items-center"
 		on:click={() => (labelOpen = !labelOpen)}
 		style="min-width: 180px; max-width: 90%; box-sizing: border-box;"
 		aria-haspopup="listbox"
@@ -44,7 +44,7 @@
 		<ul
 			class="absolute {direction === 'up'
 				? 'bottom-full mb-2'
-				: 'top-full mt-2'} left-0 dark:text-light bg-white dark:bg-gray-800 shadow-md rounded max-h-40 overflow-y-auto z-50"
+				: 'top-full mt-2'} left-0 dark:text-light bg-white text-dark dark:bg-gray-800 shadow-md rounded max-h-40 overflow-y-auto z-50"
 			style="min-width: 180px; max-width: 90%; box-sizing: border-box;"
 			role="listbox"
 		>
@@ -52,7 +52,7 @@
 				<li
 					role="option"
 					tabindex="0"
-					class="px-4 py-2 text-sm hover:bg-gray-500 dark:hover:bg-blue-100 cursor-pointer"
+					class="px-4 py-2 text-sm hover:bg-gray-400 dark:hover:bg-blue-100 cursor-pointer"
 					on:click={() => {
 						selected = item;
 						labelOpen = false;
