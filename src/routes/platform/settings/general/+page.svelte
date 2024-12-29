@@ -3,6 +3,7 @@
 	import { derived } from 'svelte/store';
 	import TextField from '../../../../components/ui/TextField.svelte';
 	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
+	import Swal from 'sweetalert2';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'Hindi', 'Assamese'];
@@ -24,7 +25,12 @@
 
 			// Check file type
 			if (!file.type.startsWith('image/')) {
-				alert('Please upload a valid image file.');
+				Swal.fire({
+					title: 'Invalid File',
+					text: 'Please upload a valid image file.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
 				return;
 			}
 
@@ -34,11 +40,15 @@
 				img.src = e.target?.result as string;
 				img.onload = () => {
 					if (img.width > 4260 || img.height > 4260) {
-						alert('Image dimensions should not exceed 4260px by 4260px.');
+						Swal.fire({
+							title: 'Image Too Large',
+							text: 'Image dimensions should not exceed 4260px by 4260px.',
+							icon: 'warning',
+							confirmButtonText: 'OK'
+						});
 					} else {
 						selectedFile = file;
 						profileImageUrl = e.target?.result as string; // Set uploaded image as profile picture
-						console.log('File selected:', selectedFile.name);
 					}
 				};
 			};

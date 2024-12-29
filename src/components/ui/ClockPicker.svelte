@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-
-	export let selectedTime: string = '12:00 PM'; // Default selected time
+	import Swal from 'sweetalert2';
+	export let selectedTime: string = '12:00 PM';
 	const dispatch = createEventDispatcher();
 
 	let hours: number | null = 12; // Selected hour
@@ -11,7 +11,12 @@
 	function setTime() {
 		// Ensure all selections are made
 		if (hours === null || minutes === null) {
-			alert('Please select hours and minutes before submitting.');
+			Swal.fire({
+				title: 'Incomplete Selection',
+				text: 'Please select hours and minutes before submitting.',
+				icon: 'warning',
+				confirmButtonText: 'OK'
+			});
 			return;
 		}
 
@@ -60,7 +65,6 @@
 				<option value="AM">AM</option>
 				<option value="PM">PM</option>
 			</select>
-			
 		</div>
 	</div>
 

@@ -32,7 +32,7 @@
 	>
 		<div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg w-96">
 			<div class="p-6">
-				<h2 id="modal-title" class="text-lg font-bold text-gray-800 dark:text-gray-200">
+				<h2 id="modal-title" class="text-lg font-bold text-gray-800 dark:text-light">
 					Column limit
 				</h2>
 				<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -56,7 +56,7 @@
 				</div>
 			</div>
 
-			<div class="px-6 py-4 dark:bg-slate-700 flex justify-end gap-3">
+			<div class="px-6 py-4 dark:bg-gray-800 flex justify-end gap-3">
 				<Button text="Cancel" width="medium" style="ghost" on:click={handleCancel} />
 				<Button text="Save" width="medium" style="primary" on:click={handleSave} />
 			</div>

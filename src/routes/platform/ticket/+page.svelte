@@ -6,6 +6,7 @@
 	import DropdownSmall from '../../../components/ui/Dropdown/DropdownSmall.svelte';
 	import TicketModal from '../../../components/modals/TicketModal.svelte';
 	import { dndzone } from 'svelte-dnd-action';
+	import Swal from 'sweetalert2';
 
 	function handleDrop(event: { detail: { items: Column[] } }) {
 		columns = event.detail.items;
@@ -86,12 +87,22 @@
 		const columnLimit = parseInt(columnLimits[index] || '0', 10);
 
 		if (columnLimit > 0 && columns[index].tasks.length >= columnLimit) {
-			alert(`Task limit reached for the column "${columns[index].title}".`);
+			Swal.fire({
+				title: 'Task Limit Reached',
+				text: `Task limit reached for the column "${columns[index].title}".`,
+				icon: 'warning',
+				confirmButtonText: 'OK'
+			});
 			return;
 		}
 
 		if (!newTaskTitle.trim()) {
-			alert('Task title is required');
+			Swal.fire({
+				title: 'Error',
+				text: 'Task title is required',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
 			return;
 		}
 
@@ -150,7 +161,12 @@
 
 	function addNewColumn() {
 		if (!newColumnTitle.trim()) {
-			alert('Column title is required');
+			Swal.fire({
+				title: 'Error',
+				text: 'Column title is required',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
 			return;
 		}
 

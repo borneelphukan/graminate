@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writable, get } from 'svelte/store';
-
+	import Swal from 'sweetalert2';
 	import ClockPicker from './ClockPicker.svelte';
 	import TextField from './TextField.svelte';
 	import DropdownSmall from './Dropdown/DropdownSmall.svelte';
@@ -58,44 +58,49 @@
 
 	let isTaskNameValid = true;
 
-	function addTask() {
-		if (!newTask.trim()) {
-			isTaskNameValid = false;
-			return;
-		}
-
-		isTaskNameValid = true;
-		const today = new Date();
-		const selected = get(selectedDate);
-
-		if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-			alert('You cannot add tasks to past dates.');
-			return;
-		}
-
-		const dateKey = selected.toISOString().split('T')[0];
-
-		tasks.update((t) => {
-			if (!t[dateKey]) {
-				t[dateKey] = [];
-			}
-			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
-
-			t[dateKey].sort((a, b) => {
-				const timeA = convertTo24Hour(a.time);
-				const timeB = convertTo24Hour(b.time);
-				return (
-					new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
-				);
-			});
-			return t;
-		});
-
-		newTask = '';
-		newTaskTime = '12:00 PM';
-		showAddTask = false;
-		showTasks = true;
+function addTask() {
+	if (!newTask.trim()) {
+		isTaskNameValid = false;
+		return;
 	}
+
+	isTaskNameValid = true;
+	const today = new Date();
+	const selected = get(selectedDate);
+
+	if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+		Swal.fire({
+			title: 'Invalid Date',
+			text: 'You cannot add tasks to past dates.',
+			icon: 'error',
+			confirmButtonText: 'OK',
+		});
+		return;
+	}
+
+	const dateKey = selected.toISOString().split('T')[0];
+
+	tasks.update((t) => {
+		if (!t[dateKey]) {
+			t[dateKey] = [];
+		}
+		t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
+
+		t[dateKey].sort((a, b) => {
+			const timeA = convertTo24Hour(a.time);
+			const timeB = convertTo24Hour(b.time);
+			return (
+				new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
+			);
+		});
+		return t;
+	});
+
+	newTask = '';
+	newTaskTime = '12:00 PM';
+	showAddTask = false;
+	showTasks = true;
+}
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
