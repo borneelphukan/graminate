@@ -42,8 +42,6 @@
 		<section>
 			<slot />
 		</section>
-		<div class="flex flex-1 gap-2 mb-6">
-			<Button text="Save Changes" width="medium" style="primary" on:click={() => {}} />
-		</div>
+
 	</main>
 </div>

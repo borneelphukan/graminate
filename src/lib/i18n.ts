@@ -1,14 +1,11 @@
-import { init, register, locale } from 'svelte-i18n';
-
-// Register your translation files
+import { init, register, locale, getLocaleFromNavigator, t } from 'svelte-i18n';
 register('english', () => import('./locales/english.json'));
 register('hindi', () => import('./locales/hindi.json'));
 register('assamese', () => import('./locales/assamese.json'));
 
-// Initialize i18n
 init({
-	fallbackLocale: 'english', // Match the registered key for English
-	initialLocale: 'english' // Set the default locale to English
+	fallbackLocale: 'english',
+	initialLocale: getLocaleFromNavigator() || 'english'
 });
 
-export { locale };
+export { locale, t };

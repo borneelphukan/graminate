@@ -1,3 +1,23 @@
 {
-	"welcome_message": "फार्महब में आपका स्वागत है!"
+	"global_settings": "वैश्विक सेटिंग्स",
+	"applies_across_account": "यह आपके FarmHub खाते में लागू होता है।",
+	"profile_image": "प्रोफ़ाइल छवि",
+	"upload": "अपलोड करें",
+	"first_name": "पहला नाम",
+	"first_name_placeholder": "अपना पहला नाम दर्ज करें",
+	"last_name": "अंतिम नाम",
+	"last_name_placeholder": "अपना अंतिम नाम दर्ज करें",
+	"language": "भाषा",
+	"save_changes": "परिवर्तन सहेजें",
+	"changes_saved": "परिवर्तन सहेजे गए",
+	"language_updated_to": "भाषा अपडेट की गई है",
+	"ok": "ठीक है",
+	"invalid_file": "अवैध फ़ाइल",
+	"valid_image_file_message": "कृपया एक वैध छवि फ़ाइल अपलोड करें।",
+	"image_too_large": "छवि बहुत बड़ी है",
+	"image_dimension_message": "छवि आयाम 4260px से अधिक नहीं होना चाहिए।",
+	"weather_settings": "मौसम सेटिंग्स",
+	"farm_location": "फार्म स्थान",
+	"farm_location_placeholder": "अपनी कृषि भूमि का क्षेत्र दर्ज करें",
+	"temperature_scale": "तापमान मापदंड"
 }

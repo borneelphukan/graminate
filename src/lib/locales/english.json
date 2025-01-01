@@ -1,3 +1,23 @@
 {
-	"welcome_message": "Welcome to FarmHub!"
+	"global_settings": "Global Settings",
+	"applies_across_account": "This applies across your FarmHub account.",
+	"profile_image": "Profile Image",
+	"upload": "Upload",
+	"first_name": "First Name",
+	"first_name_placeholder": "Enter your first name",
+	"last_name": "Last Name",
+	"last_name_placeholder": "Enter your last name",
+	"language": "Language",
+	"save_changes": "Save Changes",
+	"changes_saved": "Changes Saved",
+	"language_updated_to": "Language updated to",
+	"ok": "OK",
+	"invalid_file": "Invalid File",
+	"valid_image_file_message": "Please upload a valid image file.",
+	"image_too_large": "Image Too Large",
+	"image_dimension_message": "Image dimensions should not exceed 4260px.",
+	"weather_settings": "Weather Settings",
+	"farm_location": "Farm Location",
+	"farm_location_placeholder": "Enter the region of your farmland",
+	"temperature_scale": "Temperature Scale"
 }

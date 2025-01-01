@@ -1,3 +1,23 @@
 {
-	"welcome_message": "ফাৰ্মহাবলৈ আপোনাক স্বাগতম!"
+	"global_settings": "গ্ল’বেল ছেটিংছ",
+	"applies_across_account": "এইটো আপোনাৰ FarmHub একাউণ্টত প্ৰযোজ্য।",
+	"profile_image": "প্ৰ’ফাইল ছবি",
+	"upload": "আপলোড কৰক",
+	"first_name": "প্ৰথম নাম",
+	"first_name_placeholder": "আপোনাৰ প্ৰথম নাম লিখক",
+	"last_name": "শেষ নাম",
+	"last_name_placeholder": "আপোনাৰ শেষ নাম লিখক",
+	"language": "ভাষা",
+	"save_changes": "পৰিবর্তন সংৰক্ষণ কৰক",
+	"changes_saved": "পৰিবর্তন সংৰক্ষণ কৰা হৈছে",
+	"language_updated_to": "ভাষা সলনি কৰা হৈছে",
+	"ok": "ঠিক আছে",
+	"invalid_file": "অবৈধ ফাইল",
+	"valid_image_file_message": "অনুগ্ৰহ কৰি বৈধ ছবিৰ ফাইল আপলোড কৰক।",
+	"image_too_large": "ছবি অত্যাধিক ডাঙৰ",
+	"image_dimension_message": "ছবিৰ আকাৰ 4260pxৰ অধিক হ’ব নালাগে।",
+	"weather_settings": "বতৰ ছেটিংছ",
+	"farm_location": "ফাৰ্মৰ স্থান",
+	"farm_location_placeholder": "আপোনাৰ কৃষিভূমিৰ এলেকা লিখক",
+	"temperature_scale": "তাপমানৰ একক"
 }
