@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '../../lib/i18n'; // Import the translation function
 	import Button from '../ui/Button.svelte';
 
 	type MenuItem = {
@@ -9,29 +10,29 @@
 
 	const settingsMenu: MenuItem[] = [
 		{
-			label: 'Your Preferences',
+			label: 'your_preferences',
 			subItems: [
-				{ label: 'General', href: '/platform/settings/general/' },
-				{ label: 'Notifications', href: '/platform/settings/notifications' }
+				{ label: 'general', href: '/platform/settings/general/' },
+				{ label: 'notifications', href: '/platform/settings/notifications' }
 			]
 		},
 		{
-			label: 'Account Management',
+			label: 'account_management',
 			subItems: [
-				{ label: 'Account Defaults', href: '/account/defaults' },
-				{ label: 'Audit Log', href: '/account/audit-log' },
-				{ label: 'Users & Teams', href: '/account/users-teams' },
-				{ label: 'Tracking Code', href: '/account/tracking-code' },
-				{ label: 'Privacy & Consent', href: '/account/privacy-consent' },
-				{ label: 'Security', href: '/account/security' }
+				{ label: 'account_defaults', href: '/account/defaults' },
+				{ label: 'audit_log', href: '/account/audit-log' },
+				{ label: 'users_and_teams', href: '/account/users-teams' },
+				{ label: 'tracking_code', href: '/account/tracking-code' },
+				{ label: 'privacy_and_consent', href: '/account/privacy-consent' },
+				{ label: 'security', href: '/account/security' }
 			]
 		},
 		{
-			label: 'Tools',
+			label: 'tools',
 			subItems: [
-				{ label: 'Meetings', href: '/tools/meetings' },
-				{ label: 'Content', href: '/tools/content' },
-				{ label: 'Payments', href: '/tools/payments' }
+				{ label: 'meetings', href: '/tools/meetings' },
+				{ label: 'content', href: '/tools/content' },
+				{ label: 'payments', href: '/tools/payments' }
 			]
 		}
 	];
@@ -46,11 +47,11 @@
 >
 	<!-- Back Button -->
 	<div class="flex items-center pt-4">
-		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
+		<Button text={$t('back')} style="ghost" arrow="left" on:click={goBack} />
 	</div>
 
 	<!-- Settings Header -->
-	<div class="px-4 py-2 text-xl font-semibold">Settings</div>
+	<div class="px-4 py-2 text-xl font-semibold">{$t('settings')}</div>
 
 	<!-- Menu Items -->
 	<div class="px-4">
@@ -58,7 +59,9 @@
 			<div class="mt-4">
 				<!-- Main Section Title -->
 				{#if menu.subItems}
-					<div class="text-medium font-semibold text-gray-600 dark:text-light">{menu.label}</div>
+					<div class="text-medium font-semibold text-gray-600 dark:text-light">
+						{$t(menu.label)}
+					</div>
 					<ul class="mt-2 space-y-2">
 						{#each menu.subItems as subItem}
 							<li>
@@ -66,7 +69,7 @@
 									href={subItem.href || '#'}
 									class="block px-2 py-1 text-sm text-gray-700 rounded hover:bg-gray-400 dark:text-gray-300 dark:hover:bg-blue-100"
 								>
-									{subItem.label}
+									{$t(subItem.label)}
 								</a>
 							</li>
 						{/each}
@@ -76,7 +79,7 @@
 						href={menu.href || '#'}
 						class="block px-2 py-1 text-sm font-medium text-gray-700 rounded hover:bg-gray-400"
 					>
-						{menu.label}
+						{$t(menu.label)}
 					</a>
 				{/if}
 			</div>

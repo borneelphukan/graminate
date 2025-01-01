@@ -11,80 +11,75 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { t } from '../../lib/i18n';
 
 	export let isOpen: boolean;
 
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
 
+	// Sidebar sections with translation keys for labels
 	const sections = [
 		{
 			icon: faHome,
-			label: 'Dashboard',
+			label: 'dashboard',
 			section: 'Dashboard',
 			route: '/platform',
 			subItems: []
 		},
 		{
 			icon: faAddressBook,
-			label: 'CRM',
+			label: 'crm',
 			section: 'CRM',
 			subItems: [
-				{ label: 'Contacts', route: '/platform/contacts' },
-				{ label: 'Companies', route: '/platform/contacts?view=companies' },
-				{ label: 'Deals', route: '/platform/contacts?view=deals' },
-				{ label: 'Tickets', route: '/platform/contacts?view=tickets' }
+				{ label: 'contacts', route: '/platform/contacts' },
+				{ label: 'companies', route: '/platform/contacts?view=companies' },
+				{ label: 'deals', route: '/platform/contacts?view=deals' },
+				{ label: 'tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},
 		{
 			icon: faChartPie,
-			label: 'Finder',
+			label: 'finder',
 			section: 'Finder',
 			route: '/platform/finder',
 			subItems: []
 		},
 		{
 			icon: faWallet,
-			label: 'Commerce',
+			label: 'commerce',
 			section: 'Commerce',
 			subItems: [
-				{ label: 'Overview', route: '/platform/overview' },
-				{ label: 'Payments', route: '/platform/payments' },
-				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
-				{ label: 'Payment Links', route: '/platform/payment-links' },
-				{ label: 'Quotes', route: '/platform/quotes' },
-				{ label: 'Products', route: '/platform/products' },
-				{ label: 'Subscriptions', route: '/platform/subscriptions' }
+				{ label: 'overview', route: '/platform/overview' },
+				{ label: 'payments', route: '/platform/payments' },
+				{ label: 'invoices', route: '/platform/contacts?view=invoices' },
+				{ label: 'payment_links', route: '/platform/payment-links' },
+				{ label: 'quotes', route: '/platform/quotes' },
+				{ label: 'products', route: '/platform/products' },
+				{ label: 'subscriptions', route: '/platform/subscriptions' }
 			]
 		},
-		// {
-		// 	icon: faShapes,
-		// 	label: 'Automations',
-		// 	section: 'Automations',
-		// 	route: '/platform/automations',
-		// 	subItems: []
-		// },
 		{
 			icon: faChartLine,
-			label: 'Commodity Prices',
+			label: 'commodity_prices',
 			section: 'Commodity Prices',
 			route: '/platform/commodity',
 			subItems: []
 		},
 		{
 			icon: faCloud,
-			label: 'Weather Monitor',
+			label: 'weather_monitor',
 			section: 'Weather Monitor',
 			route: '/platform/weather',
 			subItems: []
 		},
 		{
 			icon: faFolder,
-			label: 'Library',
+			label: 'library',
 			section: 'Library',
 			subItems: [
-				{ label: 'Meeting Scheduler', route: '/platform/meetings' },
-				{ label: 'Documents', route: '/platform/documents' }
+				{ label: 'meeting_scheduler', route: '/platform/meetings' },
+				{ label: 'documents', route: '/platform/documents' }
 			]
 		}
 	];
@@ -148,7 +143,7 @@
 						<Fa {icon} />
 					</div>
 					{#if !isCollapsed}
-						<span class="text-gray-500 font-light text-sm ml-2 flex-grow">{label}</span>
+						<span class="text-gray-500 font-light text-sm ml-2 flex-grow">{$t(label)}</span>
 						{#if subItems.length > 0}
 							<div
 								class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -190,7 +185,7 @@
 								class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
 								onclick={() => navigateTo(route)}
 							>
-								{label}
+								{$t(label)}
 							</div>
 						{/each}
 					</div>
@@ -232,12 +227,3 @@
 		</button>
 	</div>
 </div>
-
-<style>
-	nav {
-		align-items: stretch;
-	}
-	.flex {
-		display: flex;
-	}
-</style>
