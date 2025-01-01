@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	type Notification = {
 		title: string;
 		description: string;
@@ -19,6 +21,11 @@
 	function toggleActionsDropdown() {
 		isActionsDropdownOpen = !isActionsDropdownOpen;
 		isFilterDropdownOpen = false;
+	}
+
+	function navigateToSettings() {
+		closeNotificationBar();
+		goto('/platform/settings/notifications');
 	}
 </script>
 
@@ -206,6 +213,7 @@
 			<button
 				class="text-green-200 hover:text-green-800 mb-2 focus:outline-none"
 				aria-label="settings icon"
+				onclick={navigateToSettings}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

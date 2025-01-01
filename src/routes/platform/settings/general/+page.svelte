@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import { locale, t } from '../../../../lib/i18n'; // Import locale and translation function
+	import { locale, t } from '../../../../lib/i18n';
 	import TextField from '../../../../components/ui/TextField.svelte';
 	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
 	import Swal from 'sweetalert2';
@@ -10,6 +10,13 @@
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'हिन्दी', 'অসমীয়া'];
 	let selectedLanguage = 'English';
+
+	if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+		const savedLocale = localStorage.getItem('locale');
+		if (savedLocale === 'hindi') selectedLanguage = 'हिन्दी';
+		else if (savedLocale === 'assamese') selectedLanguage = 'অসমীয়া';
+		else selectedLanguage = 'English';
+	}
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
@@ -17,9 +24,6 @@
 	let profileImageUrl = 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250';
 
 	const temperatureScale = ['Celsius', 'Fahrenheit'];
-	$: locale.set('english');
-
-	// Validate uploaded file
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files[0]) {
@@ -59,7 +63,6 @@
 		}
 	}
 
-	// Trigger file input click
 	function triggerFileUpload() {
 		const fileInput = document.getElementById('fileInput') as HTMLInputElement | null;
 		if (fileInput) {
@@ -67,17 +70,19 @@
 		}
 	}
 
-	// Save Profile changes
 	function SaveProfile() {
 		switch (selectedLanguage) {
 			case 'हिन्दी':
 				locale.set('hindi');
+				if (typeof window !== 'undefined') localStorage.setItem('locale', 'hindi');
 				break;
 			case 'অসমীয়া':
 				locale.set('assamese');
+				if (typeof window !== 'undefined') localStorage.setItem('locale', 'assamese');
 				break;
 			default:
 				locale.set('english');
+				if (typeof window !== 'undefined') localStorage.setItem('locale', 'english');
 		}
 
 		Swal.fire({
@@ -130,7 +135,11 @@
 
 				<!-- First Name -->
 				<div class="mb-6">
-					<TextField bind:value={firstName} label={$t('first_name')} placeholder={$t('first_name_placeholder')} />
+					<TextField
+						bind:value={firstName}
+						label={$t('first_name')}
+						placeholder={$t('first_name_placeholder')}
+					/>
 				</div>
 
 				<!-- Last Name -->
