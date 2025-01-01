@@ -19,5 +19,13 @@
 	"weather_settings": "Weather Settings",
 	"farm_location": "Farm Location",
 	"farm_location_placeholder": "Enter the region of your farmland",
-	"temperature_scale": "Temperature Scale"
+	"temperature_scale": "Temperature Scale",
+	"settings": "Settings",
+	"general": "General",
+	"profile": "Profile",
+	"weather": "Weather",
+	"milestones": "Milestones",
+	"calendar": "Calendar",
+	"tasks": "Tasks",
+	"security": "Security"
 }

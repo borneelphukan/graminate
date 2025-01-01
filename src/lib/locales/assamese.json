@@ -19,5 +19,13 @@
 	"weather_settings": "বতৰ ছেটিংছ",
 	"farm_location": "ফাৰ্মৰ স্থান",
 	"farm_location_placeholder": "আপোনাৰ কৃষিভূমিৰ এলেকা লিখক",
-	"temperature_scale": "তাপমানৰ একক"
+	"temperature_scale": "তাপমানৰ একক",
+	"settings": "ছেটিংছ",
+	"general": "সাধাৰণ",
+	"profile": "প্ৰ’ফাইল",
+	"weather": "বতৰ",
+	"milestones": "মাইলষ্টোনছ",
+	"calendar": "কেলেণ্ডাৰ",
+	"tasks": "কাৰ্য্যসমূহ",
+	"security": "নিৰাপত্তা"
 }
