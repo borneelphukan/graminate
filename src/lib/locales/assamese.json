@@ -1,6 +1,6 @@
 {
 	"global_settings": "গ্ল’বেল ছেটিংছ",
-	"applies_across_account": "এইটো আপোনাৰ FarmHub একাউণ্টত প্ৰযোজ্য।",
+	"applies_across_account": "এইটো আপোনাৰ FarmMate একাউণ্টত প্ৰযোজ্য।",
 	"profile_image": "প্ৰ’ফাইল ছবি",
 	"upload": "আপলোড কৰক",
 	"first_name": "প্ৰথম নাম",
@@ -59,5 +59,12 @@
 	"weather_monitor": "বতৰ মনিটৰ",
 	"library": "লাইব্ৰেৰী",
 	"meeting_scheduler": "মিটিঙৰ সূচী নিৰ্ধাৰক",
-	"documents": "দলিল"
+	"documents": "দলিল",
+	"prepare": "প্ৰস্তুতি",
+	"soil": "মাটিৰ গুণাগুণ",
+	"plant": "ৰোপন",
+	"routine": "দৈনিক কাম",
+	"harvest": "ফলন",
+	"view_large": "ডাঙৰ",
+	"view_small": "সৰু"
 }

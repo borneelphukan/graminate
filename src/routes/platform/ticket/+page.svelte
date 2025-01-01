@@ -38,7 +38,7 @@
 		{
 			id: '3',
 			title: 'DONE',
-			tasks: [{ id: 'FAR-3', title: 'Make landing page for FarmHub', type: '' }]
+			tasks: [{ id: 'FAR-3', title: 'Make landing page for FarmMate', type: '' }]
 		}
 	];
 

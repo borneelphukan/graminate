@@ -13,7 +13,7 @@
 
 	const documents: Document[] = [
 		{
-			name: 'FarmHub.pdf',
+			name: 'FarmMate.pdf',
 			type: 'Properietary',
 			views: 1,
 			owner: 'Borneel Bikash Phukan',

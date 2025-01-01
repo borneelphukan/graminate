@@ -32,7 +32,7 @@
 	};
 
 	const accountDetails = {
-		accountName: 'FarmHub',
+		accountName: 'Farmmate',
 		accountNumber: '145660264',
 		progress: 0
 	};

@@ -70,14 +70,17 @@
 		}
 	}
 
-	function SaveProfile() {
+	async function SaveProfile() {
+		//let langCode = 'english';
 		switch (selectedLanguage) {
 			case 'हिन्दी':
 				locale.set('hindi');
+				//langCode = 'hindi';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'hindi');
 				break;
 			case 'অসমীয়া':
 				locale.set('assamese');
+				//langCode = 'assamese';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'assamese');
 				break;
 			default:
@@ -85,12 +88,35 @@
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'english');
 		}
 
+		// try {
+		// 	// Placeholder API endpoint
+		// 	const response = await fetch('/api/user/language', {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		},
+		// 		body: JSON.stringify({ language: langCode })
+		// 	});
+
+		// 	if (!response.ok) {
+		// 		throw new Error('Failed to update language in the database');
+		// 	}
+
 		Swal.fire({
 			title: $t('changes_saved'),
 			text: `${$t('language_updated_to')} ${selectedLanguage}`,
 			icon: 'success',
 			confirmButtonText: $t('ok')
 		});
+		// } catch (error) {
+		// 	console.error('Error updating language:', error);
+		// 	Swal.fire({
+		// 		title: $t('error'),
+		// 		text: $t('unable_to_update_language'),
+		// 		icon: 'error',
+		// 		confirmButtonText: $t('ok')
+		// 	});
+		// }
 	}
 </script>
 
