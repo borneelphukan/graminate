@@ -4,6 +4,7 @@
 	import { derived } from 'svelte/store';
 	import { t } from '../../../../lib/i18n';
 	import NavPanel from '../../../../components/layout/NavPanel.svelte';
+	import { locale } from 'svelte-i18n';
 
 	const navButtons = [
 		{ name: 'profile', view: 'profile' },
@@ -22,21 +23,29 @@
 </script>
 
 <svelte:head>
-	<title>{$t('settings')}</title>
+	{#if $locale}
+		<title>{$t('settings')}</title>
+	{:else}
+		<title>Loading...</title>
+	{/if}
 </svelte:head>
 
 <div class="flex min-h-screen">
 	<main class="flex-1 px-4">
-		<div class="pb-4 font-bold text-lg">{$t('general')}</div>
+		{#if $locale}
+			<div class="pb-4 font-bold text-lg">{$t('general')}</div>
 
-		<NavPanel
-			buttons={navButtons}
-			activeView={$currentView}
-			on:navigate={(e) => changeView(e.detail.view)}
-		/>
+			<NavPanel
+				buttons={navButtons}
+				activeView={$currentView}
+				on:navigate={(e) => changeView(e.detail.view)}
+			/>
 
-		<section>
-			<slot />
-		</section>
+			<section>
+				<slot />
+			</section>
+		{:else}
+			<div>Loading translations...</div>
+		{/if}
 	</main>
 </div>

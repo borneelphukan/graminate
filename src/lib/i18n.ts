@@ -1,4 +1,5 @@
 import { init, register, locale, t } from 'svelte-i18n';
+
 register('english', () => import('./locales/english.json'));
 register('hindi', () => import('./locales/hindi.json'));
 register('assamese', () => import('./locales/assamese.json'));
@@ -8,9 +9,12 @@ if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
 	savedLocale = localStorage.getItem('locale') || 'english';
 }
 
-init({
-	fallbackLocale: 'english',
-	initialLocale: savedLocale
-});
+(async () => {
+	await init({
+		fallbackLocale: 'english',
+		initialLocale: savedLocale
+	});
+	locale.set(savedLocale);
+})();
 
 export { locale, t };
