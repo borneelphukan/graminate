@@ -4,6 +4,8 @@
 	import Button from '../ui/Button.svelte';
 	import Dropdown from '../ui/Dropdown/DropdownLarge.svelte';
 
+	export let onRowClick: (row: any[]) => void;
+
 	export let data: { columns: string[]; rows: any[][] };
 	export let filteredRows: Readable<any[][]>;
 	export let currentPage: Writable<number>;
@@ -144,7 +146,9 @@
 		<table class="table-auto w-full border">
 			<thead>
 				<tr>
-					<th class="p-2 border border-gray-300 dark:border-gray-200 bg-gray-400 dark:bg-gray-800 text-left">
+					<th
+						class="p-2 border border-gray-300 dark:border-gray-200 bg-gray-400 dark:bg-gray-800 text-left"
+					>
 						<input
 							type="checkbox"
 							class="form-checkbox h-4 w-4 text-gray-600"
@@ -181,7 +185,10 @@
 
 			<tbody>
 				{#each $sortedAndPaginatedRows as row, rowIndex}
-					<tr>
+					<tr
+						class="cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-700"
+						onclick={() => onRowClick(row)}
+					>
 						<td class="p-2 border border-gray-300 dark:border-gray-200">
 							<input
 								type="checkbox"
@@ -193,8 +200,9 @@
 						{#each row as cell}
 							<td
 								class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
-								>{cell}</td
 							>
+								{cell}
+							</td>
 						{/each}
 					</tr>
 				{/each}

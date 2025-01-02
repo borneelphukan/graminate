@@ -5,6 +5,7 @@
 	import SearchDropdown from '../../../components/ui/SearchDropdown.svelte';
 	import FormElement from '../../../components/forms/FormElement.svelte';
 	import Table from '../../../components/tables/Table.svelte';
+	import { goto } from '$app/navigation';
 
 	const isSidebarOpen = writable(false);
 
@@ -119,9 +120,10 @@
 				};
 			case 'tickets':
 				return {
-					columns: ['Project Name', 'Type', 'Status', 'Lead', 'Date Started'],
+					columns: ['ID', 'Project Name', 'Type', 'Status', 'Lead', 'Date Started'],
 					rows: [
 						[
+							'001',
 							'Green Tea Production',
 							'Individual Work',
 							'Open',
@@ -166,6 +168,17 @@
 	function handleFormSubmit(values: Record<string, string>) {
 		console.log('Form submitted:', values);
 		closeSidebar();
+	}
+
+	function handleRowClick(row: any[]) {
+		const currentView = $view;
+		if (currentView === 'tickets') {
+			const id = row[0];
+			const projectName = row[1];
+			goto(
+				`/platform/ticket/${encodeURIComponent(id)}?project_name=${encodeURIComponent(projectName)}`
+			);
+		}
 	}
 </script>
 
@@ -241,6 +254,7 @@
 	{paginationItems}
 	{searchQuery}
 	totalRecordCount={$totalRecordCount}
+	onRowClick={handleRowClick}
 />
 
 {#if $isSidebarOpen}

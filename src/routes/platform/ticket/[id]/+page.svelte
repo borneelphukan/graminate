@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import Button from '../../../components/ui/Button.svelte';
-	import TextArea from '../../../components/ui/TextArea.svelte';
-	import TextField from '../../../components/ui/TextField.svelte';
-	import DropdownSmall from '../../../components/ui/Dropdown/DropdownSmall.svelte';
-	import TicketModal from '../../../components/modals/TicketModal.svelte';
-	import { dndzone } from 'svelte-dnd-action';
+	import { page } from '$app/stores';
+	import { error } from '@sveltejs/kit';
+	import Button from '../../../../components/ui/Button.svelte';
 	import Swal from 'sweetalert2';
-	import SearchBar from '../../../components/ui/SearchBar.svelte';
-	import DropdownFilter from '../../../components/ui/Dropdown/DropdownFilter.svelte';
+	import TicketModal from '../../../../components/modals/TicketModal.svelte';
+	import DropdownFilter from '../../../../components/ui/Dropdown/DropdownFilter.svelte';
+	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
+	import SearchBar from '../../../../components/ui/SearchBar.svelte';
+	import TextArea from '../../../../components/ui/TextArea.svelte';
+	import TextField from '../../../../components/ui/TextField.svelte';
+	import { dndzone } from 'svelte-dnd-action';
+
+	export const params = {};
+	const projectName = $page.url.searchParams.get('project_name');
 
 	type Task = {
 		id: string;
@@ -195,7 +200,7 @@
 			return;
 		}
 
-		const id = `FAR-${++totalTaskCount}`;
+		const id = `ID${++totalTaskCount}`;
 		const newTask: Task = {
 			id,
 			title: newTaskTitle.trim(),
@@ -305,7 +310,7 @@
 		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
 	<div class="max-w-6xl mx-auto">
-		<h2 class="text-md dark:text-light mb-4">Project / Project_Name</h2>
+		<h2 class="text-md dark:text-light mb-4">Project / {projectName}</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 		<div class="flex items-center mb-4 gap-4">
 			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />
