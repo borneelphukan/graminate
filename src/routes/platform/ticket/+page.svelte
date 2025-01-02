@@ -9,21 +9,6 @@
 	import Swal from 'sweetalert2';
 	import SearchBar from '../../../components/ui/SearchBar.svelte';
 
-	let searchQuery = ''; // Variable for storing the search query
-
-	function filterTasks(column: Column) {
-		if (!searchQuery.trim()) return column.tasks;
-		return column.tasks.filter(
-			(task) =>
-				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				task.id.toLowerCase().includes(searchQuery.toLowerCase())
-		);
-	}
-
-	function handleDrop(event: { detail: { items: Column[] } }) {
-		columns = event.detail.items;
-	}
-
 	type Task = {
 		id: string;
 		title: string;
@@ -58,6 +43,10 @@
 	const editingColumn = writable<number | null>(null);
 	const dropdownOpen = writable<{ colIndex: number; taskIndex: number } | null>(null);
 	const columnDropdownOpen = writable<number | null>(null);
+	let isLabelPopupOpen = false;
+	let newLabel = '';
+	let selectedTaskId = '';
+	let searchQuery = '';
 	let newTaskTitle = '';
 	let newTaskType = '';
 	let totalTaskCount = 3;
@@ -66,6 +55,72 @@
 	let newColumnTitle = '';
 	let isTicketModalOpen: boolean = false;
 	let activeColumnIndex: number | null = null;
+
+	function filterTasks(column: Column) {
+		if (!searchQuery.trim()) return column.tasks;
+		return column.tasks.filter(
+			(task) =>
+				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				task.id.toLowerCase().includes(searchQuery.toLowerCase())
+		);
+	}
+
+	function highlightText(text: string, query: string) {
+		if (!query) return text;
+		const regex = new RegExp(`(${query})`, 'gi');
+		return text.replace(regex, '<mark class="bg-green-300">$1</mark>');
+	}
+
+	function handleDrop(event: { detail: { items: Column[] } }) {
+		columns = event.detail.items;
+	}
+
+	function openLabelPopup(taskId: string) {
+		selectedTaskId = taskId;
+		isLabelPopupOpen = true;
+	}
+
+	function toggleLabelPopup() {
+		isLabelPopupOpen = !isLabelPopupOpen;
+	}
+
+	function addLabel() {
+		if (!newLabel.trim()) {
+			Swal.fire({
+				title: 'Error',
+				text: 'Label name is required',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+			return;
+		}
+
+		if (!dropdownItems.includes(newLabel.trim())) {
+			dropdownItems = [...dropdownItems, newLabel.trim()];
+		}
+
+		columns = columns.map((column) => ({
+			...column,
+			tasks: column.tasks.map((task) =>
+				task.id === selectedTaskId
+					? {
+							...task,
+							type: task.type ? `${task.type}, ${newLabel.trim()}` : newLabel.trim()
+						}
+					: task
+			)
+		}));
+
+		newLabel = '';
+		isLabelPopupOpen = false;
+
+		Swal.fire({
+			title: 'Success',
+			text: 'Label added successfully!',
+			icon: 'success',
+			confirmButtonText: 'OK'
+		});
+	}
 
 	const openTicketModal = (index: number) => {
 		isTicketModalOpen = true;
@@ -83,7 +138,7 @@
 	const saveColumnLimit = (event: CustomEvent<string>) => {
 		if (activeColumnIndex !== null) {
 			const newLimit = event.detail.trim();
-			columnLimits[activeColumnIndex] = newLimit; // Save the limit for the column
+			columnLimits[activeColumnIndex] = newLimit;
 			console.log(`New limit for column ${columns[activeColumnIndex].title}: ${newLimit}`);
 		}
 		closeTicketModal();
@@ -287,13 +342,13 @@
 									on:click|stopPropagation
 								>
 									<button
-										class="hover:bg-gray-500 px-4 py-1 rounded w-full text-left"
+										class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
 										on:click={() => openTicketModal(colIndex)}
 									>
 										Set column limit
 									</button>
 									<button
-										class="hover:bg-gray-500 px-4 py-1 rounded w-full text-left"
+										class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
 										on:click={() => deleteColumn(colIndex)}
 									>
 										Delete
@@ -307,7 +362,9 @@
 							<div class="bg-white p-3 rounded-md shadow-sm relative">
 								<div class="flex flex-row items-start justify-between">
 									<div class="mr-2 break-words max-w-xs">
-										<p class="text-gray-200">{task.title}</p>
+										<p class="text-gray-200">
+											{@html highlightText(task.title, searchQuery)}
+										</p>
 									</div>
 									<div class="relative">
 										<button
@@ -331,11 +388,17 @@
 										</button>
 										{#if $dropdownOpen && $dropdownOpen.colIndex === colIndex && $dropdownOpen.taskIndex === taskIndex}
 											<div
-												class="absolute right-0 bg-white shadow rounded text-sm text-gray-800 z-10"
+												class="absolute right-0 w-32 bg-white shadow rounded text-sm text-gray-800 z-10"
 												on:click|stopPropagation
 											>
 												<button
 													class="hover:bg-gray-500 px-4 py-1 rounded w-full text-left"
+													on:click={() => openLabelPopup(task.id)}
+												>
+													Add Label
+												</button>
+												<button
+													class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
 													on:click={() => deleteTask(colIndex, taskIndex)}
 												>
 													Delete
@@ -345,20 +408,22 @@
 									</div>
 								</div>
 								<div class="flex justify-between items-end mt-2">
-									{#if task.type}
-										<span
-											class={`text-xs font-semibold text-white rounded px-2 py-1 ${
-												{
-													Finance: 'bg-green-100 ',
-													Research: 'bg-blue-200',
-													Maintenance: 'bg-yellow-200',
-													Urgent: 'bg-red-200'
-												}[task.type] || 'bg-gray-300'
-											}`}
-										>
-											{task.type}
-										</span>
-									{/if}
+									<div class="flex flex-wrap gap-1">
+										{#each task.type ? task.type.split(', ') : [] as label}
+											<span
+												class={`text-xs font-semibold text-white rounded px-2 py-1 ${
+													{
+														Finance: 'bg-green-100 ',
+														Research: 'bg-blue-200',
+														Maintenance: 'bg-yellow-200',
+														Urgent: 'bg-red-200'
+													}[label] || 'bg-gray-300'
+												}`}
+											>
+												{label}
+											</span>
+										{/each}
+									</div>
 									<span class="text-xs text-gray-300 ml-auto">{task.id}</span>
 								</div>
 							</div>
@@ -471,6 +536,29 @@
 			</div>
 		</div>
 	</div>
+	
+	{#if isLabelPopupOpen}
+		<div
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+			on:click|self={toggleLabelPopup}
+		>
+			<div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-96 shadow-lg">
+				<h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">
+					Add labels to {selectedTaskId}
+				</h3>
+				<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+					Begin typing to find and create labels
+				</p>
+				<div class="mt-4">
+					<TextField type="text" placeholder="Labels" bind:value={newLabel} />
+				</div>
+				<div class="flex justify-end gap-3 mt-6">
+					<Button text="Cancel" style="ghost" on:click={toggleLabelPopup} />
+					<Button text="Done" style="primary" isDisabled={!newLabel.trim()} on:click={addLabel} />
+				</div>
+			</div>
+		</div>
+	{/if}
 </div>
 
 <TicketModal
