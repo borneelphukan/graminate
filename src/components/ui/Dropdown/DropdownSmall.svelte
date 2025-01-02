@@ -3,7 +3,7 @@
 	export let selected: string = '';
 	export let direction: 'up' | 'down' = 'down';
 	export let label: string | null = null;
-	export let placeholder: string = 'Select an option'; // New placeholder parameter
+	export let placeholder: string = 'Select an option';
 	let labelOpen: boolean = false;
 	const dropdownId = `dropdown-${Math.random().toString(36).substring(2, 15)}`;
 </script>

@@ -85,7 +85,7 @@
 				<ul>
 					<li>
 						<button
-							class="w-full text-left hover:bg-gray-500 dark:hover:bg-blue-100 px-4 py-2 rounded-b-md cursor-pointer"
+							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
 							aria-label="Switch to Large view"
 							onclick={() => toggleView('Large')}
 						>
@@ -94,7 +94,7 @@
 					</li>
 					<li>
 						<button
-							class="w-full text-left hover:bg-gray-500 dark:hover:bg-blue-100 px-4 py-2 rounded-b-md cursor-pointer"
+							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
 							aria-label="Switch to Small view"
 							onclick={() => toggleView('Small')}
 						>

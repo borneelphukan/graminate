@@ -8,6 +8,7 @@
 	import { dndzone } from 'svelte-dnd-action';
 	import Swal from 'sweetalert2';
 	import SearchBar from '../../../components/ui/SearchBar.svelte';
+	import DropdownFilter from '../../../components/ui/Dropdown/DropdownFilter.svelte';
 
 	type Task = {
 		id: string;
@@ -82,13 +83,17 @@
 		}
 	}
 
+	let selectedFilterLabels: string[] = [];
+	let allLabels = ['Finance', 'Maintenance', 'Research', 'Urgent'];
+
 	function filterTasks(column: Column) {
-		if (!searchQuery.trim()) return column.tasks;
-		return column.tasks.filter(
-			(task) =>
-				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				task.id.toLowerCase().includes(searchQuery.toLowerCase())
-		);
+		return column.tasks.filter((task) => {
+			const taskLabels = task.type.split(', ').map((label) => label.trim());
+			return (
+				selectedFilterLabels.length === 0 ||
+				selectedFilterLabels.some((label) => taskLabels.includes(label))
+			);
+		});
 	}
 
 	function highlightText(text: string, query: string) {
@@ -296,8 +301,14 @@
 	<div class="max-w-6xl mx-auto">
 		<h2 class="text-md dark:text-light mb-4">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
-		<div class="flex items-center mb-4">
+		<div class="flex items-center mb-4 gap-4">
 			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />
+			<DropdownFilter
+				items={dropdownItems}
+				direction="down"
+				placeholder="Label"
+				bind:selectedItems={selectedFilterLabels}
+			/>
 		</div>
 
 		<div
