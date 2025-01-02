@@ -7,6 +7,18 @@
 	import TicketModal from '../../../components/modals/TicketModal.svelte';
 	import { dndzone } from 'svelte-dnd-action';
 	import Swal from 'sweetalert2';
+	import SearchBar from '../../../components/ui/SearchBar.svelte';
+
+	let searchQuery = ''; // Variable for storing the search query
+
+	function filterTasks(column: Column) {
+		if (!searchQuery.trim()) return column.tasks;
+		return column.tasks.filter(
+			(task) =>
+				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				task.id.toLowerCase().includes(searchQuery.toLowerCase())
+		);
+	}
 
 	function handleDrop(event: { detail: { items: Column[] } }) {
 		columns = event.detail.items;
@@ -204,10 +216,15 @@
 	}}
 	class="min-h-screen"
 >
-	<div class="mb-4"><Button text="Back" style="ghost" arrow="left" on:click={goBack} /></div>
+	<div class="mb-4">
+		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
+	</div>
 	<div class="max-w-6xl mx-auto">
 		<h2 class="text-md dark:text-light mb-4">Project / Project_Name</h2>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
+		<div class="flex items-center mb-4">
+			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />
+		</div>
 
 		<div
 			class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative"
@@ -286,7 +303,7 @@
 						</div>
 					</div>
 					<div class="space-y-4">
-						{#each column.tasks as task, taskIndex}
+						{#each filterTasks(column) as task, taskIndex}
 							<div class="bg-white p-3 rounded-md shadow-sm relative">
 								<div class="flex flex-row items-start justify-between">
 									<div class="mr-2 break-words max-w-xs">
