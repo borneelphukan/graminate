@@ -55,12 +55,20 @@
 	"library": "Library",
 	"meeting_scheduler": "Meeting Scheduler",
 	"documents": "Documents",
-	"apps_integration":"Apps & Integration",
+	"apps_integration": "Apps & Integration",
 	"prepare": "Prepare",
 	"soil": "Soil",
 	"plant": "Plant",
 	"routine": "Routine",
 	"harvest": "Harvest",
 	"view_large": "Large",
-	"view_small": "Small"
+	"view_small": "Small",
+	"navbar": {
+		"upgrade": "Upgrade",
+		"profile_preferences": "Profile & Preferences",
+		"share_feedback": "Share navigation feedback",
+		"invite_team": "Invite your team",
+		"sign_out": "Sign out",
+		"privacy_policy": "Privacy policy"
+	}
 }

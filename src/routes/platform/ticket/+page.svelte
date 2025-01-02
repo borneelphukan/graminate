@@ -309,6 +309,15 @@
 				placeholder="Label"
 				bind:selectedItems={selectedFilterLabels}
 			/>
+			{#if selectedFilterLabels.length > 0}
+				<Button
+					text="Clear filters"
+					style="ghost"
+					on:click={() => {
+						selectedFilterLabels = [];
+					}}
+				/>
+			{/if}
 		</div>
 
 		<div

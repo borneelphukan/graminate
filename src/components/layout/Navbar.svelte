@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '../../lib/i18n';
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
 	import ThemeSwitch from '../ui/ThemeSwitch.svelte';
@@ -31,12 +32,6 @@
 		imageUrl: 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'
 	};
 
-	const accountDetails = {
-		accountName: 'Farmmate',
-		accountNumber: '145660264',
-		progress: 0
-	};
-
 	const userNavigation = [
 		{ name: 'Account & Billing', href: '/account-billing' },
 		{ name: 'Pricing & Features', href: '/pricing-features', external: true },
@@ -58,7 +53,7 @@
 			<div class="relative z-10 flex px-2 lg:px-0">
 				<div class="flex flex-shrink-0 items-center">
 					<a href="/" class="text-left text-3xl font-semibold mb-2 text-white">
-						<span class="text-green-500">Farm</span>Hub
+						<span class="text-green-500">Farm</span>Mate
 					</a>
 				</div>
 			</div>
@@ -88,7 +83,9 @@
 									d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
 								/>
 							</svg>
-							<span class="text-sm text-gray-400 hover:text-white font-medium">Upgrade</span>
+							<span class="text-sm text-gray-400 hover:text-white font-medium"
+								>{$t('navbar.upgrade')}</span
+							>
 						</button>
 
 						<!-- Upgrade Text -->
@@ -279,7 +276,7 @@
 												href="/platform/settings/general"
 												class="text-sm font-medium text-green-600 hover:underline"
 											>
-												Profile & Preferences
+												{$t('navbar.profile_preferences')}
 											</a>
 											<ThemeSwitch switchAction={toggleThemeHandler} />
 										</div>
@@ -306,19 +303,8 @@
 										d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
 									/>
 								</svg>
-								Share navigation feedback
+								{$t('navbar.share_feedback')}
 							</a>
-
-							<!-- Account Section -->
-							<div class="px-4 py-3 border-b border-gray-300">
-								<p class="text-sm font-semibold text-gray-100 dark:text-gray-500">Account</p>
-								<p class="text-sm py-1 font-medium text-gray-200 dark:text-gray-400">
-									{accountDetails.accountName}
-								</p>
-								<p class="text-sm text-gray-200 dark:text-gray-400">
-									{accountDetails.accountNumber}
-								</p>
-							</div>
 
 							<!-- Invite Team -->
 							<a
@@ -336,7 +322,7 @@
 										d="M12 11a5 5 0 0 1 5 5v6h-2v-6a3 3 0 0 0-2.824-2.995L12 13a3 3 0 0 0-2.995 2.824L9 16v6H7v-6a5 5 0 0 1 5-5zm-6.5 3c.279 0 .55.033.81.094a5.947 5.947 0 0 0-.301 1.575L6 16v.086a1.492 1.492 0 0 0-.356-.08L5.5 16a1.5 1.5 0 0 0-1.493 1.356L4 17.5V22H2v-4.5A3.5 3.5 0 0 1 5.5 14zm13 0a3.5 3.5 0 0 1 3.5 3.5V22h-2v-4.5a1.5 1.5 0 0 0-1.356-1.493L18.5 16c-.175 0-.343.03-.5.085V16c0-.666-.108-1.306-.309-1.904.259-.063.53-.096.809-.096zm-13-6a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm13 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm-13 2a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zm13 0a.5.5 0 1 0 0 1 .5.5 0 0 0 0-1zM12 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
 									/>
 								</svg>
-								Invite your team
+								{$t('navbar.invite_team')}
 							</a>
 							<!-- Navigation Links -->
 							<div class="px-4 py-3">
@@ -371,8 +357,8 @@
 							<div
 								class="flex items-center justify-between px-4 py-3 text-sm text-gray-200 dark:text-gray-500 border-t border-gray-300"
 							>
-								<a href="/" class="hover:underline">Sign out</a>
-								<a href="/privacy-policy" class="hover:underline">Privacy policy</a>
+								<a href="/" class="hover:underline">{$t('navbar.sign_out')}</a>
+								<a href="/privacy-policy" class="hover:underline">{$t('navbar.privacy_policy')}</a>
 							</div>
 						</div>
 					{/if}

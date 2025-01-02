@@ -62,5 +62,13 @@
 	"routine": "দৈনিক কাম",
 	"harvest": "ফলন",
 	"view_large": "ডাঙৰ",
-	"view_small": "সৰু"
+	"view_small": "সৰু",
+	"navbar": {
+		"upgrade": "আপগ্ৰেড",
+		"profile_preferences": "প্ৰফাইল আৰু পছন্দসমূহ",
+		"share_feedback": "নেভিগেচনৰ প্ৰতিক্ৰিয়া শ্বেয়াৰ কৰক",
+		"invite_team": "আপোনাৰ দলক আমন্ত্ৰণ জনাওক",
+		"sign_out": "ছাইন আউট",
+		"privacy_policy": "গোপনীয়তা নীতি"
+	}
 }
