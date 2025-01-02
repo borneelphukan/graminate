@@ -89,10 +89,14 @@
 	function filterTasks(column: Column) {
 		return column.tasks.filter((task) => {
 			const taskLabels = task.type.split(', ').map((label) => label.trim());
-			return (
+			const matchesLabels =
 				selectedFilterLabels.length === 0 ||
-				selectedFilterLabels.some((label) => taskLabels.includes(label))
-			);
+				selectedFilterLabels.some((label) => taskLabels.includes(label));
+			const matchesSearch =
+				!searchQuery.trim() ||
+				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				task.id.toLowerCase().includes(searchQuery.toLowerCase());
+			return matchesLabels && matchesSearch;
 		});
 	}
 
@@ -281,6 +285,8 @@
 	}
 
 	let taskLabels = getTaskLabels(selectedTaskId);
+	let hasTasks = columns.some((column) => column.tasks.length > 0);
+	$: hasTasks = columns.some((column) => column.tasks.length > 0);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -303,20 +309,24 @@
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 		<div class="flex items-center mb-4 gap-4">
 			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />
-			<DropdownFilter
-				items={dropdownItems}
-				direction="down"
-				placeholder="Label"
-				bind:selectedItems={selectedFilterLabels}
-			/>
-			{#if selectedFilterLabels.length > 0}
-				<Button
-					text="Clear filters"
-					style="ghost"
-					on:click={() => {
-						selectedFilterLabels = [];
-					}}
+
+			{#if hasTasks}
+				<DropdownFilter
+					items={dropdownItems}
+					direction="down"
+					placeholder="Label"
+					bind:selectedItems={selectedFilterLabels}
 				/>
+
+				{#if selectedFilterLabels.length > 0}
+					<Button
+						text="Clear filters"
+						style="ghost"
+						on:click={() => {
+							selectedFilterLabels = [];
+						}}
+					/>
+				{/if}
 			{/if}
 		</div>
 
