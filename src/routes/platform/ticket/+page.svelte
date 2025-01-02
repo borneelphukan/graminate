@@ -25,7 +25,7 @@
 		{
 			id: '1',
 			title: 'TO DO',
-			tasks: [{ id: 'FAR-1', title: 'Make Ticket section similar to Jira interface', type: 'feat' }]
+			tasks: [{ id: 'FAR-1', title: 'Make Ticket section similar to Jira interface', type: '' }]
 		},
 		{
 			id: '2',
@@ -55,6 +55,32 @@
 	let newColumnTitle = '';
 	let isTicketModalOpen: boolean = false;
 	let activeColumnIndex: number | null = null;
+	let filteredLabels: string[] = [];
+	let showDropdown = false;
+
+	function handleDropdownChange() {
+		newLabel = newLabel.trim();
+		if (!newLabel) {
+			showDropdown = false;
+			return;
+		}
+
+		filteredLabels = dropdownItems.filter((item) =>
+			item.toLowerCase().includes(newLabel.toLowerCase())
+		);
+
+		showDropdown = filteredLabels.length > 0;
+	}
+
+	function handleInputChange() {
+		const trimmedInput = newLabel.trim().toLowerCase();
+		if (trimmedInput) {
+			filteredLabels = dropdownItems.filter((item) => item.toLowerCase().includes(trimmedInput));
+			showDropdown = filteredLabels.length > 0;
+		} else {
+			showDropdown = false;
+		}
+	}
 
 	function filterTasks(column: Column) {
 		if (!searchQuery.trim()) return column.tasks;
@@ -78,6 +104,10 @@
 	function openLabelPopup(taskId: string) {
 		selectedTaskId = taskId;
 		isLabelPopupOpen = true;
+		const task = columns
+			.flatMap((column) => column.tasks)
+			.find((task) => task.id === selectedTaskId);
+		taskLabels = task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
 	}
 
 	function toggleLabelPopup() {
@@ -85,20 +115,13 @@
 	}
 
 	function addLabel() {
-		if (!newLabel.trim()) {
-			Swal.fire({
-				title: 'Error',
-				text: 'Label name is required',
-				icon: 'error',
-				confirmButtonText: 'OK'
-			});
-			return;
-		}
-
+		const task = columns
+			.flatMap((column) => column.tasks)
+			.find((task) => task.id === selectedTaskId);
+		taskLabels = task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
 		if (!dropdownItems.includes(newLabel.trim())) {
 			dropdownItems = [...dropdownItems, newLabel.trim()];
 		}
-
 		columns = columns.map((column) => ({
 			...column,
 			tasks: column.tasks.map((task) =>
@@ -110,16 +133,6 @@
 					: task
 			)
 		}));
-
-		newLabel = '';
-		isLabelPopupOpen = false;
-
-		Swal.fire({
-			title: 'Success',
-			text: 'Label added successfully!',
-			icon: 'success',
-			confirmButtonText: 'OK'
-		});
 	}
 
 	const openTicketModal = (index: number) => {
@@ -209,7 +222,6 @@
 	function handlePageClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
 
-		// Check if the click was outside the ellipsis dropdown
 		if (!target.closest('[aria-label="column-ellipsis"]')) {
 			columnDropdownOpen.set(null);
 		}
@@ -257,6 +269,13 @@
 	function goBack() {
 		history.back();
 	}
+
+	function getTaskLabels(taskId: string): string[] {
+		const task = columns.flatMap((column) => column.tasks).find((task) => task.id === taskId);
+		return task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
+	}
+
+	let taskLabels = getTaskLabels(selectedTaskId);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -536,7 +555,6 @@
 			</div>
 		</div>
 	</div>
-	
 	{#if isLabelPopupOpen}
 		<div
 			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -549,12 +567,34 @@
 				<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
 					Begin typing to find and create labels
 				</p>
+				<div class="mt-4 relative">
+					<TextField
+						type="text"
+						placeholder="Labels"
+						bind:value={newLabel}
+						on:input={handleInputChange}
+					/>
+				</div>
 				<div class="mt-4">
-					<TextField type="text" placeholder="Labels" bind:value={newLabel} />
+					<DropdownSmall
+						items={dropdownItems}
+						direction="up"
+						placeholder="Task Type"
+						bind:selected={newLabel}
+						on:change={() => handleDropdownChange()}
+					/>
 				</div>
 				<div class="flex justify-end gap-3 mt-6">
 					<Button text="Cancel" style="ghost" on:click={toggleLabelPopup} />
-					<Button text="Done" style="primary" isDisabled={!newLabel.trim()} on:click={addLabel} />
+					<Button
+						text="Done"
+						style="primary"
+						isDisabled={!newLabel.trim() || taskLabels.includes(newLabel.trim())}
+						on:click={() => {
+							addLabel();
+							toggleLabelPopup();
+						}}
+					/>
 				</div>
 			</div>
 		</div>
