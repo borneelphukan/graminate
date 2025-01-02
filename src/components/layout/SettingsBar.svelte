@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { t } from '../../lib/i18n'; // Import the translation function
+	import { t } from '../../lib/i18n';
 	import Button from '../ui/Button.svelte';
 
 	type MenuItem = {
@@ -20,9 +20,7 @@
 			label: 'account_management',
 			subItems: [
 				{ label: 'account_defaults', href: '/account/defaults' },
-				{ label: 'audit_log', href: '/account/audit-log' },
 				{ label: 'users_and_teams', href: '/account/users-teams' },
-				{ label: 'tracking_code', href: '/account/tracking-code' },
 				{ label: 'privacy_and_consent', href: '/account/privacy-consent' },
 				{ label: 'security', href: '/account/security' }
 			]

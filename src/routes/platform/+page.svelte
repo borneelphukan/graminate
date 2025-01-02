@@ -5,6 +5,7 @@
 	import Calendar from '../../components/ui/Calendar.svelte';
 	import Loader from '../../components/ui/Loader.svelte';
 	import { onMount } from 'svelte';
+	import { t } from '../../lib/i18n';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;

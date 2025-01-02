@@ -119,8 +119,16 @@
 				};
 			case 'tickets':
 				return {
-					columns: ['Ticket ID', 'Subject', 'Status', 'Assigned To', 'Created Date'],
-					rows: [['TCK-001', 'Login Issue', 'Open', 'Alice Brown', '2024-11-01']]
+					columns: ['Project Name', 'Type', 'Status', 'Lead', 'Date Started'],
+					rows: [
+						[
+							'Green Tea Production',
+							'Individual Work',
+							'Open',
+							'Borneel Bikash Phukan',
+							'2024-11-01'
+						]
+					]
 				};
 			default:
 				return { columns: [], rows: [] };

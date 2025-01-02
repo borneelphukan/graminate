@@ -101,13 +101,6 @@
 		// 	if (!response.ok) {
 		// 		throw new Error('Failed to update language in the database');
 		// 	}
-
-		Swal.fire({
-			title: $t('changes_saved'),
-			text: `${$t('language_updated_to')} ${selectedLanguage}`,
-			icon: 'success',
-			confirmButtonText: $t('ok')
-		});
 		// } catch (error) {
 		// 	console.error('Error updating language:', error);
 		// 	Swal.fire({
