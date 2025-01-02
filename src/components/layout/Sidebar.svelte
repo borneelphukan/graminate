@@ -5,9 +5,10 @@
 		faChartPie,
 		faChartLine,
 		faFolder,
-		faWallet,
+		faCartShopping,
 		faAddressBook,
-		faCloud
+		faCloud,
+		faPlug
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -19,7 +20,6 @@
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
 
-	// Sidebar sections with translation keys for labels
 	const sections = [
 		{
 			icon: faHome,
@@ -47,18 +47,10 @@
 			subItems: []
 		},
 		{
-			icon: faWallet,
-			label: 'commerce',
-			section: 'Commerce',
-			subItems: [
-				{ label: 'overview', route: '/platform/overview' },
-				{ label: 'payments', route: '/platform/payments' },
-				{ label: 'invoices', route: '/platform/contacts?view=invoices' },
-				{ label: 'payment_links', route: '/platform/payment-links' },
-				{ label: 'quotes', route: '/platform/quotes' },
-				{ label: 'products', route: '/platform/products' },
-				{ label: 'subscriptions', route: '/platform/subscriptions' }
-			]
+			icon: faCartShopping,
+			label: 'shop',
+			section: 'Shop',
+			subItems: []
 		},
 		{
 			icon: faChartLine,
@@ -82,6 +74,13 @@
 				{ label: 'meeting_scheduler', route: '/platform/meetings' },
 				{ label: 'documents', route: '/platform/documents' }
 			]
+		},
+		{
+			icon: faPlug,
+			label: 'apps_integration',
+			section: 'Apps & Integration',
+			route: '',
+			subItems: []
 		}
 	];
 
@@ -101,7 +100,6 @@
 		expandedSection = null;
 	}
 
-	// Close submenu on outside click
 	onMount(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			const sidebar = document.querySelector('.sidebar');
@@ -135,7 +133,14 @@
 				<div class="relative group">
 					<div
 						class="flex items-center mx-2 p-3 rounded-lg cursor-pointer hover:bg-blue-100 transition-all duration-200 group"
+						role="button"
+						tabindex="0"
 						onclick={() => (route ? navigateTo(route) : handleSectionChange(section))}
+						onkeydown={(e) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								route ? navigateTo(route) : handleSectionChange(section);
+							}
+						}}
 						style="justify-content: {isCollapsed ? 'center' : 'flex-start'};"
 					>
 						<div class="text-gray-400 flex justify-center items-center w-6 h-6">
@@ -161,9 +166,9 @@
 										<path
 											id="XMLID_222_"
 											d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
-									c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
-									C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
-									C255,161.018,253.42,157.202,250.606,154.389z"
+					c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+					C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+					C255,161.018,253.42,157.202,250.606,154.389z"
 										/>
 									</svg>
 								</div>
@@ -179,7 +184,14 @@
 							{#each subItems as { label, route }}
 								<div
 									class="text-gray-400 text-sm py-2 px-4 mx-2 cursor-pointer hover:bg-blue-100 rounded-md"
+									role="button"
+									tabindex="0"
 									onclick={() => navigateTo(route)}
+									onkeydown={(e) => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											navigateTo(route);
+										}
+									}}
 								>
 									{$t(label)}
 								</div>
