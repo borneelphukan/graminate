@@ -214,10 +214,12 @@
 		} else if (currentView === 'invoices') {
 			const id = row[0];
 			const title = row[1];
-			const crop = row[2];
-			const budget = row[4];
+			const billTo = row[2];
+			const amount = row[4];
+			const due = row[5];
+			const status = row[6];
 			goto(
-				`/platform/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+				`/platform/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&billTo=${encodeURIComponent(billTo)}&amount=${encodeURIComponent(amount)}&due=${encodeURIComponent(due)}&status=${encodeURIComponent(status)}`
 			);
 		} else if (currentView === 'tickets') {
 			const id = row[0];

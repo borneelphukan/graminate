@@ -15,8 +15,6 @@
 	let items: { description: string; quantity: number; rate: number; amount: number }[] = [
 		{ description: '', quantity: 1, rate: 0, amount: 0 }
 	];
-	let notes = '';
-	let terms = '';
 	let tax = 0;
 	let discount = 0;
 	let shipping = 0;
@@ -37,7 +35,8 @@
 		dateCreated: '',
 		paymentTerms: '',
 		dueDate: '',
-		poNumber: ''
+		poNumber: '',
+		notes: ''
 	});
 </script>
 
@@ -105,60 +104,73 @@
 
 		<CustomTable bind:items />
 
-		<div class="grid grid-cols-2 gap-4 mt-6">
-			<textarea
-				bind:value={notes}
-				placeholder="Notes - any relevant information not already covered"
-				class="border rounded w-full px-4 py-2 focus:outline-none focus:ring"
-			></textarea>
-			<textarea
-				bind:value={terms}
-				placeholder="Terms and conditions - late fees, payment methods, delivery schedule"
-				class="border rounded w-full px-4 py-2 focus:outline-none focus:ring"
-			></textarea>
-		</div>
-
-		<div class="grid grid-cols-3 gap-4 mt-6">
-			<div></div>
-			<div class="text-right space-y-2">
-				<div>Subtotal: ₹{calculateAmounts().subtotal.toFixed(2)}</div>
-				<div>
-					Tax:
-					<input
-						type="number"
-						bind:value={tax}
-						class="w-12 text-right border rounded px-2 focus:outline-none"
-					/>
-					%
-				</div>
-				<div>
-					Discount:
-					<input
-						type="number"
-						bind:value={discount}
-						class="w-16 text-right border rounded px-2 focus:outline-none"
-					/>
-				</div>
-				<div>
-					Shipping:
-					<input
-						type="number"
-						bind:value={shipping}
-						class="w-16 text-right border rounded px-2 focus:outline-none"
-					/>
-				</div>
+		<div class="grid grid-cols-2 gap-12 mt-6 mr-6">
+			<!-- Left Column: Notes and Terms -->
+			<div class="space-y-2">
+				<TextArea
+					label="Notes"
+					placeholder="Notes - any relevant information not already covered"
+					bind:value={$invoiceValues.notes}
+				/>
+				<TextArea
+					label="Terms"
+					placeholder="Terms and conditions - late fees, payment methods, delivery schedule"
+					bind:value={$invoiceValues.terms}
+				/>
 			</div>
-			<div class="text-right space-y-2">
-				<div>Total: ₹{calculateAmounts().total.toFixed(2)}</div>
-				<div>
-					Amount Paid:
+
+			<!-- Right Column: Subtotal, Tax, Discount, Shipping, Total -->
+			<div class="space-y-2">
+				<div class="flex justify-between">
+					<span>Subtotal: </span>
+					<span class="font-semibold">₹{calculateAmounts().subtotal.toFixed(2)}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>Tax:</span>
+					<div class="flex items-center">
+						<input
+							type="number"
+							bind:value={tax}
+							class="w-16 text-right border rounded px-2 focus:outline-none"
+						/>
+						<span class="ml-2">%</span>
+					</div>
+				</div>
+				<!-- Discount and Shipping in the same row -->
+				<div class="flex justify-between">
+					<div class="flex items-center">
+						<span>Discount:</span>
+						<input
+							type="number"
+							bind:value={discount}
+							class="w-16 text-right border rounded px-2 ml-2 focus:outline-none"
+						/>
+					</div>
+					<div class="flex items-center">
+						<span>Shipping:</span>
+						<input
+							type="number"
+							bind:value={shipping}
+							class="w-16 text-right border rounded px-2 ml-2 focus:outline-none"
+						/>
+					</div>
+				</div>
+				<div class="flex justify-between">
+					<span class="font-semibold">Total:</span>
+					<span class="font-bold">₹{calculateAmounts().total.toFixed(2)}</span>
+				</div>
+				<div class="flex justify-between">
+					<span>Amount Paid:</span>
 					<input
 						type="number"
 						bind:value={amountPaid}
 						class="w-16 text-right border rounded px-2 focus:outline-none"
 					/>
 				</div>
-				<div>Balance Due: ₹{calculateAmounts().balanceDue.toFixed(2)}</div>
+				<div class="flex justify-between">
+					<span class="font-semibold">Balance Due:</span>
+					<span class="font-bold">₹{calculateAmounts().balanceDue.toFixed(2)}</span>
+				</div>
 			</div>
 		</div>
 	</div>
