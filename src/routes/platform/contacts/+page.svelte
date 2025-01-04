@@ -122,15 +122,7 @@
 				return {
 					columns: ['ID', 'Title', 'Crop', 'Status', 'Budget', 'Created On', 'End Date'],
 					rows: [
-						[
-							'001',
-							'Summer Farm',
-							'Green Tea',
-							'Active',
-							'40,000',
-							'2024-11-01',
-							'2025-07-01'
-						]
+						['001', 'Summer Farm', 'Green Tea', 'Active', '40,000', '2024-11-01', '2025-07-01']
 					]
 				};
 			default:
@@ -171,9 +163,43 @@
 		closeSidebar();
 	}
 
+	// Fixes Required
 	function handleRowClick(row: any[]) {
 		const currentView = $view;
-		if (currentView === 'tickets') {
+		if (currentView === 'contacts') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/contacts/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		} else if (currentView === 'companies') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/company/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		}
+		if (currentView === 'deals') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/deals/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		} else if (currentView === 'invoices') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		} else if (currentView === 'tickets') {
 			const id = row[0];
 			const title = row[1];
 			const crop = row[2];
