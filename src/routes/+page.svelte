@@ -5,9 +5,3 @@
 		Begin
 	</p>
 </div>
-
-<style>
-	.p-6 {
-		padding: 1.5rem;
-	}
-</style>

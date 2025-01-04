@@ -1,10 +1,23 @@
 <script lang="ts">
 	import { writable, get } from 'svelte/store';
-
+	import Swal from 'sweetalert2';
 	import ClockPicker from './ClockPicker.svelte';
 	import TextField from './TextField.svelte';
+	import DropdownSmall from './Dropdown/DropdownSmall.svelte';
 
 	let isClockVisible = false;
+	const reminderStatus = [
+		'At time of event',
+		'5 minutes before',
+		'10 minutes before',
+		'15 minutes before',
+		'30 minutes before',
+		'1 hour before',
+		'2 hours before',
+		'1 day before',
+		'2 days before',
+		'1 week before'
+	];
 
 	type Task = { name: string; time: string };
 	type Tasks = { [key: string]: Task[] };
@@ -45,62 +58,62 @@
 
 	let isTaskNameValid = true;
 
-	function addTask() {
-		if (!newTask.trim()) {
-			isTaskNameValid = false;
-			return;
-		}
-
-		isTaskNameValid = true; // Reset validation state if the task name is valid
-		const today = new Date();
-		const selected = get(selectedDate);
-
-		// Prevent adding tasks to past dates
-		if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-			alert('You cannot add tasks to past dates.');
-			return;
-		}
-
-		const dateKey = selected.toISOString().split('T')[0];
-
-		// Add the task with name and time
-		tasks.update((t) => {
-			if (!t[dateKey]) {
-				t[dateKey] = [];
-			}
-			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
-
-			// Sort tasks by time
-			t[dateKey].sort((a, b) => {
-				const timeA = convertTo24Hour(a.time);
-				const timeB = convertTo24Hour(b.time);
-				return (
-					new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
-				);
-			});
-			return t;
-		});
-
-		newTask = '';
-		newTaskTime = '12:00 PM';
-		showAddTask = false;
-		showTasks = true;
+function addTask() {
+	if (!newTask.trim()) {
+		isTaskNameValid = false;
+		return;
 	}
+
+	isTaskNameValid = true;
+	const today = new Date();
+	const selected = get(selectedDate);
+
+	if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+		Swal.fire({
+			title: 'Invalid Date',
+			text: 'You cannot add tasks to past dates.',
+			icon: 'error',
+			confirmButtonText: 'OK',
+		});
+		return;
+	}
+
+	const dateKey = selected.toISOString().split('T')[0];
+
+	tasks.update((t) => {
+		if (!t[dateKey]) {
+			t[dateKey] = [];
+		}
+		t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
+
+		t[dateKey].sort((a, b) => {
+			const timeA = convertTo24Hour(a.time);
+			const timeB = convertTo24Hour(b.time);
+			return (
+				new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
+			);
+		});
+		return t;
+	});
+
+	newTask = '';
+	newTaskTime = '12:00 PM';
+	showAddTask = false;
+	showTasks = true;
+}
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
 
 		tasks.update((t) => {
 			if (t[dateKey]) {
-				// Remove the task at the specified index
 				t[dateKey].splice(index, 1);
 
-				// Remove the date key if no tasks remain for that date
 				if (t[dateKey].length === 0) {
 					delete t[dateKey];
 				}
 			}
-			return t; // Return the updated tasks object
+			return t;
 		});
 	}
 
@@ -131,7 +144,7 @@
 
 	function handleTimeSelected(event: CustomEvent<{ time: string }>) {
 		newTaskTime = event.detail.time;
-		isClockVisible = false; // Close the clock after selection
+		isClockVisible = false;
 	}
 
 	$: calendarDays = generateCalendar(selectedMonth, selectedYear);
@@ -192,11 +205,11 @@
 </script>
 
 <div
-	class="bg-gradient-to-br from-gray-500 to-gray-400 rounded-lg shadow-lg p-6 w-full text-gray-200 relative"
+	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-700 rounded-lg shadow-lg p-6 w-full dark:text-light relative"
 >
 	{#if showAddTask}
 		<!-- Add Task Section -->
-		<h3 class="text-lg font-bold mb-4">
+		<h3 class="text-lg font-bold mb-4 text-dark dark:text-light">
 			Add Task for
 			{#if getDayStatus(selectedDate)}
 				today
@@ -212,8 +225,9 @@
 				error_message="Task name cannot be empty"
 			/>
 			<div>
+				<!-- Select Time -->
 				<button
-					class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
+					class="w-full border border-gray-300 text-dark dark:text-light rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
 					onclick={() => (isClockVisible = true)}
 				>
 					{newTaskTime}
@@ -226,6 +240,8 @@
 					/>
 				{/if}
 			</div>
+			<!-- Alert -->
+			<div><DropdownSmall items={reminderStatus} label=" Alert" placeholder="None" /></div>
 			<div class="flex space-x-4">
 				<button
 					class="bg-green-200 hover:bg-green-800 text-white px-4 py-2 rounded"
@@ -244,7 +260,9 @@
 		</div>
 	{:else if showTasks}
 		<!-- Task List -->
-		<h3 class="text-lg font-bold mb-4">Tasks for {getDayStatus(selectedDate)}</h3>
+		<h3 class="text-lg font-bold mb-4 text-dark dark:text-light">
+			Tasks for {getDayStatus(selectedDate)}
+		</h3>
 		<ul class="list-disc pl-5 space-y-2">
 			{#each $tasks[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
 				<li class="flex items-center justify-between">
@@ -268,12 +286,13 @@
 				</li>
 			{/each}
 		</ul>
+
 		{#if !(get(tasks)[get(selectedDate).toISOString().split('T')[0]] || []).length}
-			<p>Task list Empty</p>
+			<p class="text-dark dark:text-light">Task list Empty</p>
 		{/if}
 		<div class="mt-4 flex space-x-4">
-			<!-- svelte-ignore a11y_consider_explicit_label -->
 			<button
+				aria-label="back to calendar"
 				class="bg-green-200 hover:bg-green-100 text-white p-2 rounded"
 				onclick={() => (showTasks = false)}
 			>
@@ -288,8 +307,9 @@
 					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
 				</svg>
 			</button>
-			<!-- svelte-ignore a11y_consider_explicit_label -->
+
 			<button
+				aria-label="add tasks"
 				class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
 				onclick={() => (showAddTask = true)}
 			>
@@ -310,7 +330,7 @@
 		<div>
 			<div class="flex items-center justify-between mb-4">
 				<button
-					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
+					class="text-gray-600 hover:text-gray-100 dark:text-gray-300 dark:hover:text-light px-2 focus:outline-none"
 					onclick={previousMonth}
 					aria-label="Previous month"
 				>
@@ -327,14 +347,14 @@
 				</button>
 
 				<div class="flex items-center">
-					<span class="text-lg font-semibold">
+					<span class="text-lg font-semibold text-dark dark:text-light">
 						{monthNames[selectedMonth]}
 						{selectedYear}
 					</span>
 				</div>
 
 				<button
-					class="text-gray-600 hover:text-gray-100 px-2 focus:outline-none"
+					class="text-gray-200 hover:text-gray-100 dark:text-gray-300 dark:hover:text-light px-2 focus:outline-none"
 					onclick={nextMonth}
 					aria-label="Next month"
 				>
@@ -352,8 +372,10 @@
 			</div>
 
 			<div class="grid grid-cols-7 gap-1">
-				{#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as dayAbbreviation, index}
-					<div class="flex items-center justify-center font-semibold text-sm text-gray-200">
+				{#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as dayAbbreviation}
+					<div
+						class="flex items-center justify-center font-semibold text-sm text-dark dark:text-light"
+					>
 						{dayAbbreviation}
 					</div>
 				{/each}
@@ -362,8 +384,8 @@
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
-						class="flex items-center justify-center h-10 w-10 rounded-full text-center text-base font-medium cursor-pointer
-						{day === currentDate.getDate() &&
+						class="flex text-dark dark:text-light items-center justify-center h-10 w-10 rounded-full text-center text-base font-medium cursor-pointer {day ===
+							currentDate.getDate() &&
 						selectedMonth === currentDate.getMonth() &&
 						selectedYear === currentDate.getFullYear()
 							? 'text-red-200'
@@ -374,9 +396,9 @@
 						selectedYear === get(selectedDate).getFullYear()
 							? 'bg-green-200 text-white'
 							: day !== null
-								? 'hover:bg-gray-300'
+								? 'hover:bg-gray-300 dark:hover:bg-blue-100'
 								: ''} 
-						{day === null ? 'text-gray-400 cursor-not-allowed' : ''}"
+						{day === null ? 'text-gray-400 dark:text-dark cursor-not-allowed' : ''}"
 						onclick={() => day && handleDateChange(new Date(selectedYear, selectedMonth, day))}
 					>
 						{day || ''}

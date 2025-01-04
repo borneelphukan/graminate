@@ -1,18 +1,19 @@
 <script>
 	export let label = '';
 	export let placeholder = '';
-	export let optional_message = '';
 	export let error_message = "That's an error!";
 	export let isDisabled = false;
 	export let type = ''; // "success", "error", "disabled"
 	export let icon = ''; // "left", "right"
 	export let calendar = false;
 	export let password = false;
-	export let value = ''; // Add this prop for two-way binding
+	export let value = '';
+	export let width = '';
 
 	let fieldClass = '';
 	let iconPos = '';
 	let iconColor = '';
+	let widthClass = 'w-auto';
 
 	const getFieldClass = () => {
 		switch (type) {
@@ -21,16 +22,30 @@
 			case 'disabled':
 				return 'border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200 ';
 			default:
-				return 'border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200';
+				return 'border border-gray-400 dark:border-gray-200 text-gray-100 placeholder-gray-300 text-sm dark:bg-gray-700 dark:text-light rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200';
+		}
+	};
+
+	const getWidthClass = () => {
+		switch (width) {
+			case 'small':
+				return 'w-1/4';
+			case 'medium':
+				return 'w-1/2';
+			case 'large':
+				return 'w-full';
+			default:
+				return 'w-auto';
 		}
 	};
 
 	$: fieldClass = `${getFieldClass()} py-1 px-2 rounded`;
 	$: iconPos = icon === 'left' ? 'left' : icon === 'right' ? 'right' : '';
 	$: iconColor = type === 'error' ? 'text-red-200' : 'text-gray-300';
+	$: widthClass = getWidthClass();
 </script>
 
-<div class="w-full">
+<div class="w-full {widthClass}">
 	<label
 		for={calendar ? 'calendar' : password ? 'password' : 'text'}
 		class="block mb-1 text-sm font-medium text-gray-200 dark:text-gray-300"
@@ -101,11 +116,6 @@
 				</svg>
 			</span>
 			<p class="text-sm text-red-200">{error_message}</p>
-		</div>
-	{/if}
-	{#if optional_message}
-		<div class="flex items-center mt-1">
-			<p class="text-sm text-gray-300">{optional_message}</p>
 		</div>
 	{/if}
 </div>

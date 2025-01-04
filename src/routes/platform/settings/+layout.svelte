@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings</title>
+	<title>FarmMate Settings</title>
 </svelte:head>
 
 <div class="container mx-auto p-3">

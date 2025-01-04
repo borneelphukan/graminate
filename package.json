@@ -1,5 +1,5 @@
 {
-	"name": "rootwave-crm",
+	"name": "farmmate",
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
@@ -39,7 +39,10 @@
 		"@types/google.maps": "^3.58.1",
 		"chart.js": "^4.4.7",
 		"openmeteo": "^1.1.4",
+		"svelte-dnd-action": "^0.9.53",
 		"svelte-fa": "^4.0.3",
-		"svelty-picker": "^5.2.10"
+		"svelte-i18n": "^4.0.1",
+		"svelty-picker": "^5.2.10",
+		"sweetalert2": "^11.15.3"
 	}
 }

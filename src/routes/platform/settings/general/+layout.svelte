@@ -2,48 +2,46 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { derived } from 'svelte/store';
+	import { t } from '../../../../lib/i18n';
 	import NavPanel from '../../../../components/layout/NavPanel.svelte';
-	import Button from '../../../../components/ui/Button.svelte';
+	import { locale } from 'svelte-i18n';
 
 	const navButtons = [
-		{ name: 'Profile', view: 'profile' },
-		{ name: 'Weather', view: 'weather' },
-		{ name: 'Milestones', view: 'milestones' },
-		{ name: 'Calendar', view: 'calendar' },
-		{ name: 'Tasks', view: 'tasks' },
-		{ name: 'Security', view: 'security' }
+		{ name: 'profile', view: 'profile' },
+		{ name: 'weather', view: 'weather' },
+		{ name: 'invoice', view: 'invoice' },
+		{ name: 'calendar', view: 'calendar' },
+		{ name: 'tasks', view: 'tasks' },
+		{ name: 'security', view: 'security' }
 	];
 
-	// Get the current view from the URL query
 	const currentView = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 
-	// Function to change the view
 	const changeView = (newView: string) => {
 		goto(`?view=${newView}`);
 	};
 </script>
 
 <svelte:head>
-	<title>Settings</title>
+	<title>FarmMate ERP - Settings</title>
 </svelte:head>
 
 <div class="flex min-h-screen">
 	<main class="flex-1 px-4">
-		<div class="pb-4 font-bold text-lg">General</div>
+		{#if $locale}
+			<div class="pb-4 font-bold text-lg">{$t('general')}</div>
 
-		<!-- NavPanel -->
-		<NavPanel
-			buttons={navButtons}
-			activeView={$currentView}
-			on:navigate={(e) => changeView(e.detail.view)}
-		/>
+			<NavPanel
+				buttons={navButtons}
+				activeView={$currentView}
+				on:navigate={(e) => changeView(e.detail.view)}
+			/>
 
-		<!-- Page Content -->
-		<section>
-			<slot />
-		</section>
-		<div class="flex flex-1 gap-2 mb-6">
-			<Button text="Save Changes" width="medium" style="primary" on:click={() => {}} />
-		</div>
+			<section>
+				<slot />
+			</section>
+		{:else}
+			<div>Loading translations...</div>
+		{/if}
 	</main>
 </div>

@@ -5,6 +5,7 @@
 	import SearchDropdown from '../../../components/ui/SearchDropdown.svelte';
 	import FormElement from '../../../components/forms/FormElement.svelte';
 	import Table from '../../../components/tables/Table.svelte';
+	import { goto } from '$app/navigation';
 
 	const isSidebarOpen = writable(false);
 
@@ -114,13 +115,35 @@
 				};
 			case 'invoices':
 				return {
-					columns: ['Invoice #', 'Customer', 'Amount', 'Status', 'Due Date'],
-					rows: [['INV-001', 'John Doe', '$1,000', 'Paid', '2024-11-01']]
+					columns: [
+						'ID',
+						'Title',
+						'Bill To',
+						'Date Created',
+						'Amount Paid',
+						'Amount Due',
+						'Due Date',
+						'Status'
+					],
+					rows: [
+						[
+							'001',
+							'Fertilizer Subscription',
+							'Jensen Fertilizers',
+							'2024-11-01',
+							'$200',
+							'$50',
+							'2024-12-01',
+							'Unpaid'
+						]
+					]
 				};
 			case 'tickets':
 				return {
-					columns: ['Ticket ID', 'Subject', 'Status', 'Assigned To', 'Created Date'],
-					rows: [['TCK-001', 'Login Issue', 'Open', 'Alice Brown', '2024-11-01']]
+					columns: ['ID', 'Title', 'Crop', 'Status', 'Budget', 'Created On', 'End Date'],
+					rows: [
+						['001', 'Summer Farm', 'Green Tea', 'Active', '40,000', '2024-11-01', '2025-07-01']
+					]
 				};
 			default:
 				return { columns: [], rows: [] };
@@ -158,6 +181,55 @@
 	function handleFormSubmit(values: Record<string, string>) {
 		console.log('Form submitted:', values);
 		closeSidebar();
+	}
+
+	// Fixes Required
+	function handleRowClick(row: any[]) {
+		const currentView = $view;
+		if (currentView === 'contacts') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/contacts/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		} else if (currentView === 'companies') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/company/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		}
+		if (currentView === 'deals') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/deals/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		} else if (currentView === 'invoices') {
+			const id = row[0];
+			const title = row[1];
+			const billTo = row[2];
+			const amount = row[4];
+			const due = row[5];
+			const status = row[6];
+			goto(
+				`/platform/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&billTo=${encodeURIComponent(billTo)}&amount=${encodeURIComponent(amount)}&due=${encodeURIComponent(due)}&status=${encodeURIComponent(status)}`
+			);
+		} else if (currentView === 'tickets') {
+			const id = row[0];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
+			goto(
+				`/platform/ticket/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+			);
+		}
 	}
 </script>
 
@@ -197,8 +269,6 @@
 	</div>
 
 	<div class="flex gap-2">
-		<Button text="Actions" style="secondary" arrow="down" />
-		<Button text="Import" style="secondary" />
 		<Button
 			text={`Create ${$view.charAt(0).toUpperCase() + $view.slice(1)}`}
 			style="primary"
@@ -233,6 +303,7 @@
 	{paginationItems}
 	{searchQuery}
 	totalRecordCount={$totalRecordCount}
+	onRowClick={handleRowClick}
 />
 
 {#if $isSidebarOpen}

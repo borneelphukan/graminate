@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '../../lib/i18n';
+
 	type ButtonData = {
 		name: string;
 		view: string;
@@ -14,7 +16,7 @@
 
 	const setActive = (view: string) => {
 		dispatch('navigate', { view });
-		isMenuOpen = false; // Close the menu after selection
+		isMenuOpen = false;
 	};
 </script>
 
@@ -24,11 +26,11 @@
 		{#each buttons as { name, view }}
 			<button
 				class="flex-1 px-4 py-2 text-center text-sm font-medium
-					border border-gray-400 bg-neutral-100 dark:bg-dark dark:text-light focus:outline-none
+					border border-gray-400 dark:border-gray-200 hover:bg-gray-500 dark:hover:bg-gray-100 bg-neutral-100 dark:bg-dark dark:text-light focus:outline-none
 					{activeView === view ? 'border-b-transparent bg-white font-semibold' : 'text-gray-600 font-thin'}"
 				onclick={() => setActive(view)}
 			>
-				{name}
+				{$t(name)}
 			</button>
 		{/each}
 	</div>
@@ -59,7 +61,7 @@
 				<div class="absolute top-full left-0 z-50 w-full bg-white text-gray-100">
 					{#each buttons as { name, view }}
 						<button class="w-full px-4 py-2 text-left text-sm" onclick={() => setActive(view)}>
-							{name}
+							{$t(name)}
 						</button>
 					{/each}
 				</div>

@@ -3,25 +3,27 @@
 	export let selected: string = '';
 	export let direction: 'up' | 'down' = 'down';
 	export let label: string | null = null;
+	export let placeholder: string = 'Select an option';
 	let labelOpen: boolean = false;
 	const dropdownId = `dropdown-${Math.random().toString(36).substring(2, 15)}`;
 </script>
 
 <div class="relative w-full md:w-auto">
 	{#if label}
-		<label for={dropdownId} class="block mb-1 text-sm font-medium text-dark dark:text-light"
+		<label for={dropdownId} class="block mb-1 text-sm font-medium text-dark dark:text-gray-300"
 			>{label}</label
 		>
 	{/if}
 
 	<button
-		class="w-full bg-white text-sm p-1 rounded flex justify-between items-center"
+		class="w-full border border-gray-300 text-dark dark:text-light dark:bg-gray-700 text-sm p-1 rounded flex justify-between items-center"
 		on:click={() => (labelOpen = !labelOpen)}
 		style="min-width: 180px; max-width: 90%; box-sizing: border-box;"
 		aria-haspopup="listbox"
 		aria-expanded={labelOpen}
 	>
-		{selected || 'Select an option'}
+		{selected || placeholder}
+		<!-- Use the placeholder parameter -->
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
@@ -42,15 +44,15 @@
 		<ul
 			class="absolute {direction === 'up'
 				? 'bottom-full mb-2'
-				: 'top-full mt-2'} left-0 bg-white shadow-md rounded max-h-40 overflow-y-auto z-50"
+				: 'top-full mt-2'} left-0 dark:text-light bg-white text-dark dark:bg-gray-800 shadow-md rounded max-h-40 overflow-y-auto z-50"
 			style="min-width: 180px; max-width: 90%; box-sizing: border-box;"
 			role="listbox"
 		>
-			{#each items as item, index}
+			{#each items as item}
 				<li
 					role="option"
 					tabindex="0"
-					class="px-4 py-2 text-sm hover:bg-gray-500 cursor-pointer"
+					class="px-4 py-2 text-sm hover:bg-gray-400 dark:hover:bg-blue-100 cursor-pointer"
 					on:click={() => {
 						selected = item;
 						labelOpen = false;

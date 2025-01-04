@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	type Notification = {
 		title: string;
 		description: string;
@@ -8,32 +10,36 @@
 	export let isOpen: boolean = false;
 	export let closeNotificationBar: () => void = () => {};
 
-	// State to manage dropdown visibility
 	let isFilterDropdownOpen = false;
 	let isActionsDropdownOpen = false;
 
-	// Toggles for dropdowns
 	function toggleFilterDropdown() {
 		isFilterDropdownOpen = !isFilterDropdownOpen;
-		isActionsDropdownOpen = false; // Close other dropdown
+		isActionsDropdownOpen = false;
 	}
 
 	function toggleActionsDropdown() {
 		isActionsDropdownOpen = !isActionsDropdownOpen;
-		isFilterDropdownOpen = false; // Close other dropdown
+		isFilterDropdownOpen = false;
+	}
+
+	function navigateToSettings() {
+		closeNotificationBar();
+		goto('/platform/settings/notifications');
 	}
 </script>
 
 <div
-	class={`fixed top-0 right-0 w-full max-w-md bg-white shadow-md transform transition-transform ${
+	class={`fixed top-0 right-0 w-full max-w-md bg-white dark:bg-gray-800 shadow-md transform transition-transform ${
 		isOpen ? 'translate-x-0' : 'translate-x-full'
 	}`}
 	style="height: 100vh; z-index: 50;"
 >
 	<div class="flex items-center justify-between p-4 border-b border-gray-200">
 		<h2 class="text-lg font-semibold text-gray-800">Notifications</h2>
-		<!-- svelte-ignore a11y_consider_explicit_label -->
+
 		<button
+			aria-label="close notification"
 			class="text-gray-300 hover:bg-gray-400 p-1 rounded-full focus:outline-none"
 			onclick={closeNotificationBar}
 		>
@@ -60,7 +66,7 @@
 				<!-- Filter Button -->
 				<div class="relative">
 					<button
-						class="bg-gray-400 px-3 py-1 mb-1 text-sm rounded-md text-gray-700 hover:bg-gray-300 flex items-center"
+						class="bg-gray-400 dark:bg-gray-700 px-3 py-1 mb-1 text-sm rounded-md dark:text-gray-300 hover:bg-gray-300 flex items-center"
 						onclick={toggleFilterDropdown}
 					>
 						Filter
@@ -204,8 +210,11 @@
 			</div>
 
 			<!-- Settings Icon -->
-			<!-- svelte-ignore a11y_consider_explicit_label -->
-			<button class="text-green-200 hover:text-green-800 mb-2 focus:outline-none">
+			<button
+				class="text-green-200 hover:text-green-800 mb-2 focus:outline-none"
+				aria-label="settings icon"
+				onclick={navigateToSettings}
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
@@ -232,14 +241,15 @@
 
 		{#if notifications.length === 0}
 			<p class="text-gray-100">You don’t have any notifications</p>
-
 		{:else}
 			{#each notifications as notification}
-				<div class="flex items-start space-x-3 mb-3 bg-gray-50 p-3 border rounded-md">
+				<div
+					class="flex items-start space-x-3 mb-3 bg-light dark:bg-gray-700 p-3 border rounded-md"
+				>
 					<div class="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full"></div>
 					<div>
-						<p class="text-sm font-medium text-gray-800">{notification.title}</p>
-						<p class="text-sm text-gray-600">{notification.description}</p>
+						<p class="text-sm font-semibold dark:text-light">{notification.title}</p>
+						<p class="text-sm text-gray-200 dark:text-gray-300">{notification.description}</p>
 					</div>
 				</div>
 			{/each}

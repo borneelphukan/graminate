@@ -114,7 +114,7 @@
 </script>
 
 <div
-	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-dark-100 to-bg-gray-100 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
+	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-700 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
 >
 	{#if currentStep === 4}
 		<p class="dark:text-light text-xl font-semibold flex justify-center items-center h-full my-2">
