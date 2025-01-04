@@ -201,11 +201,11 @@
 			</div>
 		{/if}
 
-		{#if $view === 'milestones'}
-			<!-- Milestones Section -->
+		{#if $view === 'invoice'}
+			<!-- Invoice Section -->
 			<div class="border-gray-300 rounded-lg">
-				<h2 class="text-lg font-semibold mb-4 dark:text-light">Milestones Settings</h2>
-				<p class="text-gray-300 mb-6">This changes your farming steps and sets your milestones.</p>
+				<h2 class="text-lg font-semibold mb-4 dark:text-light">{$t('invoice_settings')}</h2>
+				<p class="text-gray-300 mb-6">You can set your Invoice settings here.</p>
 			</div>
 		{/if}
 

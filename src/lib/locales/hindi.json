@@ -1,5 +1,6 @@
 {
 	"global_settings": "वैश्विक सेटिंग्स",
+	"invoice_settings": "चालान सेटिंग्स",
 	"applies_across_account": "यह आपके FarmMate खाते में लागू होता है।",
 	"profile_image": "प्रोफ़ाइल छवि",
 	"upload": "अपलोड करें",
@@ -25,6 +26,7 @@
 	"profile": "प्रोफ़ाइल",
 	"weather": "मौसम",
 	"milestones": "मील के पत्थर",
+	"invoice": "चालान",
 	"calendar": "कैलेंडर",
 	"tasks": "कार्य",
 	"back": "वापस",

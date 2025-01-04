@@ -115,8 +115,28 @@
 				};
 			case 'invoices':
 				return {
-					columns: ['Invoice #', 'Customer', 'Amount', 'Status', 'Due Date'],
-					rows: [['INV-001', 'John Doe', '$1,000', 'Paid', '2024-11-01']]
+					columns: [
+						'ID',
+						'Title',
+						'Bill To',
+						'Date Created',
+						'Amount Paid',
+						'Amount Due',
+						'Due Date',
+						'Status'
+					],
+					rows: [
+						[
+							'001',
+							'Fertilizer Subscription',
+							'Jensen Fertilizers',
+							'2024-11-01',
+							'$200',
+							'$50',
+							'2024-12-01',
+							'Unpaid'
+						]
+					]
 				};
 			case 'tickets':
 				return {

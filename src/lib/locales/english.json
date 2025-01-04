@@ -1,5 +1,6 @@
 {
 	"global_settings": "Global Settings",
+	"invoice_settings":"Invoice Settings",
 	"applies_across_account": "This applies across your FarmMate account.",
 	"profile_image": "Profile Image",
 	"upload": "Upload",
@@ -25,6 +26,7 @@
 	"profile": "Profile",
 	"weather": "Weather",
 	"milestones": "Milestones",
+	"invoice":"Invoice",
 	"calendar": "Calendar",
 	"tasks": "Tasks",
 	"back": "Back",

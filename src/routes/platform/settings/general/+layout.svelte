@@ -9,7 +9,7 @@
 	const navButtons = [
 		{ name: 'profile', view: 'profile' },
 		{ name: 'weather', view: 'weather' },
-		{ name: 'milestones', view: 'milestones' },
+		{ name: 'invoice', view: 'invoice' },
 		{ name: 'calendar', view: 'calendar' },
 		{ name: 'tasks', view: 'tasks' },
 		{ name: 'security', view: 'security' }

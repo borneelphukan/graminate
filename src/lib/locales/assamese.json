@@ -1,5 +1,6 @@
 {
 	"global_settings": "গ্ল’বেল ছেটিংছ",
+	"invoice_settings": "চালান ছেটিংছ",
 	"applies_across_account": "এইটো আপোনাৰ FarmMate একাউণ্টত প্ৰযোজ্য।",
 	"profile_image": "প্ৰ’ফাইল ছবি",
 	"upload": "আপলোড কৰক",
@@ -25,6 +26,7 @@
 	"profile": "প্ৰ’ফাইল",
 	"weather": "বতৰ",
 	"milestones": "মাইলষ্টোনছ",
+	"invoice": "চালান",
 	"calendar": "কেলেণ্ডাৰ",
 	"tasks": "কাৰ্য্যসমূহ",
 	"back": "ঘূৰি অহা",
