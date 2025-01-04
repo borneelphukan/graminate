@@ -4,7 +4,7 @@
 		faHome,
 		faChartPie,
 		faChartLine,
-		faFolder,
+		faUsers,
 		faCartShopping,
 		faAddressBook,
 		faCloud,
@@ -36,6 +36,7 @@
 				{ label: 'contacts', route: '/platform/contacts' },
 				{ label: 'companies', route: '/platform/contacts?view=companies' },
 				{ label: 'deals', route: '/platform/contacts?view=deals' },
+				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
 				{ label: 'tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},
@@ -67,13 +68,10 @@
 			subItems: []
 		},
 		{
-			icon: faFolder,
-			label: 'library',
-			section: 'Library',
-			subItems: [
-				{ label: 'meeting_scheduler', route: '/platform/meetings' },
-				{ label: 'documents', route: '/platform/documents' }
-			]
+			icon: faUsers,
+			label: 'employees',
+			section: 'Employees',
+			subItems: [{ label: 'meetings', route: '/platform/meetings' }]
 		},
 		{
 			icon: faPlug,

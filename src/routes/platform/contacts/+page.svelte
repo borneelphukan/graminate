@@ -269,8 +269,6 @@
 	</div>
 
 	<div class="flex gap-2">
-		<Button text="Actions" style="secondary" arrow="down" />
-		<Button text="Import" style="secondary" />
 		<Button
 			text={`Create ${$view.charAt(0).toUpperCase() + $view.slice(1)}`}
 			style="primary"

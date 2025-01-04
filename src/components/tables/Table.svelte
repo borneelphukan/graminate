@@ -187,7 +187,11 @@
 				{#each $sortedAndPaginatedRows as row, rowIndex}
 					<tr
 						class="cursor-pointer hover:bg-gray-500 dark:hover:bg-gray-700"
-						onclick={() => onRowClick(row)}
+						onclick={(event) => {
+							if (!(event.target instanceof HTMLInputElement)) {
+								onRowClick(row);
+							}
+						}}
 					>
 						<td class="p-2 border border-gray-300 dark:border-gray-200">
 							<input

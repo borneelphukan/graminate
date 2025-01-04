@@ -23,11 +23,7 @@
 </script>
 
 <svelte:head>
-	{#if $locale}
-		<title>{$t('settings')}</title>
-	{:else}
-		<title>Loading...</title>
-	{/if}
+	<title>FarmMate ERP - Settings</title>
 </svelte:head>
 
 <div class="flex min-h-screen">

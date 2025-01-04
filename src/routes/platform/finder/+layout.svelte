@@ -17,10 +17,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Finder</title>
-</svelte:head>
-
 <div class="relative h-screen">
 	<!-- Map Content -->
 	<div class="absolute inset-0">

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
+	import { derived, writable, type Readable } from 'svelte/store';
 	import MeetingModal from '../../../components/modals/MeetingModal.svelte';
 	import Table from '../../../components/tables/Table.svelte';
 	import Button from '../../../components/ui/Button.svelte';
@@ -47,7 +47,6 @@
 	}
 
 	const paginationItems = ['25 per page', '50 per page', '100 per page'];
-	const totalRecordCount = rows.length;
 	const isModalOpen = writable(false);
 
 	const openModal = () => {
@@ -57,18 +56,21 @@
 	const closeModal = () => {
 		isModalOpen.set(false);
 	};
+
+	function handleRowClick(row: any[]) {}
+
+	const totalRecordCount: Readable<number> = derived(
+		filteredRows,
+		($filteredRows) => $filteredRows.length
+	);
 </script>
 
 <div class="container mx-auto p-4">
-	<div class="flex items-center justify-between border-b mb-4">
+	<div class="flex items-center justify-between">
 		<h2 class="text-lg font-bold dark:text-light">Meetings</h2>
-
-		<div class="flex justify-between items-center relative mb-4">
-			<div class="flex gap-2">
-				<Button text="Create Meeting" style="primary" add on:click={openModal} />
-			</div>
-		</div>
+		<Button text="Create Meeting" style="primary" add on:click={openModal} />
 	</div>
+	<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{$totalRecordCount} Record(s)</p>
 
 	<Table
 		{data}
@@ -77,7 +79,8 @@
 		{itemsPerPage}
 		{paginationItems}
 		{searchQuery}
-		{totalRecordCount}
+		totalRecordCount={$totalRecordCount}
+		onRowClick={handleRowClick}
 	/>
 </div>
 
