@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { error } from '@sveltejs/kit';
 	import Button from '../../../../components/ui/Button.svelte';
 	import Swal from 'sweetalert2';
 	import TicketModal from '../../../../components/modals/TicketModal.svelte';
@@ -11,9 +10,14 @@
 	import TextArea from '../../../../components/ui/TextArea.svelte';
 	import TextField from '../../../../components/ui/TextField.svelte';
 	import { dndzone } from 'svelte-dnd-action';
+	import plantIcon from '../../../../icons/plant.svg';
 
 	export const params = {};
-	const projectName = $page.url.searchParams.get('project_name');
+	const projectTitle = $page.url.searchParams.get('title');
+	const crop = $page.url.searchParams.get('crop');
+	const budget = $page.url.searchParams.get('budget');
+
+	const ProjectStatus = ['Active', 'On Hold', 'Completed'];
 
 	type Task = {
 		id: string;
@@ -309,8 +313,39 @@
 	<div class="mb-4">
 		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
-	<div class="max-w-6xl mx-auto">
-		<h2 class="text-md dark:text-light mb-4">Project / {projectName}</h2>
+
+	<div class="p-2 mx-auto">
+		<div class="flex justify-between items-center">
+			<h2 class="text-md dark:text-light">Project / {projectTitle}</h2>
+			<div class="flex justify-end items-center space-x-4">
+				<!-- Crop -->
+				<div class={`flex items-center bg-gray-400 dark:bg-gray-600 rounded-full overflow-hidden`}>
+					<div
+						class="bg-green-200 text-white rounded-full flex items-center justify-center w-8 h-8 flex-shrink-0"
+					>
+						<img src={plantIcon} alt="Plant Icon" class="w-6 h-6" />
+					</div>
+					<span class="text-dark dark:text-light text-md mx-3 opacity-100">
+						{crop}
+					</span>
+				</div>
+
+				<!-- Status -->
+				<DropdownSmall items={ProjectStatus} placeholder="Status" />
+
+				<!-- Budget -->
+				<div class={`flex items-center bg-gray-400 dark:bg-gray-600  rounded-full overflow-hidden`}>
+					<div
+						class="bg-green-200 text-white rounded-full flex items-center justify-center w-8 h-8 flex-shrink-0"
+					>
+						₹
+					</div>
+					<span class="text-dark dark:text-light text-md mx-3 opacity-100">
+						{budget}
+					</span>
+				</div>
+			</div>
+		</div>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 		<div class="flex items-center mb-4 gap-4">
 			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />

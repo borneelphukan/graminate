@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="absolute left-0 mt-5 bg-white border border-gray-300 rounded-md shadow-sm w-96 h-48 z-10 overflow-hidden"
+	class="absolute left-0 mt-5 bg-white dark:bg-dark border border-gray-300 dark:border-gray-200 rounded-md shadow-sm w-96 h-48 z-10 overflow-hidden"
 >
 	<div class="bg-gray-400 dark:bg-dark py-1">
 		<div class="mx-3 my-1">
@@ -25,7 +25,7 @@
 			{#each $filteredItems as item}
 				<li>
 					<button
-						class="w-full text-sm text-gray-200 text-left px-4 py-2 hover:bg-gray-700"
+						class="w-full text-sm text-dark dark:text-light text-left px-4 py-2 hover:bg-gray-500 dark:bg-gray-900 dark:hover:bg-gray-700"
 						onclick={() => navigateTo(item.view)}
 					>
 						{item.label}

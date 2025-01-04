@@ -120,15 +120,16 @@
 				};
 			case 'tickets':
 				return {
-					columns: ['ID', 'Project Name', 'Type', 'Status', 'Lead', 'Date Started'],
+					columns: ['ID', 'Title', 'Crop', 'Status', 'Budget', 'Created On', 'End Date'],
 					rows: [
 						[
 							'001',
-							'Green Tea Production',
-							'Individual Work',
-							'Open',
-							'Borneel Bikash Phukan',
-							'2024-11-01'
+							'Summer Farm',
+							'Green Tea',
+							'Active',
+							'40,000',
+							'2024-11-01',
+							'2025-07-01'
 						]
 					]
 				};
@@ -174,9 +175,11 @@
 		const currentView = $view;
 		if (currentView === 'tickets') {
 			const id = row[0];
-			const projectName = row[1];
+			const title = row[1];
+			const crop = row[2];
+			const budget = row[4];
 			goto(
-				`/platform/ticket/${encodeURIComponent(id)}?project_name=${encodeURIComponent(projectName)}`
+				`/platform/ticket/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
 			);
 		}
 	}

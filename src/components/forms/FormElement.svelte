@@ -51,7 +51,7 @@
 	];
 
 	const companyType = ['Supplier', 'Distributor', 'Factories', 'Buyer'];
-	const ticketStatus = ['Open', 'In Progress', 'Completed', 'On Hold', 'Cancelled'];
+	const ticketStatus = ['Active', 'Completed', 'On Hold'];
 
 	function handleSubmitContacts() {
 		contactValues.subscribe((values) => {
@@ -193,8 +193,8 @@
 				on:submit|preventDefault={handleSubmitTickets}
 			>
 				<TextField
-					label="Ticket Name"
-					placeholder="e.g. Name of the task"
+					label="Farming Project"
+					placeholder="Green Tea Production"
 					type="text"
 					bind:value={$ticketValues.ticketName}
 				/>
@@ -224,18 +224,7 @@
 					label="Type"
 					width="full"
 				/>
-				<TextField
-					label="City"
-					placeholder="Enter city"
-					type="text"
-					bind:value={$ticketValues.city}
-				/>
-				<TextField
-					label="State/Region"
-					placeholder="Enter state/region"
-					type="text"
-					bind:value={$ticketValues.state}
-				/>
+
 				<div class="flex justify-end gap-4 mt-2">
 					<Button text="Create" style="primary" on:click={handleSubmitTickets} />
 					<Button text="Cancel" style="secondary" on:click={handleClose} />
