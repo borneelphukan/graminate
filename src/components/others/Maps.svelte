@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { loadGoogleMaps } from '$lib/utils/loadGoogleMaps';
+	import { loadGoogleMaps } from '@lib/utils/loadGoogleMaps';
 
 	export let apiKey: string;
 	export let initialCenter = { lat: 26.244156, lng: 92.537842 }; // Default centre to Assam

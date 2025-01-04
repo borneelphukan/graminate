@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy, tick } from 'svelte';
 	import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
-	import NavPanel from '../layout/NavPanel.svelte';
+	import NavPanel from '@layout/NavPanel.svelte';
 
 	export let steps: string[] = [];
 	export let currentStep: number = 1;

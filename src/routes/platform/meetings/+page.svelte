@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { derived, writable, type Readable } from 'svelte/store';
-	import MeetingModal from '../../../components/modals/MeetingModal.svelte';
-	import Table from '../../../components/tables/Table.svelte';
-	import Button from '../../../components/ui/Button.svelte';
+	import MeetingModal from '@modals/MeetingModal.svelte';
+	import Table from '@tables/Table.svelte';
+	import Button from '@ui/Button.svelte';
 
 	interface Meeting {
 		meetingName: string;

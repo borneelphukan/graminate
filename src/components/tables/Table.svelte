@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
-	import SearchBar from '../ui/SearchBar.svelte';
-	import Button from '../ui/Button.svelte';
-	import Dropdown from '../ui/Dropdown/DropdownLarge.svelte';
+	import SearchBar from '@ui/SearchBar.svelte';
+	import Button from '@ui/Button.svelte';
+	import Dropdown from '@ui/Dropdown/DropdownLarge.svelte';
 
 	export let onRowClick: (row: any[]) => void;
 

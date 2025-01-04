@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
-	import ThemeSwitch from '../ui/ThemeSwitch.svelte';
-	import { t } from '../../lib/i18n';
+	import ThemeSwitch from '@ui/ThemeSwitch.svelte';
+	import { t } from '@lib/i18n';
 
 	function toggleThemeHandler() {
 		console.log('Theme toggled');

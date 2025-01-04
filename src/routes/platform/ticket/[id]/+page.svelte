@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import Button from '../../../../components/ui/Button.svelte';
+	import Button from '@ui/Button.svelte';
 	import Swal from 'sweetalert2';
-	import TicketModal from '../../../../components/modals/TicketModal.svelte';
-	import DropdownFilter from '../../../../components/ui/Dropdown/DropdownFilter.svelte';
-	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
-	import SearchBar from '../../../../components/ui/SearchBar.svelte';
-	import TextArea from '../../../../components/ui/TextArea.svelte';
-	import TextField from '../../../../components/ui/TextField.svelte';
+	import TicketModal from '@modals/TicketModal.svelte';
+	import DropdownFilter from '@ui/Dropdown/DropdownFilter.svelte';
+	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
+	import SearchBar from '@ui/SearchBar.svelte';
+	import TextArea from '@ui/TextArea.svelte';
+	import TextField from '@ui/TextField.svelte';
 	import { dndzone } from 'svelte-dnd-action';
-	import plantIcon from '../../../../icons/plant.svg';
+	import plantIcon from '@icons/plant.svg';
 
 	export const params = {};
 	const projectTitle = $page.url.searchParams.get('title');

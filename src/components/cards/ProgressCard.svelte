@@ -2,11 +2,11 @@
 	export let steps: string[] = [];
 	export let currentStep: number = 1;
 
-	import Step1 from '../../icons/prepare.svg';
-	import Step2 from '../../icons/soil.svg';
-	import Step3 from '../../icons/plant.svg';
-	import Step4 from '../../icons/routine.svg';
-	import Step5 from '../../icons/harvest.svg';
+	import Step1 from '@icons/prepare.svg';
+	import Step2 from '@icons/soil.svg';
+	import Step3 from '@icons/plant.svg';
+	import Step4 from '@icons/routine.svg';
+	import Step5 from '@icons/harvest.svg';
 	import { fly } from 'svelte/transition';
 
 	const icons = [Step1, Step2, Step3, Step4, Step5];

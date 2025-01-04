@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Finderbar from '../../../components/layout/Finderbar.svelte';
-	import NavPanel from '../../../components/layout/NavPanel.svelte';
+	import Finderbar from '@layout/Finderbar.svelte';
+	import NavPanel from '@layout/NavPanel.svelte';
 
 	type View = 'distributor' | 'exporter' | 'factories';
 

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
-	import TextField from '../ui/TextField.svelte';
-	import DropdownLarge from '../ui/Dropdown/DropdownLarge.svelte';
-	import Button from '../ui/Button.svelte';
+	import TextField from '@ui/TextField.svelte';
+	import DropdownLarge from '@ui/Dropdown/DropdownLarge.svelte';
+	import Button from '@ui/Button.svelte';
 
 	export let view: string;
 	export let onClose: () => void;

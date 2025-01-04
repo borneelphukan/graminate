@@ -1,11 +1,10 @@
 <script lang="ts">
-	import WeatherCard from '../../components/cards/WeatherCard.svelte';
-	import ProgressCard from '../../components/cards/ProgressCard.svelte';
-	import StatusCard from '../../components/cards/StatusCard.svelte';
-	import Calendar from '../../components/ui/Calendar.svelte';
-	import Loader from '../../components/ui/Loader.svelte';
+	import WeatherCard from '@cards/WeatherCard.svelte';
+	import ProgressCard from '@cards/ProgressCard.svelte';
+	import StatusCard from '@cards/StatusCard.svelte';
+	import Calendar from '@ui/Calendar.svelte';
+	import Loader from '@ui/Loader.svelte';
 	import { onMount } from 'svelte';
-	import { t } from '../../lib/i18n';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;

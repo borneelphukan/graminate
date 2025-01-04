@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ScheduleCard from '../cards/ScheduleCard.svelte';
-	export let onClose: () => void; // Accept a callback function as a prop
+	import ScheduleCard from '@cards/ScheduleCard.svelte';
+	export let onClose: () => void;
 </script>
 
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 bg-opacity-75">

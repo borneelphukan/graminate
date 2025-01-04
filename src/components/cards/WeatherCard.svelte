@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Loader from '../../components/ui/Loader.svelte';
+	import Loader from '@ui/Loader.svelte';
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;

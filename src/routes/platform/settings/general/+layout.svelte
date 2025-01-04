@@ -2,8 +2,8 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { derived } from 'svelte/store';
-	import { t } from '../../../../lib/i18n';
-	import NavPanel from '../../../../components/layout/NavPanel.svelte';
+	import { t } from '@lib/i18n';
+	import NavPanel from '@layout/NavPanel.svelte';
 	import { locale } from 'svelte-i18n';
 
 	const navButtons = [

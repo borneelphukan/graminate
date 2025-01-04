@@ -1,9 +1,9 @@
 <!-- This is the edit page for an Invoice -->
 <script lang="ts">
-	import CustomTable from '../../../../components/tables/CustomTable.svelte';
-	import Button from '../../../../components/ui/Button.svelte';
-	import TextArea from '../../../../components/ui/TextArea.svelte';
-	import TextField from '../../../../components/ui/TextField.svelte';
+	import CustomTable from '@tables/CustomTable.svelte';
+	import Button from '@ui/Button.svelte';
+	import TextArea from '@ui/TextArea.svelte';
+	import TextField from '@ui/TextField.svelte';
 	import { writable } from 'svelte/store';
 
 	function goBack() {

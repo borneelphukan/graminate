@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import { locale, t } from '../../../../lib/i18n';
-	import TextField from '../../../../components/ui/TextField.svelte';
-	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
+	import { locale, t } from '@lib/i18n';
+	import TextField from '@ui/TextField.svelte';
+	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
 	import Swal from 'sweetalert2';
-	import Button from '../../../../components/ui/Button.svelte';
+	import Button from '@ui/Button.svelte';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'हिन्दी', 'অসমীয়া'];
