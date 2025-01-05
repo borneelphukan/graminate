@@ -12,7 +12,7 @@
 			case 'disabled':
 				return 'border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200';
 			default:
-				return 'border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200';
+				return 'border border-gray-400 dark:border-gray-200 text-dark dark:text-light placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200 dark:bg-gray-700';
 		}
 	};
 

@@ -40,6 +40,7 @@
 		"@fortawesome/free-solid-svg-icons": "^6.6.0",
 		"@types/google.maps": "^3.58.1",
 		"chart.js": "^4.4.7",
+		"jspdf": "^2.5.2",
 		"openmeteo": "^1.1.4",
 		"svelte-dnd-action": "^0.9.53",
 		"svelte-fa": "^4.0.3",

@@ -62,7 +62,7 @@
 			>
 				<input
 					type="checkbox"
-					class="form-checkbox"
+					class="form-checkbox h-4 w-4"
 					checked={isAllSelected}
 					on:change={toggleSelectAll}
 				/>
@@ -84,7 +84,7 @@
 						<td class="p-2 border border-gray-300 dark:border-gray-200">
 							<input
 								type="checkbox"
-								class="form-checkbox"
+								class="form-checkbox h-4 w-4"
 								checked={selectedRows.has(task.id)}
 								on:change={(e) =>
 									toggleRowSelection(task.id, (e.target as HTMLInputElement).checked)}

@@ -36,7 +36,7 @@
 				{ label: 'contacts', route: '/platform/contacts' },
 				{ label: 'companies', route: '/platform/contacts?view=companies' },
 				{ label: 'deals', route: '/platform/contacts?view=deals' },
-				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
+				{ label: 'invoices', route: '/platform/contacts?view=invoices' },
 				{ label: 'tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},

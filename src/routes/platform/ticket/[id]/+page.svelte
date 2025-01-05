@@ -389,6 +389,7 @@
 		{#if isListView}
 			<ViewTable {headers} {columns} {filterTasks} {searchQuery} />
 		{:else}
+			<!-- Kanban Board -->
 			<div
 				class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative"
 				use:dndzone={{ items: columns, flipDurationMs: 200 }}
@@ -465,6 +466,7 @@
 								{/if}
 							</div>
 						</div>
+						<!-- Tasks -->
 						<div class="space-y-4">
 							{#each filterTasks(column) as task, taskIndex}
 								<div class="bg-white p-3 rounded-md shadow-sm relative">
@@ -538,7 +540,8 @@
 							{/each}
 						</div>
 						{#if $addingTask === colIndex}
-							<div
+							<!--TextArea for task  -->
+						<div
 								class="mt-2 p-2 rounded-lg overflow-visible"
 								style="box-sizing: border-box; max-width: 100%;"
 							>
@@ -559,6 +562,7 @@
 							</div>
 						{:else}
 							<div class="mt-4 w-full py-2 mx-auto">
+								<!-- Create Issue Button -->
 								<Button
 									text="Create issue"
 									style="primary"
