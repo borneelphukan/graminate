@@ -55,7 +55,7 @@
 		}
 	> = {
 		Seeds: {
-			data: [5000, 3500],
+			data: [2, 2],
 			backgroundColor: ['#4CAF50', '#FFC107'],
 			daysLeft: 15,
 			allocated: 5000,

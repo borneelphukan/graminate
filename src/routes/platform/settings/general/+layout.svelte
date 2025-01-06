@@ -29,7 +29,7 @@
 <div class="flex min-h-screen">
 	<main class="flex-1 px-4">
 		{#if $locale}
-			<div class="pb-4 font-bold text-lg">{$t('general')}</div>
+			<div class="pb-4 font-bold text-lg text-dark dark:text-light">{$t('general')}</div>
 
 			<NavPanel
 				buttons={navButtons}

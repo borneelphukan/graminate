@@ -37,19 +37,15 @@
 </script>
 
 <main class="min-h-screen text-white relative">
-	<!-- Dashboard Header -->
 	<header class=" px-6 py-4">
-		<h1 class="text-3xl font-bold text-gray-100">Weather</h1>
+		<h1 class="text-3xl font-bold text-dark dark:text-light">Weather</h1>
 		<hr class="mt-4 border-gray-600" />
 	</header>
 
-	<!-- Weather Card and Content -->
 	<div>
 		{#if error}
-			<!-- Error message centered -->
 			<p class="absolute inset-0 flex items-center justify-center text-red-500">{error}</p>
 		{:else if location}
-			<!-- Render WeatherCard in top-left corner -->
 			<div class="absolute left-4">
 				<WeatherCard lat={location.lat} lon={location.lon} />
 			</div>

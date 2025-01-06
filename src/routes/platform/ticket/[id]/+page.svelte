@@ -469,14 +469,14 @@
 						<!-- Tasks -->
 						<div class="space-y-4">
 							{#each filterTasks(column) as task, taskIndex}
-								<div class="bg-white p-3 rounded-md shadow-sm relative">
+								<div class="bg-light dark:bg-gray-700 p-3 rounded-md shadow-sm relative">
 									<div class="flex flex-row items-start justify-between">
 										<div class="mr-2 break-words max-w-xs">
-											<p class="text-gray-200">
+											<p class="text-dark dark:text-light">
 												{@html highlightText(task.title, searchQuery)}
 											</p>
 										</div>
-										<div class="relative">
+										<div class="relative dark:text-white">
 											<button
 												aria-label="ellipsis"
 												on:click={() => toggleDropdown(colIndex, taskIndex)}
@@ -541,7 +541,7 @@
 						</div>
 						{#if $addingTask === colIndex}
 							<!--TextArea for task  -->
-						<div
+							<div
 								class="mt-2 p-2 rounded-lg overflow-visible"
 								style="box-sizing: border-box; max-width: 100%;"
 							>
@@ -659,7 +659,7 @@
 			on:click|self={toggleLabelPopup}
 		>
 			<div class="bg-white dark:bg-slate-800 rounded-lg p-6 w-96 shadow-lg">
-				<h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">
+				<h3 class="text-lg font-bold text-gray-800 dark:text-light">
 					Add labels to {selectedTaskId}
 				</h3>
 				<p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
