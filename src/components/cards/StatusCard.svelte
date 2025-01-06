@@ -5,42 +5,81 @@
 
 	export let steps: string[] = [];
 	export let currentStep: number = 1;
-	export let lastWatered: string = '01.12.2024';
-	export let nextWateringDate: string = '11.12.2024';
-	export let lastPesticideDone: string = '02.12.2024';
-	export let nextPesticideDate: string = '07.12.2024';
-	export let lastFertilizingDone: string = '03.12.2024';
-	export let nextManuringDate: string = '10.12.2024';
+	let allocated: number;
+	let spent: number;
 
 	Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 	let chart: Chart | null = null;
-	let activeView: string = 'Irrigation';
+	let activeView: string = currentStep === 1 ? 'Seeds' : 'Fertiliser';
 
-	const buttons = [
-		{ name: 'Irrigation', view: 'Irrigation' },
-		{ name: 'Pesticide', view: 'Pesticide' },
-		{ name: 'Manuring', view: 'Manuring' }
+	const buttonsForStep1 = [
+		{ name: 'Seeds', view: 'Seeds' },
+		{ name: 'Tools', view: 'Tools' },
+		{ name: 'Labour', view: 'Labour' }
 	];
 
-	const chartData: Record<string, { data: number[]; backgroundColor: string[]; daysLeft: number }> =
+	const buttonsForStep4 = [
+		{ name: 'Water', view: 'Water' },
+		{ name: 'Pesticide', view: 'Pesticide' },
+		{ name: 'Fertiliser', view: 'Fertiliser' }
+	];
+
+	let buttons = currentStep === 1 ? buttonsForStep1 : buttonsForStep4;
+
+	const chartData: Record<
+		string,
 		{
-			Irrigation: {
-				data: [90, 10],
-				backgroundColor: ['#3B82F6', '#E5E7EB'],
-				daysLeft: 10
-			},
-			Pesticide: {
-				data: [30, 70],
-				backgroundColor: ['#EF4444', '#E5E7EB'],
-				daysLeft: 5
-			},
-			Manuring: {
-				data: [50, 50],
-				backgroundColor: ['#F59E0B', '#E5E7EB'],
-				daysLeft: 7
-			}
-		};
+			data: number[];
+			backgroundColor: string[];
+			daysLeft: number;
+			allocated: number;
+			spent: number;
+		}
+	> = {
+		Seeds: {
+			data: [5000, 3500],
+			backgroundColor: ['#4CAF50', '#FFC107'],
+			daysLeft: 15,
+			allocated: 5000,
+			spent: 3500
+		},
+		Tools: {
+			data: [4000, 2000],
+			backgroundColor: ['#673AB7', '#FF5722'],
+			daysLeft: 20,
+			allocated: 4000,
+			spent: 2000
+		},
+		Labour: {
+			data: [7000, 6000],
+			backgroundColor: ['#FF9800', '#8BC34A'],
+			daysLeft: 10,
+			allocated: 7000,
+			spent: 6000
+		},
+		Water: {
+			data: [8000, 7000],
+			backgroundColor: ['#3B82F6', '#E5E7EB'],
+			daysLeft: 10,
+			allocated: 8000,
+			spent: 7000
+		},
+		Pesticide: {
+			data: [6000, 5000],
+			backgroundColor: ['#EF4444', '#E5E7EB'],
+			daysLeft: 5,
+			allocated: 6000,
+			spent: 5000
+		},
+		Fertiliser: {
+			data: [10000, 5000],
+			backgroundColor: ['#F59E0B', '#E5E7EB'],
+			daysLeft: 7,
+			allocated: 10000,
+			spent: 5000
+		}
+	};
 
 	async function createChart() {
 		await tick();
@@ -63,7 +102,8 @@
 				plugins: {
 					tooltip: {
 						callbacks: {
-							label: (tooltipItem) => `${chartData[activeView].daysLeft} Days Remaining`
+							label: (tooltipItem) =>
+								`${tooltipItem.label}: ₹${chartData[activeView].data[tooltipItem.dataIndex]}`
 						}
 					},
 					legend: {
@@ -93,7 +133,9 @@
 	}
 
 	$: {
-		if (currentStep === 4) {
+		buttons = currentStep === 1 ? buttonsForStep1 : buttonsForStep4;
+
+		if (currentStep === 4 || currentStep === 1) {
 			if (!chart) {
 				createChart();
 			} else {
@@ -104,8 +146,9 @@
 		}
 	}
 
-	$: if (currentStep === 4) {
-		updateChart();
+	$: {
+		allocated = chartData[activeView]?.allocated || 0;
+		spent = chartData[activeView]?.spent || 0;
 	}
 
 	onDestroy(() => {
@@ -116,7 +159,7 @@
 <div
 	class="bg-gradient-to-br from-gray-500 to-gray-400 dark:from-gray-700 rounded-lg shadow-lg p-6 md:p-2 sm:p-0 text-gray-800"
 >
-	{#if currentStep === 4}
+	{#if currentStep === 4 || currentStep === 1}
 		<p class="dark:text-light text-xl font-semibold flex justify-center items-center h-full my-2">
 			{steps[currentStep - 1] || `Step ${currentStep}`}
 		</p>
@@ -131,32 +174,32 @@
 
 		<div class="flex flex-col items-center sm:items-center md:items-start">
 			<div class="text-center w-full sm:mt-3">
-				{#if activeView === 'Irrigation'}
-					<p class="text-dark dark:text-light">
-						Last Irrigation: <span class="font-extralight">{lastWatered}</span>
-					</p>
-					<p class="text-dark dark:text-light">
-						Next Irrigation: <span class="font-extralight">{nextWateringDate}</span>
-					</p>
-				{:else if activeView === 'Pesticide'}
-					<p class="text-dark dark:text-light">
-						Last Pesticide: <span class="font-extralight">{lastPesticideDone}</span>
-					</p>
-					<p class="text-dark dark:text-light">
-						Next Pesticide: <span class="font-extralight">{nextPesticideDate}</span>
-					</p>
-				{:else if activeView === 'Manuring'}
-					<p class="text-dark dark:text-light">
-						Last Manuring: <span class="font-extralight">{lastFertilizingDone}</span>
-					</p>
-					<p class="text-dark dark:text-light">
-						Next Manuring: <span class="font-extralight">{nextManuringDate}</span>
-					</p>
+				{#if currentStep === 1}
+					{#if activeView === 'Seeds'}
+						<p class="text-dark dark:text-light">Prepare the Seeds</p>
+					{:else if activeView === 'Tools'}
+						<p class="text-dark dark:text-light">Gather Tools</p>
+					{:else if activeView === 'Labour'}
+						<p class="text-dark dark:text-light">Assign Labour</p>
+					{/if}
+				{:else if currentStep === 4}
+					{#if activeView === 'Water'}
+						<p class="text-dark dark:text-light">Watering Budget</p>
+					{:else if activeView === 'Pesticide'}
+						<p class="text-dark dark:text-light">Pesticide Budget</p>
+					{:else if activeView === 'Fertiliser'}
+						<p class="text-dark dark:text-light">Fertilizer Budget</p>
+					{/if}
 				{/if}
 			</div>
-
-			<div class="relative mx-auto flex justify-center w-40 h-40 md:mt-6 sm:my-3">
-				<canvas id="status-doughnut"></canvas>
+		</div>
+		<div class="relative mx-auto flex justify-center items-center w-full md:mt- sm:my-3">
+			<div class="w-2/5">
+				<canvas id="status-doughnut" class="w-full"></canvas>
+			</div>
+			<div class="flex flex-col text-left ml-4">
+				<p class="text-dark dark:text-light">Allocated: ₹{chartData[activeView]?.allocated || 0}</p>
+				<p class="text-dark dark:text-light">Spent: ₹{chartData[activeView]?.spent || 0}</p>
 			</div>
 		</div>
 	{:else}

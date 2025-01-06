@@ -12,10 +12,10 @@
 	let isLoading = true;
 
 	const steps = [
-		'Plant Preparation',
-		'Soil Preparation',
-		'Tea Planting',
-		'Routine Maintenance',
+		'Procurement',
+		'Preparation',
+		'Farming',
+		'Recurring Cost',
 		'Harvest'
 	];
 
@@ -84,21 +84,12 @@
 			{/if}
 
 			<div class="flex-grow">
-				<h2 class="text-xl font-semibold text-dark dark:text-light mb-2">Farming Milestones</h2>
+				<h2 class="text-xl font-semibold text-dark dark:text-light mb-2">Budget Tracker</h2>
 				<ProgressCard {steps} {currentStep} onStepChange={({ step }) => (currentStep = step)} />
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					{#if !error}
 						<div>
-							<StatusCard
-								{steps}
-								{currentStep}
-								lastWatered="01.12.2024"
-								nextWateringDate="11.12.2024"
-								lastPesticideDone="02.12.2024"
-								nextPesticideDate="07.12.2024"
-								lastFertilizingDone="03.12.2024"
-								nextManuringDate="10.12.2024"
-							/>
+							<StatusCard {steps} {currentStep} />
 						</div>
 					{/if}
 					<div>

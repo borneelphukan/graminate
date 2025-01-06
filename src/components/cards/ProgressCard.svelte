@@ -40,7 +40,32 @@
 	const toggleView = (mode: 'Large' | 'Small') => {
 		viewMode = mode;
 		dropdownOpen = false;
+		console.log('View mode updated to:', viewMode); // Debugging
 	};
+	let screenWidth: number = window.innerWidth;
+	$: {
+		if (screenWidth <= 480 && viewMode !== 'Small') {
+			viewMode = 'Small';
+		} else if (screenWidth > 480 && screenWidth <= 1145 && viewMode !== 'Small') {
+			viewMode = 'Small';
+		} else if (screenWidth > 1145 && viewMode !== 'Large') {
+			viewMode = 'Large';
+		}
+	}
+
+	// Add event listener for window resize
+	const updateScreenWidth = () => {
+		screenWidth = window.innerWidth;
+	};
+
+	// Lifecycle hook for adding/removing event listeners
+	import { onMount, onDestroy } from 'svelte';
+	onMount(() => {
+		window.addEventListener('resize', updateScreenWidth);
+	});
+	onDestroy(() => {
+		window.removeEventListener('resize', updateScreenWidth);
+	});
 </script>
 
 <div
@@ -108,30 +133,40 @@
 
 	<!-- Progress Bar with Navigation -->
 	<div class="relative">
-		<!-- Step Icons -->
 		{#if viewMode === 'Large'}
-			<div class="relative h-2 bg-gray-300 rounded-full mt-5">
+			<!-- Step Icons -->
+			<div
+				class="relative bg-gray-300 mb-5 rounded-full h-2 mx-auto"
+				style="width: calc(100% - 2 * (100% / {limitedSteps.length} / 2));"
+			>
 				<div
 					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full transition-all duration-300"
 					style="width: {progress}%;"
 				></div>
 			</div>
-			<div class="absolute top-2 transform -translate-y-1/2 w-full flex justify-between">
+
+			<!-- Step Icons and Labels -->
+			<div class="absolute top-2 left-0 transform -translate-y-1/2 w-full flex justify-between">
 				{#each limitedSteps as { step, icon: Icon }, index}
-					<button
-						class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
-						class:bg-green-200={index + 1 === currentStep}
-						class:bg-green-100={index + 1 < currentStep}
-						class:bg-gray-300={index + 1 > currentStep}
-						tabindex="0"
-						aria-label={`Navigate to step ${index + 1}`}
-						onclick={() => {
-							const direction = index + 1 < currentStep ? 'left' : 'right';
-							navigateToStep(index, direction);
-						}}
+					<div
+						class="flex flex-col items-center"
+						style="width: calc(100% / {limitedSteps.length});"
 					>
-						<img src={Icon} alt={step} class="size-5" />
-					</button>
+						<button
+							class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
+							class:bg-green-200={index + 1 === currentStep}
+							class:bg-green-100={index + 1 < currentStep}
+							class:bg-gray-300={index + 1 > currentStep}
+							tabindex="0"
+							aria-label={`Navigate to step ${index + 1}`}
+							onclick={() => {
+								const direction = index + 1 < currentStep ? 'left' : 'right';
+								navigateToStep(index, direction);
+							}}
+						>
+							<img src={Icon} alt={step} class="size-5" />
+						</button>
+					</div>
 				{/each}
 			</div>
 		{:else}
@@ -203,7 +238,6 @@
 			</div>
 		{/if}
 	</div>
-
 	<!-- Steps Text -->
 	<div class="flex justify-between mt-6">
 		{#if viewMode === 'Large'}
