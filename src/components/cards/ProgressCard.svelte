@@ -73,70 +73,12 @@
 		viewMode === 'Small' ? 'w-1/2' : 'w-full'
 	} my-3`}
 >
-	<!-- Dropdown Icon -->
-	<div class="absolute top-2 right-2">
-		<button aria-label="dropdown-open" type="button">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6 cursor-pointer text-dark dark:text-light"
-				onclick={() => (dropdownOpen = !dropdownOpen)}
-				onkeydown={(event) => {
-					if (event.key === 'Enter' || event.key === ' ') {
-						dropdownOpen = !dropdownOpen;
-						event.preventDefault();
-					}
-				}}
-				tabindex="0"
-				role="button"
-				aria-label="Toggle dropdown"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-				/>
-			</svg>
-		</button>
 
-		<!-- Dropdown Menu -->
-		{#if dropdownOpen}
-			<div
-				class="absolute right-0 top-8 w-24 bg-white dark:bg-gray-700 dark:text-light shadow-lg rounded-md z-10"
-			>
-				<ul>
-					<li>
-						<button
-							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
-							aria-label="Switch to Large view"
-							onclick={() => toggleView('Large')}
-						>
-							Large
-						</button>
-					</li>
-					<li>
-						<button
-							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
-							aria-label="Switch to Small view"
-							onclick={() => toggleView('Small')}
-						>
-							Small
-						</button>
-					</li>
-				</ul>
-			</div>
-		{/if}
-	</div>
-
-	<!-- Progress Bar with Navigation -->
 	<div class="relative">
 		{#if viewMode === 'Large'}
 			<!-- Step Icons -->
 			<div
-				class="relative bg-gray-300 mb-5 rounded-full h-2 mx-auto"
+				class="relative bg-gray-300 my-5 rounded-full h-2 mx-auto"
 				style="width: calc(100% - 2 * (100% / {limitedSteps.length} / 2));"
 			>
 				<div

@@ -58,49 +58,49 @@
 
 	let isTaskNameValid = true;
 
-function addTask() {
-	if (!newTask.trim()) {
-		isTaskNameValid = false;
-		return;
-	}
-
-	isTaskNameValid = true;
-	const today = new Date();
-	const selected = get(selectedDate);
-
-	if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-		Swal.fire({
-			title: 'Invalid Date',
-			text: 'You cannot add tasks to past dates.',
-			icon: 'error',
-			confirmButtonText: 'OK',
-		});
-		return;
-	}
-
-	const dateKey = selected.toISOString().split('T')[0];
-
-	tasks.update((t) => {
-		if (!t[dateKey]) {
-			t[dateKey] = [];
+	function addTask() {
+		if (!newTask.trim()) {
+			isTaskNameValid = false;
+			return;
 		}
-		t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
 
-		t[dateKey].sort((a, b) => {
-			const timeA = convertTo24Hour(a.time);
-			const timeB = convertTo24Hour(b.time);
-			return (
-				new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
-			);
+		isTaskNameValid = true;
+		const today = new Date();
+		const selected = get(selectedDate);
+
+		if (selected < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+			Swal.fire({
+				title: 'Invalid Date',
+				text: 'You cannot add tasks to past dates.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+			return;
+		}
+
+		const dateKey = selected.toISOString().split('T')[0];
+
+		tasks.update((t) => {
+			if (!t[dateKey]) {
+				t[dateKey] = [];
+			}
+			t[dateKey].push({ name: newTask.trim(), time: newTaskTime });
+
+			t[dateKey].sort((a, b) => {
+				const timeA = convertTo24Hour(a.time);
+				const timeB = convertTo24Hour(b.time);
+				return (
+					new Date(`1970-01-01T${timeA}`).getTime() - new Date(`1970-01-01T${timeB}`).getTime()
+				);
+			});
+			return t;
 		});
-		return t;
-	});
 
-	newTask = '';
-	newTaskTime = '12:00 PM';
-	showAddTask = false;
-	showTasks = true;
-}
+		newTask = '';
+		newTaskTime = '12:00 PM';
+		showAddTask = false;
+		showTasks = true;
+	}
 
 	function removeTask(index: number) {
 		const dateKey = get(selectedDate).toISOString().split('T')[0];
@@ -266,7 +266,7 @@ function addTask() {
 		<ul class="list-disc pl-5 space-y-2">
 			{#each $tasks[get(selectedDate).toISOString().split('T')[0]] || [] as task, index}
 				<li class="flex items-center justify-between">
-					<span>{task.time} - {task.name}</span>
+					<span class="text-dark darK:text-light">{task.time} - {task.name}</span>
 					<button
 						class="text-red-600 hover:text-red-800"
 						onclick={() => removeTask(index)}
