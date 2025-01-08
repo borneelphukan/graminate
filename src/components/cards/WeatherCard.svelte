@@ -287,7 +287,7 @@
 						<div class="text-center flex-shrink-0">
 							<p class="text-sm">{hour.time}:00</p>
 							<p class="text-3xl">{hour.icon}</p>
-							<p class="text-lg font-semibold">{hour.temperature}°</p>
+							<p class="text-md ">{formatTemperature(hour.temperature)}</p>
 						</div>
 					{/each}
 				</div>
@@ -302,8 +302,8 @@
 					<div class="flex justify-between items-center w-full">
 						<p class="text-lg font-semibold w-1/3 text-center">{day.day}</p>
 						<p class="text-3xl w-1/3 text-center">{day.icon}</p>
-						<p class="text-lg w-1/3 text-center">{day.minTemp}°C</p>
-						<p class="text-lg w-1/3 text-center">{day.maxTemp}°C</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(minTemp)}</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(maxTemp)}</p>
 					</div>
 				{/each}
 			</div>

@@ -5,11 +5,14 @@
 	import Calendar from '@ui/Calendar.svelte';
 	import Loader from '@ui/Loader.svelte';
 	import { onMount } from 'svelte';
+	import { temperatureScale } from '@lib/stores/settings';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
 	let locationServiceEnabled = true;
 	let isLoading = true;
+
+	$: fahrenheit = $temperatureScale === 'Fahrenheit';
 
 	const steps = ['Procurement', 'Preparation', 'Farming', 'Recurring Cost', 'Harvest'];
 
@@ -73,7 +76,7 @@
 		<div class="flex gap-4 px-6 items-start">
 			{#if locationServiceEnabled && location}
 				<div class="flex-shrink-0 w-1/3">
-					<WeatherCard lat={location.lat} lon={location.lon} fahrenheit={false} />
+					<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
 				</div>
 			{/if}
 
