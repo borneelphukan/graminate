@@ -6,6 +6,7 @@
 	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
 	import Swal from 'sweetalert2';
 	import Button from '@ui/Button.svelte';
+	import { temperatureScale } from '@lib/stores/settings';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'हिन्दी', 'অসমীয়া'];
@@ -17,18 +18,17 @@
 		else if (savedLocale === 'assamese') selectedLanguage = 'অসমীয়া';
 		else selectedLanguage = 'English';
 	}
+
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
 	let selectedFile: File | null = null;
 	let profileImageUrl = 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250';
 
-	const temperatureScale = ['Celsius', 'Fahrenheit'];
-	let selectedTemperatureScale = 'Celsius';
-	if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-		const savedScale = localStorage.getItem('temperatureScale');
-		selectedTemperatureScale = savedScale || 'Celsius';
-	}
+	let selectedTemperatureScale: 'Celsius' | 'Fahrenheit' = 'Celsius';
+	$: selectedTemperatureScale = $temperatureScale;
+
+	const temperatureScaleOptions: Array<'Celsius' | 'Fahrenheit'> = ['Celsius', 'Fahrenheit'];
 
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -95,37 +95,49 @@
 		}
 
 		// try {
-		// 	// Placeholder API endpoint
-		// 	const response = await fetch('/api/user/language', {
-		// 		method: 'POST',
-		// 		headers: {
-		// 			'Content-Type': 'application/json'
-		// 		},
-		// 		body: JSON.stringify({ language: langCode })
-		// 	});
+		//  // Placeholder API endpoint
+		//  const response = await fetch('/api/user/language', {
+		//      method: 'POST',
+		//      headers: {
+		//          'Content-Type': 'application/json'
+		//      },
+		//      body: JSON.stringify({ language: langCode })
+		//  });
 
-		// 	if (!response.ok) {
-		// 		throw new Error('Failed to update language in the database');
-		// 	}
+		//  if (!response.ok) {
+		//      throw new Error('Failed to update language in the database');
+		//  }
 		// } catch (error) {
-		// 	console.error('Error updating language:', error);
-		// 	Swal.fire({
-		// 		title: $t('error'),
-		// 		text: $t('unable_to_update_language'),
-		// 		icon: 'error',
-		// 		confirmButtonText: $t('ok')
-		// 	});
+		//  console.error('Error updating language:', error);
 		// }
 	}
 
 	async function SaveWeather() {
+		temperatureScale.set(selectedTemperatureScale);
 		Swal.fire({
 			title: $t('success'),
 			text: $t('temperature_scale_saved'),
 			icon: 'success',
 			confirmButtonText: $t('ok')
 		});
+		// try {
+		//  const response = await fetch('/api/user/temperatureScale', {
+		//      method: 'POST',
+		//      headers: {
+		//          'Content-Type': 'application/json'
+		//      },
+		//      body: JSON.stringify({ temperatureScale: tempScale })
+		//  });
+
+		//  if (!response.ok) {
+		//      throw new Error('Failed to update temperature in the database');
+		//  }
+		// } catch (error) {
+		//  console.error('Error updating temperature scale:', error);
+		// }
 	}
+
+	$: selectedTemperatureScale = $temperatureScale;
 </script>
 
 <div class="py-6">
@@ -213,7 +225,7 @@
 					placeholder={$t('farm_location_placeholder')}
 				/>
 				<DropdownSmall
-					items={temperatureScale}
+					items={temperatureScaleOptions}
 					label={$t('temperature_scale')}
 					bind:selected={selectedTemperatureScale}
 				/>

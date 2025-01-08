@@ -44,9 +44,10 @@
 		return Math.round((celsius * 9) / 5 + 32);
 	}
 
-	function formatTemperature(value: number | null): string {
+	function formatTemperature(value: number | null, showUnit: boolean = true): string {
 		if (value === null) return 'N/A';
-		return fahrenheit ? `${convertToFahrenheit(value)}°F` : `${value}°C`;
+		const temp = fahrenheit ? convertToFahrenheit(value) : value;
+		return showUnit ? `${temp}°${fahrenheit ? 'F' : 'C'}` : `${temp}°`;
 	}
 
 	async function fetchWeather(latitude: number, longitude: number) {
@@ -287,7 +288,7 @@
 						<div class="text-center flex-shrink-0">
 							<p class="text-sm">{hour.time}:00</p>
 							<p class="text-3xl">{hour.icon}</p>
-							<p class="text-lg font-semibold">{hour.temperature}°</p>
+							<p class="text-md">{formatTemperature(hour.temperature, false)}</p>
 						</div>
 					{/each}
 				</div>
@@ -302,8 +303,8 @@
 					<div class="flex justify-between items-center w-full">
 						<p class="text-lg font-semibold w-1/3 text-center">{day.day}</p>
 						<p class="text-3xl w-1/3 text-center">{day.icon}</p>
-						<p class="text-lg w-1/3 text-center">{day.minTemp}°C</p>
-						<p class="text-lg w-1/3 text-center">{day.maxTemp}°C</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(day.minTemp, false)}</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(day.maxTemp, false)}</p>
 					</div>
 				{/each}
 			</div>
