@@ -19,11 +19,6 @@
 		else selectedLanguage = 'English';
 	}
 
-	if (typeof window !== 'undefined') {
-		const savedScale = localStorage.getItem('temperatureScale');
-		temperatureScale.set(savedScale === 'Fahrenheit' ? 'Fahrenheit' : 'Celsius');
-	}
-
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
@@ -34,15 +29,6 @@
 	$: selectedTemperatureScale = $temperatureScale;
 
 	const temperatureScaleOptions: Array<'Celsius' | 'Fahrenheit'> = ['Celsius', 'Fahrenheit'];
-
-	if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-		const savedScale = localStorage.getItem('temperatureScale');
-		if (savedScale === 'Celsius' || savedScale === 'Fahrenheit') {
-			selectedTemperatureScale = savedScale;
-		} else {
-			selectedTemperatureScale = 'Celsius';
-		}
-	}
 
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -143,12 +129,6 @@
 	}
 
 	$: selectedTemperatureScale = $temperatureScale;
-
-	$: {
-		if (typeof window !== 'undefined') {
-			localStorage.setItem('temperatureScale', $temperatureScale);
-		}
-	}
 </script>
 
 <div class="py-6">
