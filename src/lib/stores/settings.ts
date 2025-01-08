@@ -7,7 +7,6 @@ const initialScale =
 
 export const temperatureScale = writable<'Celsius' | 'Fahrenheit'>(initialScale);
 
-// Sync with localStorage whenever the scale changes
 temperatureScale.subscribe((value) => {
 	if (typeof window !== 'undefined') {
 		localStorage.setItem('temperatureScale', value);

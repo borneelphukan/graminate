@@ -109,12 +109,6 @@
 		//  }
 		// } catch (error) {
 		//  console.error('Error updating language:', error);
-		//  Swal.fire({
-		//      title: $t('error'),
-		//      text: $t('unable_to_update_language'),
-		//      icon: 'error',
-		//      confirmButtonText: $t('ok')
-		//  });
 		// }
 	}
 
@@ -126,6 +120,21 @@
 			icon: 'success',
 			confirmButtonText: $t('ok')
 		});
+		// try {
+		//  const response = await fetch('/api/user/temperatureScale', {
+		//      method: 'POST',
+		//      headers: {
+		//          'Content-Type': 'application/json'
+		//      },
+		//      body: JSON.stringify({ temperatureScale: tempScale })
+		//  });
+
+		//  if (!response.ok) {
+		//      throw new Error('Failed to update temperature in the database');
+		//  }
+		// } catch (error) {
+		//  console.error('Error updating temperature scale:', error);
+		// }
 	}
 
 	$: selectedTemperatureScale = $temperatureScale;
