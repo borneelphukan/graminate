@@ -24,6 +24,12 @@
 	let profileImageUrl = 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250';
 
 	const temperatureScale = ['Celsius', 'Fahrenheit'];
+	let selectedTemperatureScale = 'Celsius';
+	if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+		const savedScale = localStorage.getItem('temperatureScale');
+		selectedTemperatureScale = savedScale || 'Celsius';
+	}
+
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files[0]) {
@@ -111,6 +117,15 @@
 		// 	});
 		// }
 	}
+
+	async function SaveWeather() {
+		Swal.fire({
+			title: $t('success'),
+			text: $t('temperature_scale_saved'),
+			icon: 'success',
+			confirmButtonText: $t('ok')
+		});
+	}
 </script>
 
 <div class="py-6">
@@ -197,7 +212,14 @@
 					label={$t('farm_location')}
 					placeholder={$t('farm_location_placeholder')}
 				/>
-				<DropdownSmall items={temperatureScale} label={$t('temperature_scale')} />
+				<DropdownSmall
+					items={temperatureScale}
+					label={$t('temperature_scale')}
+					bind:selected={selectedTemperatureScale}
+				/>
+			</div>
+			<div class="flex flex-1 gap-2 my-6">
+				<Button text={$t('save_changes')} on:click={SaveWeather} />
 			</div>
 		{/if}
 

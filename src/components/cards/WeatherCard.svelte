@@ -5,6 +5,7 @@
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;
+	export let fahrenheit: boolean;
 
 	let temperature: number | null = null;
 	let apparentTemperature: number | null = null;
@@ -38,6 +39,15 @@
 
 	let dropdownOpen = false;
 	let displayMode = writable('Large');
+
+	function convertToFahrenheit(celsius: number): number {
+		return Math.round((celsius * 9) / 5 + 32);
+	}
+
+	function formatTemperature(value: number | null): string {
+		if (value === null) return 'N/A';
+		return fahrenheit ? `${convertToFahrenheit(value)}°F` : `${value}°C`;
+	}
 
 	async function fetchWeather(latitude: number, longitude: number) {
 		try {
@@ -256,12 +266,14 @@
 			<div class="flex justify-between w-full">
 				<div class="text-center">
 					<p class="text-lg font-bold">{locationName}</p>
-					<p class="text-4xl font-bold">{temperature}°</p>
+					<p class="text-4xl font-bold">{formatTemperature(temperature)}</p>
 				</div>
 				<div class="text-center">
 					<p class="text-5xl">{getWeatherIcon()}</p>
-					<p class="mt-2 text-sm">H: {maxTemp}°C L: {minTemp}°C</p>
-					<p class="mt-1 text-sm">Feels like: {apparentTemperature}°C</p>
+					<p class="mt-2 text-sm">
+						H: {formatTemperature(maxTemp)} L: {formatTemperature(minTemp)}
+					</p>
+					<p class="mt-1 text-sm">Feels like: {formatTemperature(apparentTemperature)}</p>
 				</div>
 			</div>
 		{/if}

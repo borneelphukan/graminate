@@ -11,13 +11,7 @@
 	let locationServiceEnabled = true;
 	let isLoading = true;
 
-	const steps = [
-		'Procurement',
-		'Preparation',
-		'Farming',
-		'Recurring Cost',
-		'Harvest'
-	];
+	const steps = ['Procurement', 'Preparation', 'Farming', 'Recurring Cost', 'Harvest'];
 
 	let currentStep: number = 1;
 
@@ -79,7 +73,7 @@
 		<div class="flex gap-4 px-6 items-start">
 			{#if locationServiceEnabled && location}
 				<div class="flex-shrink-0 w-1/3">
-					<WeatherCard lat={location.lat} lon={location.lon} />
+					<WeatherCard lat={location.lat} lon={location.lon} fahrenheit={false} />
 				</div>
 			{/if}
 

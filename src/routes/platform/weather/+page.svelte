@@ -47,7 +47,7 @@
 			<p class="absolute inset-0 flex items-center justify-center text-red-500">{error}</p>
 		{:else if location}
 			<div class="absolute left-4">
-				<WeatherCard lat={location.lat} lon={location.lon} />
+				<WeatherCard lat={location.lat} lon={location.lon} fahrenheit={false} />
 			</div>
 		{/if}
 	</div>
