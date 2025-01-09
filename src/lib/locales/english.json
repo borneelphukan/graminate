@@ -25,7 +25,6 @@
 	"general": "General",
 	"profile": "Profile",
 	"weather": "Weather",
-	"milestones": "Milestones",
 	"invoice": "Invoice",
 	"calendar": "Calendar",
 	"tasks": "Tasks",
@@ -62,6 +61,12 @@
 	"harvest": "Harvest",
 	"view_large": "Large",
 	"view_small": "Small",
+	"success": "Success",
+	"temperature": {
+		"celsius": "Celsius",
+		"fahrenheit": "Fahrenheit"
+	},
+	"weather_settings_saved": "Weather Settings Saved",
 	"navbar": {
 		"profile_preferences": "Profile & Preferences",
 		"share_feedback": "Share navigation feedback",

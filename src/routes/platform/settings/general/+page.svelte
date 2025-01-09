@@ -28,7 +28,7 @@
 	let selectedTemperatureScale: 'Celsius' | 'Fahrenheit' = 'Celsius';
 	$: selectedTemperatureScale = $temperatureScale;
 
-	const temperatureScaleOptions: Array<'Celsius' | 'Fahrenheit'> = ['Celsius', 'Fahrenheit'];
+	const temperatureScaleOptions = ['temperature.celsius', 'temperature.fahrenheit'];
 
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -36,7 +36,6 @@
 			const file = input.files[0];
 			const fileReader = new FileReader();
 
-			// Check file type
 			if (!file.type.startsWith('image/')) {
 				Swal.fire({
 					title: $t('invalid_file'),
@@ -77,16 +76,13 @@
 	}
 
 	async function SaveProfile() {
-		//let langCode = 'english';
 		switch (selectedLanguage) {
 			case 'हिन्दी':
 				locale.set('hindi');
-				//langCode = 'hindi';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'hindi');
 				break;
 			case 'অসমীয়া':
 				locale.set('assamese');
-				//langCode = 'assamese';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'assamese');
 				break;
 			default:
@@ -116,10 +112,11 @@
 		temperatureScale.set(selectedTemperatureScale);
 		Swal.fire({
 			title: $t('success'),
-			text: $t('temperature_scale_saved'),
+			text: $t('weather_settings_saved'),
 			icon: 'success',
 			confirmButtonText: $t('ok')
 		});
+
 		// try {
 		//  const response = await fetch('/api/user/temperatureScale', {
 		//      method: 'POST',
@@ -225,7 +222,7 @@
 					placeholder={$t('farm_location_placeholder')}
 				/>
 				<DropdownSmall
-					items={temperatureScaleOptions}
+					items={temperatureScaleOptions.map((key) => $t(key))}
 					label={$t('temperature_scale')}
 					bind:selected={selectedTemperatureScale}
 				/>

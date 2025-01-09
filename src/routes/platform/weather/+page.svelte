@@ -1,9 +1,12 @@
 <script lang="ts">
-	import WeatherCard from '../../../components/cards/WeatherCard.svelte';
+	import WeatherCard from '@cards/WeatherCard.svelte';
+	import { temperatureScale } from '@lib/stores/settings';
 	import { onMount } from 'svelte';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
+
+	$: fahrenheit = $temperatureScale === 'Fahrenheit';
 
 	onMount(() => {
 		getCurrentLocation()
@@ -47,7 +50,7 @@
 			<p class="absolute inset-0 flex items-center justify-center text-red-500">{error}</p>
 		{:else if location}
 			<div class="absolute left-4">
-				<WeatherCard lat={location.lat} lon={location.lon} fahrenheit={false} />
+				<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
 			</div>
 		{/if}
 	</div>

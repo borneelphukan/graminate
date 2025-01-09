@@ -25,7 +25,6 @@
 	"general": "সাধাৰণ",
 	"profile": "প্ৰ’ফাইল",
 	"weather": "বতৰ",
-	"milestones": "মাইলষ্টোনছ",
 	"invoice": "চালান",
 	"invoices": "চালান",
 	"calendar": "কেলেণ্ডাৰ",
@@ -62,6 +61,13 @@
 	"harvest": "ফলন",
 	"view_large": "ডাঙৰ",
 	"view_small": "সৰু",
+	"success": "সফল",
+	"celsius": "চেলছিয়াছ",
+	"temperature": {
+		"celsius": "চেলছিয়াছ",
+		"fahrenheit": "ফাৰেনহাইট"
+	},
+	"weather_settings_saved": "বতৰৰ ছেটিংছ সংৰক্ষণ কৰা হৈছে",
 	"navbar": {
 		"profile_preferences": "প্ৰফাইল আৰু পছন্দসমূহ",
 		"share_feedback": "নেভিগেচনৰ প্ৰতিক্ৰিয়া শ্বেয়াৰ কৰক",
