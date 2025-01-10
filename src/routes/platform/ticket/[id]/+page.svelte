@@ -13,6 +13,7 @@
 	import plantIcon from '@icons/plant.svg';
 	import ViewTable from '@tables/ViewTable.svelte';
 	import TicketView from '@ui/Switch/TicketView.svelte';
+	import TaskModal from '@modals/TaskModal.svelte';
 
 	export const params = {};
 	const projectTitle = $page.url.searchParams.get('title');
@@ -309,6 +310,18 @@
 		{ label: 'Status' },
 		{ label: 'Labels' }
 	];
+
+	let isTaskModalOpen = false;
+	let selectedTask = { id: '', title: '', type: '' };
+
+	function openTaskModal(task: Task) {
+		selectedTask = { ...task };
+		isTaskModalOpen = true;
+	}
+
+	function closeTaskModal() {
+		isTaskModalOpen = false;
+	}
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -469,7 +482,10 @@
 						<!-- Tasks -->
 						<div class="space-y-4">
 							{#each filterTasks(column) as task, taskIndex}
-								<div class="bg-light dark:bg-gray-700 p-3 rounded-md shadow-sm relative">
+								<div
+									class="bg-light dark:bg-gray-700 p-3 rounded-md shadow-sm relative cursor-pointer"
+									on:click={() => openTaskModal(task)}
+								>
 									<div class="flex flex-row items-start justify-between">
 										<div class="mr-2 break-words max-w-xs">
 											<p class="text-dark dark:text-light">
@@ -477,9 +493,13 @@
 											</p>
 										</div>
 										<div class="relative dark:text-white">
+											<!-- Prevent dropdown button clicks from triggering the modal -->
 											<button
 												aria-label="ellipsis"
-												on:click={() => toggleDropdown(colIndex, taskIndex)}
+												on:click={(event) => {
+													event.stopPropagation(); // Stops the event from bubbling to the parent div
+													toggleDropdown(colIndex, taskIndex);
+												}}
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -705,4 +725,11 @@
 	currentLimit="No limit set"
 	on:save={saveColumnLimit}
 	on:cancel={closeTicketModal}
+/>
+
+<TaskModal
+	isOpen={isTaskModalOpen}
+	taskDetails={selectedTask}
+	projectName={projectTitle}
+	onClose={closeTaskModal}
 />
