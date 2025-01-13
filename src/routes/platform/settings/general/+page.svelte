@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
-	import { locale, t } from '../../../../lib/i18n';
-	import TextField from '../../../../components/ui/TextField.svelte';
-	import DropdownSmall from '../../../../components/ui/Dropdown/DropdownSmall.svelte';
+	import { locale, t } from '@lib/i18n';
+	import TextField from '@ui/TextField.svelte';
+	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
 	import Swal from 'sweetalert2';
-	import Button from '../../../../components/ui/Button.svelte';
+	import Button from '@ui/Button.svelte';
+	import { temperatureScale } from '@lib/stores/settings';
 
 	const view = derived(page, ($page) => $page.url.searchParams.get('view') || 'profile');
 	let languages = ['English', 'हिन्दी', 'অসমীয়া'];
@@ -17,20 +18,24 @@
 		else if (savedLocale === 'assamese') selectedLanguage = 'অসমীয়া';
 		else selectedLanguage = 'English';
 	}
+
 	let firstName = 'Borneel Bikash';
 	let lastName = 'Phukan';
 	let defaultLocation = 'Duliajan';
 	let selectedFile: File | null = null;
 	let profileImageUrl = 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250';
 
-	const temperatureScale = ['Celsius', 'Fahrenheit'];
+	let selectedTemperatureScale: 'Celsius' | 'Fahrenheit' = 'Celsius';
+	$: selectedTemperatureScale = $temperatureScale;
+
+	const temperatureScaleOptions = ['temperature.celsius', 'temperature.fahrenheit'];
+
 	function handleFileUpload(event: Event) {
 		const input = event.target as HTMLInputElement;
 		if (input.files && input.files[0]) {
 			const file = input.files[0];
 			const fileReader = new FileReader();
 
-			// Check file type
 			if (!file.type.startsWith('image/')) {
 				Swal.fire({
 					title: $t('invalid_file'),
@@ -71,16 +76,13 @@
 	}
 
 	async function SaveProfile() {
-		//let langCode = 'english';
 		switch (selectedLanguage) {
 			case 'हिन्दी':
 				locale.set('hindi');
-				//langCode = 'hindi';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'hindi');
 				break;
 			case 'অসমীয়া':
 				locale.set('assamese');
-				//langCode = 'assamese';
 				if (typeof window !== 'undefined') localStorage.setItem('locale', 'assamese');
 				break;
 			default:
@@ -89,28 +91,50 @@
 		}
 
 		// try {
-		// 	// Placeholder API endpoint
-		// 	const response = await fetch('/api/user/language', {
-		// 		method: 'POST',
-		// 		headers: {
-		// 			'Content-Type': 'application/json'
-		// 		},
-		// 		body: JSON.stringify({ language: langCode })
-		// 	});
+		//  // Placeholder API endpoint
+		//  const response = await fetch('/api/user/language', {
+		//      method: 'POST',
+		//      headers: {
+		//          'Content-Type': 'application/json'
+		//      },
+		//      body: JSON.stringify({ language: langCode })
+		//  });
 
-		// 	if (!response.ok) {
-		// 		throw new Error('Failed to update language in the database');
-		// 	}
+		//  if (!response.ok) {
+		//      throw new Error('Failed to update language in the database');
+		//  }
 		// } catch (error) {
-		// 	console.error('Error updating language:', error);
-		// 	Swal.fire({
-		// 		title: $t('error'),
-		// 		text: $t('unable_to_update_language'),
-		// 		icon: 'error',
-		// 		confirmButtonText: $t('ok')
-		// 	});
+		//  console.error('Error updating language:', error);
 		// }
 	}
+
+	async function SaveWeather() {
+		temperatureScale.set(selectedTemperatureScale);
+		Swal.fire({
+			title: $t('success'),
+			text: $t('weather_settings_saved'),
+			icon: 'success',
+			confirmButtonText: $t('ok')
+		});
+
+		// try {
+		//  const response = await fetch('/api/user/temperatureScale', {
+		//      method: 'POST',
+		//      headers: {
+		//          'Content-Type': 'application/json'
+		//      },
+		//      body: JSON.stringify({ temperatureScale: tempScale })
+		//  });
+
+		//  if (!response.ok) {
+		//      throw new Error('Failed to update temperature in the database');
+		//  }
+		// } catch (error) {
+		//  console.error('Error updating temperature scale:', error);
+		// }
+	}
+
+	$: selectedTemperatureScale = $temperatureScale;
 </script>
 
 <div class="py-6">
@@ -197,7 +221,14 @@
 					label={$t('farm_location')}
 					placeholder={$t('farm_location_placeholder')}
 				/>
-				<DropdownSmall items={temperatureScale} label={$t('temperature_scale')} />
+				<DropdownSmall
+					items={temperatureScaleOptions.map((key) => $t(key))}
+					label={$t('temperature_scale')}
+					bind:selected={selectedTemperatureScale}
+				/>
+			</div>
+			<div class="flex flex-1 gap-2 my-6">
+				<Button text={$t('save_changes')} on:click={SaveWeather} />
 			</div>
 		{/if}
 

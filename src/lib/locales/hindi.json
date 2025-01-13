@@ -1,7 +1,7 @@
 {
 	"global_settings": "वैश्विक सेटिंग्स",
 	"invoice_settings": "चालान सेटिंग्स",
-	"applies_across_account": "यह आपके FarmMate खाते में लागू होता है।",
+	"applies_across_account": "यह आपके Graminate खाते में लागू होता है।",
 	"profile_image": "प्रोफ़ाइल छवि",
 	"upload": "अपलोड करें",
 	"first_name": "पहला नाम",
@@ -25,7 +25,6 @@
 	"general": "सामान्य",
 	"profile": "प्रोफ़ाइल",
 	"weather": "मौसम",
-	"milestones": "मील के पत्थर",
 	"invoice": "चालान",
 	"calendar": "कैलेंडर",
 	"tasks": "कार्य",
@@ -62,6 +61,12 @@
 	"harvest": "कटाई",
 	"view_large": "बड़ा",
 	"view_small": "छोटा",
+	"success": "सफल",
+	"temperature": {
+		"celsius": "सेल्सियस",
+		"fahrenheit": "फ़ारेनहाइट"
+	},
+	"weather_settings_saved": "मौसम सेटिंग सहेजी गई",
 	"navbar": {
 		"profile_preferences": "प्रोफ़ाइल और प्राथमिकताएँ",
 		"share_feedback": "नेविगेशन प्रतिक्रिया साझा करें",

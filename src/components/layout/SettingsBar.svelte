@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '../../lib/i18n';
-	import Button from '../ui/Button.svelte';
+	import { t } from '@lib/i18n';
+	import Button from '@ui/Button.svelte';
 
 	type MenuItem = {
 		label: string;

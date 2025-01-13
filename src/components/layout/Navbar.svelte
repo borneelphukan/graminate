@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import NotificationBar from './NotificationBar.svelte';
-	import ThemeSwitch from '../ui/ThemeSwitch.svelte';
-	import { t } from '../../lib/i18n';
+	import ThemeSwitch from '@ui/ThemeSwitch.svelte';
+	import { t } from '@lib/i18n';
 
 	function toggleThemeHandler() {
 		console.log('Theme toggled');
@@ -62,33 +62,6 @@
 			<div class="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
 				<!-- Icons Section -->
 				<div class="flex items-center space-x-3 pr-4 border-r border-gray-700">
-					<!-- Upgrade Button -->
-					<div
-						class="flex flex-col items-center border-r border-gray-700 pr-4 hover:bg-blue-100 p-2 rounded-md"
-					>
-						<!-- Upgrade Icon -->
-						<!-- svelte-ignore a11y_consider_explicit_label -->
-						<button class="text-gray-400 focus:outline-none flex items-center space-x-2">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="h-5 w-5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-								/>
-							</svg>
-							<span class="text-sm text-gray-400 hover:text-white font-medium">Upgrade</span>
-						</button>
-
-						<!-- Upgrade Text -->
-					</div>
-
 					<!-- Phone Icon -->
 					<!-- svelte-ignore a11y_consider_explicit_label -->
 					<button class="text-gray-400 focus:outline-none hover:bg-blue-100 p-2 rounded-md">

@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Loader from '../../components/ui/Loader.svelte';
+	import Loader from '@ui/Loader.svelte';
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;
+	export let fahrenheit: boolean;
 
 	let temperature: number | null = null;
 	let apparentTemperature: number | null = null;
@@ -38,6 +39,16 @@
 
 	let dropdownOpen = false;
 	let displayMode = writable('Large');
+
+	function convertToFahrenheit(celsius: number): number {
+		return Math.round((celsius * 9) / 5 + 32);
+	}
+
+	function formatTemperature(value: number | null, showUnit: boolean = true): string {
+		if (value === null) return 'N/A';
+		const temp = fahrenheit ? convertToFahrenheit(value) : value;
+		return showUnit ? `${temp}°${fahrenheit ? 'F' : 'C'}` : `${temp}°`;
+	}
 
 	async function fetchWeather(latitude: number, longitude: number) {
 		try {
@@ -256,12 +267,14 @@
 			<div class="flex justify-between w-full">
 				<div class="text-center">
 					<p class="text-lg font-bold">{locationName}</p>
-					<p class="text-4xl font-bold">{temperature}°</p>
+					<p class="text-4xl font-bold">{formatTemperature(temperature)}</p>
 				</div>
 				<div class="text-center">
 					<p class="text-5xl">{getWeatherIcon()}</p>
-					<p class="mt-2 text-sm">H: {maxTemp}°C L: {minTemp}°C</p>
-					<p class="mt-1 text-sm">Feels like: {apparentTemperature}°C</p>
+					<p class="mt-2 text-sm">
+						H: {formatTemperature(maxTemp)} L: {formatTemperature(minTemp)}
+					</p>
+					<p class="mt-1 text-sm">Feels like: {formatTemperature(apparentTemperature)}</p>
 				</div>
 			</div>
 		{/if}
@@ -275,7 +288,7 @@
 						<div class="text-center flex-shrink-0">
 							<p class="text-sm">{hour.time}:00</p>
 							<p class="text-3xl">{hour.icon}</p>
-							<p class="text-lg font-semibold">{hour.temperature}°</p>
+							<p class="text-md">{formatTemperature(hour.temperature, false)}</p>
 						</div>
 					{/each}
 				</div>
@@ -290,8 +303,8 @@
 					<div class="flex justify-between items-center w-full">
 						<p class="text-lg font-semibold w-1/3 text-center">{day.day}</p>
 						<p class="text-3xl w-1/3 text-center">{day.icon}</p>
-						<p class="text-lg w-1/3 text-center">{day.minTemp}°C</p>
-						<p class="text-lg w-1/3 text-center">{day.maxTemp}°C</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(day.minTemp, false)}</p>
+						<p class="text-lg w-1/3 text-center">{formatTemperature(day.maxTemp, false)}</p>
 					</div>
 				{/each}
 			</div>

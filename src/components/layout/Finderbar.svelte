@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BusinessCard from '../cards/BusinessCard.svelte';
+	import BusinessCard from '@cards/BusinessCard.svelte';
 	import { onMount } from 'svelte';
 
 	export let activeView: 'distributor' | 'exporter' | 'factories';

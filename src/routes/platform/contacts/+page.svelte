@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
-	import Button from '../../../components/ui/Button.svelte';
-	import SearchDropdown from '../../../components/ui/SearchDropdown.svelte';
-	import FormElement from '../../../components/forms/FormElement.svelte';
-	import Table from '../../../components/tables/Table.svelte';
+	import Button from '@ui/Button.svelte';
+	import SearchDropdown from '@ui/SearchDropdown.svelte';
+	import FormElement from '@forms/FormElement.svelte';
+	import Table from '@tables/Table.svelte';
 	import { goto } from '$app/navigation';
 
 	const isSidebarOpen = writable(false);

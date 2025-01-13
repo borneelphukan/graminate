@@ -12,7 +12,7 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { t } from '../../lib/i18n';
+	import { t } from '@lib/i18n';
 	import { locale } from 'svelte-i18n';
 
 	export let isOpen: boolean;
@@ -36,7 +36,7 @@
 				{ label: 'contacts', route: '/platform/contacts' },
 				{ label: 'companies', route: '/platform/contacts?view=companies' },
 				{ label: 'deals', route: '/platform/contacts?view=deals' },
-				{ label: 'Invoices', route: '/platform/contacts?view=invoices' },
+				{ label: 'invoices', route: '/platform/contacts?view=invoices' },
 				{ label: 'tickets', route: '/platform/contacts?view=tickets' }
 			]
 		},

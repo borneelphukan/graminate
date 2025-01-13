@@ -2,11 +2,11 @@
 	export let steps: string[] = [];
 	export let currentStep: number = 1;
 
-	import Step1 from '../../icons/prepare.svg';
-	import Step2 from '../../icons/soil.svg';
-	import Step3 from '../../icons/plant.svg';
-	import Step4 from '../../icons/routine.svg';
-	import Step5 from '../../icons/harvest.svg';
+	import Step1 from '@icons/prepare.svg';
+	import Step2 from '@icons/soil.svg';
+	import Step3 from '@icons/plant.svg';
+	import Step4 from '@icons/routine.svg';
+	import Step5 from '@icons/harvest.svg';
 	import { fly } from 'svelte/transition';
 
 	const icons = [Step1, Step2, Step3, Step4, Step5];
@@ -40,7 +40,32 @@
 	const toggleView = (mode: 'Large' | 'Small') => {
 		viewMode = mode;
 		dropdownOpen = false;
+		console.log('View mode updated to:', viewMode); // Debugging
 	};
+	let screenWidth: number = window.innerWidth;
+	$: {
+		if (screenWidth <= 480 && viewMode !== 'Small') {
+			viewMode = 'Small';
+		} else if (screenWidth > 480 && screenWidth <= 1145 && viewMode !== 'Small') {
+			viewMode = 'Small';
+		} else if (screenWidth > 1145 && viewMode !== 'Large') {
+			viewMode = 'Large';
+		}
+	}
+
+	// Add event listener for window resize
+	const updateScreenWidth = () => {
+		screenWidth = window.innerWidth;
+	};
+
+	// Lifecycle hook for adding/removing event listeners
+	import { onMount, onDestroy } from 'svelte';
+	onMount(() => {
+		window.addEventListener('resize', updateScreenWidth);
+	});
+	onDestroy(() => {
+		window.removeEventListener('resize', updateScreenWidth);
+	});
 </script>
 
 <div
@@ -48,90 +73,42 @@
 		viewMode === 'Small' ? 'w-1/2' : 'w-full'
 	} my-3`}
 >
-	<!-- Dropdown Icon -->
-	<div class="absolute top-2 right-2">
-		<button aria-label="dropdown-open" type="button">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6 cursor-pointer text-dark dark:text-light"
-				onclick={() => (dropdownOpen = !dropdownOpen)}
-				onkeydown={(event) => {
-					if (event.key === 'Enter' || event.key === ' ') {
-						dropdownOpen = !dropdownOpen;
-						event.preventDefault();
-					}
-				}}
-				tabindex="0"
-				role="button"
-				aria-label="Toggle dropdown"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-				/>
-			</svg>
-		</button>
 
-		<!-- Dropdown Menu -->
-		{#if dropdownOpen}
-			<div
-				class="absolute right-0 top-8 w-24 bg-white dark:bg-gray-700 dark:text-light shadow-lg rounded-md z-10"
-			>
-				<ul>
-					<li>
-						<button
-							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
-							aria-label="Switch to Large view"
-							onclick={() => toggleView('Large')}
-						>
-							Large
-						</button>
-					</li>
-					<li>
-						<button
-							class="w-full text-left text-sm hover:bg-gray-500 dark:hover:bg-blue-100 text-dark dark:text-light px-4 py-2 rounded-b-md cursor-pointer"
-							aria-label="Switch to Small view"
-							onclick={() => toggleView('Small')}
-						>
-							Small
-						</button>
-					</li>
-				</ul>
-			</div>
-		{/if}
-	</div>
-
-	<!-- Progress Bar with Navigation -->
 	<div class="relative">
-		<!-- Step Icons -->
 		{#if viewMode === 'Large'}
-			<div class="relative h-2 bg-gray-300 rounded-full mt-5">
+			<!-- Step Icons -->
+			<div
+				class="relative bg-gray-300 my-5 rounded-full h-2 mx-auto"
+				style="width: calc(100% - 2 * (100% / {limitedSteps.length} / 2));"
+			>
 				<div
 					class="absolute top-0 left-0 h-2 bg-green-100 rounded-full transition-all duration-300"
 					style="width: {progress}%;"
 				></div>
 			</div>
-			<div class="absolute top-2 transform -translate-y-1/2 w-full flex justify-between">
+
+			<!-- Step Icons and Labels -->
+			<div class="absolute top-2 left-0 transform -translate-y-1/2 w-full flex justify-between">
 				{#each limitedSteps as { step, icon: Icon }, index}
-					<button
-						class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
-						class:bg-green-200={index + 1 === currentStep}
-						class:bg-green-100={index + 1 < currentStep}
-						class:bg-gray-300={index + 1 > currentStep}
-						tabindex="0"
-						aria-label={`Navigate to step ${index + 1}`}
-						onclick={() => {
-							const direction = index + 1 < currentStep ? 'left' : 'right';
-							navigateToStep(index, direction);
-						}}
+					<div
+						class="flex flex-col items-center"
+						style="width: calc(100% / {limitedSteps.length});"
 					>
-						<img src={Icon} alt={step} class="size-5" />
-					</button>
+						<button
+							class="relative w-8 h-8 rounded-full flex items-center justify-center cursor-pointer"
+							class:bg-green-200={index + 1 === currentStep}
+							class:bg-green-100={index + 1 < currentStep}
+							class:bg-gray-300={index + 1 > currentStep}
+							tabindex="0"
+							aria-label={`Navigate to step ${index + 1}`}
+							onclick={() => {
+								const direction = index + 1 < currentStep ? 'left' : 'right';
+								navigateToStep(index, direction);
+							}}
+						>
+							<img src={Icon} alt={step} class="size-5" />
+						</button>
+					</div>
 				{/each}
 			</div>
 		{:else}
@@ -203,7 +180,6 @@
 			</div>
 		{/if}
 	</div>
-
 	<!-- Steps Text -->
 	<div class="flex justify-between mt-6">
 		{#if viewMode === 'Large'}

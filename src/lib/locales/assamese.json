@@ -1,7 +1,7 @@
 {
 	"global_settings": "গ্ল’বেল ছেটিংছ",
 	"invoice_settings": "চালান ছেটিংছ",
-	"applies_across_account": "এইটো আপোনাৰ FarmMate একাউণ্টত প্ৰযোজ্য।",
+	"applies_across_account": "এইটো আপোনাৰ Graminate একাউণ্টত প্ৰযোজ্য।",
 	"profile_image": "প্ৰ’ফাইল ছবি",
 	"upload": "আপলোড কৰক",
 	"first_name": "প্ৰথম নাম",
@@ -25,8 +25,8 @@
 	"general": "সাধাৰণ",
 	"profile": "প্ৰ’ফাইল",
 	"weather": "বতৰ",
-	"milestones": "মাইলষ্টোনছ",
 	"invoice": "চালান",
+	"invoices": "চালান",
 	"calendar": "কেলেণ্ডাৰ",
 	"tasks": "কাৰ্য্যসমূহ",
 	"back": "ঘূৰি অহা",
@@ -49,7 +49,6 @@
 	"tickets": "টিকট",
 	"finder": "ফাইণ্ডাৰ",
 	"shop": "দোকান",
-	"invoices": "ইনভইচ",
 	"commodity_prices": "পণ্যৰ মূল্য",
 	"weather_monitor": "বতৰ মনিটৰ",
 	"employees": "কৰ্মচাৰী",
@@ -62,6 +61,13 @@
 	"harvest": "ফলন",
 	"view_large": "ডাঙৰ",
 	"view_small": "সৰু",
+	"success": "সফল",
+	"celsius": "চেলছিয়াছ",
+	"temperature": {
+		"celsius": "চেলছিয়াছ",
+		"fahrenheit": "ফাৰেনহাইট"
+	},
+	"weather_settings_saved": "বতৰৰ ছেটিংছ সংৰক্ষণ কৰা হৈছে",
 	"navbar": {
 		"profile_preferences": "প্ৰফাইল আৰু পছন্দসমূহ",
 		"share_feedback": "নেভিগেচনৰ প্ৰতিক্ৰিয়া শ্বেয়াৰ কৰক",

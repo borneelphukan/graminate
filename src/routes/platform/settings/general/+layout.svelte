@@ -2,8 +2,8 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { derived } from 'svelte/store';
-	import { t } from '../../../../lib/i18n';
-	import NavPanel from '../../../../components/layout/NavPanel.svelte';
+	import { t } from '@lib/i18n';
+	import NavPanel from '@layout/NavPanel.svelte';
 	import { locale } from 'svelte-i18n';
 
 	const navButtons = [
@@ -23,13 +23,13 @@
 </script>
 
 <svelte:head>
-	<title>FarmMate ERP - Settings</title>
+	<title>Graminate ERP - Settings</title>
 </svelte:head>
 
 <div class="flex min-h-screen">
 	<main class="flex-1 px-4">
 		{#if $locale}
-			<div class="pb-4 font-bold text-lg">{$t('general')}</div>
+			<div class="pb-4 font-bold text-lg text-dark dark:text-light">{$t('general')}</div>
 
 			<NavPanel
 				buttons={navButtons}

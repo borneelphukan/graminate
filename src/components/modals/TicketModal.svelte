@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import Button from '../ui/Button.svelte';
-	import TextField from '../ui/TextField.svelte';
+	import Button from '@ui/Button.svelte';
+	import TextField from '@ui/TextField.svelte';
 
 	export let isOpen: boolean = false;
 	export const columnName: string = '';

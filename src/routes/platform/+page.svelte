@@ -1,24 +1,20 @@
 <script lang="ts">
-	import WeatherCard from '../../components/cards/WeatherCard.svelte';
-	import ProgressCard from '../../components/cards/ProgressCard.svelte';
-	import StatusCard from '../../components/cards/StatusCard.svelte';
-	import Calendar from '../../components/ui/Calendar.svelte';
-	import Loader from '../../components/ui/Loader.svelte';
+	import WeatherCard from '@cards/WeatherCard.svelte';
+	import ProgressCard from '@cards/ProgressCard.svelte';
+	import StatusCard from '@cards/StatusCard.svelte';
+	import Calendar from '@ui/Calendar.svelte';
+	import Loader from '@ui/Loader.svelte';
 	import { onMount } from 'svelte';
-	import { t } from '../../lib/i18n';
+	import { temperatureScale } from '@lib/stores/settings';
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
 	let locationServiceEnabled = true;
 	let isLoading = true;
 
-	const steps = [
-		'Plant Preparation',
-		'Soil Preparation',
-		'Tea Planting',
-		'Routine Maintenance',
-		'Harvest'
-	];
+	$: fahrenheit = $temperatureScale === 'Fahrenheit';
+
+	const steps = ['Procurement', 'Preparation', 'Farming', 'Recurring Cost', 'Harvest'];
 
 	let currentStep: number = 1;
 
@@ -80,26 +76,17 @@
 		<div class="flex gap-4 px-6 items-start">
 			{#if locationServiceEnabled && location}
 				<div class="flex-shrink-0 w-1/3">
-					<WeatherCard lat={location.lat} lon={location.lon} />
+					<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
 				</div>
 			{/if}
 
 			<div class="flex-grow">
-				<h2 class="text-xl font-semibold text-dark dark:text-light mb-2">Farming Milestones</h2>
+				<h2 class="text-xl font-semibold text-dark dark:text-light mb-2">Budget Tracker</h2>
 				<ProgressCard {steps} {currentStep} onStepChange={({ step }) => (currentStep = step)} />
 				<div class="mt-6 grid grid-cols-2 gap-6">
 					{#if !error}
 						<div>
-							<StatusCard
-								{steps}
-								{currentStep}
-								lastWatered="01.12.2024"
-								nextWateringDate="11.12.2024"
-								lastPesticideDone="02.12.2024"
-								nextPesticideDate="07.12.2024"
-								lastFertilizingDone="03.12.2024"
-								nextManuringDate="10.12.2024"
-							/>
+							<StatusCard {steps} {currentStep} />
 						</div>
 					{/if}
 					<div>

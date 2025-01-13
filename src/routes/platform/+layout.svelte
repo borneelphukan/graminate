@@ -18,7 +18,7 @@
 </script>
 
 <svelte:head>
-	<title>FarmMate ERP</title>
+	<title>Graminate ERP</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-light dark:bg-dark text-gray-800 dark:text-gray-100">

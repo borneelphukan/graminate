@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
-	import TextField from '../ui/TextField.svelte';
-	import DropdownLarge from '../ui/Dropdown/DropdownLarge.svelte';
-	import Button from '../ui/Button.svelte';
+	import TextField from '@ui/TextField.svelte';
+	import DropdownLarge from '@ui/Dropdown/DropdownLarge.svelte';
+	import Button from '@ui/Button.svelte';
+	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
 
 	export let view: string;
 	export let onClose: () => void;
@@ -81,12 +82,12 @@
 
 <!-- Sidebar Container -->
 <div
-	class="fixed top-0 right-0 h-full w-full md:w-1/3 bg-white shadow-lg z-50"
+	class="fixed top-0 right-0 h-full w-full md:w-1/3 bg-light dark:bg-dark shadow-lg z-50"
 	transition:fly={{ x: 500, duration: 300 }}
 >
 	<div class="p-6 flex flex-col h-full">
 		<div class="flex justify-between items-center mb-4">
-			<h2 class="text-xl font-semibold text-gray-700">
+			<h2 class="text-xl font-semibold text-dark dark:text-light">
 				Create {view.charAt(0).toUpperCase() + view.slice(1)}
 			</h2>
 			<button class="text-gray-400 hover:text-gray-600" on:click={handleClose}>✕</button>
