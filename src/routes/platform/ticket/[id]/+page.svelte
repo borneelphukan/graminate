@@ -53,7 +53,7 @@
 		{
 			id: '3',
 			title: 'DONE',
-			tasks: [{ id: 'Task-3', title: 'Make landing page for FarmMate', type: '' }]
+			tasks: [{ id: 'Task-3', title: 'Make landing page for Graminate', type: '' }]
 		}
 	];
 

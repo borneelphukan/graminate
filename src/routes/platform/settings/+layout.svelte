@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>FarmMate Settings</title>
+	<title>Graminate Settings</title>
 </svelte:head>
 
 <div class="container mx-auto p-3">

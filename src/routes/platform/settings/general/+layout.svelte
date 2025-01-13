@@ -23,7 +23,7 @@
 </script>
 
 <svelte:head>
-	<title>FarmMate ERP - Settings</title>
+	<title>Graminate ERP - Settings</title>
 </svelte:head>
 
 <div class="flex min-h-screen">
