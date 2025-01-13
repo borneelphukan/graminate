@@ -1,3 +1,3 @@
-# FarmMate ERP
+# Graminate ERP
 
-Revolutionizing how your local farming business operates. Drive growth and revenues, with FarmMate ERP.
+Revolutionizing your local farming business operations. Drive growth and revenues, with Graminate ERP.
