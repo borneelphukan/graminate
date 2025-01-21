@@ -6,6 +6,9 @@
 	import Loader from '@ui/Loader.svelte';
 	import { onMount } from 'svelte';
 	import { temperatureScale } from '@lib/stores/settings';
+	import { page } from '$app/stores';
+
+	let userId = $page.params.user_id;
 
 	let location: { lat: number; lon: number } | null = null;
 	let error: string | null = null;
@@ -64,7 +67,7 @@
 
 <main class="min-h-screen text-white relative">
 	<header class="px-6 py-4">
-		<h1 class="text-3xl font-bold text-dark dark:text-light">Dashboard</h1>
+		<h1 class="text-3xl font-bold text-dark dark:text-light">Welcome User {userId}</h1>
 		<hr class="mt-4 border-gray-600" />
 	</header>
 

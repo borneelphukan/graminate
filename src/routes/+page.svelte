@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { writable } from 'svelte/store';
 	import Swal from 'sweetalert2'; // Import SweetAlert2
 	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
@@ -7,6 +9,10 @@
 	import Button from '@ui/Button.svelte';
 
 	let isLogin = writable(true);
+	let loginData = {
+		email: '',
+		password: ''
+	};
 	let registerData = {
 		first_name: '',
 		last_name: '',
@@ -26,6 +32,7 @@
 		password: false
 	};
 
+	let loginErrorMessage = '';
 	let emailErrorMessage = 'This cannot be left blank';
 	let phoneErrorMessage = 'This cannot be left blank';
 	let passwordErrorMessage = '';
@@ -47,6 +54,59 @@
 	const validatePhoneNumber = (phone: string): boolean => {
 		const phoneRegex = /^\+?[1-9]\d{1,14}$/;
 		return phoneRegex.test(phone);
+	};
+
+	const handleLogin = async (event: Event) => {
+		event.preventDefault();
+
+		loginErrorMessage = '';
+
+		if (!loginData.email.trim() || !loginData.password.trim()) {
+			loginErrorMessage = 'Email and password are required.';
+			return;
+		}
+
+		try {
+			const response = await fetch('http://localhost:3000/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(loginData),
+				credentials: 'include' // Ensure cookies are sent with the request
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				Swal.fire({
+					title: 'Login Failed',
+					text: errorData.error || 'Invalid email or password.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+				return;
+			}
+
+			const responseData = await response.json();
+
+			Swal.fire({
+				title: 'Login Successful!',
+				text: 'Welcome back!',
+				icon: 'success',
+				confirmButtonText: 'OK'
+			});
+
+			// Navigate to /platform/[user_id]
+			goto(`/platform/${responseData.user.user_id}`);
+		} catch (error) {
+			console.error('Error during login:', error);
+			Swal.fire({
+				title: 'Error',
+				text: 'An error occurred. Please try again later.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+		}
 	};
 
 	const handleRegister = async (event: Event) => {
@@ -170,13 +230,13 @@
 		<div class="bg-white shadow-md rounded px-8 py-6 w-11/12 max-w-md">
 			{#if $isLogin}
 				<h2 class="text-2xl font-semibold mb-6 text-center">Login</h2>
-				<form>
+				<form on:submit={handleLogin}>
 					<div class="mb-4">
 						<TextField
 							label="Email"
 							placeholder="Enter your email"
 							type="text"
-							value=""
+							bind:value={loginData.email}
 							width="large"
 						/>
 					</div>
@@ -186,12 +246,15 @@
 							placeholder="Enter your password"
 							password={true}
 							type="password"
-							value=""
+							bind:value={loginData.password}
 							width="large"
 						/>
 					</div>
+					{#if loginErrorMessage}
+						<p class="text-red-500 text-sm mb-4">{loginErrorMessage}</p>
+					{/if}
 					<div class="mx-auto flex flex-row justify-center">
-						<Button text="Login" width="large" style="primary" />
+						<Button text="Login" width="large" style="primary" type="submit" />
 					</div>
 				</form>
 				<p class="text-center mt-4 text-sm text-gray-600">
