@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Navbar from '../../components/layout/Navbar.svelte';
+	import Navbar from '../../components/layout/Navbars/Navbar.svelte';
 	import Sidebar from '../../components/layout/Sidebar.svelte';
 	import '../../app.css';
 	import { onMount } from 'svelte';

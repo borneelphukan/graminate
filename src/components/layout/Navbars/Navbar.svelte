@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import NotificationBar from './NotificationBar.svelte';
+	import NotificationBar from '../NotificationBar.svelte';
 	import ThemeSwitch from '@ui/ThemeSwitch.svelte';
 	import { t } from '@lib/i18n';
 	export let imageSrc: string = '/images/logo.png';

@@ -139,7 +139,7 @@
 			const cityComponent = data.results[0]?.address_components.find((component: any) =>
 				component.types.includes('locality')
 			);
-			return cityComponent?.long_name || 'Unknown city';
+			return cityComponent?.long_name || 'Your Location';
 		} catch (err: any) {
 			console.error(err.message);
 			return 'Unknown city';
