@@ -1,20 +1,160 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
+	import Swal from 'sweetalert2'; // Import SweetAlert2
 	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
 	import Footer from '@layout/Footer.svelte';
 	import TextField from '@ui/TextField.svelte';
 	import Button from '@ui/Button.svelte';
 
 	let isLogin = writable(true);
+	let registerData = {
+		first_name: '',
+		last_name: '',
+		email: '',
+		phone_number: '',
+		business_name: '',
+		date_of_birth: '',
+		password: ''
+	};
+
+	let fieldErrors = {
+		first_name: false,
+		last_name: false,
+		email: false,
+		phone_number: false,
+		date_of_birth: false,
+		password: false
+	};
+
+	let emailErrorMessage = 'This cannot be left blank';
+	let phoneErrorMessage = 'This cannot be left blank';
+	let passwordErrorMessage = '';
 
 	const toggleForm = () => {
 		isLogin.update((value) => !value);
+	};
+
+	const validatePassword = (password: string): boolean => {
+		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+		return passwordRegex.test(password);
+	};
+
+	const validateEmail = (email: string): boolean => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
+
+	const validatePhoneNumber = (phone: string): boolean => {
+		const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+		return phoneRegex.test(phone);
+	};
+
+	const handleRegister = async (event: Event) => {
+		event.preventDefault();
+
+		// Reset field errors
+		fieldErrors = {
+			first_name: false,
+			last_name: false,
+			email: false,
+			phone_number: false,
+			date_of_birth: false,
+			password: false
+		};
+		emailErrorMessage = 'This cannot be left blank';
+		phoneErrorMessage = 'This cannot be left blank';
+		passwordErrorMessage = '';
+
+		// Validate form fields
+		let hasError = false;
+
+		if (!registerData.first_name.trim()) {
+			fieldErrors.first_name = true;
+			hasError = true;
+		}
+		if (!registerData.last_name.trim()) {
+			fieldErrors.last_name = true;
+			hasError = true;
+		}
+		if (!validateEmail(registerData.email)) {
+			fieldErrors.email = true;
+			emailErrorMessage = 'Enter a valid email ID';
+			hasError = true;
+		}
+		if (!validatePhoneNumber(registerData.phone_number)) {
+			fieldErrors.phone_number = true;
+			phoneErrorMessage = 'Enter valid phone number';
+			hasError = true;
+		}
+		if (!registerData.date_of_birth.trim()) {
+			fieldErrors.date_of_birth = true;
+			hasError = true;
+		}
+		if (!validatePassword(registerData.password)) {
+			fieldErrors.password = true;
+			passwordErrorMessage =
+				'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.';
+			hasError = true;
+		}
+
+		if (hasError) {
+			return;
+		}
+
+		try {
+			const response = await fetch('http://localhost:3000/api/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(registerData)
+			});
+
+			if (response.status === 409) {
+				Swal.fire({
+					title: 'User already exists',
+					text: 'Please use a different email or phone number.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+				return;
+			}
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				console.error('Error:', errorData);
+				Swal.fire({
+					title: 'Error',
+					text: errorData.message || 'Something went wrong.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+				return;
+			}
+
+			Swal.fire({
+				title: 'Registration Successful!',
+				text: 'You can now log in.',
+				icon: 'success',
+				confirmButtonText: 'OK'
+			});
+			toggleForm();
+		} catch (error) {
+			console.error('Error during registration:', error);
+			Swal.fire({
+				title: 'Error',
+				text: 'An error occurred. Please try again later.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+		}
 	};
 </script>
 
 <svelte:head>
 	<title>Welcome to Graminate: Manage your Agricultural Budget</title>
 </svelte:head>
+
 <HomeNavbar />
 <div class="min-h-screen flex flex-col md:flex-row">
 	<!-- Left Image Section -->
@@ -62,13 +202,13 @@
 				</p>
 			{:else}
 				<h2 class="text-2xl font-semibold mb-6 text-center">Sign Up</h2>
-				<form>
+				<form on:submit={handleRegister}>
 					<div class="mb-4">
 						<TextField
 							label="First Name"
 							placeholder="Enter your First Name"
-							type="text"
-							value=""
+							type={fieldErrors.first_name ? 'error' : ''}
+							bind:value={registerData.first_name}
 							width="large"
 						/>
 					</div>
@@ -76,21 +216,47 @@
 						<TextField
 							label="Last Name"
 							placeholder="Enter your Last Name"
-							type="text"
-							value=""
+							type={fieldErrors.last_name ? 'error' : ''}
+							bind:value={registerData.last_name}
 							width="large"
 						/>
 					</div>
 					<div class="mb-4">
-						<TextField label="Date of Birth" type="text" value="" width="large" calendar />
+						<TextField
+							label="Email"
+							placeholder="Enter your Email"
+							type={fieldErrors.email ? 'error' : ''}
+							bind:value={registerData.email}
+							error_message={emailErrorMessage}
+							width="large"
+						/>
+					</div>
+					<div class="mb-4">
+						<TextField
+							label="Phone Number"
+							placeholder="Enter your Phone Number"
+							type={fieldErrors.phone_number ? 'error' : ''}
+							bind:value={registerData.phone_number}
+							error_message={phoneErrorMessage}
+							width="large"
+						/>
 					</div>
 					<div class="mb-4">
 						<TextField
 							label="Business Name (optional)"
 							placeholder="Enter name of your Farm Business"
-							type="text"
-							value=""
+							bind:value={registerData.business_name}
 							width="large"
+						/>
+					</div>
+					<div class="mb-4">
+						<TextField
+							label="Date of Birth"
+							placeholder="YYYY-MM-DD"
+							type={fieldErrors.date_of_birth ? 'error' : ''}
+							bind:value={registerData.date_of_birth}
+							width="large"
+							calendar
 						/>
 					</div>
 					<div class="mb-4">
@@ -98,22 +264,16 @@
 							label="Password"
 							placeholder="Enter your password"
 							password={true}
-							type="password"
-							value=""
+							bind:value={registerData.password}
 							width="large"
+							type={fieldErrors.password ? 'error' : ''}
+							error_message={passwordErrorMessage}
 						/>
 					</div>
-					<div class="mb-6">
-						<TextField
-							label="Repeat Password"
-							placeholder="Repeat your password"
-							password={true}
-							type="password"
-							value=""
-							width="large"
-						/>
+
+					<div class="mx-auto flex flex-row justify-center">
+						<Button text="Sign Up" width="large" style="primary" type="submit" />
 					</div>
-					<Button text="Sign Up" width="large" style="primary" />
 				</form>
 				<p class="text-center mt-4 text-sm text-gray-600">
 					Already have an account?{' '}

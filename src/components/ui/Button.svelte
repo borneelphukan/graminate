@@ -5,6 +5,7 @@
 	export let isDisabled: boolean = false;
 	export let width: 'small' | 'medium' | 'large' | undefined = undefined;
 	export let add: boolean = false;
+	export let type: 'button' | 'submit' | 'reset' = 'button';
 
 	const getWidth = (): string => {
 		switch (width) {
@@ -15,7 +16,7 @@
 			case 'large':
 				return 'w-full';
 			default:
-				return ''; // Default empty class for undefined
+				return '';
 		}
 	};
 
@@ -40,24 +41,22 @@
 
 	$: buttonClass = `${getButtonClass()} py-1 px-2 rounded rounded-md ${getWidth()}`;
 
-	// Define SVG path for arrows based on the direction
 	$: arrowIcon =
 		arrow === 'up'
-			? 'M5 15l5-5 5 5' // Up arrow (inverted V)
+			? 'M5 15l5-5 5 5'
 			: arrow === 'down'
-				? 'M5 11l5 5 5-5' // Down arrow (V)
+				? 'M5 11l5 5 5-5'
 				: arrow === 'left'
-					? 'M15 19l-7-7 7-7' // Left arrow (<)
+					? 'M15 19l-7-7 7-7'
 					: arrow === 'right'
-						? 'M9 5l7 7-7 7' // Right arrow (>)
+						? 'M9 5l7 7-7 7'
 						: '';
 
-	// Add icon for "Add" functionality
 	$: addIcon = add ? 'M12 4.5v15m7.5-7.5h-15' : '';
 </script>
 
 <!-- Button HTML -->
-<button class="{buttonClass} {isDisabled} flex items-center" disabled={isDisabled} on:click>
+<button {type} class="{buttonClass} {isDisabled} flex items-center" disabled={isDisabled} on:click>
 	{#if add}
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
