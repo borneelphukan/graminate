@@ -6,6 +6,9 @@
 	import TextField from '@ui/TextField.svelte';
 	import { writable } from 'svelte/store';
 	import jsPDF from 'jspdf';
+	import { page } from '$app/stores';
+
+	let userId = $page.params.user_id;
 
 	function goBack() {
 		history.back();
