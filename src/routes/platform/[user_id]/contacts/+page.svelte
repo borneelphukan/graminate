@@ -7,6 +7,8 @@
 	import Table from '@tables/Table.svelte';
 	import { goto } from '$app/navigation';
 
+	let userId = $page.params.user_id;
+
 	const isSidebarOpen = writable(false);
 
 	function openSidebar() {
@@ -192,7 +194,7 @@
 			const crop = row[2];
 			const budget = row[4];
 			goto(
-				`/platform/contacts/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+				`/platform/${userId}/contacts/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
 			);
 		} else if (currentView === 'companies') {
 			const id = row[0];
@@ -200,7 +202,7 @@
 			const crop = row[2];
 			const budget = row[4];
 			goto(
-				`/platform/company/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+				`/platform/${userId}/company/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
 			);
 		}
 		if (currentView === 'deals') {
@@ -209,7 +211,7 @@
 			const crop = row[2];
 			const budget = row[4];
 			goto(
-				`/platform/deals/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+				`/platform/${userId}/deals/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
 			);
 		} else if (currentView === 'invoices') {
 			const id = row[0];
@@ -219,7 +221,7 @@
 			const due = row[5];
 			const status = row[6];
 			goto(
-				`/platform/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&billTo=${encodeURIComponent(billTo)}&amount=${encodeURIComponent(amount)}&due=${encodeURIComponent(due)}&status=${encodeURIComponent(status)}`
+				`/platform/${userId}/invoice/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&billTo=${encodeURIComponent(billTo)}&amount=${encodeURIComponent(amount)}&due=${encodeURIComponent(due)}&status=${encodeURIComponent(status)}`
 			);
 		} else if (currentView === 'tickets') {
 			const id = row[0];
@@ -227,7 +229,7 @@
 			const crop = row[2];
 			const budget = row[4];
 			goto(
-				`/platform/ticket/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
+				`/platform/${userId}/ticket/${encodeURIComponent(id)}?title=${encodeURIComponent(title)}&crop=${encodeURIComponent(crop)}&budget=${encodeURIComponent(budget)}`
 			);
 		}
 	}

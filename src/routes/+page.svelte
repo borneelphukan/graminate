@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 
 	import { writable } from 'svelte/store';
-	import Swal from 'sweetalert2'; // Import SweetAlert2
+	import Swal from 'sweetalert2';
 	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
 	import Footer from '@layout/Footer.svelte';
 	import TextField from '@ui/TextField.svelte';

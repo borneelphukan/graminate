@@ -16,16 +16,18 @@
 	import { locale } from 'svelte-i18n';
 
 	export let isOpen: boolean;
+	export let userId: string | undefined;
 
 	let isCollapsed = false;
 	let expandedSection: string | null = null;
 
+	// Define sections with dynamic user_id routes
 	const sections = [
 		{
 			icon: faHome,
 			label: 'dashboard',
 			section: 'Dashboard',
-			route: '/platform',
+			route: userId ? `/platform/${userId}` : '/platform',
 			subItems: []
 		},
 		{
@@ -33,18 +35,41 @@
 			label: 'crm',
 			section: 'CRM',
 			subItems: [
-				{ label: 'contacts', route: '/platform/contacts' },
-				{ label: 'companies', route: '/platform/contacts?view=companies' },
-				{ label: 'deals', route: '/platform/contacts?view=deals' },
-				{ label: 'invoices', route: '/platform/contacts?view=invoices' },
-				{ label: 'tickets', route: '/platform/contacts?view=tickets' }
+				{
+					label: 'contacts',
+					route: userId ? `/platform/${userId}/contacts` : `/platform/${userId}/contacts`
+				},
+				{
+					label: 'companies',
+					route: userId
+						? `/platform/${userId}/contacts?view=companies`
+						: `/platform/${userId}/contacts?view=companies`
+				},
+				{
+					label: 'deals',
+					route: userId
+						? `/platform/${userId}/contacts?view=deals`
+						: `/platform/${userId}contacts?view=deals`
+				},
+				{
+					label: 'invoices',
+					route: userId
+						? `/platform/${userId}/contacts?view=invoices`
+						: `/platform/${userId}contacts?view=invoices`
+				},
+				{
+					label: 'tickets',
+					route: userId
+						? `/platform/${userId}/contacts?view=tickets`
+						: `/platform/${userId}contacts?view=tickets`
+				}
 			]
 		},
 		{
 			icon: faChartPie,
 			label: 'finder',
 			section: 'Finder',
-			route: '/platform/finder',
+			route: userId ? `/platform/${userId}/finder` : '/platform/finder',
 			subItems: []
 		},
 		{
@@ -57,21 +82,23 @@
 			icon: faChartLine,
 			label: 'commodity_prices',
 			section: 'Commodity Prices',
-			route: '/platform/commodity',
+			route: userId ? `/platform/${userId}/commodity` : '/platform/commodity',
 			subItems: []
 		},
 		{
 			icon: faCloud,
 			label: 'weather_monitor',
 			section: 'Weather Monitor',
-			route: '/platform/weather',
+			route: userId ? `/platform/${userId}/weather` : '/platform/weather',
 			subItems: []
 		},
 		{
 			icon: faUsers,
 			label: 'employees',
 			section: 'Employees',
-			subItems: [{ label: 'meetings', route: '/platform/meetings' }]
+			subItems: [
+				{ label: 'meetings', route: userId ? `/platform/${userId}/meetings` : '/platform/meetings' }
+			]
 		},
 		{
 			icon: faPlug,
