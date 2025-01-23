@@ -71,7 +71,6 @@
 				const result = await response.json();
 
 				if (response.ok) {
-					alert(result.message);
 					contactValues.set({
 						firstName: '',
 						lastName: '',
@@ -80,10 +79,13 @@
 						type: '',
 						address: ''
 					});
+					handleClose();
+					location.reload();
 				} else {
 					alert(result.error || 'Failed to add contact');
 				}
 			} catch (error) {
+				console.error('Error adding contact:', error);
 				alert('An unexpected error occurred');
 			}
 		})();
