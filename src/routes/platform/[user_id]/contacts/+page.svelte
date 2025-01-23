@@ -6,6 +6,7 @@
 	import FormElement from '@forms/FormElement.svelte';
 	import Table from '@tables/Table.svelte';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	let userId = $page.params.user_id;
 
@@ -84,97 +85,98 @@
 	const paginationItems: string[] = ['25 per page', '50 per page', '100 per page'];
 
 	const searchQuery: Writable<string> = writable('');
+	const fetchedData: Writable<any[]> = writable([]);
 
-	const data: Readable<{ columns: string[]; rows: any[][] }> = derived(view, ($view) => {
-		switch ($view) {
-			case 'contacts':
-				return {
-					columns: [
-						'First Name',
-						'Last Name',
-						'Email',
-						'Phone Number',
-						'Type',
-						'Address',
-						'Created / Updated On'
-					],
-					rows: [
-						[
-							'John ',
-							'Doe',
-							'john.doe@example.com',
-							'+123456789',
-							'Customer',
-							'123 Main St',
-							'23-06-2024'
+	const data: Readable<{ columns: string[]; rows: any[][] }> = derived(
+		[fetchedData, view],
+		([$fetchedData, $view]) => {
+			switch ($view) {
+				case 'contacts':
+					return {
+						columns: [
+							'First Name',
+							'Last Name',
+							'Email',
+							'Phone Number',
+							'Type',
+							'Address',
+							'Created / Updated On'
 						],
-						[
-							'Jane',
-							'Smith',
-							'jane.smith@example.com',
-							'+987654321',
-							'Subscriber',
-							'456 Elm St',
-							'23-06-2024'
+						rows: $fetchedData.map((item) => [
+							item.first_name,
+							item.last_name,
+							item.email,
+							item.phone_number,
+							item.type,
+							item.address,
+							new Date(item.created_at).toLocaleString()
+						])
+					};
+
+				case 'companies':
+					return {
+						columns: ['Company Name', 'Owner Name', 'Email', 'Phone Number', 'Address', 'Type'],
+						rows: [
+							[
+								'TechCorp',
+								'Alice Brown',
+								'contact@techcorp.com',
+								'+1122334455',
+								'789 Oak St',
+								'Software'
+							],
+							[
+								'Foodies Inc.',
+								'Bob Green',
+								'info@foodies.com',
+								'+9988776655',
+								'321 Pine St',
+								'Food'
+							]
 						]
-					]
-				};
-			case 'companies':
-				return {
-					columns: ['Company Name', 'Owner Name', 'Email', 'Phone Number', 'Address', 'Type'],
-					rows: [
-						[
-							'TechCorp',
-							'Alice Brown',
-							'contact@techcorp.com',
-							'+1122334455',
-							'789 Oak St',
-							'Software'
+					};
+				case 'deals':
+					return {
+						columns: ['Deal Name', 'Owner', 'Amount', 'Stage', 'Close Date'],
+						rows: [['Big Tech Deal', 'Alice', '$500,000', 'Negotiation', '2024-12-01']]
+					};
+				case 'invoices':
+					return {
+						columns: [
+							'ID',
+							'Title',
+							'Bill To',
+							'Date Created',
+							'Amount Paid',
+							'Amount Due',
+							'Due Date',
+							'Status'
 						],
-						['Foodies Inc.', 'Bob Green', 'info@foodies.com', '+9988776655', '321 Pine St', 'Food']
-					]
-				};
-			case 'deals':
-				return {
-					columns: ['Deal Name', 'Owner', 'Amount', 'Stage', 'Close Date'],
-					rows: [['Big Tech Deal', 'Alice', '$500,000', 'Negotiation', '2024-12-01']]
-				};
-			case 'invoices':
-				return {
-					columns: [
-						'ID',
-						'Title',
-						'Bill To',
-						'Date Created',
-						'Amount Paid',
-						'Amount Due',
-						'Due Date',
-						'Status'
-					],
-					rows: [
-						[
-							'001',
-							'Fertilizer Subscription',
-							'Jensen Fertilizers',
-							'2024-11-01',
-							'$200',
-							'$50',
-							'2024-12-01',
-							'Unpaid'
+						rows: [
+							[
+								'001',
+								'Fertilizer Subscription',
+								'Jensen Fertilizers',
+								'2024-11-01',
+								'$200',
+								'$50',
+								'2024-12-01',
+								'Unpaid'
+							]
 						]
-					]
-				};
-			case 'tickets':
-				return {
-					columns: ['ID', 'Title', 'Crop', 'Status', 'Budget', 'Created On', 'End Date'],
-					rows: [
-						['001', 'Summer Farm', 'Green Tea', 'Active', '40,000', '2024-11-01', '2025-07-01']
-					]
-				};
-			default:
-				return { columns: [], rows: [] };
+					};
+				case 'tickets':
+					return {
+						columns: ['ID', 'Title', 'Crop', 'Status', 'Budget', 'Created On', 'End Date'],
+						rows: [
+							['001', 'Summer Farm', 'Green Tea', 'Active', '40,000', '2024-11-01', '2025-07-01']
+						]
+					};
+				default:
+					return { columns: [], rows: [] };
+			}
 		}
-	});
+	);
 
 	const filteredRows: Readable<any[][]> = derived([data, searchQuery], ([$data, $searchQuery]) => {
 		if (!$searchQuery) return $data.rows;
@@ -257,6 +259,28 @@
 			);
 		}
 	}
+
+	onMount(async () => {
+		try {
+			const response = await fetch(`http://localhost:3000/api/contacts/fetch/${userId}`);
+			if (response.ok) {
+				const json = await response.json();
+				console.log('API Response:', json); // Debug log
+				if (Array.isArray(json.contacts)) {
+					fetchedData.set(json.contacts);
+				} else {
+					console.error('Invalid data format:', json);
+					fetchedData.set([]);
+				}
+			} else {
+				console.error('Failed to fetch contacts:', response.statusText);
+				fetchedData.set([]);
+			}
+		} catch (error) {
+			console.error('Error fetching contacts:', error);
+			fetchedData.set([]);
+		}
+	});
 </script>
 
 <div class="flex justify-between items-center dark:bg-dark relative mb-4">
