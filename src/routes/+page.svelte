@@ -208,7 +208,7 @@
 </svelte:head>
 
 <HomeNavbar />
-<div class="min-h-screen flex flex-col md:flex-row">
+<div class="min-h-screen dark:bg-gray-900 flex flex-col md:flex-row">
 	<!-- Left Image Section -->
 	<div
 		class="hidden md:block md:w-3/4 h-screen bg-cover bg-center"
@@ -219,9 +219,9 @@
 	<div
 		class="w-full md:w-1/2 flex items-center justify-center min-h-screen bg-cover bg-center md:bg-none"
 	>
-		<div class="bg-white shadow-md rounded px-8 py-6 w-11/12 max-w-md">
+		<div class="bg-white dark:bg-gray-800 shadow-md rounded px-8 py-6 w-11/12 max-w-md">
 			{#if $isLogin}
-				<h2 class="text-2xl font-semibold mb-6 text-center">Login</h2>
+				<h2 class="text-2xl font-semibold mb-6 text-center dark:text-light">Login</h2>
 				<form on:submit={handleLogin}>
 					<div class="mb-4">
 						<TextField
@@ -249,7 +249,7 @@
 						<Button text="Login" width="large" style="primary" type="submit" />
 					</div>
 				</form>
-				<p class="text-center mt-4 text-sm text-gray-600">
+				<p class="text-center mt-4 text-sm text-gray-600 dark:text-gray-300">
 					Don't have an account?{' '}
 					<button class="text-blue-500 hover:underline focus:outline-none" on:click={toggleForm}>
 						Sign Up
