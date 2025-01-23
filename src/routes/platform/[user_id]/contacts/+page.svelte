@@ -89,10 +89,34 @@
 		switch ($view) {
 			case 'contacts':
 				return {
-					columns: ['First Name', 'Last Name', 'Email', 'Phone Number', 'Type', 'Address'],
+					columns: [
+						'First Name',
+						'Last Name',
+						'Email',
+						'Phone Number',
+						'Type',
+						'Address',
+						'Created / Updated On'
+					],
 					rows: [
-						['John', 'Doe', 'john.doe@example.com', '+123456789', 'Customer', '123 Main St'],
-						['Jane', 'Smith', 'jane.smith@example.com', '+987654321', 'Subscriber', '456 Elm St']
+						[
+							'John ',
+							'Doe',
+							'john.doe@example.com',
+							'+123456789',
+							'Customer',
+							'123 Main St',
+							'23-06-2024'
+						],
+						[
+							'Jane',
+							'Smith',
+							'jane.smith@example.com',
+							'+987654321',
+							'Subscriber',
+							'456 Elm St',
+							'23-06-2024'
+						]
 					]
 				};
 			case 'companies':

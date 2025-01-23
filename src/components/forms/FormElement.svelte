@@ -1,23 +1,26 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
 	import TextField from '@ui/TextField.svelte';
 	import DropdownLarge from '@ui/Dropdown/DropdownLarge.svelte';
 	import Button from '@ui/Button.svelte';
-	import DropdownSmall from '@ui/Dropdown/DropdownSmall.svelte';
+	import TextArea from '@ui/TextArea.svelte';
 
 	export let view: string;
 	export let onClose: () => void;
 	export let onSubmit: (values: Record<string, string>) => void = () => {
 		console.warn('onSubmit is not provided');
 	};
+	let userId = $page.params.user_id;
 
 	let contactValues = writable<Record<string, string>>({
 		firstName: '',
 		lastName: '',
 		email: '',
 		phoneNumber: '',
-		type: ''
+		type: '',
+		address: ''
 	});
 
 	let companyValues = writable<Record<string, string>>({
@@ -39,25 +42,50 @@
 		state: ''
 	});
 
-	const contactTypes = [
-		'Mandi',
-		'Trader',
-		'Cooperative',
-		'Government',
-		'Exporter',
-		'Industry',
-		'Retailer',
-		'Vendor',
-		'NGO'
-	];
+	const contactTypes = ['Supplier', 'Distributor', 'Factory', 'Buyer', 'Client'];
 
 	const companyType = ['Supplier', 'Distributor', 'Factories', 'Buyer'];
 	const ticketStatus = ['Active', 'Completed', 'On Hold'];
 
 	function handleSubmitContacts() {
-		contactValues.subscribe((values) => {
-			onSubmit(values);
-			console.log('Contact Form Submitted:', values);
+		contactValues.subscribe(async (values) => {
+			const body = JSON.stringify({
+				user_id: userId,
+				first_name: values.firstName,
+				last_name: values.lastName,
+				email: values.email,
+				phone_number: values.phoneNumber,
+				type: values.type,
+				address: values.address
+			});
+
+			try {
+				const response = await fetch('http://localhost:3000/api/contacts/add', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					alert(result.message);
+					contactValues.set({
+						firstName: '',
+						lastName: '',
+						email: '',
+						phoneNumber: '',
+						type: '',
+						address: ''
+					});
+				} else {
+					alert(result.error || 'Failed to add contact');
+				}
+			} catch (error) {
+				alert('An unexpected error occurred');
+			}
 		})();
 	}
 
@@ -99,18 +127,22 @@
 				class="flex flex-col gap-4 w-full flex-grow"
 				on:submit|preventDefault={handleSubmitContacts}
 			>
-				<TextField
-					label="First Name"
-					placeholder="e.g. John"
-					type="text"
-					bind:value={$contactValues.firstName}
-				/>
-				<TextField
-					label="Last Name"
-					placeholder="e.g. Doe"
-					type="text"
-					bind:value={$contactValues.lastName}
-				/>
+				<div class="flex flex-row gap-2">
+					<TextField
+						label="First Name"
+						placeholder="e.g. John"
+						type="text"
+						bind:value={$contactValues.firstName}
+					/>
+
+					<TextField
+						label="Last Name"
+						placeholder="e.g. Doe"
+						type="text"
+						bind:value={$contactValues.lastName}
+					/>
+				</div>
+
 				<TextField
 					label="Email"
 					placeholder="e.g. john.doe@gmail.com"
@@ -129,6 +161,12 @@
 					type="form"
 					label="Type"
 					width="full"
+				/>
+				<TextArea
+					label="Client Address (Optional)"
+					placeholder="Address (optional)"
+					type="text"
+					bind:value={$contactValues.address}
 				/>
 				<div class="flex justify-end gap-4 mt-2">
 					<Button text="Create" style="primary" on:click={handleSubmitContacts} />
