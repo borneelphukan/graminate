@@ -103,6 +103,7 @@
 							'Created / Updated On'
 						],
 						rows: $fetchedData.map((item) => [
+							item.contact_id,
 							item.first_name,
 							item.last_name,
 							item.email,
@@ -265,7 +266,6 @@
 			const response = await fetch(`http://localhost:3000/api/contacts/fetch/${userId}`);
 			if (response.ok) {
 				const json = await response.json();
-				console.log('API Response:', json); // Debug log
 				if (Array.isArray(json.contacts)) {
 					fetchedData.set(json.contacts);
 				} else {
@@ -354,6 +354,7 @@
 	{searchQuery}
 	totalRecordCount={$totalRecordCount}
 	onRowClick={handleRowClick}
+	view={$view}
 />
 
 {#if $isSidebarOpen}

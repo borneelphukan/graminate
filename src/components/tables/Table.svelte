@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Swal from 'sweetalert2';
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
 	import SearchBar from '@ui/SearchBar.svelte';
 	import Button from '@ui/Button.svelte';
@@ -13,6 +14,7 @@
 	export let paginationItems: string[];
 	export let searchQuery: Writable<string>;
 	export let totalRecordCount: number;
+	export let view: string;
 
 	const sortOrder = writable<'asc' | 'desc'>('asc');
 	const sortColumn = writable<number | null>(null);
@@ -40,13 +42,6 @@
 		($selectedRows) => $selectedRows.filter((isSelected) => isSelected).length
 	);
 
-	function updateSelectAll() {
-		selectedRows.update(($selectedRows) => {
-			selectAll = $selectedRows.every((checked) => checked);
-			return $selectedRows;
-		});
-	}
-
 	function handleSelectAllChange() {
 		selectedRows.update(() => Array($paginatedRows.length).fill(selectAll));
 	}
@@ -63,8 +58,55 @@
 		}
 	}
 
-	function deleteSelectedRows() {
-		console.log('Selected rows deleted');
+	async function deleteSelectedRows() {
+		const rowsToDelete: number[] = [];
+
+		selectedRows.subscribe(($selectedRows) => {
+			$selectedRows.forEach((isSelected, index) => {
+				if (isSelected) {
+					const contactId = $paginatedRows[index][0];
+					rowsToDelete.push(contactId);
+				}
+			});
+		})();
+
+		if (rowsToDelete.length === 0) {
+			Swal.fire('No Selection', 'Please select at least one row to delete.', 'info');
+			return;
+		}
+
+		const result = await Swal.fire({
+			title: 'Are you sure?',
+			text: 'Do you want to delete the selected contacts? This action cannot be undone.',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, delete them!',
+			cancelButtonText: 'Cancel',
+			reverseButtons: true
+		});
+
+		if (result.isConfirmed) {
+			try {
+
+				await Promise.all(
+					rowsToDelete.map(async (contactId) => {
+						const response = await fetch(`http://localhost:3000/api/contacts/delete/${contactId}`, {
+							method: 'DELETE'
+						});
+
+						if (!response.ok) {
+							throw new Error(`Failed to delete contact with id ${contactId}`);
+						}
+					})
+				);
+
+				Swal.fire('Deleted!', 'The selected contacts have been deleted.', 'success');
+				location.reload();
+			} catch (error) {
+				console.error('Error deleting rows:', error);
+				Swal.fire('Error', 'Failed to delete selected rows. Please try again.', 'error');
+			}
+		}
 	}
 
 	function toggleSort(columnIndex: number) {
@@ -126,13 +168,15 @@
 					<span class="text-gray-200 dark:text-gray-400 text-sm font-medium">
 						{$selectedRowCount} selected
 					</span>
-					<a
-						href="/"
+					<button
 						class="ml-2 text-blue-200 text-sm hover:underline cursor-pointer"
-						onclick={deleteSelectedRows}
+						onclick={(event) => {
+							event.preventDefault();
+							deleteSelectedRows();
+						}}
 					>
 						Delete
-					</a>
+					</button>
 				</div>
 			{/if}
 		</div>
@@ -201,13 +245,24 @@
 								onchange={(event) => handleRowCheckboxChange(rowIndex, event)}
 							/>
 						</td>
-						{#each row as cell}
-							<td
-								class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
-							>
-								{cell}
-							</td>
-						{/each}
+						<!-- For deleting data from the table, there is a hidden column of ID. ID is required for removing data -->
+						{#if view === 'contacts'}
+							{#each row.slice(1) as cell}
+								<td
+									class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
+								>
+									{cell}
+								</td>
+							{/each}
+						{:else}
+							{#each row as cell}
+								<td
+									class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
+								>
+									{cell}
+								</td>
+							{/each}
+						{/if}
 					</tr>
 				{/each}
 			</tbody>
