@@ -6,11 +6,10 @@
 	import { onMount } from 'svelte';
 
 	let isOpen = false;
-	let userId: string | undefined;
+	let userId: string;
 
 	function handleSectionChange(event: CustomEvent<string>) {
 		const section = event.detail;
-		console.log(`Navigating to section: ${section}`);
 	}
 
 	onMount(() => {
@@ -28,7 +27,7 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-light dark:bg-dark text-gray-800 dark:text-gray-100">
-	<Navbar />
+	<Navbar {userId} />
 
 	<div class="flex flex-1">
 		<Sidebar {isOpen} {userId} on:onSectionChange={handleSectionChange} />

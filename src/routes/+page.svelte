@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-
 	import { writable } from 'svelte/store';
 	import Swal from 'sweetalert2';
 	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
@@ -88,13 +87,6 @@
 			}
 
 			const responseData = await response.json();
-
-			Swal.fire({
-				title: 'Login Successful!',
-				text: 'Welcome back!',
-				icon: 'success',
-				confirmButtonText: 'OK'
-			});
 
 			// Navigate to /platform/[user_id]
 			goto(`/platform/${responseData.user.user_id}`);
@@ -263,27 +255,31 @@
 						Sign Up
 					</button>
 				</p>
+				<!-- Registration Form -->
 			{:else}
 				<h2 class="text-2xl font-semibold mb-6 text-center">Sign Up</h2>
 				<form on:submit={handleRegister}>
-					<div class="mb-4">
-						<TextField
-							label="First Name"
-							placeholder="Enter your First Name"
-							type={fieldErrors.first_name ? 'error' : ''}
-							bind:value={registerData.first_name}
-							width="large"
-						/>
+					<div class="flex flex-row gap-2">
+						<div class="mb-4">
+							<TextField
+								label="First Name"
+								placeholder="Enter your First Name"
+								type={fieldErrors.first_name ? 'error' : ''}
+								bind:value={registerData.first_name}
+								width="large"
+							/>
+						</div>
+						<div class="mb-4">
+							<TextField
+								label="Last Name"
+								placeholder="Enter your Last Name"
+								type={fieldErrors.last_name ? 'error' : ''}
+								bind:value={registerData.last_name}
+								width="large"
+							/>
+						</div>
 					</div>
-					<div class="mb-4">
-						<TextField
-							label="Last Name"
-							placeholder="Enter your Last Name"
-							type={fieldErrors.last_name ? 'error' : ''}
-							bind:value={registerData.last_name}
-							width="large"
-						/>
-					</div>
+
 					<div class="mb-4">
 						<TextField
 							label="Email"

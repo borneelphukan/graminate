@@ -4,6 +4,47 @@
 	import ThemeSwitch from '@ui/ThemeSwitch.svelte';
 	import { t } from '@lib/i18n';
 	export let imageSrc: string = '/images/logo.png';
+	export let userId: string;
+
+	let user = {
+		name: '',
+		email: '',
+		business: '',
+		imageUrl: ''
+	};
+
+	async function fetchUserDetails() {
+		try {
+			const response = await fetch(`http://localhost:3000/api/fetch/${userId}`);
+			if (response.ok) {
+				const data = await response.json();
+
+				user.name = `${data.user.first_name} ${data.user.last_name}`;
+				user.email = data.user.email;
+				user.business = data.user.business_name;
+				user.imageUrl =
+					data.user.imageUrl ||
+					`https://eu.ui-avatars.com/api/?name=${data.user.first_name}+${data.user.last_name}&size=250`;
+			} else {
+				console.error('Failed to fetch user details:', response.status);
+			}
+		} catch (error) {
+			console.error('Error fetching user details:', error);
+		}
+	}
+
+	// Fetch user details when the component is mounted
+	fetchUserDetails();
+
+	const handleLogout = async () => {
+		try {
+			document.cookie = 'session=; Max-Age=0; path=/;';
+
+			await goto('/');
+		} catch (error) {
+			console.error('Error during logout:', error);
+		}
+	};
 
 	function toggleThemeHandler() {
 		console.log('Theme toggled');
@@ -24,19 +65,13 @@
 	};
 
 	const toUserPreferences = () => {
-		goto('/platform/settings/general');
-	};
-
-	const user = {
-		name: 'Borneel Bikash Phukan',
-		email: 'borneelphukan@gmail.com',
-		imageUrl: 'https://eu.ui-avatars.com/api/?name=Borneel+Phukan&size=250'
+		goto(`/platform/${userId}/settings/general`);
 	};
 
 	const userNavigation = [
-		{ name: 'Account & Billing', href: '/account-billing' },
-		{ name: 'Pricing & Features', href: '/pricing-features', external: true },
-		{ name: 'Product Updates', href: '/product-updates' },
+		{ name: 'Account & Billing', href: `/platform/${userId}/account-billing` },
+		{ name: 'Pricing', href: `/platform/${userId}/pricing`, external: true },
+		{ name: 'News Updates', href: `/news` },
 		{ name: 'Training & Services', href: '/training-services', external: true }
 	];
 
@@ -191,7 +226,8 @@
 						<img class="h-7 w-7 rounded-full" src={user.imageUrl} alt={user.name} />
 						<span class="sr-only">Open user menu</span>
 					</button>
-					<span class="ml-2 text-white text-sm font-medium">Borneel Bikash Phukan</span>
+					<span class="ml-2 text-white text-sm font-medium">{user.name}</span>
+
 					<button
 						class="ml-1 flex items-center text-gray-400 hover:text-white focus:outline-none"
 						onclick={toggleDropdown}
@@ -232,7 +268,7 @@
 					</button>
 					{#if isDropdownOpen}
 						<div
-							class="origin-top-right absolute right-0 top-16 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-dark-100 ring-1 ring-black ring-opacity-5 focus:outline-none"
+							class="origin-top-right absolute right-0 top-12 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-dark-100 ring-1 ring-black ring-opacity-5 focus:outline-none"
 							role="menu"
 							aria-orientation="vertical"
 							aria-labelledby="user-menu"
@@ -241,9 +277,31 @@
 							<div class="px-4 pb-3 border-b border-gray-300">
 								<div class="flex items-center">
 									<img class="h-12 w-12 rounded-full" src={user.imageUrl} alt={user.name} />
-									<div class="ml-3 flex-1">
+									<div class="ml-3 flex-1 flex-col gap-1">
 										<p class="text-lg font-semibold text-gray-100 dark:text-white">{user.name}</p>
 										<p class="text-sm text-gray-300">{user.email}</p>
+										{#if user.business}
+											<div class="flex flex-row gap-2 items-center">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke-width="1.5"
+													stroke="currentColor"
+													class="size-4"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z"
+													/>
+												</svg>
+
+												<p class="text-sm text-gray-100 dark:text-white">
+													{user.business}
+												</p>
+											</div>
+										{/if}
 										<!-- Flex container for left-right alignment -->
 										<div class="flex items-center justify-between">
 											<a
@@ -331,7 +389,12 @@
 							<div
 								class="flex items-center justify-between px-4 py-3 text-sm text-gray-200 dark:text-gray-500 border-t border-gray-300"
 							>
-								<a href="/" class="hover:underline">{$t('navbar.sign_out')}</a>
+								<button
+									class="flex items-center mb-2 text-sm font-medium text-gray-200 dark:text-gray-500 hover:underline"
+									onclick={handleLogout}
+								>
+									{$t('navbar.sign_out')}
+								</button>
 								<a href="/privacy-policy" class="hover:underline">{$t('navbar.privacy_policy')}</a>
 							</div>
 						</div>
