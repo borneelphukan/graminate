@@ -118,6 +118,7 @@
 					return {
 						columns: ['Company Name', 'Owner Name', 'Email', 'Phone Number', 'Address', 'Type'],
 						rows: $fetchedData.map((item) => [
+							item.company_id,
 							item.company_name,
 							item.owner_name,
 							item.email,

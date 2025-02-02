@@ -64,8 +64,8 @@
 		selectedRows.subscribe(($selectedRows) => {
 			$selectedRows.forEach((isSelected, index) => {
 				if (isSelected) {
-					const contactId = $paginatedRows[index][0];
-					rowsToDelete.push(contactId);
+					const id = $paginatedRows[index][0];
+					rowsToDelete.push(id);
 				}
 			});
 		})();
@@ -77,7 +77,7 @@
 
 		const result = await Swal.fire({
 			title: 'Are you sure?',
-			text: 'Do you want to delete the selected contacts? This action cannot be undone.',
+			text: `Do you want to delete the selected ${view === 'companies' ? 'companies' : 'contacts'}? This action cannot be undone.`,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes, delete them!',
@@ -87,20 +87,23 @@
 
 		if (result.isConfirmed) {
 			try {
+				const endpoint = view === 'companies' ? 'companies' : 'contacts';
 
 				await Promise.all(
-					rowsToDelete.map(async (contactId) => {
-						const response = await fetch(`http://localhost:3000/api/contacts/delete/${contactId}`, {
-							method: 'DELETE'
-						});
+					rowsToDelete.map(async (id) => {
+						const response = await fetch(
+							`http://localhost:3000/api/${endpoint}/delete/${id}`,
+							{
+								method: 'DELETE'
+							}
+						);
 
 						if (!response.ok) {
-							throw new Error(`Failed to delete contact with id ${contactId}`);
+							throw new Error(`Failed to delete ${endpoint.slice(0, -1)} with id ${id}`);
 						}
 					})
 				);
 
-				Swal.fire('Deleted!', 'The selected contacts have been deleted.', 'success');
 				location.reload();
 			} catch (error) {
 				console.error('Error deleting rows:', error);
@@ -246,7 +249,7 @@
 							/>
 						</td>
 						<!-- For deleting data from the table, there is a hidden column of ID. ID is required for removing data -->
-						{#if view === 'contacts'}
+						{#if view === 'contacts' || view === 'companies'}
 							{#each row.slice(1) as cell}
 								<td
 									class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"
