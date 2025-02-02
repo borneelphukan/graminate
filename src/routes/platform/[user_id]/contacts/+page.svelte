@@ -110,7 +110,7 @@
 							item.phone_number,
 							item.type,
 							item.address,
-							new Date(item.created_at).toLocaleString()
+							new Date(item.created_at).toDateString()
 						])
 					};
 
@@ -129,8 +129,23 @@
 					};
 				case 'deals':
 					return {
-						columns: ['Deal Name', 'Owner', 'Amount', 'Stage', 'Close Date'],
-						rows: [['Big Tech Deal', 'Alice', '$500,000', 'Negotiation', '2024-12-01']]
+						columns: [
+							'Deal Name',
+							'Partner / Client',
+							'Amount',
+							'Stage',
+							'Start Date',
+							'Close Date'
+						],
+						rows: $fetchedData.map((item) => [
+							item.deal_id,
+							item.deal_name,
+							item.partner,
+							item.amount,
+							item.stage,
+							new Date(item.start_date).toDateString(),
+							new Date(item.end_date).toDateString()
+						])
 					};
 				case 'invoices':
 					return {
@@ -258,13 +273,19 @@
 
 			if ($view === 'companies') {
 				apiUrl = `http://localhost:3000/api/companies/fetch/${userId}`;
+			} else if ($view === 'deals') {
+				apiUrl = `http://localhost:3000/api/deals/fetch/${userId}`;
 			}
 
 			const response = await fetch(apiUrl);
 			if (response.ok) {
 				const json = await response.json();
-				if (Array.isArray(json.contacts) || Array.isArray(json.companies)) {
-					fetchedData.set(json.contacts || json.companies);
+				if (
+					Array.isArray(json.contacts) ||
+					Array.isArray(json.companies) ||
+					Array.isArray(json.deals)
+				) {
+					fetchedData.set(json.contacts || json.companies || json.deals);
 				} else {
 					console.error('Invalid data format:', json);
 					fetchedData.set([]);

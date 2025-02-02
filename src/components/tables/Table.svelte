@@ -14,7 +14,8 @@
 	export let paginationItems: string[];
 	export let searchQuery: Writable<string>;
 	export let totalRecordCount: number;
-	export let view: string;
+	export let view: string = '';
+	export let exportEnabled: boolean = true; // New parameter
 
 	const sortOrder = writable<'asc' | 'desc'>('asc');
 	const sortColumn = writable<number | null>(null);
@@ -41,6 +42,28 @@
 		selectedRows,
 		($selectedRows) => $selectedRows.filter((isSelected) => isSelected).length
 	);
+
+	function exportTableData() {
+		if ($sortedAndPaginatedRows.length === 0) {
+			Swal.fire('No Data', 'There is no data to export.', 'info');
+			return;
+		}
+
+		const csvContent = [
+			data.columns.join(','), // Header row
+			...$sortedAndPaginatedRows.map((row) => row.join(',')) // Data rows
+		].join('\n');
+
+		const blob = new Blob([csvContent], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${view}.csv`; // Filename is the view name
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 
 	function handleSelectAllChange() {
 		selectedRows.update(() => Array($paginatedRows.length).fill(selectAll));
@@ -91,12 +114,9 @@
 
 				await Promise.all(
 					rowsToDelete.map(async (id) => {
-						const response = await fetch(
-							`http://localhost:3000/api/${endpoint}/delete/${id}`,
-							{
-								method: 'DELETE'
-							}
-						);
+						const response = await fetch(`http://localhost:3000/api/${endpoint}/delete/${id}`, {
+							method: 'DELETE'
+						});
 
 						if (!response.ok) {
 							throw new Error(`Failed to delete ${endpoint.slice(0, -1)} with id ${id}`);
@@ -185,7 +205,9 @@
 		</div>
 
 		<div class="flex gap-2">
-			<Button style="secondary" text="Export Data" />
+			{#if exportEnabled}
+				<Button style="secondary" text="Export Data" on:click={exportTableData} />
+			{/if}
 		</div>
 	</div>
 
@@ -249,7 +271,7 @@
 							/>
 						</td>
 						<!-- For deleting data from the table, there is a hidden column of ID. ID is required for removing data -->
-						{#if view === 'contacts' || view === 'companies'}
+						{#if view === 'contacts' || view === 'companies' || view === 'deals'}
 							{#each row.slice(1) as cell}
 								<td
 									class="p-2 border border-gray-300 dark:border-gray-200 text-base font-light dark:text-gray-400"

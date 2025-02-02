@@ -73,6 +73,7 @@
 	<p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{$totalRecordCount} Record(s)</p>
 
 	<Table
+		exportEnabled={false}
 		{data}
 		{filteredRows}
 		{currentPage}
