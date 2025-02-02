@@ -26,10 +26,10 @@
 	let companyValues = writable<Record<string, string>>({
 		companyName: '',
 		companyOwner: '',
-		industry: '',
+		email: '',
+		phoneNumber: '',
 		type: '',
-		city: '',
-		state: ''
+		address: ''
 	});
 
 	let ticketValues = writable<Record<string, string>>({
@@ -92,9 +92,46 @@
 	}
 
 	function handleSubmitCompanies() {
-		companyValues.subscribe((values) => {
-			onSubmit(values);
-			console.log('Company Form Submitted:', values);
+		companyValues.subscribe(async (values) => {
+			const body = JSON.stringify({
+				user_id: userId,
+				company_name: values.companyName,
+				owner_name: values.companyOwner,
+				email: values.email,
+				phone_number: values.phoneNumber,
+				type: values.type,
+				address: values.address
+			});
+
+			try {
+				const response = await fetch('http://localhost:3000/api/companies/add', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					companyValues.set({
+						companyName: '',
+						companyOwner: '',
+						email: '',
+						phoneNumber: '',
+						type: '',
+						address: ''
+					});
+					handleClose();
+					location.reload();
+				} else {
+					alert(result.error || 'Failed to add company');
+				}
+			} catch (error) {
+				console.error('Error adding company:', error);
+				alert('An unexpected error occurred');
+			}
 		})();
 	}
 
@@ -190,16 +227,28 @@
 					bind:value={$companyValues.companyName}
 				/>
 				<TextField
-					label="Company Representative"
+					label="Owner Name"
 					placeholder="e.g. John Doe"
 					type="text"
 					bind:value={$companyValues.companyOwner}
 				/>
 				<TextField
-					label="Industry"
-					placeholder="Enter industry"
+					label="Email"
+					placeholder="e.g. john.doe@gmail.com"
+					type="email"
+					bind:value={$companyValues.email}
+				/>
+				<TextField
+					label="Phone Number"
+					placeholder="e.g. +91 XXXXX XXX XX"
+					type="tel"
+					bind:value={$companyValues.phoneNumber}
+				/>
+				<TextArea
+					label="Client Address (Optional)"
+					placeholder="Address (optional)"
 					type="text"
-					bind:value={$companyValues.industry}
+					bind:value={$companyValues.address}
 				/>
 				<DropdownLarge
 					items={companyType}
@@ -208,18 +257,7 @@
 					label="Type"
 					width="full"
 				/>
-				<TextField
-					label="City"
-					placeholder="Enter city"
-					type="text"
-					bind:value={$companyValues.city}
-				/>
-				<TextField
-					label="State/Region"
-					placeholder="Enter state/region"
-					type="text"
-					bind:value={$companyValues.state}
-				/>
+
 				<div class="flex justify-end gap-4 mt-2">
 					<Button text="Create" style="primary" on:click={handleSubmitCompanies} />
 					<Button text="Cancel" style="secondary" on:click={handleClose} />

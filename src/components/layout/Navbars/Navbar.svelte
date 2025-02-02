@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import NotificationBar from '../NotificationBar.svelte';
 	import ThemeSwitch from '@ui/ThemeSwitch.svelte';
@@ -34,7 +35,9 @@
 	}
 
 	// Fetch user details when the component is mounted
-	fetchUserDetails();
+	onMount(() => {
+		fetchUserDetails();
+	});
 
 	const handleLogout = async () => {
 		try {
@@ -224,7 +227,6 @@
 						onclick={toggleDropdown}
 					>
 						<img class="h-7 w-7 rounded-full" src={user.imageUrl} alt={user.name} />
-						<span class="sr-only">Open user menu</span>
 					</button>
 					<span class="ml-2 text-white text-sm font-medium">{user.name}</span>
 
@@ -288,7 +290,7 @@
 													viewBox="0 0 24 24"
 													stroke-width="1.5"
 													stroke="currentColor"
-													class="size-4"
+													class="size-4 text-dark dark:text-gray-300"
 												>
 													<path
 														stroke-linecap="round"

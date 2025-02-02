@@ -117,24 +117,14 @@
 				case 'companies':
 					return {
 						columns: ['Company Name', 'Owner Name', 'Email', 'Phone Number', 'Address', 'Type'],
-						rows: [
-							[
-								'TechCorp',
-								'Alice Brown',
-								'contact@techcorp.com',
-								'+1122334455',
-								'789 Oak St',
-								'Software'
-							],
-							[
-								'Foodies Inc.',
-								'Bob Green',
-								'info@foodies.com',
-								'+9988776655',
-								'321 Pine St',
-								'Food'
-							]
-						]
+						rows: $fetchedData.map((item) => [
+							item.company_name,
+							item.owner_name,
+							item.email,
+							item.phone_number,
+							item.address,
+							item.type
+						])
 					};
 				case 'deals':
 					return {
@@ -263,21 +253,27 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(`http://localhost:3000/api/contacts/fetch/${userId}`);
+			let apiUrl = `http://localhost:3000/api/contacts/fetch/${userId}`;
+
+			if ($view === 'companies') {
+				apiUrl = `http://localhost:3000/api/companies/fetch/${userId}`;
+			}
+
+			const response = await fetch(apiUrl);
 			if (response.ok) {
 				const json = await response.json();
-				if (Array.isArray(json.contacts)) {
-					fetchedData.set(json.contacts);
+				if (Array.isArray(json.contacts) || Array.isArray(json.companies)) {
+					fetchedData.set(json.contacts || json.companies);
 				} else {
 					console.error('Invalid data format:', json);
 					fetchedData.set([]);
 				}
 			} else {
-				console.error('Failed to fetch contacts:', response.statusText);
+				console.error('Failed to fetch data:', response.statusText);
 				fetchedData.set([]);
 			}
 		} catch (error) {
-			console.error('Error fetching contacts:', error);
+			console.error('Error fetching data:', error);
 			fetchedData.set([]);
 		}
 	});
