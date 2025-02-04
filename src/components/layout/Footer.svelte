@@ -7,7 +7,7 @@
 		],
 		team: [
 			{ name: 'About Us', href: '/About' },
-			{ name: 'Career', href: '#' },
+			{ name: 'Career', href: '/career' },
 			{ name: 'Support', href: '#' }
 		],
 		legal: [

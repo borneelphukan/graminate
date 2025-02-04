@@ -4,7 +4,7 @@
 	import Swal from 'sweetalert2';
 	import TextField from '@ui/TextField.svelte';
 	import Button from '@ui/Button.svelte';
-	import Navbar from '@layout/Navbars/Navbar.svelte';
+	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
 
 	let email = '';
 	let token = '';
@@ -92,6 +92,7 @@
 <svelte:head>
 	<title>Graminate: Reset Password</title>
 </svelte:head>
+<HomeNavbar />
 <div class="min-h-screen flex items-center justify-center dark:bg-dark bg-light">
 	<div class="bg-white shadow-md rounded p-6 w-96">
 		<div class="flex justify-center mb-4">
