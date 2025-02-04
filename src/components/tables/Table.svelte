@@ -103,8 +103,8 @@
 			text: `Do you want to delete the selected ${view === 'companies' ? 'companies' : 'contacts'}? This action cannot be undone.`,
 			icon: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Yes, delete them!',
-			cancelButtonText: 'Cancel',
+			confirmButtonText: 'Yes',
+			cancelButtonText: 'No',
 			reverseButtons: true
 		});
 

@@ -6,6 +6,18 @@
 	import Footer from '@layout/Footer.svelte';
 	import TextField from '@ui/TextField.svelte';
 	import Button from '@ui/Button.svelte';
+	import ForgotPasswordModal from '@modals/ForgotPasswordModal.svelte';
+
+	let isForgotPasswordModalOpen = false;
+
+	const openForgotPasswordModal = () => {
+		loginErrorMessage = '';
+		isForgotPasswordModalOpen = true;
+	};
+
+	const closeForgotPasswordModal = () => {
+		isForgotPasswordModalOpen = false;
+	};
 
 	let isLogin = writable(true);
 	let loginData = {
@@ -57,6 +69,15 @@
 
 	const handleLogin = async (event: Event) => {
 		event.preventDefault();
+
+		// Check if the event was triggered by the Forgot Password link
+		const target = event.target as HTMLElement;
+		if (
+			target.tagName === 'BUTTON' &&
+			target.getAttribute('on:click') === 'openForgotPasswordModal'
+		) {
+			return;
+		}
 
 		loginErrorMessage = '';
 
@@ -248,6 +269,14 @@
 					<div class="mx-auto flex flex-row justify-center">
 						<Button text="Login" width="large" style="primary" type="submit" />
 					</div>
+					<p class="text-center mt-4 text-sm text-gray-600 dark:text-gray-300">
+						<button
+							class="text-blue-500 hover:underline focus:outline-none"
+							on:click={openForgotPasswordModal}
+						>
+							Forgot Password?
+						</button>
+					</p>
 				</form>
 				<p class="text-center mt-4 text-sm text-gray-600 dark:text-gray-300">
 					Don't have an account?{' '}
@@ -345,3 +374,5 @@
 	</div>
 </div>
 <Footer />
+
+<ForgotPasswordModal isOpen={isForgotPasswordModalOpen} closeModal={closeForgotPasswordModal} />
