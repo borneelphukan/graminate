@@ -56,8 +56,8 @@ export default {
 				},
 				light: '#F9FAFB',
 				dark: {
-					DEFAULT: '#111827', // Primary dark color
-					100: '#28282C' // Slightly lighter dark shade
+					DEFAULT: '#111827',
+					100: '#28282C'
 				}
 			}
 		}
