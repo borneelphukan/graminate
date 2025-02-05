@@ -6,7 +6,7 @@
 			{ name: 'Pricing', href: '/Pricing' }
 		],
 		team: [
-			{ name: 'About Us', href: '/About' },
+			{ name: 'About Us', href: '/about-us' },
 			{ name: 'Career', href: '/career' },
 			{ name: 'Support', href: '#' }
 		],
