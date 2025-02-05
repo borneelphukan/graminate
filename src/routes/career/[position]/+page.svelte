@@ -101,8 +101,16 @@
 <HomeNavbar />
 
 <div class="max-w-3xl my-24 sm:my-24 mx-auto p-6">
-	<h2 class="text-2xl font-semibold text-gray-900 uppercase">{position}</h2>
-	<p class="text-gray-200 mb-6 text-lg"><span>{type}</span> ⋅ <span>{mode}</span></p>
+	<h2 class="text-2xl font-semibold text-gray-100 uppercase">{position}</h2>
+	<p class="text-gray-200 mb-4 text-lg"><span>{type}</span> ⋅ <span>{mode}</span></p>
+
+	<h3 class="text-xl text-gray-100 uppercase sm:my-4 my-4">Your Application</h3>
+	<p class="text-sm sm:mt-2 sm:mb-8">
+		We are pleased that you are interested in Graminate ERP Solutions. Please fill out the following
+		short form. If you have any problems uploading your data, please send an email to <a
+			href="mailto:career@graminate.com">career@graminate.com</a
+		>
+	</p>
 
 	<form on:submit|preventDefault={submitApplication} class="space-y-4">
 		<div class="flex flex-row gap-4">

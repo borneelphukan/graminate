@@ -20,7 +20,7 @@
 
 	onMount(async () => {
 		try {
-			const res = await fetch('http://localhost:3000/api/jobs/jobs');
+			const res = await fetch('http://localhost:3000/api/jobs/jobs/');
 			const data = await res.json();
 			if (res.ok && Array.isArray(data.jobs)) {
 				jobs = data.jobs;
@@ -143,18 +143,24 @@
 			</p>
 		</div>
 		<!-- Job Cards Grid -->
-		<div class="mt-10 grid gap-6">
-			{#each jobs as job}
-				<JobCard
-					position={job.position}
-					type={job.type}
-					mode={job.mode}
-					description={job.description}
-					tasks={job.tasks}
-					requirements={job.requirements}
-					benefits={job.benefits}
-				/>
-			{/each}
+		<div class="max-w-5xl mx-auto">
+			{#if jobs.length > 0}
+				<div class="mt-10 grid gap-6">
+					{#each jobs as job}
+						<JobCard
+							position={job.position}
+							type={job.type}
+							mode={job.mode}
+							description={job.description}
+							tasks={job.tasks}
+							requirements={job.requirements}
+							benefits={job.benefits}
+						/>
+					{/each}
+				</div>
+			{:else}
+				<p class="mt-10 text-center text-gray-300 text-xl">No vacancies available at the moment.</p>
+			{/if}
 		</div>
 	</div>
 </div>
