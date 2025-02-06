@@ -23,7 +23,7 @@
 </svelte:head>
 
 <div class="bg-white">
-	<HomeNavbar />
+	<HomeNavbar signIn={true} />
 
 	<div class="bg-white">
 		<main class="isolate">
@@ -147,7 +147,7 @@
 
 								<div class="flex flex-col-reverse gap-y-4">
 									<dt class="text-base/7 text-gray-600">Active Clients</dt>
-									<dd class="text-5xl font-semibold tracking-tight text-gray-900"></dd>
+									<dd class="text-5xl font-semibold tracking-tight text-gray-900">12</dd>
 								</div>
 							</dl>
 						</div>

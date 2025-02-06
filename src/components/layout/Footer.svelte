@@ -2,8 +2,8 @@
 	const navigation = {
 		products: [
 			{ name: 'Features', href: '#' },
-			{ name: "What's new?", href: '#' },
-			{ name: 'Pricing', href: '/Pricing' }
+			{ name: "Newsletter", href: '#' },
+			{ name: 'Pricing', href: '/price' }
 		],
 		team: [
 			{ name: 'About Us', href: '/about-us' },

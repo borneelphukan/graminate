@@ -74,7 +74,7 @@
 <svelte:head>
 	<title>Jobs at Graminate</title>
 </svelte:head>
-<HomeNavbar />
+<HomeNavbar signIn={true} />
 
 <!-- Header -->
 <div class="relative bg-gray-500">
