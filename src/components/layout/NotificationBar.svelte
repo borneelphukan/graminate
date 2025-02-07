@@ -9,6 +9,7 @@
 	export let notifications: Notification[] = [];
 	export let isOpen: boolean = false;
 	export let closeNotificationBar: () => void = () => {};
+	export let userId: string;
 
 	let isFilterDropdownOpen = false;
 	let isActionsDropdownOpen = false;
@@ -25,7 +26,7 @@
 
 	function navigateToSettings() {
 		closeNotificationBar();
-		goto('/platform/settings/notifications');
+		goto(`/platform/${userId}/settings/notifications`);
 	}
 </script>
 

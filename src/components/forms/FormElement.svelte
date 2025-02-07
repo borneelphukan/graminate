@@ -32,6 +32,15 @@
 		address: ''
 	});
 
+	let dealsValues = writable<Record<string, string>>({
+		dealName: '',
+		dealPartner: '',
+		amountPaid: '',
+		dealStage: '',
+		contractStartDate: '',
+		contractEndDate: ''
+	});
+
 	let ticketValues = writable<Record<string, string>>({
 		ticketName: '',
 		category: '',
@@ -135,10 +144,53 @@
 		})();
 	}
 
+	function handleSubmitDeals() {
+		dealsValues.subscribe(async (values) => {
+			const body = JSON.stringify({
+				user_id: userId,
+				deal_name: values.dealName,
+				partner: values.dealPartner,
+				amount: values.amountPaid,
+				stage: values.dealStage,
+				start_date: values.contractStartDate,
+				end_date: values.contractEndDate
+			});
+
+			try {
+				const response = await fetch('http://localhost:3000/api/deals/add', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					companyValues.set({
+						companyName: '',
+						companyOwner: '',
+						email: '',
+						phoneNumber: '',
+						type: '',
+						address: ''
+					});
+					handleClose();
+					location.reload();
+				} else {
+					alert(result.error || 'Failed to add new Contract');
+				}
+			} catch (error) {
+				console.error('Error adding new contract:', error);
+				alert('An unexpected error occurred');
+			}
+		})();
+	}
+
 	function handleSubmitTickets() {
 		ticketValues.subscribe((values) => {
 			onSubmit(values);
-			console.log('Ticket Form Submitted:', values);
 		})();
 	}
 
@@ -260,6 +312,63 @@
 
 				<div class="flex justify-end gap-4 mt-2">
 					<Button text="Create" style="primary" on:click={handleSubmitCompanies} />
+					<Button text="Cancel" style="secondary" on:click={handleClose} />
+				</div>
+			</form>
+		{/if}
+
+		<!-- Form for Deals -->
+		{#if view === 'deals'}
+			<form
+				class="flex flex-col gap-4 w-full flex-grow"
+				on:submit|preventDefault={handleSubmitDeals}
+			>
+				<TextField
+					label="Deal Name"
+					placeholder="Name of your Contract"
+					type="text"
+					bind:value={$dealsValues.dealName}
+				/>
+				<TextField
+					label="Partner Name"
+					placeholder="Company, Business owner"
+					type="text"
+					bind:value={$dealsValues.dealPartner}
+				/>
+				<div class="flex flex-col-2 gap-2">
+					<TextField
+						label="Amount Involved (₹)"
+						placeholder="Budget involved"
+						type="email"
+						bind:value={$dealsValues.amountPaid}
+					/>
+					<TextField
+						label="State of Contract"
+						placeholder="e.g. Initialised, In Process. Completed"
+						type="tel"
+						bind:value={$dealsValues.dealStage}
+					/>
+				</div>
+
+				<div class="flex flex-col-2 gap-2">
+					<TextField
+						label="Contract Start Date"
+						placeholder="YYYY-MM-DD"
+						bind:value={$dealsValues.contractStartDate}
+						width="large"
+						calendar
+					/>
+					<TextField
+						label="Contract End Date"
+						placeholder="YYYY-MM-DD"
+						bind:value={$dealsValues.contractEndDate}
+						width="large"
+						calendar
+					/>
+				</div>
+
+				<div class="flex justify-end gap-4 mt-2">
+					<Button text="Create" style="primary" on:click={handleSubmitDeals} />
 					<Button text="Cancel" style="secondary" on:click={handleClose} />
 				</div>
 			</form>

@@ -100,7 +100,7 @@
 
 		const result = await Swal.fire({
 			title: 'Are you sure?',
-			text: `Do you want to delete the selected ${view === 'companies' ? 'companies' : 'contacts'}? This action cannot be undone.`,
+			text: `Do you want to delete ${view === 'companies' ? 'companies' : view === 'contacts' ? 'contacts' : 'deals'}?`,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: 'Yes',
@@ -110,7 +110,7 @@
 
 		if (result.isConfirmed) {
 			try {
-				const endpoint = view === 'companies' ? 'companies' : 'contacts';
+				const endpoint = view === 'companies' ? 'companies' : view === 'contacts' ? 'contacts' : 'deals';
 
 				await Promise.all(
 					rowsToDelete.map(async (id) => {

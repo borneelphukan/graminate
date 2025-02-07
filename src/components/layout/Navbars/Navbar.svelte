@@ -307,7 +307,7 @@
 										<!-- Flex container for left-right alignment -->
 										<div class="flex items-center justify-between">
 											<a
-												href="/platform/settings/general"
+												href="/platform/{userId}/settings/general"
 												class="text-sm font-medium text-green-600 hover:underline"
 											>
 												{$t('navbar.profile_preferences')}
@@ -408,6 +408,7 @@
 </header>
 
 <NotificationBar
+	{userId}
 	{notifications}
 	isOpen={isNotificationBarOpen}
 	closeNotificationBar={toggleNotificationBar}
