@@ -2,17 +2,17 @@
 	const navigation = {
 		products: [
 			{ name: 'Features', href: '#' },
-			{ name: "Newsletter", href: '#' },
+			{ name: 'Newsletter', href: '#' },
 			{ name: 'Pricing', href: '/price' }
 		],
 		team: [
 			{ name: 'About Us', href: '/about-us' },
 			{ name: 'Career', href: '/career' },
-			{ name: 'Support', href: '#' }
+			{ name: 'Contact Us', href: '/contact-us' }
 		],
 		legal: [
 			{ name: 'Terms of service', href: '#' },
-			{ name: 'Privacy policy', href: '/Privacy' },
+			{ name: 'Privacy policy', href: '/privacy' },
 			{ name: 'Cancellation policy', href: '#' }
 		]
 	};

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import HomeNavbar from '@layout/Navbars/HomeNavbar.svelte';
 	import Footer from '@layout/Footer.svelte';
-	import FeatureCard from './components/FeatureCard.svelte';
-	import JobCard from './components/JobCard.svelte';
+	import FeatureCard from '../../components/cards/FeatureCard.svelte';
+	import JobCard from '@cards/JobCard.svelte';
 	import { onMount } from 'svelte';
 
 	type Job = {
@@ -74,7 +74,7 @@
 <svelte:head>
 	<title>Jobs at Graminate</title>
 </svelte:head>
-<HomeNavbar signIn={true} />
+<HomeNavbar signIn/>
 
 <!-- Header -->
 <div class="relative bg-gray-500">
