@@ -1,18 +1,19 @@
 <script lang="ts">
+	const BASE_URL = import.meta.env.VITE_BASE_URL;
 	const navigation = {
 		products: [
 			{ name: 'Features', href: '#' },
 			{ name: 'Newsletter', href: '#' },
-			{ name: 'Pricing', href: '/price' }
+			{ name: 'Pricing', href: `${BASE_URL}/price` }
 		],
 		team: [
-			{ name: 'About Us', href: '/about-us' },
-			{ name: 'Career', href: '/career' },
-			{ name: 'Contact Us', href: '/contact-us' }
+			{ name: 'About Us', href: `${BASE_URL}/about-us` },
+			{ name: 'Career', href: `${BASE_URL}/career` },
+			{ name: 'Contact Us', href: `${BASE_URL}/contact-us` }
 		],
 		legal: [
 			{ name: 'Terms of service', href: '#' },
-			{ name: 'Privacy policy', href: '/privacy' },
+			{ name: 'Privacy policy', href: `${BASE_URL}/privacy` },
 			{ name: 'Cancellation policy', href: '#' }
 		]
 	};

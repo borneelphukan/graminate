@@ -1,6 +1,5 @@
 <script lang="ts">
 	export let imageSrc: string = '/images/logo.png';
-	export let signIn: boolean = false;
 </script>
 
 <header class="bg-gray-800 py-2">
@@ -16,12 +15,6 @@
 					</a>
 				</div>
 			</div>
-
-			{#if signIn}
-				<div class="flex items-center">
-					<a href="/" class="text-light hover:underline">Sign In</a>
-				</div>
-			{/if}
 		</div>
 	</div>
 </header>
