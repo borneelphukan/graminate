@@ -9,9 +9,11 @@
 	import ForgotPasswordModal from '@modals/ForgotPasswordModal.svelte';
 	import OTPModal from '@modals/OTPModal.svelte';
 
+	// Registration Part
 	let isOtpModalOpen = false;
 	let userEmailForOtp = '';
 
+	// Forget Password
 	let isForgotPasswordModalOpen = false;
 
 	const openForgotPasswordModal = () => {
@@ -129,13 +131,55 @@
 	const handleRegister = async (event: Event) => {
 		event.preventDefault();
 
-		// Reset field errors and perform your validation (existing code) ...
+		// Reset field errors
+		fieldErrors = {
+			first_name: false,
+			last_name: false,
+			email: false,
+			phone_number: false,
+			date_of_birth: false,
+			password: false
+		};
 
+		emailErrorMessage = 'This cannot be left blank';
+		phoneErrorMessage = 'This cannot be left blank';
+		passwordErrorMessage = '';
+
+		// Validate form fields
 		let hasError = false;
-		// ... perform validation on registerData and update fieldErrors ...
-		if (hasError) return;
 
-		// Save the email for OTP
+		if (!registerData.first_name.trim()) {
+			fieldErrors.first_name = true;
+			hasError = true;
+		}
+		if (!registerData.last_name.trim()) {
+			fieldErrors.last_name = true;
+			hasError = true;
+		}
+		if (!validateEmail(registerData.email)) {
+			fieldErrors.email = true;
+			emailErrorMessage = 'Enter a valid email ID';
+			hasError = true;
+		}
+		if (!validatePhoneNumber(registerData.phone_number)) {
+			fieldErrors.phone_number = true;
+			phoneErrorMessage = 'Enter valid phone number';
+			hasError = true;
+		}
+		if (!registerData.date_of_birth.trim()) {
+			fieldErrors.date_of_birth = true;
+			hasError = true;
+		}
+		if (!validatePassword(registerData.password)) {
+			fieldErrors.password = true;
+			passwordErrorMessage =
+				'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.';
+			hasError = true;
+		}
+		if (hasError) {
+			return;
+		}
+
 		userEmailForOtp = registerData.email;
 
 		try {

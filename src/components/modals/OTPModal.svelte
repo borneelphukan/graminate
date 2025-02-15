@@ -1,21 +1,37 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import TextField from '@ui/TextField.svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import Button from '@ui/Button.svelte';
 
 	export let isOpen = false;
 	export let email = '';
 
 	const dispatch = createEventDispatcher();
-	let otp = '';
+
+	let otpDigits = ['', '', '', '', '', ''];
+
+	let inputs: HTMLInputElement[] = [];
+
+	function handleInput(index: number, event: Event) {
+		const input = event.target as HTMLInputElement;
+		otpDigits[index] = input.value;
+
+		if (input.value.length >= 1 && index < inputs.length - 1) {
+			inputs[index + 1]?.focus();
+		}
+	}
 
 	const handleValidateOTP = () => {
+		const otp = otpDigits.join('');
 		dispatch('validate', { otp });
 	};
 
 	const handleClose = () => {
 		dispatch('close');
 	};
+
+	onMount(() => {
+		inputs[0]?.focus();
+	});
 </script>
 
 {#if isOpen}
@@ -26,8 +42,17 @@
 				An OTP has been sent to <strong>{email}</strong>
 			</p>
 
-			<div class="my-4">
-				<TextField label="OTP" placeholder="Enter 6-digit OTP" bind:value={otp} width="large" />
+			<div class="flex justify-center space-x-2 my-4">
+				{#each otpDigits as digit, index}
+					<input
+						type="text"
+						class="w-12 h-12 text-center border border-gray-300 rounded"
+						maxlength="1"
+						bind:this={inputs[index]}
+						bind:value={otpDigits[index]}
+						on:input={(e) => handleInput(index, e)}
+					/>
+				{/each}
 			</div>
 
 			<div class="flex justify-center space-x-2">
