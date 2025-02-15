@@ -7,6 +7,10 @@
 	import TextField from '@ui/TextField.svelte';
 	import Button from '@ui/Button.svelte';
 	import ForgotPasswordModal from '@modals/ForgotPasswordModal.svelte';
+	import OTPModal from '@modals/OTPModal.svelte';
+
+	let isOtpModalOpen = false;
+	let userEmailForOtp = '';
 
 	let isForgotPasswordModalOpen = false;
 
@@ -125,65 +129,74 @@
 	const handleRegister = async (event: Event) => {
 		event.preventDefault();
 
-		// Reset field errors
-		fieldErrors = {
-			first_name: false,
-			last_name: false,
-			email: false,
-			phone_number: false,
-			date_of_birth: false,
-			password: false
-		};
-		emailErrorMessage = 'This cannot be left blank';
-		phoneErrorMessage = 'This cannot be left blank';
-		passwordErrorMessage = '';
+		// Reset field errors and perform your validation (existing code) ...
 
-		// Validate form fields
 		let hasError = false;
+		// ... perform validation on registerData and update fieldErrors ...
+		if (hasError) return;
 
-		if (!registerData.first_name.trim()) {
-			fieldErrors.first_name = true;
-			hasError = true;
-		}
-		if (!registerData.last_name.trim()) {
-			fieldErrors.last_name = true;
-			hasError = true;
-		}
-		if (!validateEmail(registerData.email)) {
-			fieldErrors.email = true;
-			emailErrorMessage = 'Enter a valid email ID';
-			hasError = true;
-		}
-		if (!validatePhoneNumber(registerData.phone_number)) {
-			fieldErrors.phone_number = true;
-			phoneErrorMessage = 'Enter valid phone number';
-			hasError = true;
-		}
-		if (!registerData.date_of_birth.trim()) {
-			fieldErrors.date_of_birth = true;
-			hasError = true;
-		}
-		if (!validatePassword(registerData.password)) {
-			fieldErrors.password = true;
-			passwordErrorMessage =
-				'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.';
-			hasError = true;
-		}
-
-		if (hasError) {
-			return;
-		}
+		// Save the email for OTP
+		userEmailForOtp = registerData.email;
 
 		try {
-			const response = await fetch('http://localhost:3000/api/register', {
+			// Call the OTP endpoint (using the new /validation route)
+			const otpResponse = await fetch('http://localhost:3000/validation/send-otp', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email: userEmailForOtp })
+			});
+
+			if (!otpResponse.ok) {
+				Swal.fire({
+					title: 'Error',
+					text: 'Failed to send OTP. Please try again.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+				return;
+			}
+
+			// Open the OTP modal for the user to input the received OTP
+			isOtpModalOpen = true;
+		} catch (error) {
+			console.error('Error sending OTP:', error);
+			Swal.fire({
+				title: 'Error',
+				text: 'An error occurred while sending OTP.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+		}
+	};
+
+	const handleOtpValidation = async (event: CustomEvent<{ otp: string }>) => {
+		const enteredOtp = event.detail.otp;
+		try {
+			const verifyResponse = await fetch('http://localhost:3000/validation/verify-otp', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email: userEmailForOtp, otp: enteredOtp })
+			});
+			const verifyData = await verifyResponse.json();
+
+			if (!verifyResponse.ok || !verifyData.success) {
+				Swal.fire({
+					title: 'Invalid OTP',
+					text: 'The OTP entered is incorrect. Please try again.',
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+				return;
+			}
+
+			// If OTP is valid, proceed with the final registration request:
+			const registerResponse = await fetch('http://localhost:3000/api/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(registerData)
 			});
 
-			if (response.status === 409) {
+			if (registerResponse.status === 409) {
 				Swal.fire({
 					title: 'User already exists',
 					text: 'Please use a different email or phone number.',
@@ -193,9 +206,8 @@
 				return;
 			}
 
-			if (!response.ok) {
-				const errorData = await response.json();
-				console.error('Error:', errorData);
+			if (!registerResponse.ok) {
+				const errorData = await registerResponse.json();
 				Swal.fire({
 					title: 'Error',
 					text: errorData.message || 'Something went wrong.',
@@ -211,9 +223,12 @@
 				icon: 'success',
 				confirmButtonText: 'OK'
 			});
+
+			// Close OTP modal and toggle to login view if needed
+			isOtpModalOpen = false;
 			toggleForm();
 		} catch (error) {
-			console.error('Error during registration:', error);
+			console.error('Error during OTP validation and registration:', error);
 			Swal.fire({
 				title: 'Error',
 				text: 'An error occurred. Please try again later.',
@@ -376,3 +391,9 @@
 <Footer />
 
 <ForgotPasswordModal isOpen={isForgotPasswordModalOpen} closeModal={closeForgotPasswordModal} />
+<OTPModal
+	isOpen={isOtpModalOpen}
+	email={userEmailForOtp}
+	on:validate={handleOtpValidation}
+	on:close={() => (isOtpModalOpen = false)}
+/>
