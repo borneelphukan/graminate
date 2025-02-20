@@ -7,8 +7,59 @@
 	import Table from '@tables/Table.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	let userId = $page.params.user_id;
+
+	const contactsData: Writable<any[]> = writable([]);
+	const companiesData: Writable<any[]> = writable([]);
+	const dealsData: Writable<any[]> = writable([]);
+	const invoicesData: Writable<any[]> = writable([]);
+	const ticketsData: Writable<any[]> = writable([]);
+
+	onMount(async () => {
+		try {
+			const [contactsRes, companiesRes, dealsRes, invoicesRes, ticketsRes] = await Promise.all([
+				fetch(`http://localhost:3000/api/contacts/fetch/${userId}`),
+				fetch(`http://localhost:3000/api/companies/fetch/${userId}`),
+				fetch(`http://localhost:3000/api/deals/fetch/${userId}`),
+				fetch(`http://localhost:3000/api/invoices/fetch/${userId}`),
+				fetch(`http://localhost:3000/api/tickets/fetch/${userId}`)
+			]);
+
+			if (contactsRes.ok) contactsData.set((await contactsRes.json()).contacts || []);
+			if (companiesRes.ok) companiesData.set((await companiesRes.json()).companies || []);
+			if (dealsRes.ok) dealsData.set((await dealsRes.json()).deals || []);
+			if (invoicesRes.ok) invoicesData.set((await invoicesRes.json()).invoices || []);
+			if (ticketsRes.ok) ticketsData.set((await ticketsRes.json()).tickets || []);
+
+			updateFetchedData();
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	});
+
+	function updateFetchedData() {
+		view.subscribe(($view) => {
+			switch ($view) {
+				case 'contacts':
+					fetchedData.set(get(contactsData));
+					break;
+				case 'companies':
+					fetchedData.set(get(companiesData));
+					break;
+				case 'deals':
+					fetchedData.set(get(dealsData));
+					break;
+				case 'invoices':
+					fetchedData.set(get(invoicesData));
+					break;
+				case 'tickets':
+					fetchedData.set(get(ticketsData));
+					break;
+			}
+		});
+	}
 
 	const isSidebarOpen = writable(false);
 
@@ -19,13 +70,6 @@
 	function closeSidebar() {
 		isSidebarOpen.set(false);
 	}
-
-	// function navigateToView(view: string) {
-	// 	const url = new URL(window.location.href);
-	// 	url.searchParams.set('view', view);
-	// 	window.location.href = url.toString();
-	// 	dropdownOpen = false;
-	// }
 
 	type View = 'contacts' | 'companies' | 'deals' | 'invoices' | 'tickets';
 
@@ -266,39 +310,6 @@
 			);
 		}
 	}
-
-	onMount(async () => {
-		try {
-			let apiUrl = `http://localhost:3000/api/contacts/fetch/${userId}`;
-
-			if ($view === 'companies') {
-				apiUrl = `http://localhost:3000/api/companies/fetch/${userId}`;
-			} else if ($view === 'deals') {
-				apiUrl = `http://localhost:3000/api/deals/fetch/${userId}`;
-			}
-
-			const response = await fetch(apiUrl);
-			if (response.ok) {
-				const json = await response.json();
-				if (
-					Array.isArray(json.contacts) ||
-					Array.isArray(json.companies) ||
-					Array.isArray(json.deals)
-				) {
-					fetchedData.set(json.contacts || json.companies || json.deals);
-				} else {
-					console.error('Invalid data format:', json);
-					fetchedData.set([]);
-				}
-			} else {
-				console.error('Failed to fetch data:', response.statusText);
-				fetchedData.set([]);
-			}
-		} catch (error) {
-			console.error('Error fetching data:', error);
-			fetchedData.set([]);
-		}
-	});
 </script>
 
 <div class="flex justify-between items-center dark:bg-dark relative mb-4">
