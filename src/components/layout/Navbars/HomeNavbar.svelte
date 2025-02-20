@@ -8,7 +8,7 @@
 			<!-- Logo Section -->
 			<div class="relative z-10 flex px-2 lg:px-0">
 				<div class="flex flex-shrink-0 items-center">
-					<a href="/" class="flex flex-row items-center gap-4">
+					<a href="http://localhost:5174/" class="flex flex-row items-center gap-4">
 						<img src={imageSrc} alt="Graminate Logo" class="h-10 w-auto" />
 						<span class=" text-bold text-3xl text-light">Graminate</span>
 						<sup class=" text-bold text-lg text-light">ERP</sup>
