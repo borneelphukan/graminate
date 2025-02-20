@@ -5,6 +5,17 @@
 	import TextField from './TextField.svelte';
 	import DropdownSmall from './Dropdown/DropdownSmall.svelte';
 
+	$: isSelectedDatePast = (() => {
+		const selected = new Date(
+			$selectedDate.getFullYear(),
+			$selectedDate.getMonth(),
+			$selectedDate.getDate()
+		);
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+		return selected < today;
+	})();
+
 	let isClockVisible = false;
 	const reminderStatus = [
 		'At time of event',
@@ -308,22 +319,24 @@
 				</svg>
 			</button>
 
-			<button
-				aria-label="add tasks"
-				class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
-				onclick={() => (showAddTask = true)}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="currentColor"
-					class="size-4"
+			{#if !isSelectedDatePast}
+				<button
+					aria-label="add tasks"
+					class="bg-gray-300 hover:bg-gray-200 text-white p-2 rounded-full"
+					onclick={() => (showAddTask = true)}
 				>
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-				</svg>
-			</button>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-4"
+					>
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+					</svg>
+				</button>
+			{/if}
 		</div>
 	{:else}
 		<!-- Calendar -->

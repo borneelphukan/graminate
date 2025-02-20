@@ -16,29 +16,17 @@
 	import TaskModal from '@modals/TaskModal.svelte';
 
 	export const params = {};
-	const projectTitle = $page.url.searchParams.get('title');
-	const crop = $page.url.searchParams.get('crop');
-	const budget = $page.url.searchParams.get('budget');
-
+	const projectTitle = $page.url.searchParams.get('title'),
+		crop = $page.url.searchParams.get('crop'),
+		budget = $page.url.searchParams.get('budget');
 	const ProjectStatus = ['Active', 'On Hold', 'Completed'];
-
 	let isListView = false;
 	function toggleView(view: boolean) {
 		isListView = view;
 	}
 
-	type Task = {
-		id: string;
-		title: string;
-		type: string;
-	};
-
-	type Column = {
-		id: string;
-		title: string;
-		tasks: Task[];
-	};
-
+	type Task = { id: string; title: string; type: string };
+	type Column = { id: string; title: string; tasks: Task[] };
 	let columns: Column[] = [
 		{
 			id: '1',
@@ -57,24 +45,24 @@
 		}
 	];
 
-	const addingTask = writable<number | null>(null);
-	const editingColumn = writable<number | null>(null);
-	const dropdownOpen = writable<{ colIndex: number; taskIndex: number } | null>(null);
-	const columnDropdownOpen = writable<number | null>(null);
-	let isLabelPopupOpen = false;
-	let newLabel = '';
-	let selectedTaskId = '';
-	let searchQuery = '';
-	let newTaskTitle = '';
-	let newTaskType = '';
-	let totalTaskCount = 3;
-	let dropdownItems = ['Finance', 'Maintenance', 'Research', 'Urgent'];
-	let isAddingColumn = false;
-	let newColumnTitle = '';
-	let isTicketModalOpen: boolean = false;
-	let activeColumnIndex: number | null = null;
-	let filteredLabels: string[] = [];
-	let showDropdown = false;
+	const addingTask = writable<number | null>(null),
+		editingColumn = writable<number | null>(null),
+		dropdownOpen = writable<{ colIndex: number; taskIndex: number } | null>(null),
+		columnDropdownOpen = writable<number | null>(null);
+	let isLabelPopupOpen = false,
+		newLabel = '',
+		selectedTaskId = '',
+		searchQuery = '',
+		newTaskTitle = '',
+		newTaskType = '',
+		totalTaskCount = 3,
+		dropdownItems = ['Finance', 'Maintenance', 'Research', 'Urgent'],
+		isAddingColumn = false,
+		newColumnTitle = '',
+		isTicketModalOpen = false,
+		activeColumnIndex: number | null = null,
+		filteredLabels: string[] = [],
+		showDropdown = false;
 
 	function handleDropdownChange() {
 		newLabel = newLabel.trim();
@@ -82,97 +70,72 @@
 			showDropdown = false;
 			return;
 		}
-
 		filteredLabels = dropdownItems.filter((item) =>
 			item.toLowerCase().includes(newLabel.toLowerCase())
 		);
-
 		showDropdown = filteredLabels.length > 0;
 	}
-
 	function handleInputChange() {
-		const trimmedInput = newLabel.trim().toLowerCase();
-		if (trimmedInput) {
-			filteredLabels = dropdownItems.filter((item) => item.toLowerCase().includes(trimmedInput));
+		const t = newLabel.trim().toLowerCase();
+		if (t) {
+			filteredLabels = dropdownItems.filter((item) => item.toLowerCase().includes(t));
 			showDropdown = filteredLabels.length > 0;
-		} else {
-			showDropdown = false;
-		}
+		} else showDropdown = false;
 	}
-
 	let selectedFilterLabels: string[] = [];
-
 	function filterTasks(column: Column) {
 		return column.tasks.filter((task) => {
 			const taskLabels = task.type.split(', ').map((label) => label.trim());
-			const matchesLabels =
-				selectedFilterLabels.length === 0 ||
-				selectedFilterLabels.some((label) => taskLabels.includes(label));
-			const matchesSearch =
-				!searchQuery.trim() ||
-				task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				task.id.toLowerCase().includes(searchQuery.toLowerCase());
-			return matchesLabels && matchesSearch;
+			return (
+				(selectedFilterLabels.length === 0 ||
+					selectedFilterLabels.some((label) => taskLabels.includes(label))) &&
+				(!searchQuery.trim() ||
+					task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					task.id.toLowerCase().includes(searchQuery.toLowerCase()))
+			);
 		});
 	}
-
 	function highlightText(text: string, query: string) {
 		if (!query) return text;
 		const regex = new RegExp(`(${query})`, 'gi');
 		return text.replace(regex, '<mark class="bg-green-300">$1</mark>');
 	}
-
 	function handleDrop(event: { detail: { items: Column[] } }) {
 		columns = event.detail.items;
 	}
-
 	function openLabelPopup(taskId: string) {
 		selectedTaskId = taskId;
 		isLabelPopupOpen = true;
-		const task = columns
-			.flatMap((column) => column.tasks)
-			.find((task) => task.id === selectedTaskId);
+		const task = columns.flatMap((c) => c.tasks).find((t) => t.id === selectedTaskId);
 		taskLabels = task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
 	}
-
 	function toggleLabelPopup() {
 		isLabelPopupOpen = !isLabelPopupOpen;
 	}
-
 	function addLabel() {
-		const task = columns
-			.flatMap((column) => column.tasks)
-			.find((task) => task.id === selectedTaskId);
+		const task = columns.flatMap((c) => c.tasks).find((t) => t.id === selectedTaskId);
 		taskLabels = task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
-		if (!dropdownItems.includes(newLabel.trim())) {
+		if (!dropdownItems.includes(newLabel.trim()))
 			dropdownItems = [...dropdownItems, newLabel.trim()];
-		}
 		columns = columns.map((column) => ({
 			...column,
 			tasks: column.tasks.map((task) =>
 				task.id === selectedTaskId
-					? {
-							...task,
-							type: task.type ? `${task.type}, ${newLabel.trim()}` : newLabel.trim()
-						}
+					? { ...task, type: task.type ? `${task.type}, ${newLabel.trim()}` : newLabel.trim() }
 					: task
 			)
 		}));
 	}
-
 	const openTicketModal = (index: number) => {
 		isTicketModalOpen = true;
 		activeColumnIndex = index;
 		columnDropdownOpen.set(null);
 	};
-
 	const closeTicketModal = () => {
 		isTicketModalOpen = false;
 		activeColumnIndex = null;
 	};
-
 	let columnLimits: Record<number, string> = {};
-
 	const saveColumnLimit = (event: CustomEvent<string>) => {
 		if (activeColumnIndex !== null) {
 			const newLimit = event.detail.trim();
@@ -181,16 +144,13 @@
 		}
 		closeTicketModal();
 	};
-
 	function startAddingTask(index: number) {
 		newTaskTitle = '';
 		newTaskType = '';
 		addingTask.set(index);
 	}
-
 	function addTask(index: number) {
 		const columnLimit = parseInt(columnLimits[index] || '0', 10);
-
 		if (columnLimit > 0 && columns[index].tasks.length >= columnLimit) {
 			Swal.fire({
 				title: 'Task Limit Reached',
@@ -200,7 +160,6 @@
 			});
 			return;
 		}
-
 		if (!newTaskTitle.trim()) {
 			Swal.fire({
 				title: 'Error',
@@ -210,28 +169,19 @@
 			});
 			return;
 		}
-
-		const id = `Task-${++totalTaskCount}`;
-		const newTask: Task = {
-			id,
-			title: newTaskTitle.trim(),
-			type: newTaskType.trim() || ''
-		};
-
+		const id = `Task-${++totalTaskCount}`,
+			newTask: Task = { id, title: newTaskTitle.trim(), type: newTaskType.trim() || '' };
 		columns[index].tasks = [...columns[index].tasks, newTask];
 		addingTask.set(null);
 	}
-
 	function deleteTask(colIndex: number, taskIndex: number) {
 		columns[colIndex].tasks = columns[colIndex].tasks.filter((_, i) => i !== taskIndex);
 		dropdownOpen.set(null);
 	}
-
 	function deleteColumn(index: number) {
 		columns = columns.filter((_, i) => i !== index);
 		columnDropdownOpen.set(null);
 	}
-
 	function toggleDropdown(colIndex: number, taskIndex: number) {
 		dropdownOpen.update((current) =>
 			current && current.colIndex === colIndex && current.taskIndex === taskIndex
@@ -239,30 +189,20 @@
 				: { colIndex, taskIndex }
 		);
 	}
-
 	function toggleColumnDropdown(index: number) {
 		columnDropdownOpen.update((current) => (current === index ? null : index));
 	}
-
 	function handlePageClick(event: MouseEvent) {
-		const target = event.target as HTMLElement;
-
-		if (!target.closest('[aria-label="column-ellipsis"]')) {
+		if (!(event.target as HTMLElement).closest('[aria-label="column-ellipsis"]'))
 			columnDropdownOpen.set(null);
-		}
 	}
-
 	function startEditingColumn(index: number) {
 		editingColumn.set(index);
 	}
-
 	function saveColumnTitle(index: number, newTitle: string) {
-		if (newTitle.trim()) {
-			columns[index].title = newTitle.trim();
-		}
+		if (newTitle.trim()) columns[index].title = newTitle.trim();
 		editingColumn.set(null);
 	}
-
 	function addNewColumn() {
 		if (!newColumnTitle.trim()) {
 			Swal.fire({
@@ -273,52 +213,37 @@
 			});
 			return;
 		}
-
-		const newColumn: Column = {
-			id: `${Date.now()}`,
-			title: newColumnTitle.trim(),
-			tasks: []
-		};
-
+		const newColumn: Column = { id: `${Date.now()}`, title: newColumnTitle.trim(), tasks: [] };
 		columns = [...columns, newColumn];
-
 		newColumnTitle = '';
 		isAddingColumn = false;
 	}
-
 	function cancelColumn() {
 		newColumnTitle = '';
 		isAddingColumn = false;
 	}
-
 	function goBack() {
 		history.back();
 	}
-
 	function getTaskLabels(taskId: string): string[] {
-		const task = columns.flatMap((column) => column.tasks).find((task) => task.id === taskId);
+		const task = columns.flatMap((c) => c.tasks).find((t) => t.id === taskId);
 		return task?.type ? task.type.split(', ').map((label) => label.trim()) : [];
 	}
-
 	let taskLabels = getTaskLabels(selectedTaskId);
-	let hasTasks = columns.some((column) => column.tasks.length > 0);
-	$: hasTasks = columns.some((column) => column.tasks.length > 0);
-
+	let hasTasks = columns.some((c) => c.tasks.length > 0);
+	$: hasTasks = columns.some((c) => c.tasks.length > 0);
 	const headers = [
 		{ label: '# Key' },
 		{ label: 'Summary' },
 		{ label: 'Status' },
 		{ label: 'Labels' }
 	];
-
-	let isTaskModalOpen = false;
-	let selectedTask = { id: '', title: '', type: '' };
-
+	let isTaskModalOpen = false,
+		selectedTask = { id: '', title: '', type: '' };
 	function openTaskModal(task: Task) {
 		selectedTask = { ...task };
 		isTaskModalOpen = true;
 	}
-
 	function closeTaskModal() {
 		isTaskModalOpen = false;
 	}
@@ -339,43 +264,32 @@
 	<div class="mb-4">
 		<Button text="Back" style="ghost" arrow="left" on:click={goBack} />
 	</div>
-
 	<div class="p-2 mx-auto">
 		<div class="flex justify-between items-center">
 			<h2 class="text-md dark:text-light">Project / {projectTitle}</h2>
 			<div class="flex justify-end items-center space-x-4">
-				<!-- Crop -->
-				<div class={`flex items-center bg-gray-400 dark:bg-gray-600 rounded-full overflow-hidden`}>
+				<div class="flex items-center bg-gray-400 dark:bg-gray-600 rounded-full overflow-hidden">
 					<div
 						class="bg-green-200 text-white rounded-full flex items-center justify-center w-8 h-8 flex-shrink-0"
 					>
 						<img src={plantIcon} alt="Plant Icon" class="w-6 h-6" />
 					</div>
-					<span class="text-dark dark:text-light text-sm mx-3">
-						{crop}
-					</span>
+					<span class="text-dark dark:text-light text-sm mx-3">{crop}</span>
 				</div>
-
-				<!-- Status -->
 				<DropdownSmall items={ProjectStatus} placeholder="Status" />
-
-				<!-- Budget -->
-				<div class={`flex items-center bg-gray-400 dark:bg-gray-600  rounded-full overflow-hidden`}>
+				<div class="flex items-center bg-gray-400 dark:bg-gray-600 rounded-full overflow-hidden">
 					<div
 						class="bg-green-200 text-white rounded-full flex items-center justify-center w-8 h-8 flex-shrink-0"
 					>
 						₹
 					</div>
-					<span class="text-dark dark:text-light text-sm mx-3">
-						{budget}
-					</span>
+					<span class="text-dark dark:text-light text-sm mx-3">{budget}</span>
 				</div>
 			</div>
 		</div>
 		<h1 class="text-lg font-bold mt-2 mb-6 dark:text-light">TASK board</h1>
 		<div class="flex justify-between items-center mb-4">
 			<SearchBar mode="table" placeholder="Search Task or ID" bind:query={searchQuery} />
-
 			{#if hasTasks}
 				<div class="flex items-center gap-4 ml-auto">
 					<DropdownFilter
@@ -384,7 +298,6 @@
 						placeholder="Label"
 						bind:selectedItems={selectedFilterLabels}
 					/>
-
 					{#if selectedFilterLabels.length > 0}
 						<Button
 							text="Clear filters"
@@ -398,11 +311,9 @@
 			{/if}
 			<TicketView {isListView} {toggleView} />
 		</div>
-
 		{#if isListView}
 			<ViewTable {headers} {columns} {filterTasks} {searchQuery} />
 		{:else}
-			<!-- Kanban Board -->
 			<div
 				class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 relative"
 				use:dndzone={{ items: columns, flipDurationMs: 200 }}
@@ -431,9 +342,9 @@
 								>
 									{column.title}
 									{#if columnLimits[colIndex]?.trim()}
-										<span class="text-xs bg-gray-300 rounded p-1 text-gray-100 font-semibold ml-2">
-											MAX: {columnLimits[colIndex]}
-										</span>
+										<span class="text-xs bg-gray-300 rounded p-1 text-gray-100 font-semibold ml-2"
+											>MAX: {columnLimits[colIndex]}</span
+										>
 									{/if}
 								</button>
 							{/if}
@@ -465,21 +376,16 @@
 									>
 										<button
 											class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
-											on:click={() => openTicketModal(colIndex)}
+											on:click={() => openTicketModal(colIndex)}>Set column limit</button
 										>
-											Set column limit
-										</button>
 										<button
 											class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
-											on:click={() => deleteColumn(colIndex)}
+											on:click={() => deleteColumn(colIndex)}>Delete</button
 										>
-											Delete
-										</button>
 									</div>
 								{/if}
 							</div>
 						</div>
-						<!-- Tasks -->
 						<div class="space-y-4">
 							{#each filterTasks(column) as task, taskIndex}
 								<div
@@ -493,11 +399,10 @@
 											</p>
 										</div>
 										<div class="relative dark:text-white">
-											<!-- Prevent dropdown button clicks from triggering the modal -->
 											<button
 												aria-label="ellipsis"
 												on:click={(event) => {
-													event.stopPropagation(); // Stops the event from bubbling to the parent div
+													event.stopPropagation();
 													toggleDropdown(colIndex, taskIndex);
 												}}
 											>
@@ -523,16 +428,12 @@
 												>
 													<button
 														class="hover:bg-gray-500 px-4 py-1 rounded w-full text-left"
-														on:click={() => openLabelPopup(task.id)}
+														on:click={() => openLabelPopup(task.id)}>Add Label</button
 													>
-														Add Label
-													</button>
 													<button
 														class="hover:bg-gray-500 px-4 py-2 rounded w-full text-left"
-														on:click={() => deleteTask(colIndex, taskIndex)}
+														on:click={() => deleteTask(colIndex, taskIndex)}>Delete</button
 													>
-														Delete
-													</button>
 												</div>
 											{/if}
 										</div>
@@ -541,17 +442,9 @@
 										<div class="flex flex-wrap gap-1">
 											{#each task.type ? task.type.split(', ') : [] as label}
 												<span
-													class={`text-xs font-semibold text-white rounded px-2 py-1 ${
-														{
-															Finance: 'bg-green-100 ',
-															Research: 'bg-blue-200',
-															Maintenance: 'bg-yellow-200',
-															Urgent: 'bg-red-200'
-														}[label] || 'bg-gray-300'
-													}`}
+													class={`text-xs font-semibold text-white rounded px-2 py-1 ${{ Finance: 'bg-green-100 ', Research: 'bg-blue-200', Maintenance: 'bg-yellow-200', Urgent: 'bg-red-200' }[label] || 'bg-gray-300'}`}
+													>{label}</span
 												>
-													{label}
-												</span>
 											{/each}
 										</div>
 										<span class="text-xs text-gray-300 ml-auto">{task.id}</span>
@@ -560,7 +453,6 @@
 							{/each}
 						</div>
 						{#if $addingTask === colIndex}
-							<!--TextArea for task  -->
 							<div
 								class="mt-2 p-2 rounded-lg overflow-visible"
 								style="box-sizing: border-box; max-width: 100%;"
@@ -569,20 +461,17 @@
 								<div
 									class="mt-2 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0 z-20"
 								>
-									<!-- Task Type Dropdown -->
 									<DropdownSmall
 										items={dropdownItems}
 										direction="up"
 										placeholder="Task Type"
 										bind:selected={newTaskType}
 									/>
-									<!-- Create Button -->
 									<Button text="Create" style="secondary" on:click={() => addTask(colIndex)} />
 								</div>
 							</div>
 						{:else}
 							<div class="mt-4 w-full py-2 mx-auto">
-								<!-- Create Issue Button -->
 								<Button
 									text="Create issue"
 									style="primary"
@@ -592,9 +481,8 @@
 												columnLimits[colIndex] &&
 												columns[colIndex].tasks.length >= parseInt(columnLimits[colIndex], 10)
 											)
-										) {
+										)
 											startAddingTask(colIndex);
-										}
 									}}
 									add
 									width="large"
@@ -605,7 +493,6 @@
 						{/if}
 					</div>
 				{/each}
-
 				<div class="rounded-lg flex-none flex flex-col items-center justify-top">
 					{#if isAddingColumn}
 						<div class="w-full">
@@ -726,7 +613,6 @@
 	on:save={saveColumnLimit}
 	on:cancel={closeTicketModal}
 />
-
 <TaskModal
 	isOpen={isTaskModalOpen}
 	taskDetails={selectedTask}
