@@ -1,5 +1,7 @@
 <script lang="ts">
+	import SunCard from '@cards/SunCard.svelte';
 	import WeatherCard from '@cards/WeatherCard.svelte';
+
 	import { temperatureScale } from '@lib/stores/settings';
 	import { onMount } from 'svelte';
 
@@ -39,19 +41,20 @@
 	}
 </script>
 
-<main class="min-h-screen text-white relative">
-	<header class=" px-6 py-4">
+<main class="min-h-screen text-white px-6 py-4">
+	<header>
 		<h1 class="text-3xl font-bold text-dark dark:text-light">Weather</h1>
 		<hr class="mt-4 border-gray-600" />
 	</header>
 
-	<div>
-		{#if error}
-			<p class="absolute inset-0 flex items-center justify-center text-red-500">{error}</p>
-		{:else if location}
-			<div class="absolute left-4">
-				<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
-			</div>
-		{/if}
-	</div>
+	{#if error}
+		<p class="flex items-center justify-center text-red-500 mt-6">{error}</p>
+	{:else if location}
+		<div class="flex flex-col md:flex-row items-start justify-start gap-6 mt-6 w-full">
+			<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
+			<SunCard lat={location.lat} lon={location.lon} />
+			<SunCard lat={location.lat} lon={location.lon} />
+			<SunCard lat={location.lat} lon={location.lon} />
+		</div>
+	{/if}
 </main>
