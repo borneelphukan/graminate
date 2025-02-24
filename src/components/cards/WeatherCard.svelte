@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Loader from '@ui/Loader.svelte';
 
 	export let lat: number | undefined;
 	export let lon: number | undefined;
@@ -57,13 +56,11 @@
 				throw new Error(`Error fetching weather data: ${response.statusText}`);
 			}
 			const data = await response.json();
-
 			const todayDate = new Date(data.current.time).toISOString().split('T')[0];
 
 			const dailyData: DailyForecast[] = data.daily.time
 				.map((date: string, index: number): DailyForecast => {
 					const day = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
-
 					let icon = '☀️';
 					if (data.daily.snowfallSum[index] > 0) {
 						icon = '❄️';
@@ -76,7 +73,6 @@
 					} else if (data.daily.cloudCover?.[index] > 0) {
 						icon = '☁️';
 					}
-
 					return {
 						day,
 						maxTemp: Math.round(data.daily.temperature2mMax[index]),
@@ -88,7 +84,6 @@
 
 			const hourlyTime = data.hourly.time;
 			const hourlyTemperature = Object.values(data.hourly.temperature2m);
-
 			const hourlyData: HourlyForecast[] = hourlyTime.map(
 				(time: string, index: number): HourlyForecast => ({
 					time: time.split('T')[1].split(':')[0],
@@ -101,7 +96,6 @@
 					)
 				})
 			);
-
 			const filteredHourlyData = hourlyData.filter(
 				(hour) =>
 					new Date(`${hour.date}T${hour.time}:00Z`) >= new Date(data.current.time) &&
@@ -189,10 +183,10 @@
 
 <div
 	class={`p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative 
-        ${isDay === 1 ? 'bg-gradient-to-t from-blue-300 to-blue-200 text-white' : 'bg-gradient-to-t from-blue-950 to-blue-100 text-white'}`}
+      ${isDay === 1 ? 'bg-gradient-to-t from-blue-300 to-blue-200 text-white' : 'bg-gradient-to-t from-blue-950 to-blue-100 text-white'}`}
 >
-	<!-- Dropdown Toggle -->
 	<div class="absolute top-2 right-2 z-10">
+		<!-- Dropdown Toggle remains the same -->
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
@@ -218,7 +212,6 @@
 			/>
 		</svg>
 
-		<!-- Dropdown Menu -->
 		{#if dropdownOpen}
 			<div
 				class="absolute top-8 right-0 bg-white dark:bg-gray-700 dark:text-light text-black rounded-lg shadow-lg z-20 w-32"
@@ -259,9 +252,7 @@
 
 	{#if error}
 		<p class="text-red-500 text-center">Error: {error}</p>
-	{:else if temperature === null}
-		<Loader />
-	{:else}
+	{:else if temperature !== null}
 		{#if $displayMode === 'Small' || $displayMode === 'Medium' || $displayMode === 'Large'}
 			<!-- First Section -->
 			<div class="flex justify-between w-full">

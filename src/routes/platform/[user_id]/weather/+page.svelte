@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SunCard from '@cards/SunCard.svelte';
 	import WeatherCard from '@cards/WeatherCard.svelte';
-
+	import Loader from '@ui/Loader.svelte';
 	import { temperatureScale } from '@lib/stores/settings';
 	import { onMount } from 'svelte';
 
@@ -49,7 +49,11 @@
 
 	{#if error}
 		<p class="flex items-center justify-center text-red-500 mt-6">{error}</p>
-	{:else if location}
+	{:else if !location}
+		<div class="flex items-center justify-center min-h-screen">
+			<Loader />
+		</div>
+	{:else}
 		<div class="flex flex-col md:flex-row items-start justify-start gap-6 mt-6 w-full">
 			<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
 			<SunCard lat={location.lat} lon={location.lon} />
