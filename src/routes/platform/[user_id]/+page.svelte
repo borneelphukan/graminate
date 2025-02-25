@@ -1,5 +1,5 @@
 <script lang="ts">
-	import WeatherCard from '@cards/WeatherCard.svelte';
+	import WeatherCard from '@cards/weather/TemperatureCard.svelte';
 	import ProgressCard from '@cards/ProgressCard.svelte';
 	import StatusCard from '@cards/StatusCard.svelte';
 	import Calendar from '@ui/Calendar.svelte';

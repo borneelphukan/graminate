@@ -1,6 +1,6 @@
 <script lang="ts">
-	import SunCard from '@cards/SunCard.svelte';
-	import WeatherCard from '@cards/WeatherCard.svelte';
+	import SunCard from '@cards/weather/SunCard.svelte';
+	import TemperatureCard from '@cards/weather/TemperatureCard.svelte';
 	import Loader from '@ui/Loader.svelte';
 	import { temperatureScale } from '@lib/stores/settings';
 	import { onMount } from 'svelte';
@@ -54,8 +54,8 @@
 			<Loader />
 		</div>
 	{:else}
-		<div class="flex flex-col md:flex-row items-start justify-start gap-6 mt-6 w-full">
-			<WeatherCard lat={location.lat} lon={location.lon} {fahrenheit} />
+		<div class="flex flex-col md:flex-row items-start justify-start gap-2 mt-6 w-full">
+			<TemperatureCard lat={location.lat} lon={location.lon} {fahrenheit} />
 			<SunCard lat={location.lat} lon={location.lon} />
 			<SunCard lat={location.lat} lon={location.lon} />
 			<SunCard lat={location.lat} lon={location.lon} />

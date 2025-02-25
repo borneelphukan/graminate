@@ -46,7 +46,6 @@
 				throw new Error(`Error fetching sun data: ${response.statusText}`);
 			}
 			const data = await response.json();
-			// Return the full daily object
 			return data.daily;
 		} catch (err: any) {
 			console.error(err.message);
@@ -92,7 +91,6 @@
 		};
 	}
 
-	// Only fetch data on mount.
 	onMount(async () => {
 		if (lat !== undefined && lon !== undefined) {
 			try {
@@ -110,20 +108,25 @@
 		}
 	});
 
-	// Update sun position arc when sunrise and sunset times are available.
 	$: if (sunriseTime && sunsetTime) {
 		const now = new Date();
 		const currentMinutes = now.getHours() * 60 + now.getMinutes();
 		const sunriseMins = parseTimeToMinutes(sunriseTime);
 		const sunsetMins = parseTimeToMinutes(sunsetTime);
-		let fraction = (currentMinutes - sunriseMins) / (sunsetMins - sunriseMins);
-		if (isNaN(fraction)) fraction = 0;
-		fraction = Math.max(0, Math.min(1, fraction));
-		xSun = 100 * fraction;
-		ySun = 25 * ((1 - fraction) ** 2 + fraction ** 2);
+		if ($displayMode === 'Small') {
+			let t = (currentMinutes - sunriseMins) / (sunsetMins - sunriseMins);
+			t = Math.max(0, Math.min(1, t));
+			xSun = 160 * t;
+			ySun = 50 * (1 - t) ** 2 + 50 * t ** 2;
+		} else {
+			let fraction = (currentMinutes - sunriseMins) / (sunsetMins - sunriseMins);
+			if (isNaN(fraction)) fraction = 0;
+			fraction = Math.max(0, Math.min(1, fraction));
+			xSun = 100 * fraction;
+			ySun = 25 * ((1 - fraction) ** 2 + fraction ** 2);
+		}
 	}
 
-	// Reactive block for Small displayMode
 	$: if (dailySunData && $displayMode === 'Small') {
 		const today = new Date().toISOString().split('T')[0];
 		let startIndex = dailySunData.time.findIndex((date: string) => date >= today);
@@ -136,7 +139,7 @@
 		error = null;
 	}
 
-	// Reactive block for Large displayMode
+	// Reactive block for Large displayMode.
 	$: if (dailySunData && $displayMode === 'Large') {
 		sunTimesArray = [];
 		const today = new Date().toISOString().split('T')[0];
@@ -156,21 +159,36 @@
 		}
 		error = null;
 	}
+
+	let displayedSunsetTime: string | null = null;
+	let sunsetLabel: string = '';
+	$: if ($displayMode === 'Large' && sunTimesArray.length > 1) {
+		const now = new Date();
+		const currentMinutes = now.getHours() * 60 + now.getMinutes();
+		const todaysSunriseMinutes = parseTimeToMinutes(sunTimesArray[0].sunrise);
+		const todaysSunsetMinutes = parseTimeToMinutes(sunTimesArray[0].sunset);
+
+		if (currentMinutes >= todaysSunriseMinutes && currentMinutes < todaysSunsetMinutes) {
+			displayedSunsetTime = sunTimesArray[0].sunset;
+			sunsetLabel = 'Sunset Today';
+		} else {
+			displayedSunsetTime = sunTimesArray[1].sunset;
+			sunsetLabel = 'Sunset Tomorrow';
+		}
+	}
 </script>
 
 <div
-	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative
-         bg-gradient-to-t from-gray-300 to-gray-200 text-white"
+	class="p-4 rounded-lg shadow-md max-w-sm mx-auto flex flex-col items-center relative dark:bg-gray-700 bg-gray-500"
 >
 	<div class="absolute top-2 right-2 z-10">
-		<!-- Dropdown for selecting display mode -->
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6 cursor-pointer"
+			class="w-6 h-6 cursor-pointer text-dark dark:text-light"
 			onclick={() => (dropdownOpen = !dropdownOpen)}
 			onkeydown={(event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
@@ -191,11 +209,11 @@
 
 		{#if dropdownOpen}
 			<div
-				class="absolute top-8 right-0 bg-white dark:bg-gray-700 dark:text-light text-black
+				class="absolute top-8 right-0 bg-white dark:bg-gray-600 dark:text-light text-black
                rounded-lg shadow-lg z-20 w-32"
 			>
 				<button
-					class="w-full text-left text-sm px-4 py-2 hover:bg-gray-500 dark:hover:bg-yellow-100 cursor-pointer"
+					class="w-full text-left text-sm px-4 py-2 hover:bg-gray-500 dark:hover:bg-blue-100 cursor-pointer"
 					type="button"
 					onclick={() => {
 						$displayMode = 'Small';
@@ -205,7 +223,7 @@
 					Small
 				</button>
 				<button
-					class="w-full text-left text-sm px-4 py-2 hover:bg-gray-500 dark:hover:bg-yellow-100 cursor-pointer"
+					class="w-full text-left text-sm px-4 py-2 hover:bg-gray-500 dark:hover:bg-blue-100 cursor-pointer"
 					type="button"
 					onclick={() => {
 						$displayMode = 'Large';
@@ -225,55 +243,83 @@
 			<div class="flex flex-col items-center justify-center w-[180px] p-1 text-center rounded-md">
 				<div class="w-full flex flex-col items-start">
 					<div class="flex flex-row items-center gap-2">
-						<FontAwesomeIcon icon={faSun} class="size-5 text-gray-400" />
-						<p class="text-lg tracking-wide">Sunset</p>
+						<FontAwesomeIcon icon={faSun} class="size-5 text-yellow-200" />
+						<p class="text-lg tracking-wide text-gray-200 dark:text-light">Sunset</p>
 					</div>
-					<p class="text-2xl">{sunsetTime}</p>
+					<p class="text-2xl text-gray-200 dark:text-gray-300">{sunsetTime}</p>
 				</div>
-				<!-- Arc showing sun position -->
-				<div class="relative w-full h-12">
-					<svg viewBox="0 0 100 25" class="w-full h-full overflow-visible">
-						<path d="M0,25 Q50,0 100,25" stroke="white" stroke-width="1" fill="none" />
-						<circle cx={xSun} cy={ySun} r="3" fill="white" />
+				<div class="relative w-full">
+					<svg viewBox="0 0 160 60" class="w-full h-full overflow-visible">
+						<!-- Dark mode support for the filled region (below the arc) -->
+						<path d="M0,50 Q80,0 160,50 L160,45 L0,45 Z" class="fill-gray-500 dark:fill-gray-700" />
+
+						<!-- Arc with dark mode support -->
+						<path
+							d="M0,50 Q80,0 160,50"
+							class="stroke-dark dark:stroke-gray-300"
+							stroke-width="1"
+							fill="none"
+						/>
+
+						<!-- Horizon line with dark mode support -->
+						<line
+							x1="0"
+							y1="45"
+							x2="160"
+							y2="45"
+							class="stroke-dark dark:stroke-gray-300"
+							stroke-width="1"
+						/>
+
+						<!-- Sun with conditional dark mode color -->
+						<circle
+							cx={xSun}
+							cy={ySun}
+							r="5"
+							class={ySun > 45 ? 'fill-gray-200 dark:fill-dark' : 'fill-yellow-200'}
+						/>
 					</svg>
 				</div>
-				<p class="mt-2 text-lg">Sunrise: {sunriseTime}</p>
+				<p class="mt-2 text-lg text-dark dark:text-light">Sunrise: {sunriseTime}</p>
 			</div>
 		{:else if $displayMode === 'Large'}
 			{#if sunTimesArray.length > 1}
-				<div class="mt-1 w-full max-w-2xl">
+				{#if displayedSunsetTime}
 					<div class="flex flex-col pb-4">
-						<div class="text-left text-3xl font-semibold">{sunTimesArray[1].sunrise}</div>
-						<div class="text-sm">Sunrise Tomorrow</div>
+						<div class="text-sm text-center text-dark dark:text-light">{sunsetLabel}</div>
+						<div class="text-center text-3xl font-semibold text-gray-200 dark:text-light">
+							{displayedSunsetTime}
+						</div>
 					</div>
-
+				{/if}
+				<div class="mt-1 w-full max-w-2xl">
 					<div class="flex flex-row justify-between border-b border-gray-300 py-2">
-						<div class="text-sm">First Light</div>
-						<div class="text-right">
+						<div class="text-sm text-dark dark:text-light">First Light</div>
+						<div class="text-right text-dark dark:text-light">
 							{formatTimeFromMinutes(
 								Math.max(parseTimeToMinutes(sunTimesArray[0].sunrise) - 30, 0)
 							)}
 						</div>
 					</div>
 					<div class="flex flex-row justify-between border-b border-gray-300 py-2">
-						<div class="text-sm">Sunrise Today</div>
-						<div class="text-right">{sunTimesArray[0].sunrise}</div>
+						<div class="text-sm text-dark dark:text-light">Sunrise Today</div>
+						<div class="text-right text-dark dark:text-light">{sunTimesArray[0].sunrise}</div>
 					</div>
 					<div class="flex flex-row justify-between border-b border-gray-300 py-2">
-						<div class="text-sm">Sunset Today</div>
-						<div class="text-right">{sunTimesArray[0].sunset}</div>
+						<div class="text-sm text-dark dark:text-light">Sunset Today</div>
+						<div class="text-right text-dark dark:text-light">{sunTimesArray[0].sunset}</div>
 					</div>
 					<div class="flex flex-row justify-between border-b border-gray-300 py-2">
-						<div class="text-sm">Last Light</div>
-						<div class="text-right">
+						<div class="text-sm text-dark dark:text-light">Last Light</div>
+						<div class="text-right text-dark dark:text-light">
 							{formatTimeFromMinutes(
 								Math.min(parseTimeToMinutes(sunTimesArray[0].sunset) + 30, 1440)
 							)}
 						</div>
 					</div>
 					<div class="flex flex-row justify-between border-b border-gray-300 py-2">
-						<div class="text-sm">Total Daylight Duration</div>
-						<div class="text-right">
+						<div class="text-sm text-dark dark:text-light">Total Daylight Duration</div>
+						<div class="text-right text-dark dark:text-light">
 							{formatDuration(
 								parseTimeToMinutes(sunTimesArray[0].sunset) -
 									parseTimeToMinutes(sunTimesArray[0].sunrise)
@@ -281,42 +327,39 @@
 						</div>
 					</div>
 				</div>
-			{/if}
 
-			<p class="mt-4">Sunrise &amp; Sunset for the upcoming days</p>
-			<div class="overflow-y-auto" style="max-height: 150px;">
-				<div class="text-center px-2 flex flex-col items-center w-full">
-					{#each sunTimesArray as sunData (sunData.date)}
-						<div
-							class="mx-2 border-b border-gray-300 p-1 my-1 grid grid-cols-[auto,auto,auto,auto] items-center gap-6 w-full max-w-2xl"
-						>
-							<!-- Weekday -->
-							<p class="text-sm text-center w-4">
-								{new Date(sunData.date).toLocaleDateString(undefined, { weekday: 'short' })}
-							</p>
-							<!-- Sunrise -->
-							<p class="text-sm text-center w-8">{sunData.sunrise}</p>
-							<!-- Horizontal Bar -->
-							<div class="relative h-1 bg-gray-200 w-16 rounded-full">
-								<div
-									class="h-full bg-blue-200 absolute rounded-full"
-									style="left: {(parseTimeToMinutes(sunData.sunrise) / 1440) *
-										100}%; width: {((parseTimeToMinutes(sunData.sunset) -
-										parseTimeToMinutes(sunData.sunrise)) /
-										1440) *
-										100}%"
-								></div>
+				<p class="my-4 text-sm text-dark dark:text-light">Sunrise &amp; Sunset for the upcoming days</p>
+				<div class="overflow-y-auto" style="max-height: 150px;">
+					<div class="text-center px-2 flex flex-col items-center w-full">
+						{#each sunTimesArray as sunData (sunData.date)}
+							<div
+								class="mx-2 border-b border-gray-300 p-1 my-1 grid grid-cols-[auto,auto,auto,auto] items-center gap-6 w-full max-w-2xl"
+							>
+								<p class="text-sm text-center w-4 text-dark dark:text-light">
+									{new Date(sunData.date).toLocaleDateString(undefined, { weekday: 'short' })}
+								</p>
+
+								<p class="text-sm text-center w-8 text-dark dark:text-light">{sunData.sunrise}</p>
+
+								<div class="relative h-1 bg-gray-300 dark:bg-gray-100 w-16 rounded-full">
+									<div
+										class="h-full bg-blue-200 absolute rounded-full"
+										style="left: {(parseTimeToMinutes(sunData.sunrise) / 1440) *
+											100}%; width: {((parseTimeToMinutes(sunData.sunset) -
+											parseTimeToMinutes(sunData.sunrise)) /
+											1440) *
+											100}%"
+									></div>
+								</div>
+								<p class="text-sm text-center w-8 text-dark dark:text-light">{sunData.sunset}</p>
 							</div>
-							<!-- Sunset -->
-							<p class="text-sm text-center w-8">{sunData.sunset}</p>
-						</div>
-					{/each}
+						{/each}
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
 	{/if}
 </div>
 
 <style>
-	/* Add any additional styles as needed */
 </style>
