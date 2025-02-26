@@ -257,6 +257,7 @@
 							class="stroke-dark dark:stroke-gray-300"
 							stroke-width="1"
 							fill="none"
+							stroke-dasharray="2,2"
 						/>
 
 						<line
@@ -268,13 +269,27 @@
 							stroke-width="1"
 						/>
 
-						<!-- Sun with conditional dark mode color -->
-						<circle
-							cx={xSun}
-							cy={ySun}
-							r="5"
-							class={ySun > 45 ? 'fill-gray-200 dark:fill-dark' : 'fill-yellow-200'}
-						/>
+						<g>
+							<!-- Sun -->
+							<circle
+								cx={xSun}
+								cy={ySun}
+								r="5"
+								class={ySun > 45 ? 'fill-gray-200 dark:fill-dark' : 'fill-yellow-200'}
+							/>
+
+							<!-- Sun Rays -->
+							{#each Array(8) as _, i}
+								<line
+									x1={xSun + Math.cos((i * 45 * Math.PI) / 180) * 7}
+									y1={ySun + Math.sin((i * 45 * Math.PI) / 180) * 7}
+									x2={xSun + Math.cos((i * 45 * Math.PI) / 180) * 10}
+									y2={ySun + Math.sin((i * 45 * Math.PI) / 180) * 10}
+									class="stroke-yellow-200 dark:stroke-gray-400"
+									stroke-width="1.5"
+								/>
+							{/each}
+						</g>
 					</svg>
 				</div>
 				<p class="mt-2 text-lg text-dark dark:text-light">Sunrise: {sunriseTime}</p>

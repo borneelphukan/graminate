@@ -6,10 +6,12 @@
 	import UvScale from './UVScale.svelte';
 	import Chart from 'chart.js/auto';
 
+	let lowestRiskLevel: string = '';
+	let highestRiskLevel: string = '';
+
 	export let lat: number | undefined;
 	export let lon: number | undefined;
 
-	let locationName: string | null = null;
 	let error: string | null = null;
 
 	const displayMode = writable('Small');
@@ -124,7 +126,6 @@
 					(d: string) => new Date(d)
 				);
 				weatherData = fetchedWeatherData;
-				locationName = city;
 			} catch (err: any) {
 				error = err.message;
 			}
@@ -135,24 +136,34 @@
 
 	$: if (weatherData && $displayMode === 'Small') {
 		const today = new Date().toISOString().split('T')[0];
-		let startIndex = weatherData.daily.time.findIndex(
+		let startIndex = weatherData.daily?.time?.findIndex(
 			(d: Date) => d.toISOString().split('T')[0] >= today
 		);
-		if (startIndex === -1) startIndex = 0;
-		const maxUV = weatherData.daily.uvIndexMax[startIndex];
-		const daylightSeconds = weatherData.daily.daylightDuration[startIndex];
+		if (startIndex === -1 || startIndex === undefined) startIndex = 0;
+
+		const maxUV = weatherData.daily?.uvIndexMax?.[startIndex] ?? 0;
+		const minUV = weatherData.daily?.uvIndexMin?.[startIndex] ?? maxUV ?? 0; // Fix error
+
+		const daylightSeconds = weatherData.daily?.daylightDuration?.[startIndex] ?? 0;
 		const { sunrise, sunset } = calculateSunriseSunset(daylightSeconds);
+
 		const now = new Date();
 		const nowMinutes = now.getHours() * 60 + now.getMinutes();
 		const sunriseMins = parseTimeToMinutes(sunrise);
 		const sunsetMins = parseTimeToMinutes(sunset);
+
 		let currentUV = 0;
 		if (nowMinutes >= sunriseMins && nowMinutes <= sunsetMins) {
 			const fraction = (nowMinutes - sunriseMins) / (sunsetMins - sunriseMins);
 			currentUV = maxUV * Math.sin(Math.PI * fraction);
 		}
+
 		uvIndexToday = currentUV;
 		error = null;
+
+		// Compute lowest and highest risk levels
+		lowestRiskLevel = getUVRiskLevel(minUV).label;
+		highestRiskLevel = getUVRiskLevel(maxUV).label;
 	}
 
 	$: if (weatherData && $displayMode === 'Large') {
@@ -207,6 +218,17 @@
 		selectedHourlyData = hourlyUVDataByDay.find(
 			(dayData) => selectedDate && dayData.day.toDateString() === selectedDate.toDateString()
 		) ?? { day: new Date(), uvHours: [] };
+	}
+
+	$: if (selectedHourlyData && selectedHourlyData.uvHours.length > 0) {
+		// Compute lowest and highest UV index for the selected day
+		const uvValues = selectedHourlyData.uvHours.map((pt) => pt.uv);
+		const minUV = Math.min(...uvValues);
+		const maxUV = Math.max(...uvValues);
+
+		// Get the corresponding risk levels
+		lowestRiskLevel = getUVRiskLevel(minUV).label;
+		highestRiskLevel = getUVRiskLevel(maxUV).label;
 	}
 
 	let chartConfig: any = {};
@@ -294,10 +316,15 @@
 					},
 					y: {
 						beginAtZero: true,
-						suggestedMin: 0,
-						suggestedMax: 11,
+						min: 0,
+						max: 11,
 						grid: { display: false, drawTicks: false },
-						ticks: { display: false },
+						ticks: {
+							stepSize: 1,
+							callback: function (value: number) {
+								return value === 0 ? '' : value;
+							}
+						},
 						axis: 'y',
 						border: {
 							color: 'gray'
@@ -380,66 +407,105 @@
 					<FontAwesomeIcon icon={faSun} class="size-5 text-yellow-200" />
 					<p class="text-lg tracking-wide text-gray-200 dark:text-light">UV Index</p>
 				</div>
-				<p class="text-2xl text-left text-dark dark:text-gray-300">{Math.round(uvIndexToday)}</p>
+				<p class="text-2xl py-2 text-left text-dark dark:text-gray-300">{Math.round(uvIndexToday)}</p>
 				<p class="text-sm dark:text-light text-dark text-left">
 					{getUVRiskLevel(Math.round(uvIndexToday)).label}
 				</p>
 				<UvScale uvIndex={uvIndexToday} />
+				{#if lowestRiskLevel === highestRiskLevel}
+					<p class="text-xs text-dark dark:text-light mt-1">
+						UV index {lowestRiskLevel} today
+					</p>
+				{:else}
+					<p class="text-xs text-dark dark:text-light mt-1">
+						UV index {lowestRiskLevel} to {highestRiskLevel} today
+					</p>
+				{/if}
 			</div>
 		{:else if $displayMode === 'Large'}
 			<div class="w-full">
-				<div class="flex flex-row justify-center items-center gap-2">
-					<FontAwesomeIcon icon={faSun} class="size-5 text-yellow-200" />
-					<p class="text-lg tracking-wide text-gray-200 dark:text-light">UV Index</p>
-				</div>
-				<div class="text-center text-gray-200 dark:text-light my-2 pt-2 flex justify-center">
-					{#each weekDates as dateItem}
-						<div class="flex flex-col items-center">
-							<span class="text-sm font-bold">{dateItem.weekday}</span>
-							<button
-								type="button"
-								class="mx-2 flex flex-col items-center cursor-pointer px-2 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 {selectedDate &&
-								dateItem.date.toDateString() === selectedDate.toDateString()
-									? 'bg-green-200 text-white'
-									: ''}"
-								on:click={() => (selectedDate = dateItem.date)}
-								on:keydown={(event) => {
-									if (event.key === 'Enter' || event.key === ' ') {
-										selectedDate = dateItem.date;
-									}
-								}}
-								tabindex="0"
-								aria-label={`Select UV data for ${dateItem.weekday}, ${dateItem.day}`}
-							>
-								<span class="text-xs">{dateItem.day}</span>
-							</button>
-						</div>
-					{/each}
-				</div>
+				<div>
+					<!-- Top Label -->
+					<div class="flex flex-row justify-center items-center gap-2">
+						<FontAwesomeIcon icon={faSun} class="size-5 text-yellow-200" />
+						<p class="text-lg tracking-wide text-gray-200 dark:text-light">UV Index</p>
+					</div>
+					<!-- Calendar -->
+					<div class="text-center text-gray-200 dark:text-light my-2 pt-2 flex justify-center">
+						{#each weekDates as dateItem}
+							<div class="flex flex-col items-center">
+								<span class="text-sm font-bold">{dateItem.weekday}</span>
+								<button
+									type="button"
+									class="mx-2 flex flex-col items-center cursor-pointer px-2 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 {selectedDate &&
+									dateItem.date.toDateString() === selectedDate.toDateString()
+										? 'bg-green-200 text-white'
+										: ''}"
+									on:click={() => (selectedDate = dateItem.date)}
+									on:keydown={(event) => {
+										if (event.key === 'Enter' || event.key === ' ') {
+											selectedDate = dateItem.date;
+										}
+									}}
+									tabindex="0"
+									aria-label={`Select UV data for ${dateItem.weekday}, ${dateItem.day}`}
+								>
+									<span class="text-xs">{dateItem.day}</span>
+								</button>
+							</div>
+						{/each}
+					</div>
 
-				{#if selectedHourlyData && selectedHourlyData.uvHours.length > 0}
-					<p class="text-center text-gray-200 dark:text-light text-lg">
-						{hoveredUV ? Math.round(hoveredUV) : Math.round(selectedHourlyData.uvHours[0].uv)}
-						<span>
-							{hoveredRisk ? hoveredRisk : getUVRiskLevel(selectedHourlyData.uvHours[0].uv).label}
-						</span>
+					{#if selectedHourlyData && selectedHourlyData.uvHours.length > 0}
+						<p class="text-center text-gray-200 dark:text-light text-lg">
+							{Math.round(hoveredUV)}
+							<span>{hoveredRisk}</span>
+						</p>
+					{/if}
+
+					<div style="width: {graphWidth}px; height: {graphHeight}px; margin: auto;">
+						<canvas bind:this={chartCanvas}></canvas>
+					</div>
+
+					{#if selectedHourlyData && selectedHourlyData.uvHours.length > 0}
+						<p class="text-xs font-semibold text-gray-200 dark:text-light mt-4">
+							{selectedDate?.toDateString() === new Date().toDateString()
+								? 'Today'
+								: selectedDate?.toLocaleDateString(undefined, {
+										day: 'numeric',
+										month: 'short'
+									})},
+							{hoveredTime
+								? hoveredTime
+								: selectedHourlyData.uvHours[0].time.toLocaleTimeString([], {
+										hour: '2-digit',
+										minute: '2-digit'
+									})}
+						</p>
+					{/if}
+
+					<div>
+						{#if lowestRiskLevel === highestRiskLevel}
+							<p class="text-sm text-dark dark:text-light">
+								UV index {lowestRiskLevel} on this day
+							</p>
+						{:else}
+							<p class="text-sm text-dark dark:text-light">
+								UV index {lowestRiskLevel} to {highestRiskLevel} on this day
+							</p>
+						{/if}
+					</div>
+				</div>
+				<div class="border-t border-gray-300 m-2 pt-2">
+					<p class="text-md font-semibold text-dark dark:text-light">About the UV Index</p>
+					<p class="text-sm text-dark dark:text-light">
+						The World Health Organization's UV index (UVI) measures ultraviolet radiation. The
+						higher the UVi, the greater the potential for damage and the faster harm can occur. The
+						UVI can help you decide when to protect yourself from the sun and when to avoid being
+						outside. The WHO recommends using shade, sunscreen, hats and protective clothing at
+						levels of 3 (Moderate) or higher.
 					</p>
-				{/if}
-
-				<div style="width: {graphWidth}px; height: {graphHeight}px; margin: auto;">
-					<canvas bind:this={chartCanvas}></canvas>
 				</div>
-
-				{#if selectedHourlyData && selectedHourlyData.uvHours.length > 0}
-					<p class="text-center text-gray-200 dark:text-light">
-						{hoveredTime
-							? hoveredTime
-							: selectedHourlyData.uvHours[0].time.toLocaleTimeString([], {
-									hour: '2-digit',
-									minute: '2-digit'
-								})}
-					</p>
-				{/if}
 			</div>
 		{/if}
 	{/if}

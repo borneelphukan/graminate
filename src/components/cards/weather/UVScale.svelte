@@ -17,7 +17,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center w-full max-w-md mx-auto py-4 relative">
+<div class="flex flex-col items-center w-full max-w-md mx-auto py-3 relative">
 	<!-- UV Scale Bar -->
 	<div class="relative w-full h-2 flex rounded-md overflow-hidden bg-gradient-to-r">
 		{#each uvLevels as level, i}
