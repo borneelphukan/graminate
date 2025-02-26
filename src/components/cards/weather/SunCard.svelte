@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable, get } from 'svelte/store';
+	import { writable } from 'svelte/store';
 	import { FontAwesomeIcon } from '@fortawesome/svelte-fontawesome';
 	import { faSun } from '@fortawesome/free-solid-svg-icons';
 
@@ -250,10 +250,8 @@
 				</div>
 				<div class="relative w-full">
 					<svg viewBox="0 0 160 60" class="w-full h-full overflow-visible">
-						<!-- Dark mode support for the filled region (below the arc) -->
-						<path d="M0,50 Q80,0 160,50 L160,45 L0,45 Z" class="fill-gray-500 dark:fill-gray-700" />
+						<path d="M0,50 Q80,0 160,50 L160,45 L0,45 Z" class="fill-gray-500 dark:fill-gray-600" />
 
-						<!-- Arc with dark mode support -->
 						<path
 							d="M0,50 Q80,0 160,50"
 							class="stroke-dark dark:stroke-gray-300"
@@ -261,7 +259,6 @@
 							fill="none"
 						/>
 
-						<!-- Horizon line with dark mode support -->
 						<line
 							x1="0"
 							y1="45"
@@ -328,7 +325,9 @@
 					</div>
 				</div>
 
-				<p class="my-4 text-sm text-dark dark:text-light">Sunrise &amp; Sunset for the upcoming days</p>
+				<p class="my-4 text-sm text-dark dark:text-light">
+					Sunrise &amp; Sunset for the upcoming days
+				</p>
 				<div class="overflow-y-auto" style="max-height: 150px;">
 					<div class="text-center px-2 flex flex-col items-center w-full">
 						{#each sunTimesArray as sunData (sunData.date)}

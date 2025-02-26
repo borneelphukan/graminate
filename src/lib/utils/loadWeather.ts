@@ -41,7 +41,8 @@ export async function getWeather(latitude: number, longitude: number) {
 			'soil_moisture_1_to_3cm',
 			'soil_moisture_3_to_9cm',
 			'soil_moisture_9_to_27cm',
-			'soil_moisture_27_to_81cm'
+			'soil_moisture_27_to_81cm',
+			'uv_index'
 		],
 		daily: [
 			'temperature_2m_max',
@@ -124,7 +125,8 @@ export async function getWeather(latitude: number, longitude: number) {
 				soilMoisture1To3cm: hourly.variables(17)?.valuesArray() ?? [],
 				soilMoisture3To9cm: hourly.variables(18)?.valuesArray() ?? [],
 				soilMoisture9To27cm: hourly.variables(19)?.valuesArray() ?? [],
-				soilMoisture27To81cm: hourly.variables(20)?.valuesArray() ?? []
+				soilMoisture27To81cm: hourly.variables(20)?.valuesArray() ?? [],
+				uvIndexHourly: hourly.variables(21)?.valuesArray() ?? []
 			},
 			daily: {
 				time: range(Number(daily.time()), Number(daily.timeEnd()), daily.interval()).map(
