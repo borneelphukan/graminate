@@ -1,0 +1,32 @@
+{
+  "name": "@graminate/shared",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/shared.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "module": "./dist/shared.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "pnpm eslint",
+    "lint:fix": "pnpm eslint --fix"
+  },
+  "dependencies": {
+    "zod": "4.1.11",
+    "zod-openapi": "^5.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

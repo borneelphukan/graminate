@@ -1,0 +1,190 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PrismaService } from '@/prisma/prisma.service';
+import { CreateContractDto, UpdateContractDto } from './contracts.dto';
+
+@Injectable()
+export class ContractsRepository {
+  constructor(private readonly prisma: PrismaService) {}
+  async getContracts(userId?: number, page?: number, limit?: number) {
+    try {
+      let contracts;
+      const where: any = {};
+      if (userId !== undefined) {
+        if (isNaN(userId) || userId <= 0) {
+          return { status: 400, data: { error: 'Invalid User ID parameter' } };
+        }
+        where.user_id = userId;
+      }
+
+      if (limit && page) {
+        const offset = (page - 1) * limit;
+        contracts = await this.prisma.deals.findMany({
+          where,
+          orderBy: { start_date: 'desc' },
+          take: limit,
+          skip: offset,
+        });
+      } else {
+        contracts = await this.prisma.deals.findMany({
+          where,
+          orderBy: { start_date: 'desc' },
+        });
+      }
+
+      return { status: 200, data: { contracts } };
+    } catch (err) {
+      console.error('Error fetching contracts:', err);
+      return { status: 500, data: { error: 'Failed to fetch contracts' } };
+    }
+  }
+
+  async addContract(createContractDto: CreateContractDto) {
+    const {
+      user_id,
+      deal_name,
+      partner,
+      amount,
+      stage,
+      start_date,
+      end_date,
+      category,
+      priority,
+    } = createContractDto;
+
+    try {
+      const newContract = await this.prisma.deals.create({
+        data: {
+          user_id,
+          deal_name,
+          partner,
+          amount,
+          stage,
+          start_date,
+          end_date: end_date ? new Date(end_date) : (null as any), // Cast to any to bypass TS if null is passed but required. Or let it fail runtime if really required.
+          category: category || null,
+          priority: priority || 'Medium',
+        },
+      });
+
+      return {
+        status: 201,
+        data: {
+          message: 'Contract added successfully',
+          contract: newContract,
+        },
+      };
+    } catch (err) {
+      // console.error(err);
+      return { status: 500, data: { error: 'Failed to add contract' } };
+    }
+  }
+
+  async deleteContract(id: number) {
+    if (isNaN(id) || id <= 0) {
+      return { status: 400, data: { error: 'Invalid contract (deal) ID' } };
+    }
+
+    try {
+      const existing = await this.prisma.deals.findUnique({
+        where: { deal_id: id },
+      });
+
+      if (!existing) {
+        return { status: 404, data: { error: 'Contract not found' } };
+      }
+
+      const deletedContract = await this.prisma.deals.delete({
+        where: { deal_id: id },
+      });
+
+      return {
+        status: 200,
+        data: {
+          message: 'Contract deleted successfully',
+          contract: deletedContract,
+        },
+      };
+    } catch (err) {
+      console.error('Error deleting contract:', err);
+      return { status: 500, data: { error: 'Failed to delete contract' } };
+    }
+  }
+
+  async updateContract(updateContractDto: UpdateContractDto) {
+    const {
+      id,
+      deal_name,
+      partner,
+      amount,
+      stage,
+      start_date,
+      end_date,
+      category,
+      priority,
+    } = updateContractDto;
+
+    if (isNaN(id) || id <= 0) {
+      return { status: 400, data: { error: 'Invalid contract (deal) ID' } };
+    }
+
+    const updateFields = [
+      deal_name,
+      partner,
+      amount,
+      stage,
+      start_date,
+      end_date,
+      category,
+      priority,
+    ];
+    if (updateFields.every((field) => field === undefined)) {
+      return { status: 400, data: { error: 'No update data provided' } };
+    }
+
+    try {
+      const existing = await this.prisma.deals.findUnique({
+        where: { deal_id: id },
+      });
+      if (!existing) {
+        return { status: 404, data: { error: 'Contract not found' } };
+      }
+
+      const updateData: any = {};
+      
+      if (deal_name !== undefined) updateData.deal_name = deal_name;
+      if (partner !== undefined) updateData.partner = partner;
+      if (amount !== undefined) updateData.amount = amount;
+      if (stage !== undefined) updateData.stage = stage;
+      if (start_date !== undefined) updateData.start_date = start_date;
+      if (end_date !== undefined) updateData.end_date = end_date ? new Date(end_date) : null;
+      if (category !== undefined) updateData.category = category;
+      if (priority !== undefined) updateData.priority = priority;
+
+      const updatedContract = await this.prisma.deals.update({
+        where: { deal_id: id },
+        data: updateData,
+      });
+
+      return {
+        status: 200,
+        data: {
+          message: 'Contract updated successfully',
+          contract: updatedContract,
+        },
+      };
+    } catch (err) {
+      return { status: 500, data: { error: 'Failed to update contract' } };
+    }
+  }
+
+  async resetTable(userId: number): Promise<{ message: string }> {
+    try {
+      await this.prisma.deals.deleteMany({});
+      return {
+        message: `Contracts (deals) table reset initiated by user ${userId}`,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to reset contracts table');
+    }
+  }
+}
