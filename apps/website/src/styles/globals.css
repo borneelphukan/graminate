@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-green-100: #2b7860;
+  --color-green-200: #04ad79;
+  --color-green-300: #d8fdf2;
+  --color-green-400: #f5fffc;
+
+  --color-blue-100: #2c5282;
+  --color-blue-200: #3182ce;
+  --color-blue-300: #bee3f8;
+  --color-blue-400: #ebf8ff;
+
+  --color-red-100: #9b2c2c;
+  --color-red-200: #e53e3e;
+  --color-red-300: #fed7d7;
+  --color-red-400: #fff5f5;
+
+  --color-yellow-100: #975a16;
+  --color-yellow-200: #facd1d;
+  --color-yellow-300: #fefcbf;
+  --color-yellow-400: #fffff0;
+
+  --color-indigo-100: #434190;
+  --color-indigo-200: #667eea;
+  --color-indigo-300: #c3dafe;
+  --color-indigo-400: #ebf4ff;
+
+  --color-gray-100: #131317;
+  --color-gray-200: #49494d;
+  --color-gray-300: #bbbbbc;
+  --color-gray-400: #e8e8e9;
+  --color-gray-500: #eceff1;
+
+  --color-cyan-100: #045d73;
+  --color-cyan-200: #0bc5ea;
+  --color-cyan-300: #cffafe;
+  --color-cyan-400: #e0fcff;
+
+  --color-light: #f9fafb;
+
+  --color-dark: #111827;
+  --color-dark-100: #28282c;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.home-container {
+  height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("/images/banners/banner.jpg");
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: darken;
+
+  will-change: transform;
+  transform-origin: center center;
+  transition: transform 0.01s ease-out;
+}
+
+.team-cover {
+  background-image: url("/images/banners/contact-banner.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 45vh;
+  /* Adjust as needed */
+}
