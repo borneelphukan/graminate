@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import type { DropdownFilter } from "@/types/card-props";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Checkbox } from "@graminate/ui";
 
 const DropdownFilter = ({
@@ -67,7 +66,7 @@ const DropdownFilter = ({
           )}
         </span>
         {/* Dropdown Icon */}
-        <FontAwesomeIcon icon={faChevronDown} className="size-5" />
+        <Icon type={"expand_more" as any} className="size-5" />
       </button>
 
       {/* Dropdown Menu */}

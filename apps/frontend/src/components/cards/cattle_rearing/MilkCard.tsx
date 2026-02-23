@@ -37,8 +37,6 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlassWaterDroplet } from "@fortawesome/free-solid-svg-icons";
 import Table from "@/components/tables/Table";
 import {
   useUserPreferences,

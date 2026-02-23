@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBoxesStacked } from "@fortawesome/free-solid-svg-icons";
 import Loader from "../ui/Loader";
 
 type ItemRecord = {
@@ -129,8 +128,8 @@ const InventoryStockCard = ({
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center flex-grow py-4">
-              <FontAwesomeIcon
-                icon={faBoxesStacked}
+              <Icon
+                type={"inventory" as any}
                 className="w-12 h-12 text-gray-300 mb-3"
               />
               <p className="text-gray-300">

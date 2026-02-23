@@ -1,12 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHome,
-  faUsers,
-  faFileAlt,
-  faSignOutAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 
 type SidebarProps = {
   adminId: string;
@@ -18,17 +12,17 @@ const Sidebar = ({ adminId }: SidebarProps) => {
   const navItems = [
     {
       label: "Dashboard",
-      icon: faHome,
+      icon: "home",
       path: `/platform/${adminId}`,
     },
     {
       label: "Users",
-      icon: faUsers,
+      icon: "group",
       path: `/platform/${adminId}/users`,
     },
     {
       label: "Documents",
-      icon: faFileAlt,
+      icon: "description",
       path: `/platform/${adminId}/documents`,
     },
   ];
@@ -53,7 +47,7 @@ const Sidebar = ({ adminId }: SidebarProps) => {
                     : "text-gray-400 hover:bg-gray-700 hover:text-white"
                 }`}
               >
-                <FontAwesomeIcon icon={item.icon} className="w-5 h-5 mr-4" />
+                <Icon type={item.icon as any} className="w-5 h-5 mr-4" />
                 <span className="font-medium">{item.label}</span>
               </a>
             </li>
@@ -66,7 +60,7 @@ const Sidebar = ({ adminId }: SidebarProps) => {
           onClick={handleLogout}
           className="flex items-center w-full p-3 rounded-lg cursor-pointer text-gray-400 hover:bg-gray-700 hover:text-white transition-colors duration-200"
         >
-          <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5 mr-4" />
+          <Icon type={"logout" as any} className="w-5 h-5 mr-4" />
           <span className="font-medium">Sign Out</span>
         </button>
       </div>

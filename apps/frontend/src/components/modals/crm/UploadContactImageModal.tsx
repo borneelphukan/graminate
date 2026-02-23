@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useRef, ChangeEvent, useEffect } from "react";
 import Button from "@/components/ui/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 type UploadContactImageModalProps = {
@@ -67,7 +66,7 @@ const UploadContactImageModal = ({
             onClick={onClose}
             className="text-white hover:text-gray-200 transition-colors"
           >
-            <FontAwesomeIcon className="w-5 h-5" icon={faXmark} />
+            <Icon className="w-5 h-5" type={"close" as any} />
           </button>
         </div>
 

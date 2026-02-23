@@ -1,10 +1,4 @@
-import {
-  faEye,
-  faEyeSlash,
-  faInfoCircle,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import { useState, useRef, useEffect } from "react";
 import Loader from "./Loader";
 
@@ -146,9 +140,9 @@ const TextField = ({
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <FontAwesomeIcon icon={faEyeSlash} className="size-4" />
+              <Icon type={"visibility_off" as any} className="size-4" />
             ) : (
-              <FontAwesomeIcon icon={faEye} className="size-4" />
+              <Icon type={"visibility" as any} className="size-4" />
             )}
           </button>
         )}
@@ -160,7 +154,7 @@ const TextField = ({
             onClick={() => setShowSuggestions(!showSuggestions)}
             aria-label="Toggle suggestions"
           >
-            <FontAwesomeIcon icon={faChevronDown} className="size-4" />
+            <Icon type={"expand_more" as any} className="size-4" />
           </button>
         )}
       </div>
@@ -191,8 +185,8 @@ const TextField = ({
       {type === "error" && (
         <div className="flex items-center mt-1">
           <span className="font-medium mr-1">
-            <FontAwesomeIcon
-              icon={faInfoCircle}
+            <Icon
+              type={"info" as any}
               className="size-6 text-red-200"
             />
           </span>

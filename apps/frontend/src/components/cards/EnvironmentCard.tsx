@@ -1,10 +1,9 @@
+import { Icon } from "@graminate/ui";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import Loader from "@/components/ui/Loader";
 
 export type Metric = {
-  icon: IconDefinition;
+  icon: string;
   value: string | React.ReactNode;
   label: string;
   valueClassName?: string;
@@ -19,8 +18,8 @@ type EnvironmentCardProps = {
 
 const MetricItem = ({ icon, value, label, valueClassName }: Metric) => (
   <div className="flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-shadow duration-200 hover:shadow-md dark:bg-gray-700">
-    <FontAwesomeIcon
-      icon={icon}
+    <Icon
+      type={icon as any}
       className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
       aria-hidden="true"
     />

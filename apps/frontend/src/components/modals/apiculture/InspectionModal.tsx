@@ -1,10 +1,9 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import Button from "@/components/ui/Button";
 import TextArea from "@/components/ui/TextArea";
 import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import TextField from "@/components/ui/TextField";
 
@@ -295,7 +294,7 @@ const InspectionModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+            <Icon type={"close" as any} className="w-5 h-5" />
           </button>
         </div>
 
@@ -449,7 +448,7 @@ const InspectionModal = ({
                       className="ml-2 text-green-200 hover:text-green-100"
                       aria-label={`Remove ${symptom}`}
                     >
-                      <FontAwesomeIcon icon={faXmark} className="w-3 h-3" />
+                      <Icon type={"close" as any} className="w-3 h-3" />
                     </button>
                   </div>
                 ))}

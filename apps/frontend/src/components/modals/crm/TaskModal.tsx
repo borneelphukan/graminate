@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import CustomTextArea from "@/components/ui/CustomTextArea";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 
 import Swal from "sweetalert2";
@@ -267,7 +266,7 @@ const TaskModal = ({
                 aria-label="Options"
                 onClick={toggleDropdown}
               >
-                <FontAwesomeIcon icon={faEllipsis} className="h-5 w-5" />
+                <Icon type={"more_horiz" as any} className="h-5 w-5" />
               </button>
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 shadow-lg rounded-md py-1 z-10">
@@ -286,7 +285,7 @@ const TaskModal = ({
               aria-label="Close"
               onClick={closeModal}
             >
-              <FontAwesomeIcon icon={faXmark} className="h-5 w-5" />
+              <Icon type={"close" as any} className="h-5 w-5" />
             </button>
           </div>
         </div>

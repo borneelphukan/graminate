@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { faTrash, faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   DndContext,
   closestCenter,
@@ -81,7 +80,7 @@ const NotificationBar = ({
           className="text-gray-300 hover:bg-gray-400 p-1 rounded-full focus:outline-none"
           onClick={closeNotificationBar}
         >
-          <FontAwesomeIcon icon={faXmark} className="h-6 w-6" />
+          <Icon type={"close" as any} className="h-6 w-6" />
         </button>
       </div>
 
@@ -94,7 +93,7 @@ const NotificationBar = ({
               className="text-red-200 hover:text-red-100 px-3 py-1 text-sm rounded-md"
               onClick={clearAllNotifications}
             >
-              <FontAwesomeIcon icon={faTrash} className="size-4" />
+              <Icon type={"delete" as any} className="size-4" />
             </button>
 
             <button
@@ -102,7 +101,7 @@ const NotificationBar = ({
               aria-label="settings icon"
               onClick={navigateToSettings}
             >
-              <FontAwesomeIcon icon={faGear} className="size-4" />
+              <Icon type={"settings" as any} className="size-4" />
             </button>
           </div>
         </div>

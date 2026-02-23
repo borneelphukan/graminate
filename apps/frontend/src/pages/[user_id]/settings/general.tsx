@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,8 +8,6 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
 import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "@/components/ui/Button";
 import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
 import Loader from "@/components/ui/Loader";
@@ -272,8 +271,8 @@ const General = () => {
                                 className="rounded-full p-2 text-white hover:text-red-400"
                                 aria-label={t("removeProfilePicture")}
                               >
-                                <FontAwesomeIcon
-                                  icon={faTimes}
+                                <Icon
+                                  type={"close" as any}
                                   className="size-6"
                                 />
                               </button>

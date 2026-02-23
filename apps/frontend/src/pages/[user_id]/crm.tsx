@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import Button from "@/components/ui/Button";
@@ -7,12 +8,6 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faChevronUp,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
 import ContactForm from "@/components/form/crm/ContactForm";
 import CompanyForm from "@/components/form/crm/CompanyForm";
 import ContractForm from "@/components/form/crm/ContractForm";
@@ -610,8 +605,8 @@ const CRM = () => {
             >
               {dropdownItems.find((item) => item.view === view)?.label ||
                 "Select View"}
-              <FontAwesomeIcon
-                icon={dropdownOpen ? faChevronUp : faChevronDown}
+              <Icon
+                type={dropdownOpen ? "expand_less" : "expand_more" as any}
                 className="ml-2 w-4 h-4"
                 aria-hidden="true"
               />
@@ -698,7 +693,7 @@ const CRM = () => {
                     onClick={handleClosePanelAnimation}
                     aria-label="Close panel"
                   >
-                    <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+                    <Icon type={"close" as any} className="w-5 h-5" />
                   </button>
                 </div>
 

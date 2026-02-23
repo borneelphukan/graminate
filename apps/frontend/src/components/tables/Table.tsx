@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
@@ -5,8 +6,6 @@ import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
 import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
 import Loader from "@/components/ui/Loader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -536,8 +535,8 @@ const Table = ({
                             const quantityValue = row[quantityIndex];
                             if (typeof quantityValue !== "number")
                               return (
-                                <FontAwesomeIcon
-                                  icon={faCircle}
+                                <Icon
+                                  type={"circle" as any}
                                   className="text-red-200"
                                 />
                               );
@@ -567,9 +566,9 @@ const Table = ({
                               color = "text-green-200";
                             }
                             return Array.from({ length: count }).map((_, i) => (
-                              <FontAwesomeIcon
+                              <Icon
                                 key={i}
-                                icon={faCircle}
+                                type={"circle" as any}
                                 className={color}
                               />
                             ));

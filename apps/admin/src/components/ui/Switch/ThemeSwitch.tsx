@@ -1,5 +1,4 @@
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import Switch from "react-switch";
 
 type ThemeSwitchProps = {
@@ -18,12 +17,12 @@ const ThemeSwitch = ({ checked, onChange }: ThemeSwitchProps) => {
       checked={checked}
       checkedIcon={
         <div className="flex items-center justify-center w-full h-full bg-dark text-light rounded-full">
-          <FontAwesomeIcon icon={faMoon} className="text-light" />
+          <Icon type={"dark_mode" as any} className="text-light" />
         </div>
       }
       uncheckedIcon={
         <div className="flex items-center justify-center w-full h-full text-dark rounded-full">
-          <FontAwesomeIcon icon={faSun} className="text-yellow-200" />
+          <Icon type={"light_mode" as any} className="text-yellow-200" />
         </div>
       }
       height={30}

@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import NotificationBar from "../NotificationSideBar";
@@ -5,15 +6,6 @@ import Image from "next/image";
 import type { User } from "@/types/card-props";
 import type { Navbar as NavbarType } from "@/types/card-props";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import {
-  faArrowUpRightFromSquare,
-  faBars,
-  faBell,
-  faChevronDown,
-  faChevronUp,
-  faGear,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, TranslationKey } from "@/translations";
 import ThemeSwitch from "@/components/ui/Switch/ThemeSwitch";
@@ -168,7 +160,7 @@ const Navbar = ({
                     aria-label={t("toggleSidebar")}
                     aria-expanded={isSidebarOpen}
                   >
-                    <FontAwesomeIcon icon={faBars} className="size-6" />
+                    <Icon type={"menu" as any} className="size-6" />
                   </button>
                   <Image
                     src={imageSrc}
@@ -191,14 +183,14 @@ const Navbar = ({
                   className="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
                   onClick={toUserPreferences}
                 >
-                  <FontAwesomeIcon icon={faGear} className="size-6" />
+                  <Icon type={"settings" as any} className="size-6" />
                 </button>
                 <button
                   className="relative text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
                   onClick={toggleNotificationBar}
                   aria-label={t("notifications")}
                 >
-                  <FontAwesomeIcon icon={faBell} className="size-6" />
+                  <Icon type={"notifications" as any} className="size-6" />
                   {notificationCount > 0 && (
                     <span className="absolute top-1 right-0 h-4 w-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center transform translate-x-1 -translate-y-1">
                       {notificationCount}
@@ -229,8 +221,8 @@ const Navbar = ({
                   className="ml-1 flex items-center text-gray-400 hover:text-white focus:outline-none"
                   onClick={toggleDropdown}
                 >
-                  <FontAwesomeIcon
-                    icon={isDropdownOpen ? faChevronUp : faChevronDown}
+                  <Icon
+                    type={isDropdownOpen ? "expand_less" : "expand_more" as any}
                     className="size-5 transition-transform duration-200 ease-in-out"
                   />
                 </button>
@@ -285,8 +277,8 @@ const Navbar = ({
                         >
                           {t(item.nameKey)}
                           {item.external && (
-                            <FontAwesomeIcon
-                              icon={faArrowUpRightFromSquare}
+                            <Icon
+                              type={"open_in_new" as any}
                               className="size-3 text-dark dark:text-light ml-1"
                             />
                           )}

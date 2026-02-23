@@ -1,5 +1,4 @@
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import Button from "./Button";
 import React from "react";
 
@@ -42,7 +41,7 @@ const TaskListView = ({
           className="bg-green-200 hover:bg-green-100 text-white px-2 py-1 rounded-full"
           onClick={() => setShowAddTask(true)}
         >
-          <FontAwesomeIcon icon={faPlus} />
+          <Icon type={"add" as any} />
         </button>
       )}
     </div>
@@ -61,7 +60,7 @@ const TaskListView = ({
               className="text-red-600 hover:text-red-800"
               onClick={() => removeTask(index)}
             >
-              <FontAwesomeIcon icon={faTrash} className="size-4" />
+              <Icon type={"delete" as any} className="size-4" />
             </button>
           </li>
         ))

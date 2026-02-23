@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,8 +8,6 @@ import Button from "@/components/ui/Button";
 import HomeNavbar from "@/components/layout/Navbar/HomeNavbar";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey } from "@fortawesome/free-solid-svg-icons";
 
 const ResetPasswordPage = () => {
   const router = useRouter();
@@ -104,7 +103,7 @@ const ResetPasswordPage = () => {
         <div className="bg-white shadow-md rounded p-6 w-96">
           <div className="flex justify-center mb-4">
             <div className="bg-light p-3 rounded-full">
-              <FontAwesomeIcon icon={faKey} className="size-8 text-gray-300" />
+              <Icon type={"key" as any} className="size-8 text-gray-300" />
             </div>
           </div>
           <h2 className="text-2xl font-semibold mb-4 text-center">

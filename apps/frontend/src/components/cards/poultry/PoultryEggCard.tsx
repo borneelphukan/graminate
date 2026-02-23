@@ -1,14 +1,4 @@
-import {
-  faBasketShopping,
-  faPlusCircle,
-  faChartLine,
-  faThLarge,
-  faExclamationTriangle,
-  faExclamationCircle,
-  faEgg,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { Icon } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -81,7 +71,7 @@ type Props = {
 };
 
 type MetricItemProps = {
-  icon: IconDefinition;
+  icon: string;
   value: string | React.ReactNode;
   label: string;
   isLoading?: boolean;
@@ -96,8 +86,8 @@ const MetricItem = ({
   isLatest,
 }: MetricItemProps) => (
   <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
-    <FontAwesomeIcon
-      icon={icon}
+    <Icon
+      type={icon as any}
       className="h-6 w-6 text-blue-200 dark:text-blue-300 mb-2"
       aria-hidden="true"
     />
@@ -131,10 +121,10 @@ const PoultryEggCard = ({
   const viewToggleOptions: {
     value: ViewOption;
     label: string;
-    icon: IconDefinition;
+    icon: string;
   }[] = [
-    { value: "graphs", label: "Graphs", icon: faChartLine },
-    { value: "metrics", label: "Metrics", icon: faThLarge },
+    { value: "graphs", label: "Graphs", icon: "show_chart" },
+    { value: "metrics", label: "Metrics", icon: "grid_view" },
   ];
 
   useEffect(() => {
@@ -357,8 +347,8 @@ const PoultryEggCard = ({
     if (error) {
       return (
         <div className="flex flex-col justify-center items-center h-full min-h-[300px] text-center p-4">
-          <FontAwesomeIcon
-            icon={faExclamationCircle}
+          <Icon
+            type={"error" as any}
             className="h-12 w-12 text-red-200 mb-4"
           />
           <p className="text-red-200 font-semibold">
@@ -373,14 +363,14 @@ const PoultryEggCard = ({
       return (
         <div className="grid grid-cols-2 gap-4 mt-4">
           <MetricItem
-            icon={faEgg}
+            icon={"egg"}
             value={getDominantEggSize(latestMetrics)}
             label="Dominant Size(s)"
             isLoading={loading && !latestMetrics}
             isLatest={!!latestMetrics}
           />
           <MetricItem
-            icon={faExclamationTriangle}
+            icon={"warning"}
             value={
               latestMetrics ? latestMetrics.brokenEggs.toLocaleString() : "N/A"
             }
@@ -389,7 +379,7 @@ const PoultryEggCard = ({
             isLatest={!!latestMetrics}
           />
           <MetricItem
-            icon={faBasketShopping}
+            icon={"shopping_basket"}
             value={
               latestMetrics ? latestMetrics.totalEggs.toLocaleString() : "N/A"
             }
@@ -406,7 +396,7 @@ const PoultryEggCard = ({
             } transition-shadow duration-200`}
           >
             <MetricItem
-              icon={faPlusCircle}
+              icon={"add_circle"}
               value={"Log & View Data"}
               label="Manage Egg Records"
               isLoading={loading}
@@ -425,8 +415,8 @@ const PoultryEggCard = ({
       ) {
         return (
           <div className="flex flex-col justify-center items-center h-full min-h-[300px] text-center p-4">
-            <FontAwesomeIcon
-              icon={faChartLine}
+            <Icon
+              type={"show_chart" as any}
               className="h-12 w-12 text-gray-300 mb-4"
             />
             <p className="text-dark dark:text-light font-semibold">

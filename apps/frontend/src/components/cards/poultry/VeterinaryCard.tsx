@@ -1,11 +1,5 @@
+import { Icon } from "@graminate/ui";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSyringe,
-  faCalendarCheck,
-  faNotesMedical,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 import Loader from "@/components/ui/Loader";
 
 type VeterinaryCardProps = {
@@ -17,15 +11,15 @@ type VeterinaryCardProps = {
 };
 
 type MetricItemProps = {
-  icon: IconDefinition;
+  icon: string;
   value: string | React.ReactNode;
   label: string;
 };
 
 const MetricItem = ({ icon, value, label }: MetricItemProps) => (
   <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
-    <FontAwesomeIcon
-      icon={icon}
+    <Icon
+      type={icon as any}
       className="h-6 w-6 text-blue-200 dark:text-blue-300 mb-2"
       aria-hidden="true"
     />
@@ -71,12 +65,12 @@ const VeterinaryCard = ({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 flex-grow">
           <MetricItem
-            icon={faSyringe}
+            icon={"vaccines"}
             value={vaccinatedDisplayValue}
             label="Birds Vaccinated (Latest)"
           />
           <MetricItem
-            icon={faCalendarCheck}
+            icon={"event_available"}
             value={formatDate(nextAppointmentDate)}
             label="Next Visit"
           />
@@ -85,7 +79,7 @@ const VeterinaryCard = ({
             className={`${!loading ? "cursor-pointer" : "cursor-not-allowed"}`}
           >
             <MetricItem
-              icon={faNotesMedical}
+              icon={"medical_information"}
               value={"Log/View"}
               label="Manage Health Data"
             />

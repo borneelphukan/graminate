@@ -1,14 +1,7 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Button from "@/components/ui/Button";
 import { Checkbox } from "@graminate/ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faXmark,
-  faGrip,
-  faDollar,
-  faCow,
-} from "@fortawesome/free-solid-svg-icons";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 
@@ -108,11 +101,11 @@ const WidgetModal = ({
     return orderedGroups;
   }, [availableWidgets]);
 
-  const categoryIcons: Record<string, IconDefinition | React.ElementType> = {
-    General: faGrip,
-    Financial: faDollar,
+  const categoryIcons: Record<string, string | React.ElementType> = {
+    General: "drag_indicator",
+    Financial: "attach_money",
     Poultry: PoultryIcon,
-    "Cattle Rearing": faCow,
+    "Cattle Rearing": "cruelty_free",
     Apiculture: BeeIcon,
   };
 
@@ -175,7 +168,7 @@ const WidgetModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+            <Icon type={"close" as any} className="w-5 h-5" />
           </button>
         </div>
 
@@ -190,9 +183,9 @@ const WidgetModal = ({
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-5 w-5 text-green-200 flex items-center justify-center">
-                      {typeof icon === "object" && "prefix" in icon ? (
-                        <FontAwesomeIcon
-                          icon={icon}
+                      {typeof icon === "string" ? (
+                        <Icon
+                          type={icon as any}
                           className="h-full w-full"
                         />
                       ) : (

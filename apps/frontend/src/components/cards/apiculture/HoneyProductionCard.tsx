@@ -37,8 +37,6 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faJar } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import Table from "@/components/tables/Table";
 import {

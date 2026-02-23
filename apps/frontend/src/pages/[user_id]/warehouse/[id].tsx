@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Button from "@/components/ui/Button";
@@ -19,15 +20,6 @@ import {
 import InventoryForm from "@/components/form/InventoryForm";
 import WarehouseForm from "@/components/form/WarehouseForm";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faWarehouse,
-  faMapMarkerAlt,
-  faUserTie,
-  faPhone,
-  faBoxOpen,
-  faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
 
 ChartJS.register(
   CategoryScale,
@@ -473,8 +465,8 @@ const Warehouse = () => {
             {lowStockItems.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-semibold text-red-200 dark:text-red-400 mb-4 flex items-center">
-                  <FontAwesomeIcon
-                    icon={faExclamationTriangle}
+                  <Icon
+                    type={"warning" as any}
                     className="mr-2 w-5 h-5 text-red-200 dark:text-red-400"
                   />
                   Low Stock Alerts

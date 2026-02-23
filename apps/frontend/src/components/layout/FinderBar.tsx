@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import BusinessCard from "../cards/BusinessCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import RadioButton from "../ui/Radio";
 
 type View = "distributor" | "exporter" | "factories";
@@ -170,9 +169,9 @@ const FinderBar = ({ activeView }: Props) => {
             </svg>
             Sort
             {showDropdown ? (
-              <FontAwesomeIcon icon={faChevronUp} className="w-4 h-4" />
+              <Icon type={"expand_less" as any} className="w-4 h-4" />
             ) : (
-              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+              <Icon type={"expand_more" as any} className="w-4 h-4" />
             )}
           </button>
           {showDropdown && (

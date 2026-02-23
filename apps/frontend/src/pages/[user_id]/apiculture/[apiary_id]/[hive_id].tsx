@@ -1,28 +1,9 @@
+import { Icon } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBoxOpen,
-  faCalendarCheck,
-  faCrown,
-  faExclamationTriangle,
-  faWind,
-  faStickyNote,
-  faFlask,
-  faTag,
-  faHistory,
-  faClipboardList,
-  faArchive,
-  faUsers,
-  faBug,
-  faLeaf,
-  faThermometerHalf,
-  faDroplet,
-  faCloudRain,
-} from "@fortawesome/free-solid-svg-icons";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
   useUserPreferences,
@@ -34,7 +15,6 @@ import HiveForm, { HiveData } from "@/components/form/apiculture/HiveForm";
 import axios from "axios";
 import Table from "@/components/tables/Table";
 import { PAGINATION_ITEMS } from "@/constants/options";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
 import InspectionModal, {
   InspectionData,
@@ -318,14 +298,14 @@ const HiveDetailsPage = () => {
           hiveData.honey_capacity != null
             ? `${hiveData.honey_capacity} ${hiveData.unit || ""}`.trim()
             : "N/A",
-        icon: faArchive,
+        icon: "archive",
       },
       {
         label: "Ventilation",
         value: hiveData.ventilation_status || "N/A",
-        icon: faWind,
+        icon: "air",
       },
-      { label: "Notes", value: hiveData.notes || "N/A", icon: faStickyNote },
+      { label: "Notes", value: hiveData.notes || "N/A", icon: "note" },
     ];
   }, [hiveData, formattedDate]);
 
@@ -337,7 +317,7 @@ const HiveDetailsPage = () => {
         {
           label: "Last Inspection",
           value: "No inspection data found",
-          icon: faExclamationTriangle,
+          icon: "warning",
         },
       ];
     }
@@ -426,10 +406,10 @@ const HiveDetailsPage = () => {
   const toggleOptions: {
     value: HiveView;
     label: string;
-    icon: IconDefinition;
+    icon: string;
   }[] = [
-    { value: "status", label: "Last Inspection", icon: faClipboardList },
-    { value: "inspection", label: "Inspection Logs", icon: faHistory },
+    { value: "status", label: "Last Inspection", icon: "list_alt" },
+    { value: "inspection", label: "Inspection Logs", icon: "history" },
   ];
 
   const handleHiveFormSuccess = () => {
@@ -503,15 +483,15 @@ const HiveDetailsPage = () => {
 
     return [
       {
-        icon: faThermometerHalf,
+        icon: "thermostat",
         label: "Temperature",
         valueClassName: isTempWarning ? "text-yellow-400" : "",
         value: (
           <>
             {formatTemperature(temperature)}
             {isTempWarning && (
-              <FontAwesomeIcon
-                icon={faExclamationTriangle}
+              <Icon
+                type={"warning" as any}
                 className="ml-2 h-4 w-4"
                 title="Temperature is outside the optimal range for bees (10-35°C)."
               />
@@ -520,17 +500,17 @@ const HiveDetailsPage = () => {
         ),
       },
       {
-        icon: faDroplet,
+        icon: "water_drop",
         value: displayValue(humidity, "%"),
         label: "Humidity",
       },
       {
-        icon: faCloudRain,
+        icon: "rainy",
         value: displayValue(precipitation, " mm"),
         label: "Precipitation",
       },
       {
-        icon: faWind,
+        icon: "air",
         value: windValue,
         label: "Wind",
       },
@@ -566,7 +546,7 @@ const HiveDetailsPage = () => {
             role="alert"
           >
             <div className="flex items-center">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="mr-3" />
+              <Icon type={"warning" as any} className="mr-3" />
               <span className="font-medium">{alert.message}</span>
             </div>
             <button

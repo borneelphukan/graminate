@@ -1,11 +1,10 @@
+import { Icon } from "@graminate/ui";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import axios, { AxiosError } from "axios";
 import ChatWindow from "@/layout/ChatWindow";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRobot } from "@fortawesome/free-solid-svg-icons";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "@/components/modals/InfoModal";
 import CookieDisclaimer from "@/components/ui/CookieDisclaimer";
@@ -230,7 +229,7 @@ const PlatformLayout = ({ children }: Props) => {
           onClick={() => setIsChatOpen((prev) => !prev)}
           className="fixed bottom-4 right-4 bg-green-200 text-white p-4 rounded-full shadow-lg hover:bg-green-100 z-50"
         >
-          <FontAwesomeIcon icon={faRobot} />
+          <Icon type={"smart_toy" as any} />
         </button>
 
         {isChatOpen && (

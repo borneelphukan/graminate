@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun } from "@fortawesome/free-solid-svg-icons";
 import { Coordinates } from "@/types/card-props";
 import axios from "axios";
 import Loader from "@/components/ui/Loader";
@@ -356,8 +355,8 @@ const SunCard = ({ lat, lon }: Coordinates) => {
               >
                 <div className="flex flex-col items-center w-full text-center rounded-md">
                   <div className="w-full flex flex-row items-center justify-center mb-2 gap-2">
-                    <FontAwesomeIcon
-                      icon={faSun}
+                    <Icon
+                      type={"light_mode" as any}
                       className="w-4 h-4 text-yellow-200"
                     />
                     <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">

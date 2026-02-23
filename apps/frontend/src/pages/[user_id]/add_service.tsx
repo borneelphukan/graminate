@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, JSX } from "react";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -6,8 +7,6 @@ import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator } from "@/translations";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCow } from "@fortawesome/free-solid-svg-icons";
 import Button from "@/components/ui/Button";
 import { showToast, toastMessage } from "@/stores/toast";
 import TextField from "@/components/ui/TextField";
@@ -64,7 +63,7 @@ const AddServicePage = () => {
 
   const AgricultureIcons: Record<string, JSX.Element> = {
     Poultry: <PoultryIcon />,
-    "Cattle Rearing": <FontAwesomeIcon icon={faCow} />,
+    "Cattle Rearing": <Icon type={"cruelty_free" as any} />,
     Apiculture: <BeeIcon />,
   };
 

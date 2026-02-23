@@ -2,13 +2,6 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import {
-  faThermometerHalf,
-  faDroplet,
-  faCloudRain,
-  faWind,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
@@ -271,27 +264,27 @@ const CattleDetailPage = () => {
   const environmentMetrics: Metric[] = useMemo(
     () => [
       {
-        icon: faThermometerHalf,
+        icon: "thermostat",
         label: "Temperature",
         value: formatTemperature(weatherData.temperature),
       },
       {
-        icon: faDroplet,
+        icon: "water_drop",
         label: "Humidity",
         value: displayValue(weatherData.humidity, "%"),
       },
       {
-        icon: faCloudRain,
+        icon: "rainy",
         label: "Rainfall",
         value: displayValue(weatherData.rainfall, " mm"),
       },
       {
-        icon: faWind,
+        icon: "air",
         label: "Wind Speed",
         value: displayValue(weatherData.windSpeed, " km/h", 1),
       },
       {
-        icon: faSun,
+        icon: "light_mode",
         label: "UV Index",
         value: displayValue(weatherData.uvIndex, "", 1),
       },

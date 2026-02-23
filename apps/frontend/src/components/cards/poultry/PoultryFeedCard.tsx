@@ -1,15 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBoxesStacked,
-  faWarehouse,
-  faUtensils,
-  faChartLine,
-  IconDefinition,
-  faClipboardList,
-  faCubesStacked,
-} from "@fortawesome/free-solid-svg-icons";
 import {
   parseISO,
   startOfDay,
@@ -66,7 +57,7 @@ type Props = {
 };
 
 type FeedStatItemProps = {
-  icon: IconDefinition;
+  icon: string;
   value: string | React.ReactNode;
   label: string;
   children?: React.ReactNode;
@@ -84,8 +75,8 @@ const FeedStatItem = ({
   valueClassName,
 }: FeedStatItemProps) => (
   <div className="flex flex-col items-center justify-center text-center p-3 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
-    <FontAwesomeIcon
-      icon={icon}
+    <Icon
+      type={icon as any}
       className="h-5 w-5 text-blue-200 dark:text-blue-300 mb-1.5"
       aria-hidden="true"
     />
@@ -264,8 +255,8 @@ const PoultryFeedCard = ({
     if (stockFeedItems.length === 0 && !loadingStockItems) {
       return (
         <div className="flex-grow flex flex-col items-center justify-center text-center min-h-[200px] py-4">
-          <FontAwesomeIcon
-            icon={faBoxesStacked}
+          <Icon
+            type={"inventory" as any}
             className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-3"
           />
           <p className="text-gray-500 dark:text-gray-400 text-md font-semibold">
@@ -303,8 +294,8 @@ const PoultryFeedCard = ({
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                   <div className="flex flex-col items-center rounded">
-                    <FontAwesomeIcon
-                      icon={faCubesStacked}
+                    <Icon
+                      type={"deployed_code" as any}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-1"
                     />
                     <span className="font-semibold text-sm text-dark dark:text-light">
@@ -315,8 +306,8 @@ const PoultryFeedCard = ({
                     </span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <FontAwesomeIcon
-                      icon={faChartLine}
+                    <Icon
+                      type={"show_chart" as any}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-1"
                     />
                     <span className="font-semibold text-sm text-dark dark:text-light">
@@ -327,8 +318,8 @@ const PoultryFeedCard = ({
                     </span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <FontAwesomeIcon
-                      icon={faWarehouse}
+                    <Icon
+                      type={"warehouse" as any}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-2"
                     />
                     <span
@@ -361,7 +352,7 @@ const PoultryFeedCard = ({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
           <FeedStatItem
-            icon={faUtensils}
+            icon={"restaurant"}
             value={loadingStockItems ? <Loader /> : feedingStatusValue}
             label="Times Fed Today"
             valueClassName={feedingStatusColor}
@@ -375,7 +366,7 @@ const PoultryFeedCard = ({
             }`}
           >
             <FeedStatItem
-              icon={faClipboardList}
+              icon={"list_alt"}
               value={"Log/View All"}
               label="Manage Feed Data"
             />

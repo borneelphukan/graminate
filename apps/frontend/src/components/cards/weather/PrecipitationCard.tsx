@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDroplet, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Chart from "chart.js/auto";
 import type { ChartConfiguration, Chart as ChartJS, Scale } from "chart.js";
 import axios from "axios";
@@ -393,7 +392,7 @@ const PrecipitationCard = ({ lat, lon }: Coordinates) => {
           aria-label="Toggle card size options"
           aria-expanded={dropdownOpen}
         >
-          <FontAwesomeIcon icon={faEllipsis} className="w-6 h-6" />
+          <Icon type={"more_horiz" as any} className="w-6 h-6" />
         </button>
         {dropdownOpen && (
           <div className="absolute top-8 right-0 bg-white dark:bg-gray-600 dark:text-light text-black rounded-lg shadow-lg z-20 w-32">
@@ -427,8 +426,8 @@ const PrecipitationCard = ({ lat, lon }: Coordinates) => {
             <div className="w-full pb-1">
               <div className="flex flex-col items-left w-full p-1 text-center rounded-md">
                 <div className="w-full flex flex-row items-center gap-2">
-                  <FontAwesomeIcon
-                    icon={faDroplet}
+                  <Icon
+                    type={"water_drop" as any}
                     className="w-4 h-4 text-blue-200"
                   />
                   <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">
@@ -451,8 +450,8 @@ const PrecipitationCard = ({ lat, lon }: Coordinates) => {
           {displayMode === "Large" && (
             <div className="w-full flex flex-col">
               <div className="flex flex-row justify-center items-center gap-2 mb-2">
-                <FontAwesomeIcon
-                  icon={faDroplet}
+                <Icon
+                  type={"water_drop" as any}
                   className="w-5 h-5 text-blue-200"
                 />
                 <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">

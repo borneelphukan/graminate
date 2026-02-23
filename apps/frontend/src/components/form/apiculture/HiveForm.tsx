@@ -1,11 +1,10 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import TextArea from "@/components/ui/TextArea";
 import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
 
@@ -253,7 +252,7 @@ const HiveForm = ({
               className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
               aria-label="Close panel"
             >
-              <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+              <Icon type={"close" as any} className="w-5 h-5" />
             </button>
           </div>
           <form

@@ -1,8 +1,7 @@
+import { Icon } from "@graminate/ui";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@/components/ui/Button";
 import LoginLayout from "@/layout/LoginLayout";
 
@@ -114,8 +113,8 @@ const Pricing = () => {
                     <ul role="list" className="space-y-2">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start">
-                          <FontAwesomeIcon
-                            icon={faCheck}
+                          <Icon
+                            type={"check" as any}
                             className="size-3 text-green-200 mt-1 flex-shrink-0"
                           />
                           <span className="ml-3 text-dark dark:text-light">

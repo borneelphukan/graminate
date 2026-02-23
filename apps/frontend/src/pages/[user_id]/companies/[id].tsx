@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import Button from "@/components/ui/Button";
 import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
 import TextField from "@/components/ui/TextField";
@@ -11,13 +12,6 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import UploadContactImageModal from "@/components/modals/crm/UploadContactImageModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPencil,
-  faPhone,
-  faEnvelope,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import Image from "next/image";
 
@@ -335,8 +329,8 @@ const CompanyDetails = () => {
                   avatarInitials
                 )}
                 <div className="absolute inset-0 rounded-full hover:bg-gray-200/50 bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-200">
-                  <FontAwesomeIcon
-                    icon={faPencil}
+                  <Icon
+                    type={"edit" as any}
                     className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   />
                 </div>
@@ -397,8 +391,8 @@ const CompanyDetails = () => {
                       className="flex flex-col items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 dark:focus-visible:ring-offset-gray-800 rounded-lg p-1"
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
-                        <FontAwesomeIcon
-                          icon={faPhone}
+                        <Icon
+                          type={"phone" as any}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>
@@ -415,8 +409,8 @@ const CompanyDetails = () => {
                       className="flex flex-col items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 dark:focus-visible:ring-offset-gray-800 rounded-lg p-1"
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
-                        <FontAwesomeIcon
-                          icon={faEnvelope}
+                        <Icon
+                          type={"mail" as any}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>
@@ -433,8 +427,8 @@ const CompanyDetails = () => {
                       className="flex flex-col items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 dark:focus-visible:ring-offset-gray-800 rounded-lg p-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
-                        <FontAwesomeIcon
-                          icon={faTrash}
+                        <Icon
+                          type={"delete" as any}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>

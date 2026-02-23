@@ -1,10 +1,9 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useCallback, useEffect, JSX } from "react";
 import { triggerToast } from "@/stores/toast";
 import Button from "../ui/Button";
 import TextField from "../ui/TextField";
 import RadioButton from "../ui/Radio";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCow } from "@fortawesome/free-solid-svg-icons";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 
@@ -486,7 +485,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
     if (step === "subType") {
       const AgricultureIcons: Record<string, JSX.Element> = {
         Poultry: <PoultryIcon />,
-        "Cattle Rearing": <FontAwesomeIcon icon={faCow} />,
+        "Cattle Rearing": <Icon type={"cruelty_free" as any} />,
         Apiculture: <BeeIcon />,
       };
       return (

@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun } from "@fortawesome/free-solid-svg-icons";
 import Chart from "chart.js/auto";
 import type { ChartConfiguration, Chart as ChartJS } from "chart.js";
 import UVScale from "./UVScale";
@@ -428,8 +427,8 @@ const UVCard = ({ lat, lon }: Coordinates) => {
             <div className={`w-full ${displayMode === "Small" ? "pb-1" : ""}`}>
               <div className="flex flex-col items-left w-full p-1 text-center rounded-md">
                 <div className="w-full flex flex-row items-center gap-2">
-                  <FontAwesomeIcon
-                    icon={faSun}
+                  <Icon
+                    type={"light_mode" as any}
                     className="w-4 h-4 text-yellow-200"
                   />
                   <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">
@@ -459,8 +458,8 @@ const UVCard = ({ lat, lon }: Coordinates) => {
           {displayMode === "Large" && (
             <div className="w-full flex flex-col">
               <div className="flex flex-row justify-center items-center gap-2 mb-2">
-                <FontAwesomeIcon
-                  icon={faSun}
+                <Icon
+                  type={"light_mode" as any}
                   className="w-5 h-5 text-yellow-200"
                 />
                 <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">

@@ -1,11 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { Icon } from "@graminate/ui";
 
 type BudgetCardProps = {
   title: string;
   value: number;
   date: Date;
-  icon: IconDefinition;
+  icon: string;
   bgColor: string;
   iconValueColor: string;
 };
@@ -35,8 +34,8 @@ const BudgetCard = ({
       className={`${bgColor} p-6 rounded-lg shadow-md transition-shadow duration-300 ease-in-out flex flex-col`}
     >
       <div className="flex items-center mb-2 gap-2">
-        <FontAwesomeIcon
-          icon={icon}
+        <Icon
+          type={icon as any}
           className={`${iconValueColor} text-2xl opacity-80`}
         />
         <h3 className="text-sm font-medium text-dark dark:text-light uppercase">

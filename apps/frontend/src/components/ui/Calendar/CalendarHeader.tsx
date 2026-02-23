@@ -1,8 +1,4 @@
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 
 type CalendarHeaderProps = {
   calendarMonth: number;
@@ -23,7 +19,7 @@ const CalendarHeader = ({
       onClick={previousMonth}
       aria-label="Previous month"
     >
-      <FontAwesomeIcon icon={faChevronLeft} className="size-5" />
+      <Icon type={"chevron_left" as any} className="size-5" />
     </button>
     <div className="flex items-center">
       <h2 className="text-lg font-semibold text-dark dark:text-light tracking-wide">
@@ -37,7 +33,7 @@ const CalendarHeader = ({
       onClick={nextMonth}
       aria-label="Next month"
     >
-      <FontAwesomeIcon icon={faChevronRight} className="size-5" />
+      <Icon type={"chevron_right" as any} className="size-5" />
     </button>
   </div>
 );

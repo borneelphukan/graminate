@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "material-symbols/outlined.css";
 import type { AppProps } from "next/app";
 
 import Toast from "@/components/ui/Toast";

@@ -1,5 +1,4 @@
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import React, { ReactNode } from "react";
 
 type PasswordModalProps = {
@@ -46,7 +45,7 @@ const PasswordModal = ({
               className="text-dark dark:text-light hover:text-gray-300 dark:hover:text-gray-300 px-1.5 py-0.5 hover:bg-gray-500 dark:hover:bg-gray-700 rounded-full "
               aria-label="Close modal"
             >
-              <FontAwesomeIcon icon={faClose} />
+              <Icon type={"close" as any} />
             </button>
           </div>
         )}

@@ -1,16 +1,7 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import {
-  faDollarSign,
-  faShoppingCart,
-  faChartPie,
-  faCreditCard,
-  faPiggyBank,
-  faChevronDown,
-  faChevronUp,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import Button from "@/components/ui/Button";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -108,7 +99,7 @@ const Poultry = () => {
       return FINANCIAL_METRICS.map((metric) => ({
         title: `${TARGET_POULTRY_SUB_TYPE} ${metric}`,
         value: 0,
-        icon: faDollarSign,
+        icon: "attach_money",
         bgColor: "bg-gray-300 dark:bg-gray-700",
         iconValueColor: "text-gray-500 dark:text-gray-400",
       }));
@@ -146,35 +137,35 @@ const Poultry = () => {
       {
         title: `${TARGET_POULTRY_SUB_TYPE} Revenue`,
         value: poultryRevenue,
-        icon: faDollarSign,
+        icon: "attach_money",
         bgColor: "bg-green-300 dark:bg-green-800",
         iconValueColor: "text-green-200 dark:text-green-200",
       },
       {
         title: `${TARGET_POULTRY_SUB_TYPE} COGS`,
         value: poultryCogs,
-        icon: faShoppingCart,
+        icon: "shopping_cart",
         bgColor: "bg-yellow-300 dark:bg-yellow-100",
         iconValueColor: "text-yellow-200",
       },
       {
         title: `${TARGET_POULTRY_SUB_TYPE} Gross Profit`,
         value: poultryGrossProfit,
-        icon: faChartPie,
+        icon: "pie_chart",
         bgColor: "bg-cyan-300 dark:bg-cyan-600",
         iconValueColor: "text-cyan-200",
       },
       {
         title: `${TARGET_POULTRY_SUB_TYPE} Expenses`,
         value: poultryExpenses,
-        icon: faCreditCard,
+        icon: "credit_card",
         bgColor: "bg-red-300 dark:bg-red-100",
         iconValueColor: "text-red-200",
       },
       {
         title: `${TARGET_POULTRY_SUB_TYPE} Net Profit`,
         value: poultryNetProfit,
-        icon: faPiggyBank,
+        icon: "savings",
         bgColor: "bg-blue-300 dark:bg-blue-100",
         iconValueColor: "text-blue-200 dark:text-blue-200",
       },
@@ -257,8 +248,8 @@ const Poultry = () => {
                 className="flex items-center cursor-pointer text-sm text-blue-200 dark:hover:text-blue-300"
                 onClick={() => setShowFinancials(!showFinancials)}
               >
-                <FontAwesomeIcon
-                  icon={showFinancials ? faChevronUp : faChevronDown}
+                <Icon
+                  type={showFinancials ? "expand_less" : "expand_more" as any}
                   className="mr-2 h-3 w-3"
                 />
                 {showFinancials ? "Hide Finances" : "Show Finances"}

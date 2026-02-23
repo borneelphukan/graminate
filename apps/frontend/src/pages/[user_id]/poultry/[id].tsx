@@ -18,11 +18,6 @@ import {
 } from "chart.js";
 import axios from "axios";
 import {
-  faThermometerHalf,
-  faDroplet,
-  faSun,
-} from "@fortawesome/free-solid-svg-icons";
-import {
   format as formatDateFns,
   parseISO,
   startOfDay,
@@ -852,17 +847,17 @@ const PoultryDetail = () => {
   const environmentMetrics: Metric[] = useMemo(
     () => [
       {
-        icon: faThermometerHalf,
+        icon: "thermostat",
         label: "Temperature",
         value: formatTemperature(temperature, true),
       },
       {
-        icon: faDroplet,
+        icon: "water_drop",
         label: "Humidity",
         value: displayValue(humidity, "%"),
       },
       {
-        icon: faSun,
+        icon: "light_mode",
         label: "Light Hours",
         value: displayValue(lightHours, " Hrs", 1),
       },

@@ -1,14 +1,8 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
 import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
 import Button from "@/components/ui/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faChevronUp,
-  faListCheck,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { Checkbox } from "@graminate/ui";
@@ -189,8 +183,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
         >
           Priority
           <span className="ml-2">
-            <FontAwesomeIcon
-              icon={prioritySortAsc ? faChevronUp : faChevronDown}
+            <Icon
+              type={prioritySortAsc ? "expand_less" : "expand_more" as any}
             />
           </span>
         </button>
@@ -287,7 +281,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
                       onClick={() => setEditingPriority(null)}
                       className="text-xs font-medium px-2 py-1 rounded bg-gray-400 text-dark hover:bg-gray-300"
                     >
-                      <FontAwesomeIcon icon={faXmark} className="size-2" />
+                      <Icon type={"close" as any} className="size-2" />
                     </button>
                   </div>
                 ) : (
@@ -309,8 +303,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
           </ul>
         ) : (
           <div className="flex flex-col items-center justify-center text-center flex-grow h-full">
-            <FontAwesomeIcon
-              icon={faListCheck}
+            <Icon
+              type={"checklist" as any}
               className="w-12 h-12 text-gray-300 mb-3"
             />
             <p className="text-gray-300">

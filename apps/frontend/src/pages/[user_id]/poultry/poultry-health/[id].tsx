@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -5,18 +6,6 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStethoscope,
-  faUserMd,
-  faFileMedical,
-  faNotesMedical,
-  faSyringe,
-  faCapsules,
-  faCommentDots,
-  faCalendarCheck,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 import jsPDF from "jspdf";
 
 type PoultryHealthRecord = {
@@ -257,13 +246,13 @@ const PoultryHealthDetails = () => {
     label,
     value,
   }: {
-    icon: IconDefinition;
+    icon: string;
     label: string;
     value?: string | number | string[];
   }) => (
     <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
       <dt className="text-sm font-medium text-dark flex items-center">
-        <FontAwesomeIcon icon={icon} className="mr-3 w-5 h-5 text-blue-500" />
+        <Icon type={icon as any} className="mr-3 w-5 h-5 text-blue-500" />
         {label}
       </dt>
       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
@@ -319,28 +308,28 @@ const PoultryHealthDetails = () => {
 
             <div className="px-6 py-5">
               <h3 className="text-lg font-semibold text-dark mb-3 border-b pb-2">
-                <FontAwesomeIcon
-                  icon={faStethoscope}
+                <Icon
+                  type={"stethoscope" as any}
                   className="mr-2 text-green-200"
                 />
                 Flock Information
               </h3>
               <dl className="divide-y divide-gray-500">
                 <DetailItem
-                  icon={faFileMedical}
+                  icon={"medical_information"}
                   label="Flock Name"
                   value={flockData?.flock_name}
                 />
                 <DetailItem
-                  icon={faFileMedical}
+                  icon={"medical_information"}
                   label="Flock Type"
                   value={flockData?.flock_type}
                 />
               </dl>
 
               <h3 className="text-lg text-dark font-semibold mt-6 mb-3 border-b pb-2">
-                <FontAwesomeIcon
-                  icon={faUserMd}
+                <Icon
+                  type={"medication_liquid" as any}
                   className="mr-2 text-purple-500"
                 />
                 Veterinary Details
@@ -348,31 +337,31 @@ const PoultryHealthDetails = () => {
               <dl className="divide-y divide-gray-500 ">
                 {record.veterinary_name && (
                   <DetailItem
-                    icon={faUserMd}
+                    icon={"medication_liquid"}
                     label="Veterinarian"
                     value={record.veterinary_name}
                   />
                 )}
                 <DetailItem
-                  icon={faNotesMedical}
+                  icon={"medical_information"}
                   label="Total Birds (in this record)"
                   value={record.total_birds}
                 />
                 <DetailItem
-                  icon={faSyringe}
+                  icon={"vaccines"}
                   label="Birds Vaccinated"
                   value={record.birds_vaccinated}
                 />
                 {record.vaccines_given && record.vaccines_given.length > 0 && (
                   <DetailItem
-                    icon={faSyringe}
+                    icon={"vaccines"}
                     label="Vaccines Given"
                     value={record.vaccines_given}
                   />
                 )}
                 {record.symptoms && record.symptoms.length > 0 && (
                   <DetailItem
-                    icon={faStethoscope}
+                    icon={"stethoscope"}
                     label="Symptoms Observed"
                     value={record.symptoms}
                   />
@@ -380,7 +369,7 @@ const PoultryHealthDetails = () => {
                 {record.medicine_approved &&
                   record.medicine_approved.length > 0 && (
                     <DetailItem
-                      icon={faCapsules}
+                      icon={"medication"}
                       label="Medicine Approved"
                       value={record.medicine_approved}
                     />
@@ -390,8 +379,8 @@ const PoultryHealthDetails = () => {
               {record.remarks && (
                 <>
                   <h3 className="text-lg font-semibold text-dark mt-6 mb-3 border-b pb-2">
-                    <FontAwesomeIcon
-                      icon={faCommentDots}
+                    <Icon
+                      type={"chat" as any}
                       className="mr-2 text-yellow-200"
                     />
                     Remarks
@@ -405,8 +394,8 @@ const PoultryHealthDetails = () => {
               {record.next_appointment && (
                 <>
                   <h3 className="text-lg font-semibold text-dark mt-6 mb-3 border-b pb-2">
-                    <FontAwesomeIcon
-                      icon={faCalendarCheck}
+                    <Icon
+                      type={"event_available" as any}
                       className="mr-2 text-red-200"
                     />
                     Next Appointment

@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
   SortableContext,
@@ -108,7 +107,7 @@ const ColumnContainer = ({
                   className="text-gray-400 hover:text-red-500 transition-colors"
                   aria-label="Delete column"
                 >
-                  <FontAwesomeIcon icon={faTrash} className="w-3 h-3" />
+                  <Icon type={"delete" as any} className="w-3 h-3" />
                 </button>
               )}
             </>

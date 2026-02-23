@@ -1,19 +1,6 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHome,
-  faUsers,
-  faAddressBook,
-  faCloud,
-  faDollar,
-  faWarehouse,
-  faChevronRight,
-  faChevronLeft,
-  faCow,
-  faPlus,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
 
 import type { Sidebar as SidebarProps } from "@/types/card-props";
 import Loader from "../ui/Loader";
@@ -23,7 +10,7 @@ import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 
 type SidebarSection = {
-  icon: IconDefinition | React.ElementType;
+  icon: string | React.ElementType;
   labelKey: TranslationKey;
   section: string;
   route?: string;
@@ -56,14 +43,14 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
   const sections: SidebarSection[] = useMemo(() => {
     const base: SidebarSection[] = [
       {
-        icon: faHome,
+        icon: "home",
         labelKey: "dashboard",
         section: "Dashboard",
         route: `/${userId}`,
         subItems: [],
       },
       {
-        icon: faAddressBook,
+        icon: "contacts",
         labelKey: "crm",
         section: "CRM",
         basePath: `/${userId}/crm`,
@@ -101,7 +88,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
       }
       if (subTypes.includes("Cattle Rearing")) {
         base.push({
-          icon: faCow,
+          icon: "cruelty_free",
           labelKey: "cattleRearing",
           section: "Cattle Rearing",
           route: `/${userId}/cattle_rearing`,
@@ -118,7 +105,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
         });
       }
       base.push({
-        icon: faCloud,
+        icon: "cloud",
         labelKey: "weatherMonitor",
         section: "Weather Monitor",
         route: `/${userId}/weather`,
@@ -128,7 +115,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
 
     base.push(
       {
-        icon: faUsers,
+        icon: "group",
         labelKey: "employees",
         section: "Labour",
         basePath: `/${userId}/labour`,
@@ -144,7 +131,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
         ],
       },
       {
-        icon: faDollar,
+        icon: "attach_money",
         labelKey: "finance",
         section: "Finance",
         route: `/${userId}/finance_dashboard`,
@@ -164,14 +151,14 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
         ],
       },
       {
-        icon: faWarehouse,
+        icon: "warehouse",
         labelKey: "storage",
         section: "storage",
         route: `/${userId}/storage`,
         subItems: [],
       },
       {
-        icon: faPlus,
+        icon: "add",
         labelKey: "addService",
         section: "Add Service",
         route: `/${userId}/add_service`,
@@ -265,9 +252,9 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                       }
                     }}
                   >
-                    {typeof icon === "object" && "prefix" in icon ? (
-                      <FontAwesomeIcon
-                        icon={icon}
+                    {typeof icon === "string" ? (
+                      <Icon
+                        type={icon as any}
                         className={`h-5 w-5 ${isCollapsed ? "" : "mr-3"}`}
                       />
                     ) : (
@@ -286,8 +273,8 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                           {translatedLabel}
                         </span>
                         {hasSubItems && (
-                          <FontAwesomeIcon
-                            icon={faChevronRight}
+                          <Icon
+                            type={"chevron_right" as any}
                             className={`h-3 w-3 transition-transform duration-200 ${
                               expandedSection === section ? "rotate-90" : ""
                             } ${
@@ -352,8 +339,8 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
           onClick={toggleCollapse}
           title={isCollapsed ? t("expandSidebar") : t("collapseSidebar")}
         >
-          <FontAwesomeIcon
-            icon={isCollapsed ? faChevronRight : faChevronLeft}
+          <Icon
+            type={isCollapsed ? "chevron_right" : "chevron_left" as any}
             className="h-5 w-5"
           />
         </button>

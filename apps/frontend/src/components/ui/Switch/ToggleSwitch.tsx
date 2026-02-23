@@ -1,11 +1,10 @@
+import { Icon } from "@graminate/ui";
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 type ToggleOption<T extends string> = {
   value: T;
   label: string;
-  icon: IconDefinition;
+  icon: string;
 };
 
 type ToggleSwitchProps<T extends string> = {
@@ -32,7 +31,7 @@ const ToggleSwitch = <T extends string>({
               : "text-dark dark:text-light hover:bg-gray-300/50 dark:hover:bg-dark/50"
           }`}
         >
-          <FontAwesomeIcon icon={option.icon} className="size-4" />
+          <Icon type={option.icon as any} className="size-4" />
           <span>{option.label}</span>
         </button>
       ))}

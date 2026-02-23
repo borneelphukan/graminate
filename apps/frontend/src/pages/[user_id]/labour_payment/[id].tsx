@@ -1,15 +1,10 @@
+import { Icon } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import Button from "@/components/ui/Button";
 import Table from "@/components/tables/Table";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHome,
-  faMobileScreen,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import SalaryModal from "@/components/modals/SalaryModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -178,19 +173,19 @@ const LabourPaymentDetails = () => {
         <div className="flex flex-row gap-6 items-start mt-2 space-y-1">
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <FontAwesomeIcon icon={faUser} />
+              <Icon type={"person" as any} />
             </span>
             {labourName}
           </p>
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <FontAwesomeIcon icon={faMobileScreen} />
+              <Icon type={"smartphone" as any} />
             </span>
             {contact}
           </p>
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <FontAwesomeIcon icon={faHome} />
+              <Icon type={"home" as any} />
             </span>
             {address}
           </p>

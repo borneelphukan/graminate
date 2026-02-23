@@ -1,5 +1,4 @@
-import { faList } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import React from "react";
 
 type TicketViewProps = {
@@ -46,7 +45,7 @@ const TicketView = ({ isListView, toggleView }: TicketViewProps) => {
         }}
         aria-label="Switch to List View"
       >
-        <FontAwesomeIcon icon={faList} className="size-6" />
+        <Icon type={"list" as any} className="size-6" />
       </button>
     </div>
   );

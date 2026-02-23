@@ -2,13 +2,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import {
-  faDollarSign,
-  faShoppingCart,
-  faChartPie,
-  faCreditCard,
-  faPiggyBank,
-} from "@fortawesome/free-solid-svg-icons";
-import {
   startOfMonth,
   endOfMonth,
   isWithinInterval,
@@ -429,7 +422,7 @@ const Finance = () => {
       return FINANCIAL_METRICS.map((metric) => ({
         title: metric,
         value: 0,
-        icon: faDollarSign,
+        icon: "attach_money",
         bgColor: "bg-gray-300 dark:bg-gray-700",
         iconValueColor: "text-gray-500 dark:text-gray-400",
       }));
@@ -463,35 +456,35 @@ const Finance = () => {
       {
         title: "Revenue",
         value: currentMonthRevenue,
-        icon: faDollarSign,
+        icon: "attach_money",
         bgColor: "bg-green-300 dark:bg-green-800",
         iconValueColor: "text-green-200 dark:text-green-200",
       },
       {
         title: "COGS",
         value: currentMonthCogs,
-        icon: faShoppingCart,
+        icon: "shopping_cart",
         bgColor: "bg-yellow-300 dark:bg-yellow-100",
         iconValueColor: "text-yellow-200 dark:text-yellow-200",
       },
       {
         title: "Gross Profit",
         value: currentMonthGrossProfit,
-        icon: faChartPie,
+        icon: "pie_chart",
         bgColor: "bg-cyan-300 dark:bg-cyan-100",
         iconValueColor: "text-cyan-200",
       },
       {
         title: "Expenses",
         value: currentMonthExpenses,
-        icon: faCreditCard,
+        icon: "credit_card",
         bgColor: "bg-red-300 dark:bg-red-100",
         iconValueColor: "text-red-200",
       },
       {
         title: "Net Profit",
         value: currentMonthNetProfit,
-        icon: faPiggyBank,
+        icon: "savings",
         bgColor: "bg-blue-300 dark:bg-blue-100",
         iconValueColor: "text-blue-200 dark:text-blue-200",
       },

@@ -24,15 +24,9 @@ importers:
 
   apps/admin:
     dependencies:
-      '@fortawesome/free-brands-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/react-fontawesome':
-        specifier: ^0.2.2
-        version: 0.2.6(@fortawesome/fontawesome-svg-core@6.7.2)(react@19.1.0)
+      '@graminate/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
       argon2:
         specifier: ^0.41.1
         version: 0.41.1
@@ -48,6 +42,9 @@ importers:
       jspdf-autotable:
         specifier: ^5.0.2
         version: 5.0.7(jspdf@3.0.4)
+      material-symbols:
+        specifier: ^0.34.0
+        version: 0.34.1
       next:
         specifier: 15.3.1
         version: 15.3.1(react-dom@19.1.0)(react@19.1.0)
@@ -281,18 +278,6 @@ importers:
       '@emailjs/browser':
         specifier: ^4.4.1
         version: 4.4.1
-      '@fortawesome/fontawesome-svg-core':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/free-brands-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/free-solid-svg-icons':
-        specifier: ^6.7.2
-        version: 6.7.2
-      '@fortawesome/react-fontawesome':
-        specifier: ^0.2.2
-        version: 0.2.6(@fortawesome/fontawesome-svg-core@6.7.2)(react@19.1.0)
       '@graminate/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -347,6 +332,9 @@ importers:
       jspdf-autotable:
         specifier: ^5.0.2
         version: 5.0.7(jspdf@3.0.4)
+      material-symbols:
+        specifier: ^0.34.0
+        version: 0.34.1
       mjml:
         specifier: ^4.15.3
         version: 4.18.0

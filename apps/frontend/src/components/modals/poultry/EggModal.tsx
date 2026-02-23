@@ -1,9 +1,8 @@
+import { Icon } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import InfoModal from "../InfoModal";
 
 
@@ -188,7 +187,7 @@ const EggModal = ({
               onClick={onClose}
               aria-label="Close modal"
             >
-              <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+              <Icon type={"close" as any} className="w-5 h-5" />
             </button>
           </div>
 

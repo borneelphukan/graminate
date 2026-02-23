@@ -1,5 +1,4 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import React from "react";
 
 type Props = {
@@ -35,8 +34,8 @@ const SearchBar = ({ value, placeholder = "", mode, onChange }: Props) => {
         className="absolute inset-y-0 right-4 flex items-center"
         aria-label="Search"
       >
-        <FontAwesomeIcon
-          icon={faSearch}
+        <Icon
+          type={"search" as any}
           className="size-5 stroke-gray-800 dark:stroke-white"
         />
       </button>

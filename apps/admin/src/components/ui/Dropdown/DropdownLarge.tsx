@@ -1,5 +1,4 @@
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import { useState, useRef, useEffect } from "react";
 
 type Props = {
@@ -91,8 +90,8 @@ const DropdownLarge = ({
           type="button"
         >
           {displayLabel}
-          <FontAwesomeIcon
-            icon={faChevronDown}
+          <Icon
+            type={"expand_more" as any}
             className="size-5 ml-2 -mr-1 text-gray-300"
           />
         </button>

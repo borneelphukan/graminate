@@ -1,13 +1,8 @@
+import { Icon } from "@graminate/ui";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleArrowUp,
-  faTrashAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import Sparkles from "@/icons/Sparkles";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
@@ -199,8 +194,8 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                       className="text-gray-600 dark:text-gray-400"
                     />
                   ) : (
-                    <FontAwesomeIcon
-                      icon={faUser}
+                    <Icon
+                      type={"person" as any}
                       size="sm"
                       className="text-gray-100 dark:text-gray-400"
                     />
@@ -260,7 +255,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
             className="text-blue-500 disabled:text-gray-400 dark:disabled:text-gray-500"
             disabled={isLoading || input.trim() === ""}
           >
-            <FontAwesomeIcon icon={faCircleArrowUp} size="2x" />
+            <Icon type={"arrow_circle_up" as any} size="lg" />
           </button>
         </div>
       </footer>

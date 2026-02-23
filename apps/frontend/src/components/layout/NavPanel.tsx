@@ -1,7 +1,6 @@
+import { Icon } from "@graminate/ui";
 import { useState } from "react";
 import type { NavPanel } from "@/types/card-props";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 const NavPanel = ({ buttons, activeView, onNavigate }: NavPanel) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,7 +35,7 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanel) => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Open menu"
           >
-            <FontAwesomeIcon icon={faBars} className="size-6" />
+            <Icon type={"menu" as any} className="size-6" />
           </button>
 
           {/* Dropdown Menu */}
