@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Button from "@/components/ui/Button";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faXmark,
@@ -210,15 +210,8 @@ const WidgetModal = ({
                           id={`widget-${widget.id}`}
                           label={widget.name}
                           checked={selectedWidgets.includes(widget.id)}
-                          onChange={(e) =>
-                            handleCheckboxChange(
-                              widget.id,
-                              typeof e === "boolean"
-                                ? e
-                                : e.target
-                                ? e.target.checked
-                                : false
-                            )
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange(widget.id, !!checked)
                           }
                         />
                       </div>

@@ -5,7 +5,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import Button from "@/components/ui/Button";
 import { API_BASE_URL } from "@/constants/constants";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type NotificationSettings = {
   orders: {
@@ -137,7 +137,7 @@ const Notifications = () => {
                     <Checkbox
                       id="orders-email-notifications"
                       checked={settings.orders.email}
-                      onChange={() => handleCheckboxChange("orders", "email")}
+                      onCheckedChange={() => handleCheckboxChange("orders", "email")}
                       disabled={!settings.orders.enabled}
                       className="h-4 w-4 text-green-200"
                     />
@@ -153,7 +153,7 @@ const Notifications = () => {
                     <Checkbox
                       id="orders-sms-alerts"
                       checked={settings.orders.sms}
-                      onChange={() => handleCheckboxChange("orders", "sms")}
+                      onCheckedChange={() => handleCheckboxChange("orders", "sms")}
                       disabled={!settings.orders.enabled}
                       className="h-4 w-4 text-green-200"
                     />
@@ -294,7 +294,7 @@ const Notifications = () => {
                     <Checkbox
                       id="system-updates"
                       checked={settings.system.updates}
-                      onChange={() => handleCheckboxChange("system", "updates")}
+                      onCheckedChange={() => handleCheckboxChange("system", "updates")}
                       disabled={!settings.system.enabled}
                       className="h-4 w-4 text-green-200"
                     />

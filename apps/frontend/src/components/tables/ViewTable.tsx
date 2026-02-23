@@ -1,6 +1,6 @@
 import { useAllRowsSelected } from "@/hooks/tables";
 import React, { useState, JSX } from "react";
-import Checkbox from "../ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type FilterTasksFn = (column: {
   id: string;
@@ -69,8 +69,7 @@ const ViewTable = ({
     });
   };
 
-  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
+  const toggleSelectAll = (checked: boolean) => {
     setIsAllSelected(checked);
 
     if (checked) {
@@ -94,7 +93,7 @@ const ViewTable = ({
               <Checkbox
                 id="select-all-skeleton"
                 checked={false}
-                onChange={() => {}}
+                onCheckedChange={() => {}}
                 disabled={true}
                 className="h-4 w-4"
                 aria-label="Select all"
@@ -139,7 +138,7 @@ const ViewTable = ({
             <Checkbox
               id="select-all-checkbox"
               checked={isAllSelected}
-              onChange={toggleSelectAll}
+              onCheckedChange={toggleSelectAll}
               className="h-4 w-4"
               aria-label={isAllSelected ? "Deselect all" : "Select all"}
             />
@@ -168,8 +167,8 @@ const ViewTable = ({
                   <Checkbox
                     id={`task-checkbox-${task.id}`}
                     checked={selectedRows.has(task.id)}
-                    onChange={(e) =>
-                      toggleRowSelection(task.id, e.target.checked)
+                    onCheckedChange={(checked) =>
+                      toggleRowSelection(task.id, !!checked)
                     }
                     className="h-4 w-4"
                     aria-label={`Select task ${task.id}`}

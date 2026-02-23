@@ -11,7 +11,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Checkbox from "../ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type RowType = unknown[];
 
@@ -162,19 +162,15 @@ const Table = ({
     }
   };
 
-  const handleSelectAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    const checked = e.target.checked;
+  const handleSelectAllChange = (checked: boolean) => {
     setSelectAll(checked);
     setSelectedRows(new Array(paginatedRows.length).fill(checked));
   };
 
   const handleRowCheckboxChange = (
     rowIndex: number,
-    e: React.ChangeEvent<HTMLInputElement>
+    checked: boolean
   ) => {
-    e.stopPropagation();
-    const checked = e.target.checked;
     setSelectedRows((prev) => {
       const newSelected = [...prev];
       newSelected[rowIndex] = checked;
@@ -451,7 +447,7 @@ const Table = ({
                     <Checkbox
                       id="select-all-checkbox"
                       checked={selectAll && paginatedRows.length > 0}
-                      onChange={handleSelectAllChange}
+                      onCheckedChange={handleSelectAllChange}
                       disabled={paginatedRows.length === 0}
                       className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                       aria-label={selectAll ? "Deselect all" : "Select all"}
@@ -511,7 +507,7 @@ const Table = ({
                       <Checkbox
                         id={`row-checkbox-${rowIndex}`}
                         checked={selectedRows[rowIndex] || false}
-                        onChange={(e) => handleRowCheckboxChange(rowIndex, e)}
+                        onCheckedChange={(checked) => handleRowCheckboxChange(rowIndex, !!checked)}
                         className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                         aria-label={`Select row ${rowIndex + 1}`}
                       />

@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from "../ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type Props = {
   columns: string[];
@@ -21,7 +21,7 @@ const TableSkeleton = ({ columns, rowCount = 10, hideChecks = false }: Props) =>
                 <Checkbox
                   id="select-all-skeleton"
                   checked={false}
-                  onChange={() => {}}
+                  onCheckedChange={() => {}}
                   disabled={true}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />

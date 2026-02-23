@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import type { DropdownFilter } from "@/types/card-props";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import Checkbox from "../Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 const DropdownFilter = ({
   items,
@@ -85,7 +85,7 @@ const DropdownFilter = ({
               <Checkbox
                 id={`filter-${item}`}
                 checked={isItemSelected(item)}
-                onChange={() => toggleItem(item)}
+                onCheckedChange={() => toggleItem(item)}
                 className="h-4 w-4 text-blue-600"
               />
               <span className="ml-2 text-sm text-dark dark:text-light">

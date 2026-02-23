@@ -6,7 +6,7 @@ import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
 import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
 import Button from "@/components/ui/Button";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -175,13 +175,13 @@ const WeatherSettings = () => {
                         <Checkbox
                           id="ai-suggestions"
                           checked={weatherSettings.aiSuggestions}
-                          onChange={() =>
+                          onCheckedChange={() =>
                             setWeatherSettings((prev) => ({
                               ...prev,
                               aiSuggestions: !prev.aiSuggestions,
                             }))
                           }
-                          className="w-5 h-5 text-green-200"
+                          className="w-5 h-5 text-green-200 mt-2"
                         />
                         <label
                           htmlFor="ai-suggestions"

@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 import Loader from "../ui/Loader";
 
 type Priority = "High" | "Medium" | "Low";
@@ -242,7 +242,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
                 <Checkbox
                   id={`task-${task.task_id}`}
                   checked={task.status === "Completed"}
-                  onChange={() => toggleTaskCompletion(task.task_id)}
+                  onCheckedChange={() => toggleTaskCompletion(task.task_id)}
                   className="mr-3 flex-shrink-0"
                 />
                 <span
