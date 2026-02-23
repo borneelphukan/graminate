@@ -62,4 +62,49 @@ export class TasksController {
   async resetInventory(@Body() resetDto: ResetTaskDto) {
     return this.tasksService.resetTable(resetDto.userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('columns/:userId')
+  async getKanbanColumns(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query('project') project: string,
+  ) {
+    const columns = await this.tasksService.getKanbanColumns(userId, project);
+    return { columns };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('column/add')
+  async addKanbanColumn(
+    @Body() body: { userId: number; project: string; title: string; position: number },
+  ) {
+    const column = await this.tasksService.addKanbanColumn(
+      body.userId,
+      body.project,
+      body.title,
+      body.position,
+    );
+    return column;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('column/update/:id')
+  async updateKanbanColumn(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { title?: string; position?: number },
+  ) {
+    const column = await this.tasksService.updateKanbanColumn(
+      id,
+      body.title,
+      body.position,
+    );
+    return column;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('column/delete/:id')
+  async deleteKanbanColumn(@Param('id', ParseIntPipe) id: number) {
+    const column = await this.tasksService.deleteKanbanColumn(id);
+    return column;
+  }
 }

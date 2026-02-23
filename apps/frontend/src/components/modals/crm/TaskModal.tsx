@@ -22,6 +22,7 @@ type TaskModalProps = {
     deadline?: string;
   };
   projectName: string;
+  columns?: { id: string; title: string }[];
   availableLabels: string[];
   onClose: () => void;
   updateTask: (updatedTask: {
@@ -40,6 +41,8 @@ const TaskModal = ({
   isOpen,
   taskDetails,
   projectName,
+  columns = [],
+  availableLabels,
   onClose,
   deleteTask,
   updateTask,
@@ -52,7 +55,12 @@ const TaskModal = ({
   );
   const [showDropdown, setShowDropdown] = useState(false);
   const priorityOptions = ["Low", "Medium", "High"];
-  const statusOptions = ["To Do", "In Progress", "Checks", "Completed"];
+  
+  // Use dynamic columns if provided
+  const statusOptions = columns.length > 0
+    ? columns.map(c => c.title)
+    : ["To Do", "In Progress", "Checks", "Completed"];
+
   const [taskData, setTaskData] = useState({
     ...taskDetails,
     priority: taskDetails.priority || "Medium",
@@ -162,6 +170,11 @@ const TaskModal = ({
   };
 
   const mapStatusToColumnId = (status: string): string => {
+    if (columns.length > 0) {
+      const col = columns.find(c => c.title === status);
+      if (col) return col.id;
+    }
+    
     switch (status) {
       case "To Do":
         return "todo";

@@ -29,4 +29,20 @@ export class TasksService {
   async resetTable(userId: number) {
     return this.tasksRepository.resetTable(userId);
   }
+
+  async getKanbanColumns(userId: number, project: string) {
+    return this.tasksRepository.getKanbanColumns(userId, project);
+  }
+
+  async addKanbanColumn(userId: number, project: string, title: string, position: number) {
+    return this.tasksRepository.addKanbanColumn(userId, project, title, position);
+  }
+
+  async updateKanbanColumn(columnId: number, title?: string, position?: number) {
+    return this.tasksRepository.updateKanbanColumn(columnId, title, position);
+  }
+
+  async deleteKanbanColumn(columnId: number) {
+    return this.tasksRepository.deleteKanbanColumn(columnId);
+  }
 }

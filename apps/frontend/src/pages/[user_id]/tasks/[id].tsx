@@ -86,6 +86,9 @@ const Tasks = () => {
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // New states for adding a column
+  const [isAddingColumn, setIsAddingColumn] = useState(false);
+  const [newColumnTitle, setNewColumnTitle] = useState("");
 
   const effectiveLoading = isLoading;
 
@@ -154,10 +157,26 @@ const Tasks = () => {
   };
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchData = async () => {
       if (!projectTitle || !userId) return;
       setIsLoading(true);
       try {
+        const columnsResp = await axiosInstance.get(`/tasks/columns/${userId}`, {
+          params: { project: projectTitle },
+        });
+
+        const fetchedCols = columnsResp.data.columns || [];
+        let mappedColumns: Column[] = fetchedCols.map((c: { column_id: number; title: string }) => ({
+          id: c.column_id.toString(),
+          title: c.title,
+        }));
+
+        if (mappedColumns.length === 0) {
+          mappedColumns = initialColumns;
+        }
+
+        setColumns(mappedColumns);
+
         const response = await axiosInstance.get(`/tasks/${userId}`, {
           params: { project: projectTitle },
         });
@@ -168,30 +187,64 @@ const Tasks = () => {
         );
 
         const mappedTasks: FrontendTaskType[] = actualApiTasks.map(
-          (task: ApiTask): FrontendTaskType => ({
-            id: task.task_id.toString(),
-            task: task.task!,
-            title: task.task!,
-            description: task.description || "",
-            type: task.type || "",
-            columnId: mapStatusToColumnId(task.status),
-            status: task.status!,
-            priority: task.priority || "Medium",
-            deadline: formatDeadlineForInput(task.deadline),
-          })
+          (task: ApiTask): FrontendTaskType => {
+            let columnId = mappedColumns.find(c => c.id === task.status || c.title === task.status)?.id;
+            
+            if (!columnId) {
+               columnId = mapStatusToColumnId(task.status);
+            }
+
+            return {
+              id: task.task_id.toString(),
+              task: task.task!,
+              title: task.task!,
+              description: task.description || "",
+              type: task.type || "",
+              columnId,
+              status: task.status!,
+              priority: task.priority || "Medium",
+              deadline: formatDeadlineForInput(task.deadline),
+            };
+          }
         );
         setTasks(mappedTasks);
       } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-        Swal.fire("Error", "Could not fetch tasks.", "error");
+        console.error("Failed to fetch data:", error);
+        Swal.fire("Error", "Could not fetch tasks or columns.", "error");
         setTasks([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchTasks();
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectTitle, userId]);
+
+  const handleCreateColumn = async () => {
+    if (!newColumnTitle.trim()) {
+      Swal.fire("Error", "Column title cannot be empty.", "error");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post("/tasks/column/add", {
+        userId: Number(userId),
+        project: projectTitle,
+        title: newColumnTitle.trim(),
+        position: columns.length,
+      });
+
+      const newCol = response.data;
+      setColumns((prev) => [...prev, { id: newCol.column_id.toString(), title: newCol.title }]);
+      setNewColumnTitle("");
+      setIsAddingColumn(false);
+    } catch (err) {
+      console.error("Failed to add column:", err);
+      Swal.fire("Error", "Failed to add column", "error");
+    }
+  };
+
 
   const filteredTasks = useMemo(() => {
     return (tasks || []).filter((task) => {
@@ -221,11 +274,45 @@ const Tasks = () => {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
-  const updateColumnTitle = (id: Id, title: string) => {
-    setColumns((prev) =>
-      prev.map((col) => (col.id === id ? { ...col, title } : col))
-    );
+  const updateColumnTitle = async (id: Id, title: string) => {
+    try {
+      if (!isNaN(Number(id))) {
+        await axiosInstance.put(`/tasks/column/update/${id}`, { title });
+      }
+      setColumns((prev) =>
+        prev.map((col) => (col.id === id ? { ...col, title } : col))
+      );
+    } catch (error) {
+      console.error("Failed to update column:", error);
+      Swal.fire("Error", "Failed to update column title", "error");
+    }
   };
+
+  const deleteColumn = async (id: Id) => {
+    const result = await Swal.fire({
+      title: "Delete Column?",
+      text: "This will delete the column. Tasks in it might be orphaned.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (result.isConfirmed) {
+      try {
+        if (!isNaN(Number(id))) {
+          await axiosInstance.delete(`/tasks/column/delete/${id}`);
+        }
+        setColumns((prev) => prev.filter((col) => col.id !== id));
+        // optionally update tasks that were in this column
+      } catch (error) {
+        console.error("Failed to delete column:", error);
+        Swal.fire("Error", "Failed to delete column", "error");
+      }
+    }
+  };
+
 
   const mapColumnIdToStatus = (columnId: Id): string => {
     switch (columnId) {
@@ -248,8 +335,12 @@ const Tasks = () => {
       return;
     }
     try {
-      const status = mapColumnIdToStatus(columnId);
+      // Find the column by id to get its title as status
+      const column = columns.find(c => c.id === columnId);
+      const status = column ? column.title : mapColumnIdToStatus(columnId);
+      
       const response = await axiosInstance.post("/tasks/add", {
+
         user_id: Number(userId),
         project: projectTitle,
         task: title.trim(),
@@ -395,9 +486,10 @@ const Tasks = () => {
   };
 
   const openTaskModal = (task: FrontendTaskType) => {
+    const taskColumn = columns.find(c => c.id === task.columnId);
     const taskToOpen: FrontendTaskType = {
       ...task,
-      status: task.status || mapColumnIdToStatus(task.columnId),
+      status: task.status || (taskColumn ? taskColumn.title : mapColumnIdToStatus(task.columnId)),
       priority: task.priority || "Medium",
       description: task.description || "",
       deadline: task.deadline || "",
@@ -493,13 +585,15 @@ const Tasks = () => {
         const activeIndex = currentTasks.findIndex((t) => t.id === activeId);
         if (activeIndex === -1) return currentTasks;
 
+        const targetColumn = columns.find(c => c.id === targetColumnId);
         const taskWithNewColumn = {
           ...currentTasks[activeIndex],
           columnId: targetColumnId,
-          status: mapColumnIdToStatus(targetColumnId),
+          status: targetColumn ? targetColumn.title : mapColumnIdToStatus(targetColumnId),
         };
 
         const tasksWithoutActive = currentTasks.filter(
+
           (t) => t.id !== activeId
         );
 
@@ -572,9 +666,11 @@ const Tasks = () => {
       });
 
       if (taskBeingDragged.columnId !== targetColumnId) {
-        const newStatus = mapColumnIdToStatus(targetColumnId);
+        const targetColumn = columns.find(c => c.id === targetColumnId);
+        const newStatus = targetColumn ? targetColumn.title : mapColumnIdToStatus(targetColumnId);
         try {
           await updateTask({
+
             ...taskBeingDragged,
             columnId: targetColumnId,
             status: newStatus,
@@ -725,7 +821,9 @@ const Tasks = () => {
                           userId={Number(userId)}
                           projectTitle={projectTitle}
                           updateColumnTitle={updateColumnTitle}
+                          deleteColumn={deleteColumn}
                           openTicketModal={openTicketModal}
+
                           addTask={addTask}
                           dropdownItems={dropdownItems}
                           openTaskModal={openTaskModal}
@@ -755,7 +853,48 @@ const Tasks = () => {
                     );
                   })}
                 </SortableContext>
+                
+                {/* Add new column button/form */}
+                <div className="w-full sm:w-[270px] flex-shrink-0">
+                  {isAddingColumn ? (
+                    <div className="bg-gray-500 dark:bg-gray-800 shadow-md rounded-lg p-3 w-full flex flex-col gap-2">
+                      <input
+                        type="text"
+                        value={newColumnTitle}
+                        onChange={(e) => setNewColumnTitle(e.target.value)}
+                        placeholder="Column title"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleCreateColumn();
+                          if (e.key === "Escape") setIsAddingColumn(false);
+                        }}
+                        className="bg-gray-400 dark:bg-gray-700 p-2 rounded text-dark dark:text-light focus:outline-none w-full"
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          text="Add"
+                          style="primary"
+                          onClick={handleCreateColumn}
+                        />
+                        <Button
+                          text="Cancel"
+                          style="ghost"
+                          onClick={() => setIsAddingColumn(false)}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setIsAddingColumn(true)}
+                      className="bg-gray-500/50 dark:bg-gray-800/50 hover:bg-gray-500 dark:hover:bg-gray-800 transition-colors shadow-md rounded-lg p-3 w-full text-left text-dark dark:text-light font-semibold opacity-70 flex items-center gap-2"
+                    >
+                      <span className="text-xl leading-none">+</span> Add Column
+                    </button>
+                  )}
+                </div>
+
               </div>
+
               {isBrowser &&
                 createPortal(
                   <DragOverlay dropAnimation={null}>
@@ -769,7 +908,9 @@ const Tasks = () => {
                         userId={Number(userId)}
                         projectTitle={projectTitle}
                         updateColumnTitle={() => {}}
+                        deleteColumn={() => {}}
                         openTicketModal={() => {}}
+
                         addTask={() => {}}
                         dropdownItems={dropdownItems}
                         openTaskModal={() => {}}
@@ -817,6 +958,7 @@ const Tasks = () => {
           {selectedTask && isTaskModalOpen && (
             <TaskModal
               isOpen={isTaskModalOpen}
+              columns={columns.map((c) => ({ id: String(c.id), title: c.title }))}
               taskDetails={{
                 ...selectedTask,
                 id: String(selectedTask.id),

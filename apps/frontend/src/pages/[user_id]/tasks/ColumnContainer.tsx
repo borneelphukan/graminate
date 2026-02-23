@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
   SortableContext,
@@ -43,6 +45,7 @@ const ColumnContainer = ({
   dropdownOpen,
   isOverlay = false,
   loading = false,
+  deleteColumn,
 }: ColumnContainerProps) => {
   const [editMode, setEditMode] = useState(false);
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -91,13 +94,24 @@ const ColumnContainer = ({
       <div className="flex justify-between items-center mb-3 px-1">
         <div className="flex items-center gap-2 flex-grow min-w-0">
           {!editMode ? (
-            <h2
-              title={column.title}
-              className="text-sm font-semibold dark:text-light cursor-pointer truncate"
-              onClick={() => !isOverlay && setEditMode(true)}
-            >
-              {column.title}
-            </h2>
+            <>
+              <h2
+                title={column.title}
+                className="text-sm font-semibold dark:text-light cursor-pointer truncate flex-grow"
+                onClick={() => !isOverlay && setEditMode(true)}
+              >
+                {column.title}
+              </h2>
+              {deleteColumn && !isOverlay && (
+                <button
+                  onClick={() => deleteColumn(column.id)}
+                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  aria-label="Delete column"
+                >
+                  <FontAwesomeIcon icon={faTrash} className="w-3 h-3" />
+                </button>
+              )}
+            </>
           ) : (
             <input
               type="text"

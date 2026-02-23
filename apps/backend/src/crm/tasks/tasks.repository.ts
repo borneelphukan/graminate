@@ -130,4 +130,78 @@ export class TasksRepository {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async getKanbanColumns(userId: number, project: string) {
+    try {
+      const columns = await this.prisma.kanban_columns.findMany({
+        where: { user_id: userId, project },
+        orderBy: { position: 'asc' },
+      });
+
+      if (columns.length === 0) {
+        // Auto-seed initial columns
+        await this.prisma.kanban_columns.createMany({
+          data: [
+            { user_id: userId, project, title: 'TO DO', position: 0 },
+            { user_id: userId, project, title: 'IN PROGRESS', position: 1 },
+            { user_id: userId, project, title: 'CHECK', position: 2 },
+            { user_id: userId, project, title: 'DONE', position: 3 },
+          ],
+        });
+
+        return await this.prisma.kanban_columns.findMany({
+          where: { user_id: userId, project },
+          orderBy: { position: 'asc' },
+        });
+      }
+
+      return columns;
+    } catch (error) {
+      console.error('Error fetching kanban columns:', error);
+      throw new InternalServerErrorException('Failed to fetch kanban columns');
+    }
+  }
+
+  async addKanbanColumn(userId: number, project: string, title: string, position: number) {
+    try {
+      return await this.prisma.kanban_columns.create({
+        data: {
+          user_id: userId,
+          project,
+          title,
+          position,
+        },
+      });
+    } catch (error) {
+      console.error('Error adding kanban column:', error);
+      throw new InternalServerErrorException('Failed to add kanban column');
+    }
+  }
+
+  async updateKanbanColumn(columnId: number, title?: string, position?: number) {
+    try {
+      const data: any = {};
+      if (title !== undefined) data.title = title;
+      if (position !== undefined) data.position = position;
+
+      return await this.prisma.kanban_columns.update({
+        where: { column_id: columnId },
+        data,
+      });
+    } catch (error) {
+      console.error('Error updating kanban column:', error);
+      throw new InternalServerErrorException('Failed to update kanban column');
+    }
+  }
+
+  async deleteKanbanColumn(columnId: number) {
+    try {
+      return await this.prisma.kanban_columns.delete({
+        where: { column_id: columnId },
+      });
+    } catch (error) {
+      console.error('Error deleting kanban column:', error);
+      throw new InternalServerErrorException('Failed to delete kanban column');
+    }
+  }
 }
