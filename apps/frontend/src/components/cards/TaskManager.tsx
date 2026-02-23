@@ -77,7 +77,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
           ? response.data
           : response.data.tasks || [];
 
-        setTaskList(sortTasks(tasks, prioritySortAsc));
+        const validTasks = tasks.filter((t: Task) => t.task && typeof t.task === "string" && t.task.trim() !== "");
+        setTaskList(sortTasks(validTasks, prioritySortAsc));
       } catch (err) {
         console.error("Failed to fetch tasks:", err);
         setError("Failed to load tasks. Please try again later.");

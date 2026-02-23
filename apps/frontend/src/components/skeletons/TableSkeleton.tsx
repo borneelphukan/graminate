@@ -27,7 +27,7 @@ const TableSkeleton = ({ columns, rowCount = 10, hideChecks = false }: Props) =>
                 />
               </th>
             )}
-            {columns.map((column, index) => (
+            {columns.map((column, index) => column !== "#" && (
               <th
                 key={index}
                 className="p-3 text-left text-xs font-medium text-dark dark:text-light uppercase tracking-wider cursor-pointer transition-colors duration-200 hover:bg-gray-500 dark:hover:bg-gray-700"
@@ -64,7 +64,7 @@ const TableSkeleton = ({ columns, rowCount = 10, hideChecks = false }: Props) =>
                   <div className="h-4 w-4 bg-gray-400 dark:bg-gray-700 rounded animate-pulse"></div>
                 </td>
               )}
-              {columns.map((_, cellIndex) => (
+              {columns.map((col, cellIndex) => col !== "#" && (
                 <td key={cellIndex} className="p-3 whitespace-nowrap text-sm">
                   <div className="h-4 bg-gray-400 dark:bg-gray-700 rounded animate-pulse"></div>
                 </td>

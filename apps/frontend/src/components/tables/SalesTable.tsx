@@ -189,12 +189,12 @@ const SalesTable = ({
       return;
     }
 
-    const headers = data.columns;
+    const headers = data.columns.filter((c) => c !== "#");
 
     if (format === "pdf") {
       const doc = new jsPDF();
       const pdfBodyData = exportRows.map((row) =>
-        row.map((cell) => {
+        row.filter((_, idx) => data.columns[idx] !== "#").map((cell) => {
           if (cell === null || cell === undefined) return "";
           if (Array.isArray(cell)) return cell.join(", ");
           return String(cell);
@@ -212,7 +212,7 @@ const SalesTable = ({
 
     if (format === "xlsx") {
       const excelData = exportRows.map((row) =>
-        row.map((cell) => (Array.isArray(cell) ? cell.join(", ") : cell))
+        row.filter((_, idx) => data.columns[idx] !== "#").map((cell) => (Array.isArray(cell) ? cell.join(", ") : cell))
       );
       const worksheet = XLSX.utils.aoa_to_sheet([headers, ...excelData]);
       const workbook = XLSX.utils.book_new();
@@ -534,7 +534,7 @@ const SalesTable = ({
                   />
                 </th>
               )}
-              {data.columns.map((column, index) => (
+              {data.columns.map((column, index) => column !== "#" && (
                 <th
                   key={index}
                   className="p-3 text-left text-xs font-medium text-dark dark:text-light uppercase tracking-wider cursor-pointer transition-colors duration-200 hover:bg-gray-500 dark:hover:bg-gray-700"
@@ -598,6 +598,7 @@ const SalesTable = ({
                 )}
 
                 {row.map((cell, cellIndex) => {
+                  if (data.columns[cellIndex] === "#") return null;
                   const isInvoiceColumn = data.columns[cellIndex] === "Invoice";
                   const saleId = row[0] as number;
                   const invoiceCreated = cell === true || cell === "Yes";

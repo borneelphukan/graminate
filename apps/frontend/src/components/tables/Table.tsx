@@ -123,14 +123,15 @@ const Table = ({
 
     if (format === "pdf") {
       const doc = new jsPDF();
+      const filteredColumns = data.columns.filter((col) => col !== "#");
       const pdfBodyData = exportRows.map((row) =>
-        row.map((cell) => {
+        row.filter((_, idx) => data.columns[idx] !== "#").map((cell) => {
           if (cell === null || cell === undefined) return "";
           return String(cell);
         })
       );
       autoTable(doc, {
-        head: [data.columns],
+        head: [filteredColumns],
         body: pdfBodyData,
         styles: { fontSize: 8 },
         headStyles: { fillColor: [52, 73, 94] },
@@ -139,7 +140,11 @@ const Table = ({
     }
 
     if (format === "xlsx") {
-      const worksheet = XLSX.utils.aoa_to_sheet([data.columns, ...exportRows]);
+      const filteredColumns = data.columns.filter((col) => col !== "#");
+      const filteredExportRows = exportRows.map((row) =>
+        row.filter((_, idx) => data.columns[idx] !== "#")
+      );
+      const worksheet = XLSX.utils.aoa_to_sheet([filteredColumns, ...filteredExportRows]);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
       const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
@@ -453,7 +458,7 @@ const Table = ({
                     />
                   </th>
                 )}
-                {data.columns.map((column, index) => (
+                {data.columns.map((column, index) => column !== "#" && (
                   <th
                     key={index}
                     className="p-3 text-left text-xs font-medium text-dark dark:text-light uppercase tracking-wider cursor-pointer transition-colors duration-200 hover:bg-gray-500 dark:hover:bg-gray-700"
@@ -513,7 +518,7 @@ const Table = ({
                     </td>
                   )}
 
-                  {row.map((cell, cellIndex) => (
+                  {row.map((cell, cellIndex) => data.columns[cellIndex] !== "#" && (
                     <td
                       key={cellIndex}
                       className="p-3 whitespace-nowrap text-sm text-dark dark:text-light max-w-[200px] truncate"
