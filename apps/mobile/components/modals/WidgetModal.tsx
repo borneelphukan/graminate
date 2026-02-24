@@ -1,15 +1,4 @@
-import {
-  faBug,
-  faChartLine,
-  faCow,
-  faEgg,
-  faFish,
-  faGripHorizontal,
-  faSave,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { Icon } from "@graminate/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -124,12 +113,12 @@ const WidgetModal = ({
     return orderedGroups;
   }, [availableWidgets]);
 
-  const categoryIcons: Record<string, IconDefinition> = {
-    General: faGripHorizontal,
-    Financial: faChartLine,
-    Poultry: faEgg,
-    "Cattle Rearing": faCow,
-    Apiculture: faBug,
+  const categoryIcons: Record<string, string> = {
+    General: "drag_handle",
+    Financial: "show_chart",
+    Poultry: "egg",
+    "Cattle Rearing": "cruelty_free",
+    Apiculture: "bug_report",
   };
 
   const handleToggleWidget = (widgetId: string) => {
@@ -156,8 +145,8 @@ const WidgetModal = ({
           <Text variant="titleLarge">Manage Dashboard Widgets</Text>
           <IconButton
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={22}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -173,8 +162,8 @@ const WidgetModal = ({
                 <Card.Title
                   title={category}
                   left={(props) => (
-                    <FontAwesomeIcon
-                      icon={categoryIcons[category]}
+                    <Icon
+                      type={(categoryIcons[category]) as any}
                       size={22}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -216,8 +205,8 @@ const WidgetModal = ({
           <Button
             onPress={onClose}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -229,8 +218,8 @@ const WidgetModal = ({
             mode="contained"
             onPress={handleSave}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={theme.colors.onPrimary}
               />

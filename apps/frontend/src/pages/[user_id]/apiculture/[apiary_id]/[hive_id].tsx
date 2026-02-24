@@ -118,7 +118,7 @@ const HiveDetailsPage = () => {
     try {
       const response = await axiosInstance.get(`/bee-hives/${hiveId}`);
       setHiveData(response.data);
-    } catch (error) {
+    } catch {
       console.error("Error fetching hive details:", error);
       setHiveData(null);
       Swal.fire("Error", "Could not load hive details.", "error");
@@ -135,7 +135,7 @@ const HiveDetailsPage = () => {
         `/hive-inspections/hive/${hiveId}`
       );
       setInspections(response.data.inspections);
-    } catch (error) {
+    } catch {
       console.error("Error fetching inspections:", error);
       setInspections([]);
     } finally {
@@ -270,7 +270,7 @@ const HiveDetailsPage = () => {
         await axiosInstance.delete(`/bee-hives/delete/${hiveId}`);
         Swal.fire("Deleted!", "The hive has been deleted.", "success");
         router.push(`/${userId}/apiculture/${apiaryId}`);
-      } catch (error) {
+      } catch {
         Swal.fire("Error", "Failed to delete the hive.", "error");
         console.error("Failed to delete hive:", error);
       }
@@ -491,7 +491,7 @@ const HiveDetailsPage = () => {
             {formatTemperature(temperature)}
             {isTempWarning && (
               <Icon
-                type={"warning" as any}
+                type={"warning"}
                 className="ml-2 h-4 w-4"
                 title="Temperature is outside the optimal range for bees (10-35°C)."
               />
@@ -546,7 +546,7 @@ const HiveDetailsPage = () => {
             role="alert"
           >
             <div className="flex items-center">
-              <Icon type={"warning" as any} className="mr-3" />
+              <Icon type={"warning"} className="mr-3" />
               <span className="font-medium">{alert.message}</span>
             </div>
             <button

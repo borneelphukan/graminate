@@ -1,10 +1,5 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowLeft,
-  faCheckCircle,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -194,12 +189,10 @@ const AccountSettingsScreen = () => {
           <Dialog visible={true} onDismiss={closeModal}>
             <Dialog.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={
-                    infoModalContent.type === "success"
-                      ? faCheckCircle
-                      : faExclamationCircle
-                  }
+                <Icon
+                  type={(infoModalContent.type === "success"
+                      ? "check_circle"
+                      : "error") as any}
                   size={48}
                   color={
                     infoModalContent.type === "success"
@@ -228,8 +221,8 @@ const AccountSettingsScreen = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />

@@ -229,7 +229,7 @@ const PlatformLayout = ({ children }: Props) => {
           onClick={() => setIsChatOpen((prev) => !prev)}
           className="fixed bottom-4 right-4 bg-green-200 text-white p-4 rounded-full shadow-lg hover:bg-green-100 z-50"
         >
-          <Icon type={"smart_toy" as any} />
+          <Icon type={"smart_toy"} />
         </button>
 
         {isChatOpen && (

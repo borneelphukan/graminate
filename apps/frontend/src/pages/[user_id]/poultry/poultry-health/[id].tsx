@@ -252,7 +252,7 @@ const PoultryHealthDetails = () => {
   }) => (
     <div className="py-3 sm:grid sm:grid-cols-3 sm:gap-4">
       <dt className="text-sm font-medium text-dark flex items-center">
-        <Icon type={icon as any} className="mr-3 w-5 h-5 text-blue-500" />
+        <Icon type={icon} className="mr-3 w-5 h-5 text-blue-500" />
         {label}
       </dt>
       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
@@ -309,7 +309,7 @@ const PoultryHealthDetails = () => {
             <div className="px-6 py-5">
               <h3 className="text-lg font-semibold text-dark mb-3 border-b pb-2">
                 <Icon
-                  type={"stethoscope" as any}
+                  type={"stethoscope"}
                   className="mr-2 text-green-200"
                 />
                 Flock Information
@@ -329,7 +329,7 @@ const PoultryHealthDetails = () => {
 
               <h3 className="text-lg text-dark font-semibold mt-6 mb-3 border-b pb-2">
                 <Icon
-                  type={"medication_liquid" as any}
+                  type={"medication_liquid"}
                   className="mr-2 text-purple-500"
                 />
                 Veterinary Details
@@ -380,7 +380,7 @@ const PoultryHealthDetails = () => {
                 <>
                   <h3 className="text-lg font-semibold text-dark mt-6 mb-3 border-b pb-2">
                     <Icon
-                      type={"chat" as any}
+                      type={"chat"}
                       className="mr-2 text-yellow-200"
                     />
                     Remarks
@@ -395,7 +395,7 @@ const PoultryHealthDetails = () => {
                 <>
                   <h3 className="text-lg font-semibold text-dark mt-6 mb-3 border-b pb-2">
                     <Icon
-                      type={"event_available" as any}
+                      type={"event_available"}
                       className="mr-2 text-red-200"
                     />
                     Next Appointment

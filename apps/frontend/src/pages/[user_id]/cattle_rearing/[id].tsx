@@ -122,7 +122,7 @@ const CattleDetailPage = () => {
         `/cattle-rearing/${parsedCattleId}`
       );
       setSelectedCattleData(response.data);
-    } catch (error) {
+    } catch {
       console.error("Error fetching cattle details:", error);
       setSelectedCattleData(null);
     } finally {

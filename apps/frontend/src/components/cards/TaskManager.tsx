@@ -73,7 +73,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
 
         const validTasks = tasks.filter((t: Task) => t.task && typeof t.task === "string" && t.task.trim() !== "");
         setTaskList(sortTasks(validTasks, prioritySortAsc));
-      } catch (err) {
+      } catch (error) {
         console.error("Failed to fetch tasks:", err);
         setError("Failed to load tasks. Please try again later.");
       } finally {
@@ -100,7 +100,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
         )
       );
       setEditingPriority(null);
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to update priority:", err);
       setError("Failed to update task priority. Please try again.");
     }
@@ -123,7 +123,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           prioritySortAsc
         )
       );
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to update task:", err);
       setError("Failed to update task status. Please try again.");
     }
@@ -147,7 +147,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       setNewTaskText("");
       setNewTaskPriority("Medium");
       setError(null);
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to create task:", err);
       setError("Failed to create new task. Please try again.");
     }
@@ -158,7 +158,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       await axiosInstance.delete(`/tasks/delete/${taskId}`);
       setTaskList((prev) => prev.filter((task) => task.task_id !== taskId));
       setError(null);
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to delete task:", err);
       setError("Failed to delete task. Please try again.");
     }
@@ -184,7 +184,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           Priority
           <span className="ml-2">
             <Icon
-              type={prioritySortAsc ? "expand_less" : "expand_more" as any}
+              type={prioritySortAsc ? "expand_less" : "expand_more"}
             />
           </span>
         </button>
@@ -281,7 +281,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
                       onClick={() => setEditingPriority(null)}
                       className="text-xs font-medium px-2 py-1 rounded bg-gray-400 text-dark hover:bg-gray-300"
                     >
-                      <Icon type={"close" as any} className="size-2" />
+                      <Icon type={"close"} className="size-2" />
                     </button>
                   </div>
                 ) : (
@@ -304,7 +304,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
         ) : (
           <div className="flex flex-col items-center justify-center text-center flex-grow h-full">
             <Icon
-              type={"checklist" as any}
+              type={"checklist"}
               className="w-12 h-12 text-gray-300 mb-3"
             />
             <p className="text-gray-300">

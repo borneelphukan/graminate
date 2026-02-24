@@ -466,7 +466,7 @@ const Warehouse = () => {
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="text-lg font-semibold text-red-200 dark:text-red-400 mb-4 flex items-center">
                   <Icon
-                    type={"warning" as any}
+                    type={"warning"}
                     className="mr-2 w-5 h-5 text-red-200 dark:text-red-400"
                   />
                   Low Stock Alerts

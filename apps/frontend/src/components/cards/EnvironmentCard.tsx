@@ -19,7 +19,7 @@ type EnvironmentCardProps = {
 const MetricItem = ({ icon, value, label, valueClassName }: Metric) => (
   <div className="flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-shadow duration-200 hover:shadow-md dark:bg-gray-700">
     <Icon
-      type={icon as any}
+      type={icon}
       className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
       aria-hidden="true"
     />

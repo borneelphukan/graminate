@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 type ContractData = {

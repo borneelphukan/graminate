@@ -162,7 +162,6 @@ const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
-  const router = useRouter();
   const { timeFormat, language: currentLanguage } = useUserPreferences();
 
   const [activeView, setActiveView] = useState<"chart" | "form" | "table">(

@@ -1,5 +1,4 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { Icon } from "@graminate/ui";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";
@@ -8,7 +7,7 @@ type BudgetCardProps = {
   title: string;
   value: number;
   date: Date;
-  icon: IconDefinition;
+  icon: string;
   bgColor: string;
   iconValueColor: string;
 };
@@ -40,8 +39,8 @@ const BudgetCard = ({
     <Card style={[styles.card, { backgroundColor: bgColor }]}>
       <Card.Content style={styles.content}>
         <View style={styles.header}>
-          <FontAwesomeIcon
-            icon={icon}
+          <Icon
+            type={(icon) as any}
             size={24}
             color={iconValueColor}
             style={styles.icon}

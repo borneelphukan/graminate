@@ -41,7 +41,7 @@ const TaskListView = ({
           className="bg-green-200 hover:bg-green-100 text-white px-2 py-1 rounded-full"
           onClick={() => setShowAddTask(true)}
         >
-          <Icon type={"add" as any} />
+          <Icon type={"add"} />
         </button>
       )}
     </div>
@@ -60,7 +60,7 @@ const TaskListView = ({
               className="text-red-600 hover:text-red-800"
               onClick={() => removeTask(index)}
             >
-              <Icon type={"delete" as any} className="size-4" />
+              <Icon type={"delete"} className="size-4" />
             </button>
           </li>
         ))

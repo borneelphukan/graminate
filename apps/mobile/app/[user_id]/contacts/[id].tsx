@@ -1,20 +1,7 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  faArrowLeft,
-  faChevronDown,
-  faEllipsisV,
-  faEnvelope,
-  faPencilAlt,
-  faPhone,
-  faSave,
-  faShareAlt,
-  faTimes,
-  faTrashAlt,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
@@ -284,8 +271,8 @@ Email: ${formData.email || "N/A"}
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -305,8 +292,8 @@ Email: ${formData.email || "N/A"}
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -320,8 +307,8 @@ Email: ${formData.email || "N/A"}
           anchor={
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
+                <Icon
+                  type={"more_vert" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -337,8 +324,8 @@ Email: ${formData.email || "N/A"}
             }}
             title="Delete Contact"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faTrashAlt}
+              <Icon
+                type={"delete" as any}
                 size={20}
                 color={theme.colors.error}
               />
@@ -352,8 +339,8 @@ Email: ${formData.email || "N/A"}
             }}
             title="Share Contact"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faShareAlt}
+              <Icon
+                type={"share" as any}
                 size={20}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -389,8 +376,8 @@ Email: ${formData.email || "N/A"}
                     { backgroundColor: theme.colors.primary },
                   ]}
                 >
-                  <FontAwesomeIcon
-                    icon={faPencilAlt}
+                  <Icon
+                    type={"edit" as any}
                     size={18}
                     color={theme.colors.onPrimary}
                   />
@@ -404,8 +391,8 @@ Email: ${formData.email || "N/A"}
           <View style={styles.actionsRow}>
             <Button
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faPhone}
+                <Icon
+                  type={"phone" as any}
                   size={18}
                   color={
                     formData.phoneNumber
@@ -421,8 +408,8 @@ Email: ${formData.email || "N/A"}
             </Button>
             <Button
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEnvelope}
+                <Icon
+                  type={"mail" as any}
                   size={18}
                   color={
                     formData.email
@@ -480,8 +467,8 @@ Email: ${formData.email || "N/A"}
                         right={
                           <TextInput.Icon
                             icon={() => (
-                              <FontAwesomeIcon
-                                icon={faChevronDown}
+                              <Icon
+                                type={"expand_more" as any}
                                 size={16}
                                 color={theme.colors.onSurfaceVariant}
                               />
@@ -549,8 +536,8 @@ Email: ${formData.email || "N/A"}
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -565,8 +552,8 @@ Email: ${formData.email || "N/A"}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={
                   !hasChanges || saving
@@ -595,8 +582,8 @@ Email: ${formData.email || "N/A"}
             <List.Item
               title="Upload Image"
               left={() => (
-                <FontAwesomeIcon
-                  icon={faUpload}
+                <Icon
+                  type={"upload" as any}
                   size={22}
                   color={theme.colors.onSurface}
                   style={styles.listIcon}
@@ -609,8 +596,8 @@ Email: ${formData.email || "N/A"}
                 title="Remove Image"
                 titleStyle={{ color: theme.colors.error }}
                 left={() => (
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
+                  <Icon
+                    type={"delete" as any}
                     size={22}
                     color={theme.colors.error}
                     style={styles.listIcon}

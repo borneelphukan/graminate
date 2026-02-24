@@ -140,9 +140,9 @@ const TextField = ({
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <Icon type={"visibility_off" as any} className="size-4" />
+              <Icon type={"visibility_off"} className="size-4" />
             ) : (
-              <Icon type={"visibility" as any} className="size-4" />
+              <Icon type={"visibility"} className="size-4" />
             )}
           </button>
         )}
@@ -154,7 +154,7 @@ const TextField = ({
             onClick={() => setShowSuggestions(!showSuggestions)}
             aria-label="Toggle suggestions"
           >
-            <Icon type={"expand_more" as any} className="size-4" />
+            <Icon type={"expand_more"} className="size-4" />
           </button>
         )}
       </div>
@@ -186,7 +186,7 @@ const TextField = ({
         <div className="flex items-center mt-1">
           <span className="font-medium mr-1">
             <Icon
-              type={"info" as any}
+              type={"info"}
               className="size-6 text-red-200"
             />
           </span>

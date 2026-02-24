@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 
 import BeeHiveIcon from "@/assets/icon/BeeHiveIcon";
 import BeeIcon from "@/assets/icon/BeeIcon";
@@ -8,22 +9,6 @@ import InspectionForm, {
 } from "@/components/form/apiculture/InspectionForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  faArrowLeft,
-  faCalendarCheck,
-  faChessQueen,
-  faEllipsisV,
-  faJar,
-  faNoteSticky,
-  faPen,
-  faSeedling,
-  faTrashAlt,
-  faTriangleExclamation,
-  faUsers,
-  faVial,
-  faWind,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
@@ -159,24 +144,24 @@ const HiveDetailsPage = () => {
         value: hiveData.installation_date
           ? new Date(hiveData.installation_date).toLocaleDateString()
           : "N/A",
-        icon: faCalendarCheck,
+        icon: "event_available",
       },
       {
         label: "Honey Capacity",
         value: hiveData.honey_capacity
           ? `${hiveData.honey_capacity} ${hiveData.unit || ""}`.trim()
           : "N/A",
-        icon: faJar,
+        icon: "prescriptions",
       },
       {
         label: "Ventilation",
         value: hiveData.ventilation_status || "N/A",
-        icon: faWind,
+        icon: "air",
       },
       {
         label: "Notes",
         value: hiveData.notes || "N/A",
-        icon: faNoteSticky,
+        icon: "note",
       },
     ];
   }, [hiveData]);
@@ -188,7 +173,7 @@ const HiveDetailsPage = () => {
         {
           label: "Last Inspection",
           value: "No inspection data found",
-          icon: faTriangleExclamation,
+          icon: "warning",
         },
       ];
     return [
@@ -197,22 +182,22 @@ const HiveDetailsPage = () => {
         value: latestInspection.inspection_date
           ? new Date(latestInspection.inspection_date).toLocaleDateString()
           : "N/A",
-        icon: faCalendarCheck,
+        icon: "event_available",
       },
       {
         label: "Queen Status",
         value: latestInspection.queen_status || "N/A",
-        icon: faChessQueen,
+        icon: "emoji_events",
       },
       {
         label: "Brood Pattern",
         value: latestInspection.brood_pattern || "N/A",
-        icon: faVial,
+        icon: "science",
       },
       {
         label: "Population Strength",
         value: latestInspection.population_strength || "N/A",
-        icon: faUsers,
+        icon: "group",
       },
       {
         label: "Brood Frames",
@@ -222,17 +207,17 @@ const HiveDetailsPage = () => {
       {
         label: "Nectar/Honey Frames",
         value: String(latestInspection.frames_of_nectar_honey ?? "N/A"),
-        icon: faJar,
+        icon: "prescriptions",
       },
       {
         label: "Pollen Frames",
         value: String(latestInspection.frames_of_pollen ?? "N/A"),
-        icon: faSeedling,
+        icon: "eco",
       },
       {
         label: "Symptoms",
         value: latestInspection.symptoms?.join(", ") || "No symptoms noted",
-        icon: faTriangleExclamation,
+        icon: "warning",
       },
     ];
   }, [inspections]);
@@ -252,8 +237,8 @@ const HiveDetailsPage = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -267,8 +252,8 @@ const HiveDetailsPage = () => {
           anchor={
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
+                <Icon
+                  type={"more_vert" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -284,8 +269,8 @@ const HiveDetailsPage = () => {
             }}
             title="Edit Hive"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faPen}
+              <Icon
+                type={"edit" as any}
                 size={20}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -298,8 +283,8 @@ const HiveDetailsPage = () => {
             }}
             title="Delete Hive"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faTrashAlt}
+              <Icon
+                type={"delete" as any}
                 size={20}
                 color={theme.colors.error}
               />
@@ -313,7 +298,7 @@ const HiveDetailsPage = () => {
           <Card.Title title="Hive Information" />
           <Card.Content>
             {detailItems.map((item) => {
-              const Icon = item.icon;
+              const ItemIcon = item.icon;
               return (
                 <List.Item
                   key={item.label}
@@ -321,11 +306,11 @@ const HiveDetailsPage = () => {
                   description={item.value}
                   left={(props) => (
                     <View {...props} style={styles.iconContainer}>
-                      {typeof Icon === "function" ? (
-                        <Icon size={24} color={theme.colors.onSurfaceVariant} />
+                      {typeof ItemIcon === "function" ? (
+                        <ItemIcon size={24} color={theme.colors.onSurfaceVariant} />
                       ) : (
-                        <FontAwesomeIcon
-                          icon={Icon}
+                        <Icon
+                          type={(ItemIcon) as any}
                           size={24}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -364,7 +349,7 @@ const HiveDetailsPage = () => {
             {activeView === "status" && (
               <View>
                 {statusItems.map((item) => {
-                  const Icon = item.icon;
+                  const ItemIcon = item.icon;
                   return (
                     <List.Item
                       key={item.label}
@@ -372,14 +357,14 @@ const HiveDetailsPage = () => {
                       description={item.value}
                       left={(props) => (
                         <View {...props} style={styles.iconContainer}>
-                          {typeof Icon === "function" ? (
-                            <Icon
+                          {typeof ItemIcon === "function" ? (
+                            <ItemIcon
                               size={24}
                               color={theme.colors.onSurfaceVariant}
                             />
                           ) : (
-                            <FontAwesomeIcon
-                              icon={Icon}
+                            <Icon
+                              type={(ItemIcon) as any}
                               size={24}
                               color={theme.colors.onSurfaceVariant}
                             />

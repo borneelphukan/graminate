@@ -52,7 +52,7 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
         <div className="bg-white dark:bg-dark rounded-lg shadow-lg p-8 w-11/12 max-w-md text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-gray-500 p-3 rounded-full">
-              <Icon type={"key" as any} className="w-8 h-8 text-gray-300" />
+              <Icon type={"key"} className="w-8 h-8 text-gray-300" />
             </div>
           </div>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">

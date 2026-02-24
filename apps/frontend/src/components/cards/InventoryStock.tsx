@@ -53,8 +53,8 @@ const InventoryStockCard = ({
           params: { item_group: category },
         });
         setInventoryItems(response.data.items || []);
-      } catch (err) {
-        console.error(`Failed to fetch ${category} inventory:`, err);
+      } catch (error) {
+        console.error(`Failed to fetch ${category} inventory:`, error);
         setError(`Failed to load ${category.toLowerCase()} inventory data.`);
       } finally {
         setLoading(false);
@@ -129,7 +129,7 @@ const InventoryStockCard = ({
           ) : (
             <div className="flex flex-col items-center justify-center text-center flex-grow py-4">
               <Icon
-                type={"inventory" as any}
+                type={"inventory"}
                 className="w-12 h-12 text-gray-300 mb-3"
               />
               <p className="text-gray-300">

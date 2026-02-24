@@ -1,17 +1,9 @@
+import { Icon } from "@graminate/ui";
 import BudgetCard from "@/components/cards/BudgetCard";
 import CompareGraph from "@/components/cards/CompareGraph";
 import TrendGraph from "@/components/cards/TrendGraph";
 import WorkingCapital from "@/components/cards/WorkingCapital";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowLeft,
-  faCartArrowDown,
-  faChartPie,
-  faCreditCard,
-  faPiggyBank,
-  faSackDollar,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import axiosInstance from "@/lib/axiosInstance";
 import {
   addDays as addDaysDateFns,
@@ -209,35 +201,35 @@ const FinanceDashboardScreen = () => {
       {
         title: "Revenue",
         value: totals.revenue,
-        icon: faSackDollar,
+        icon: "request_quote",
         bgColor: isDark ? "#14532d" : "#dcfce7",
         iconValueColor: isDark ? "#86efac" : "#16a34a",
       },
       {
         title: "COGS",
         value: totals.cogs,
-        icon: faCartArrowDown,
+        icon: "add_shopping_cart",
         bgColor: isDark ? "#713f12" : "#fef3c7",
         iconValueColor: isDark ? "#fcd34d" : "#b45309",
       },
       {
         title: "Gross Profit",
         value: grossProfit,
-        icon: faChartPie,
+        icon: "pie_chart",
         bgColor: isDark ? "#164e63" : "#cffafe",
         iconValueColor: isDark ? "#67e8f9" : "#0891b2",
       },
       {
         title: "Expenses",
         value: totals.expenses,
-        icon: faCreditCard,
+        icon: "credit_card",
         bgColor: isDark ? "#7f1d1d" : "#fee2e2",
         iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
       },
       {
         title: "Net Profit",
         value: netProfit,
-        icon: faPiggyBank,
+        icon: "savings",
         bgColor: isDark ? "#1e3a8a" : "#dbeafe",
         iconValueColor: isDark ? "#93c5fd" : "#2563eb",
       },
@@ -283,8 +275,8 @@ const FinanceDashboardScreen = () => {
         <Appbar.Header elevated>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />

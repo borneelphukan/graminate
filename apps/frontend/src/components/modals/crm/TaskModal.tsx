@@ -266,7 +266,7 @@ const TaskModal = ({
                 aria-label="Options"
                 onClick={toggleDropdown}
               >
-                <Icon type={"more_horiz" as any} className="h-5 w-5" />
+                <Icon type={"more_horiz"} className="h-5 w-5" />
               </button>
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 shadow-lg rounded-md py-1 z-10">
@@ -285,7 +285,7 @@ const TaskModal = ({
               aria-label="Close"
               onClick={closeModal}
             >
-              <Icon type={"close" as any} className="h-5 w-5" />
+              <Icon type={"close"} className="h-5 w-5" />
             </button>
           </div>
         </div>

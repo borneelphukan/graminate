@@ -45,8 +45,8 @@ const SignIn = () => {
           if (userId) {
             localStorage.setItem("user_id", userId);
           }
-        } catch (e) {
-          console.error("Failed to decode token", e);
+        } catch (error) {
+          console.error("Failed to decode token", error);
           localStorage.removeItem("token");
           localStorage.removeItem("user_id");
           return;
@@ -82,7 +82,7 @@ const SignIn = () => {
         }
 
         userId = decoded.user_id || decoded.id || decoded.sub;
-      } catch (e) {
+      } catch {
         // Invalid token
         localStorage.removeItem("token");
         localStorage.removeItem("user_id");

@@ -107,7 +107,7 @@ const ColumnContainer = ({
                   className="text-gray-400 hover:text-red-500 transition-colors"
                   aria-label="Delete column"
                 >
-                  <Icon type={"delete" as any} className="w-3 h-3" />
+                  <Icon type={"delete"} className="w-3 h-3" />
                 </button>
               )}
             </>

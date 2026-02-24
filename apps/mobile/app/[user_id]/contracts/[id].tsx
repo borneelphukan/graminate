@@ -1,22 +1,6 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
-import {
-  faArrowLeft,
-  faCalendarAlt,
-  faChartLine,
-  faChevronDown,
-  faEllipsisV,
-  faExclamationTriangle,
-  faFileSignature,
-  faIndianRupeeSign,
-  faSave,
-  faShareAlt,
-  faTags,
-  faTimes,
-  faTrashAlt,
-  faUserTie,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
@@ -251,8 +235,8 @@ Stage: ${formData.stage || "N/A"}
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -273,8 +257,8 @@ Stage: ${formData.stage || "N/A"}
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -288,8 +272,8 @@ Stage: ${formData.stage || "N/A"}
           anchor={
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
+                <Icon
+                  type={"more_vert" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -305,8 +289,8 @@ Stage: ${formData.stage || "N/A"}
             }}
             title="Delete Contract"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faTrashAlt}
+              <Icon
+                type={"delete" as any}
                 size={20}
                 color={theme.colors.error}
               />
@@ -320,8 +304,8 @@ Stage: ${formData.stage || "N/A"}
             }}
             title="Share Contract"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faShareAlt}
+              <Icon
+                type={"share" as any}
                 size={20}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -345,8 +329,8 @@ Stage: ${formData.stage || "N/A"}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faFileSignature}
+                  <Icon
+                    type={"draw" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -362,8 +346,8 @@ Stage: ${formData.stage || "N/A"}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faUserTie}
+                  <Icon
+                    type={"manage_accounts" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -380,8 +364,8 @@ Stage: ${formData.stage || "N/A"}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faIndianRupeeSign}
+                  <Icon
+                    type={"currency_rupee" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -397,8 +381,8 @@ Stage: ${formData.stage || "N/A"}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faTags}
+                  <Icon
+                    type={"sell" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -420,8 +404,8 @@ Stage: ${formData.stage || "N/A"}
                   right={
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faCalendarAlt}
+                        <Icon
+                          type={"calendar_month" as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -444,8 +428,8 @@ Stage: ${formData.stage || "N/A"}
                   right={
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faCalendarAlt}
+                        <Icon
+                          type={"calendar_month" as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -470,8 +454,8 @@ Stage: ${formData.stage || "N/A"}
                     left={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faChartLine}
+                          <Icon
+                            type={"show_chart" as any}
                             size={18}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -481,8 +465,8 @@ Stage: ${formData.stage || "N/A"}
                     right={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
+                          <Icon
+                            type={"expand_more" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -519,8 +503,8 @@ Stage: ${formData.stage || "N/A"}
                     left={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faExclamationTriangle}
+                          <Icon
+                            type={"warning" as any}
                             size={18}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -530,8 +514,8 @@ Stage: ${formData.stage || "N/A"}
                     right={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
+                          <Icon
+                            type={"expand_more" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -561,8 +545,8 @@ Stage: ${formData.stage || "N/A"}
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -577,8 +561,8 @@ Stage: ${formData.stage || "N/A"}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={
                   !hasChanges || saving

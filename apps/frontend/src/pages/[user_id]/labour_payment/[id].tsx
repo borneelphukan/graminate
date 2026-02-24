@@ -173,19 +173,19 @@ const LabourPaymentDetails = () => {
         <div className="flex flex-row gap-6 items-start mt-2 space-y-1">
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <Icon type={"person" as any} />
+              <Icon type={"person"} />
             </span>
             {labourName}
           </p>
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <Icon type={"smartphone" as any} />
+              <Icon type={"smartphone"} />
             </span>
             {contact}
           </p>
           <p className="text-sm text-dark dark:text-light">
             <span className="font-semibold mr-2">
-              <Icon type={"home" as any} />
+              <Icon type={"home"} />
             </span>
             {address}
           </p>

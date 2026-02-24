@@ -103,7 +103,7 @@ const ResetPasswordPage = () => {
         <div className="bg-white shadow-md rounded p-6 w-96">
           <div className="flex justify-center mb-4">
             <div className="bg-light p-3 rounded-full">
-              <Icon type={"key" as any} className="size-8 text-gray-300" />
+              <Icon type={"key"} className="size-8 text-gray-300" />
             </div>
           </div>
           <h2 className="text-2xl font-semibold mb-4 text-center">

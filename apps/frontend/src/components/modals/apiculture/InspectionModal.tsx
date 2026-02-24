@@ -294,7 +294,7 @@ const InspectionModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <Icon type={"close" as any} className="w-5 h-5" />
+            <Icon type={"close"} className="w-5 h-5" />
           </button>
         </div>
 
@@ -448,7 +448,7 @@ const InspectionModal = ({
                       className="ml-2 text-green-200 hover:text-green-100"
                       aria-label={`Remove ${symptom}`}
                     >
-                      <Icon type={"close" as any} className="w-3 h-3" />
+                      <Icon type={"close"} className="w-3 h-3" />
                     </button>
                   </div>
                 ))}

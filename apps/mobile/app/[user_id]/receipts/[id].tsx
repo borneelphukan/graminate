@@ -1,26 +1,5 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowLeft,
-  faBoxesPacking,
-  faCalendarAlt,
-  faCalendarDay,
-  faEllipsisV,
-  faFileContract,
-  faFileInvoice,
-  faHashtag,
-  faIndianRupeeSign,
-  faPen,
-  faPercent,
-  faPlus,
-  faSave,
-  faShareAlt,
-  faTag,
-  faTimes,
-  faTrashAlt,
-  faTruck,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
@@ -308,8 +287,8 @@ Total Amount: ₹${total.toFixed(2)}
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -330,8 +309,8 @@ Total Amount: ₹${total.toFixed(2)}
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -345,8 +324,8 @@ Total Amount: ₹${total.toFixed(2)}
           anchor={
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
+                <Icon
+                  type={"more_vert" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -362,8 +341,8 @@ Total Amount: ₹${total.toFixed(2)}
             }}
             title="Delete Receipt"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faTrashAlt}
+              <Icon
+                type={"delete" as any}
                 size={20}
                 color={theme.colors.error}
               />
@@ -377,8 +356,8 @@ Total Amount: ₹${total.toFixed(2)}
             }}
             title="Share Receipt"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faShareAlt}
+              <Icon
+                type={"share" as any}
                 size={20}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -402,8 +381,8 @@ Total Amount: ₹${total.toFixed(2)}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faFileInvoice}
+                  <Icon
+                    type={"receipt_long" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -419,8 +398,8 @@ Total Amount: ₹${total.toFixed(2)}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faUser}
+                  <Icon
+                    type={"person" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -438,8 +417,8 @@ Total Amount: ₹${total.toFixed(2)}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faCalendarDay}
+                      <Icon
+                        type={"today" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -449,8 +428,8 @@ Total Amount: ₹${total.toFixed(2)}
                 right={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faCalendarAlt}
+                      <Icon
+                        type={"calendar_month" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -468,8 +447,8 @@ Total Amount: ₹${total.toFixed(2)}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faHashtag}
+                  <Icon
+                    type={"tag" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -485,8 +464,8 @@ Total Amount: ₹${total.toFixed(2)}
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faFileContract}
+                  <Icon
+                    type={"contract" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -505,8 +484,8 @@ Total Amount: ₹${total.toFixed(2)}
                   formData.items.length > 1 ? (
                     <IconButton
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faTrashAlt}
+                        <Icon
+                          type={"delete" as any}
                           size={18}
                           color={theme.colors.error}
                         />
@@ -527,8 +506,8 @@ Total Amount: ₹${total.toFixed(2)}
                   left={
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faPen}
+                        <Icon
+                          type={"edit" as any}
                           size={16}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -549,8 +528,8 @@ Total Amount: ₹${total.toFixed(2)}
                     left={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faBoxesPacking}
+                          <Icon
+                            type={"inventory" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -570,8 +549,8 @@ Total Amount: ₹${total.toFixed(2)}
                     left={
                       <TextInput.Icon
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faIndianRupeeSign}
+                          <Icon
+                            type={"currency_rupee" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -585,8 +564,8 @@ Total Amount: ₹${total.toFixed(2)}
           ))}
           <Button
             icon={() => (
-              <FontAwesomeIcon
-                icon={faPlus}
+              <Icon
+                type={"add" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -608,8 +587,8 @@ Total Amount: ₹${total.toFixed(2)}
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faPercent}
+                    <Icon
+                      type={"percent" as any}
                       size={16}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -627,8 +606,8 @@ Total Amount: ₹${total.toFixed(2)}
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faTag}
+                    <Icon
+                      type={"sell" as any}
                       size={16}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -646,8 +625,8 @@ Total Amount: ₹${total.toFixed(2)}
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faTruck}
+                    <Icon
+                      type={"local_shipping" as any}
                       size={16}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -676,8 +655,8 @@ Total Amount: ₹${total.toFixed(2)}
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -692,8 +671,8 @@ Total Amount: ₹${total.toFixed(2)}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={
                   !hasChanges || saving

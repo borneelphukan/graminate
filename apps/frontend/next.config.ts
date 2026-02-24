@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 const { i18n } = require("./next-i18next.config");
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@graminate/ui", "@graminate/shared"],
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [

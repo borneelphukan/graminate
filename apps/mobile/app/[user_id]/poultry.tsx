@@ -1,21 +1,10 @@
+import { Icon } from "@graminate/ui";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
 import FlockForm, { FlockFormData } from "@/components/form/poultry/FlockForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  faArrowLeft,
-  faChartPie,
-  faChevronDown,
-  faChevronUp,
-  faCreditCard,
-  faMoneyBillWave,
-  faPiggyBank,
-  faPlus,
-  faShoppingCart,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   addDays as addDaysDateFns,
   endOfMonth,
@@ -293,35 +282,35 @@ const PoultryScreen = () => {
       {
         title: "Poultry Revenue",
         value: totals.revenue,
-        icon: faMoneyBillWave,
+        icon: "payments",
         bgColor: isDark ? "#14532d" : "#dcfce7",
         iconValueColor: isDark ? "#86efac" : "#16a34a",
       },
       {
         title: "Poultry COGS",
         value: totals.cogs,
-        icon: faShoppingCart,
+        icon: "shopping_cart",
         bgColor: isDark ? "#713f12" : "#fef3c7",
         iconValueColor: isDark ? "#fcd34d" : "#b45309",
       },
       {
         title: "Poultry Gross Profit",
         value: grossProfit,
-        icon: faChartPie,
+        icon: "pie_chart",
         bgColor: isDark ? "#164e63" : "#cffafe",
         iconValueColor: isDark ? "#67e8f9" : "#0891b2",
       },
       {
         title: "Poultry Expenses",
         value: totals.expenses,
-        icon: faCreditCard,
+        icon: "credit_card",
         bgColor: isDark ? "#7f1d1d" : "#fee2e2",
         iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
       },
       {
         title: "Poultry Net Profit",
         value: netProfit,
-        icon: faPiggyBank,
+        icon: "savings",
         bgColor: isDark ? "#1e3a8a" : "#dbeafe",
         iconValueColor: isDark ? "#93c5fd" : "#2563eb",
       },
@@ -342,8 +331,8 @@ const PoultryScreen = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -360,8 +349,8 @@ const PoultryScreen = () => {
         />
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faPlus}
+            <Icon
+              type={"add" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -373,8 +362,8 @@ const PoultryScreen = () => {
         <View style={styles.toggleContainer}>
           <Button
             icon={() => (
-              <FontAwesomeIcon
-                icon={showFinancials ? faChevronUp : faChevronDown}
+              <Icon
+                type={(showFinancials ? "expand_less" : "expand_more") as any}
                 size={16}
                 color={theme.colors.primary}
               />

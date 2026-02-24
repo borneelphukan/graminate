@@ -126,7 +126,7 @@ const Account = () => {
           "Deletion request failed with status: " + deleteResponse.status
         );
       }
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to delete account", err);
       openModal("info", {
         titleKey: "errorTitle",

@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -8,19 +9,6 @@ import {
   useTheme,
 } from "react-native-paper";
 import { FormModal } from "../../modals/FormModal";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import {
-  faUser,
-  faEnvelope,
-  faPhone,
-  faAddressBook,
-  faMapPin,
-  faCity,
-  faMap,
-  faHashtag,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
 
 const CONTACT_TYPES = [
   "Customer",
@@ -63,7 +51,7 @@ const PaperFormDropdown = ({
   selectedValue: string;
   onSelect: (value: string) => void;
   error?: string;
-  leftIcon?: IconDefinition;
+  leftIcon?: string;
 }) => {
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
@@ -85,8 +73,8 @@ const PaperFormDropdown = ({
                   leftIcon && (
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={leftIcon}
+                        <Icon
+                          type={(leftIcon) as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -97,8 +85,8 @@ const PaperFormDropdown = ({
                 right={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
+                      <Icon
+                        type={"expand_more" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -223,8 +211,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faUser}
+                      <Icon
+                        type={"person" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -257,8 +245,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faEnvelope}
+                  <Icon
+                    type={"mail" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -281,8 +269,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faPhone}
+                  <Icon
+                    type={"phone" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -300,7 +288,7 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
             selectedValue={formData.type}
             onSelect={(type: string) => handleInputChange("type", type)}
             error={errors.type}
-            leftIcon={faAddressBook}
+            leftIcon={"contacts"}
           />
 
           <TextInput
@@ -313,8 +301,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faMapPin}
+                  <Icon
+                    type={"push_pin" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -346,8 +334,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faCity}
+                      <Icon
+                        type={"location_city" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -370,8 +358,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faMap}
+                      <Icon
+                        type={"map" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -396,8 +384,8 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
             left={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faHashtag}
+                  <Icon
+                    type={"tag" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />

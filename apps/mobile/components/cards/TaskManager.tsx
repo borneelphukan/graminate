@@ -1,12 +1,5 @@
+import { Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  faChevronDown,
-  faChevronUp,
-  faListCheck,
-  faPlus,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -207,8 +200,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
     if (taskList.length === 0) {
       return (
         <View style={styles.centeredContainer}>
-          <FontAwesomeIcon
-            icon={faListCheck}
+          <Icon
+            type={"checklist" as any}
             size={48}
             color={theme.colors.onSurfaceDisabled}
           />
@@ -306,8 +299,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
                     onPress={() => setEditingPriority(null)}
                     style={styles.cancelButton}
                   >
-                    <FontAwesomeIcon
-                      icon={faXmark}
+                    <Icon
+                      type={"close" as any}
                       size={12}
                       color={theme.colors.onSurface}
                     />
@@ -369,8 +362,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
             >
               Priority
             </Text>
-            <FontAwesomeIcon
-              icon={prioritySortAsc ? faChevronUp : faChevronDown}
+            <Icon
+              type={(prioritySortAsc ? "expand_less" : "expand_more") as any}
               size={12}
               color={theme.colors.onSurface}
             />
@@ -421,8 +414,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
           disabled={!newTaskText.trim()}
           style={styles.addButton}
           icon={() => (
-            <FontAwesomeIcon
-              icon={faPlus}
+            <Icon
+              type={"add" as any}
               size={16}
               color={
                 !newTaskText.trim()

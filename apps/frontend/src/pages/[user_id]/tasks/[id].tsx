@@ -50,7 +50,7 @@ const formatDeadlineForInput = (
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
-  } catch (e) {
+  } catch (error) {
     console.error(`Error formatting date string: ${deadlineString}`, e);
     return "";
   }
@@ -239,7 +239,7 @@ const Tasks = () => {
       setColumns((prev) => [...prev, { id: newCol.column_id.toString(), title: newCol.title }]);
       setNewColumnTitle("");
       setIsAddingColumn(false);
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to add column:", err);
       Swal.fire("Error", "Failed to add column", "error");
     }

@@ -224,7 +224,7 @@ const Calendar = () => {
         const user = response.data?.data?.user ?? response.data?.user;
         if (!user) throw new Error("User payload missing");
         setSubTypes(Array.isArray(user.sub_type) ? user.sub_type : []);
-      } catch (err) {
+      } catch (error) {
         console.error("Error fetching user sub_types:", err);
         setSubTypes([]);
       } finally {

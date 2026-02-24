@@ -1,17 +1,6 @@
+import { Icon } from "@graminate/ui";
 import { FormModal } from "@/components/modals/FormModal";
 import { HOUSING_TYPES, POULTRY_TYPES } from "@/constants/options";
-import {
-  faChevronDown,
-  faClipboard,
-  faCrow,
-  faDna,
-  faHashtag,
-  faHouse,
-  faTag,
-  faTruck,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import {
@@ -100,7 +89,7 @@ const PaperFormDropdown = ({
   error?: string;
   disabled?: boolean;
   placeholder?: string;
-  leftIcon?: IconDefinition;
+  leftIcon?: string;
 }) => {
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
@@ -126,8 +115,8 @@ const PaperFormDropdown = ({
                   leftIcon && (
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={leftIcon}
+                        <Icon
+                          type={(leftIcon) as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -138,8 +127,8 @@ const PaperFormDropdown = ({
                 right={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
+                      <Icon
+                        type={"expand_more" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -299,8 +288,8 @@ const FlockForm = ({
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faTag}
+                <Icon
+                  type={"sell" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />
@@ -321,7 +310,7 @@ const FlockForm = ({
             handleInputChange("breed", "");
           }}
           error={errors.flock_type}
-          leftIcon={faCrow}
+          leftIcon={"flutter_dash"}
         />
         <PaperFormDropdown
           label="Breed (Optional)"
@@ -332,7 +321,7 @@ const FlockForm = ({
           placeholder={
             !formData.flock_type ? "Select Flock Type First" : "Select Breed"
           }
-          leftIcon={faDna}
+          leftIcon={"science"}
         />
         <View style={styles.row}>
           <View style={styles.halfWidth}>
@@ -349,8 +338,8 @@ const FlockForm = ({
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faHashtag}
+                    <Icon
+                      type={"tag" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -372,8 +361,8 @@ const FlockForm = ({
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faTruck}
+                    <Icon
+                      type={"local_shipping" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -389,7 +378,7 @@ const FlockForm = ({
           items={HOUSING_TYPES.map((h) => h.name)}
           selectedValue={formData.housing_type}
           onSelect={(value: string) => handleInputChange("housing_type", value)}
-          leftIcon={faHouse}
+          leftIcon={"home"}
         />
         <TextInput
           mode="outlined"
@@ -402,8 +391,8 @@ const FlockForm = ({
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faClipboard}
+                <Icon
+                  type={"content_paste" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />

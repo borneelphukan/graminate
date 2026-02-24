@@ -80,7 +80,7 @@ const NotificationBar = ({
           className="text-gray-300 hover:bg-gray-400 p-1 rounded-full focus:outline-none"
           onClick={closeNotificationBar}
         >
-          <Icon type={"close" as any} className="h-6 w-6" />
+          <Icon type={"close"} className="h-6 w-6" />
         </button>
       </div>
 
@@ -93,7 +93,7 @@ const NotificationBar = ({
               className="text-red-200 hover:text-red-100 px-3 py-1 text-sm rounded-md"
               onClick={clearAllNotifications}
             >
-              <Icon type={"delete" as any} className="size-4" />
+              <Icon type={"delete"} className="size-4" />
             </button>
 
             <button
@@ -101,7 +101,7 @@ const NotificationBar = ({
               aria-label="settings icon"
               onClick={navigateToSettings}
             >
-              <Icon type={"settings" as any} className="size-4" />
+              <Icon type={"settings"} className="size-4" />
             </button>
           </div>
         </div>

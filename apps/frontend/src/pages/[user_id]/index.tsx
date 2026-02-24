@@ -17,7 +17,6 @@ import InfoModal from "@/components/modals/InfoModal";
 import WidgetModal from "@/components/modals/WidgetModal";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
-import Button from "@/components/ui/Button";
 import TaskManager from "@/components/cards/TaskManager";
 import InventoryStockCard from "@/components/cards/InventoryStock";
 
@@ -315,7 +314,7 @@ const Dashboard = () => {
           parseISO(sale.sales_date),
           "yyyy-MM-dd"
         );
-        let totalSaleAmount = (sale.quantities_sold || []).reduce(
+        const totalSaleAmount = (sale.quantities_sold || []).reduce(
           (acc, qty, i) => acc + qty * (sale.prices_per_unit?.[i] || 0),
           0
         );
@@ -503,7 +502,7 @@ const Dashboard = () => {
     try {
       await updateUserWidgets(userId, newWidgets);
       setIsWidgetModalOpen(false);
-    } catch (error) {
+    } catch {
       setErrorModal({
         isOpen: true,
         title: "Error",

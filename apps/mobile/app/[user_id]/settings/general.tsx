@@ -1,18 +1,6 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
-import {
-  faArrowLeft,
-  faChevronDown,
-  faCity,
-  faMap,
-  faMapMarkerAlt,
-  faPhone,
-  faSave,
-  faSignsPost,
-  faTrashAlt,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import axiosInstance from "@/lib/axiosInstance";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -63,8 +51,8 @@ const PaperFormDropdown = ({
             right={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
+                  <Icon
+                    type={"expand_more" as any}
                     size={16}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -177,8 +165,8 @@ const GeneralSettingsScreen = () => {
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -199,8 +187,8 @@ const GeneralSettingsScreen = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -230,8 +218,8 @@ const GeneralSettingsScreen = () => {
               <View style={styles.avatarActions}>
                 <Button
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faUpload}
+                    <Icon
+                      type={"upload" as any}
                       size={16}
                       color={theme.colors.primary}
                     />
@@ -243,8 +231,8 @@ const GeneralSettingsScreen = () => {
                 {user.profilePicture && (
                   <Button
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faTrashAlt}
+                      <Icon
+                        type={"delete" as any}
                         size={16}
                         color={theme.colors.error}
                       />
@@ -285,8 +273,8 @@ const GeneralSettingsScreen = () => {
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faPhone}
+                    <Icon
+                      type={"phone" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -331,8 +319,8 @@ const GeneralSettingsScreen = () => {
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faMapMarkerAlt}
+                    <Icon
+                      type={"location_on" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -362,8 +350,8 @@ const GeneralSettingsScreen = () => {
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faCity}
+                      <Icon
+                        type={"location_city" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -383,8 +371,8 @@ const GeneralSettingsScreen = () => {
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faMap}
+                      <Icon
+                        type={"map" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -404,8 +392,8 @@ const GeneralSettingsScreen = () => {
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faSignsPost}
+                    <Icon
+                      type={"signpost" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -423,8 +411,8 @@ const GeneralSettingsScreen = () => {
             loading={isSavingProfile}
             disabled={isSavingProfile}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={theme.colors.onPrimary}
               />

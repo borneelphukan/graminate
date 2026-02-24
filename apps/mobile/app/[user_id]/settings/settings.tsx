@@ -1,19 +1,7 @@
+import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import {
-  faArrowLeft,
-  faBell,
-  faChevronRight,
-  faCloudSun,
-  faCog,
-  faCow,
-  faEgg,
-  faFish,
-  faUserCog,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
@@ -29,7 +17,7 @@ type SettingsItem = {
   label: string;
   type: "navigate";
   routeName?: string;
-  icon: IconDefinition | React.ComponentType<{ size: number; color: string }>;
+  icon: string | React.ComponentType<{ size: number; color: string }>;
 };
 type SettingsSection = { label: string; items: SettingsItem[] };
 
@@ -56,7 +44,7 @@ const SettingsScreen = () => {
         label: "General",
         type: "navigate",
         routeName: `/${user_id}/settings/general`,
-        icon: faCog,
+        icon: "settings",
       },
     ];
     if (!isLoading) {
@@ -65,21 +53,21 @@ const SettingsScreen = () => {
           label: "Weather",
           type: "navigate",
           routeName: `/${user_id}/settings/weather`,
-          icon: faCloudSun,
+          icon: "partly_cloudy_day",
         });
         if (subTypes.includes("Poultry"))
           preferenceItems.push({
             label: "Poultry",
             type: "navigate",
             routeName: `/${user_id}/settings/poultry`,
-            icon: faEgg,
+            icon: "egg",
           });
         if (subTypes.includes("Cattle Rearing"))
           preferenceItems.push({
             label: "Cattle Rearing",
             type: "navigate",
             routeName: `/${user_id}/settings/cattle-rearing`,
-            icon: faCow,
+            icon: "cruelty_free",
           });
         if (subTypes.includes("Apiculture"))
           preferenceItems.push({
@@ -94,7 +82,7 @@ const SettingsScreen = () => {
       label: "Notifications",
       type: "navigate",
       routeName: `/${user_id}/settings/notifications`,
-      icon: faBell,
+      icon: "notifications",
     });
     return [
       { label: "Your Preferences", items: preferenceItems },
@@ -105,7 +93,7 @@ const SettingsScreen = () => {
             label: "Account Settings",
             type: "navigate",
             routeName: `/${user_id}/settings/account`,
-            icon: faUserCog,
+            icon: "manage_accounts",
           },
         ],
       },
@@ -120,8 +108,8 @@ const SettingsScreen = () => {
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -156,8 +144,8 @@ const SettingsScreen = () => {
                           );
                         } else {
                           iconElement = (
-                            <FontAwesomeIcon
-                              icon={item.icon}
+                            <Icon
+                              type={(item.icon) as any}
                               size={22}
                               color={props.color}
                             />
@@ -171,8 +159,8 @@ const SettingsScreen = () => {
                         <List.Icon
                           {...props}
                           icon={() => (
-                            <FontAwesomeIcon
-                              icon={faChevronRight}
+                            <Icon
+                              type={"chevron_right" as any}
                               size={16}
                               color={props.color}
                             />

@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import Sparkles from "@/assets/icon/Sparkles";
-import { faBars, faBell } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -99,7 +98,7 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   const iconColor = theme.colors.onSurface;
 
   const memoizedBarsIcon = useCallback(
-    () => <FontAwesomeIcon icon={faBars} size={22} color={iconColor} />,
+    () => <Icon type={"menu" as any} size={22} color={iconColor} />,
     [iconColor]
   );
 
@@ -109,7 +108,7 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   );
 
   const memoizedBellIcon = useCallback(
-    () => <FontAwesomeIcon icon={faBell} size={22} color={iconColor} />,
+    () => <Icon type={"notifications" as any} size={22} color={iconColor} />,
     [iconColor]
   );
 

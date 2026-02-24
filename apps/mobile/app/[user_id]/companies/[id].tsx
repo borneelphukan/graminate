@@ -1,22 +1,6 @@
+import { Icon } from "@graminate/ui";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { COMPANY_TYPES } from "@/constants/options";
-import {
-  faArrowLeft,
-  faBuilding,
-  faChevronDown,
-  faEllipsisV,
-  faEnvelope,
-  faGlobe,
-  faIndustry,
-  faMapMarkerAlt,
-  faPhone,
-  faSave,
-  faShareAlt,
-  faTimes,
-  faTrashAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as Linking from "expo-linking";
@@ -249,8 +233,8 @@ Email: ${formData.email || "N/A"}
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -270,8 +254,8 @@ Email: ${formData.email || "N/A"}
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -285,8 +269,8 @@ Email: ${formData.email || "N/A"}
           anchor={
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEllipsisV}
+                <Icon
+                  type={"more_vert" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -302,8 +286,8 @@ Email: ${formData.email || "N/A"}
             }}
             title="Delete Company"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faTrashAlt}
+              <Icon
+                type={"delete" as any}
                 size={20}
                 color={theme.colors.error}
               />
@@ -317,8 +301,8 @@ Email: ${formData.email || "N/A"}
             }}
             title="Share Company"
             leadingIcon={() => (
-              <FontAwesomeIcon
-                icon={faShareAlt}
+              <Icon
+                type={"share" as any}
                 size={20}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -341,8 +325,8 @@ Email: ${formData.email || "N/A"}
                 { backgroundColor: theme.colors.primaryContainer },
               ]}
             >
-              <FontAwesomeIcon
-                icon={faBuilding}
+              <Icon
+                type={"domain" as any}
                 size={56}
                 color={theme.colors.onPrimaryContainer}
               />
@@ -360,8 +344,8 @@ Email: ${formData.email || "N/A"}
           <View style={styles.actionsRow}>
             <Button
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faPhone}
+                <Icon
+                  type={"phone" as any}
                   size={18}
                   color={
                     formData.phoneNumber
@@ -377,8 +361,8 @@ Email: ${formData.email || "N/A"}
             </Button>
             <Button
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faEnvelope}
+                <Icon
+                  type={"mail" as any}
                   size={18}
                   color={
                     formData.email
@@ -394,8 +378,8 @@ Email: ${formData.email || "N/A"}
             </Button>
             <Button
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faGlobe}
+                <Icon
+                  type={"language" as any}
                   size={18}
                   color={
                     formData.website
@@ -421,8 +405,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faBuilding}
+                      <Icon
+                        type={"domain" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -438,8 +422,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faUser}
+                      <Icon
+                        type={"person" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -456,8 +440,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faEnvelope}
+                      <Icon
+                        type={"mail" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -474,8 +458,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faPhone}
+                      <Icon
+                        type={"phone" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -491,8 +475,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faGlobe}
+                      <Icon
+                        type={"language" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -508,8 +492,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faIndustry}
+                      <Icon
+                        type={"factory" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -531,8 +515,8 @@ Email: ${formData.email || "N/A"}
                         right={
                           <TextInput.Icon
                             icon={() => (
-                              <FontAwesomeIcon
-                                icon={faChevronDown}
+                              <Icon
+                                type={"expand_more" as any}
                                 size={16}
                                 color={theme.colors.onSurfaceVariant}
                               />
@@ -568,8 +552,8 @@ Email: ${formData.email || "N/A"}
                 left={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faMapMarkerAlt}
+                      <Icon
+                        type={"location_on" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -611,8 +595,8 @@ Email: ${formData.email || "N/A"}
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimes}
+              <Icon
+                type={"close" as any}
                 size={18}
                 color={theme.colors.primary}
               />
@@ -627,8 +611,8 @@ Email: ${formData.email || "N/A"}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faSave}
+              <Icon
+                type={"save" as any}
                 size={18}
                 color={
                   !hasChanges || saving

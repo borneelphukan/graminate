@@ -1,5 +1,4 @@
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { Icon } from "@graminate/ui";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -58,8 +57,8 @@ export const FormModal = ({
             <Appbar.Content title={title} titleStyle={styles.title} />
             <Appbar.Action
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faTimes}
+                <Icon
+                  type={"close" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -87,8 +86,8 @@ export const FormModal = ({
               style={styles.submitButton}
               labelStyle={styles.submitButtonLabel}
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faCheck}
+                <Icon
+                  type={"check" as any}
                   size={18}
                   color={
                     isSubmitting

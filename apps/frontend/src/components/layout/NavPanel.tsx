@@ -35,7 +35,7 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanel) => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Open menu"
           >
-            <Icon type={"menu" as any} className="size-6" />
+            <Icon type={"menu"} className="size-6" />
           </button>
 
           {/* Dropdown Menu */}

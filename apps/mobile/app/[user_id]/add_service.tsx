@@ -1,15 +1,7 @@
+import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import {
-  faCow,
-  faEgg,
-  faEye,
-  faEyeSlash,
-  faFish,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
@@ -54,10 +46,10 @@ const SERVICE_CONFIG: ServiceConfig = {
 
 const AgricultureIcons: Record<
   string,
-  IconDefinition | React.ComponentType<any>
+  string | React.ComponentType<any>
 > = {
-  Poultry: faEgg,
-  "Cattle Rearing": faCow,
+  Poultry: "egg",
+  "Cattle Rearing": "cruelty_free",
   Apiculture: BeeIcon,
 };
 
@@ -289,10 +281,10 @@ const AddServiceScreen = () => {
               {typeof IconComponent === "function" ? (
                 <IconComponent size={iconSize} color={iconColor} />
               ) : (
-                <FontAwesomeIcon
-                  icon={IconComponent}
-                  size={iconSize}
-                  color={iconColor}
+                <Icon
+                  type={(IconComponent) as any}
+                  size={iconSize as any}
+                  color={iconColor as any}
                 />
               )}
               <Text
@@ -367,10 +359,10 @@ const AddServiceScreen = () => {
                 right={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={isPasswordVisible ? faEyeSlash : faEye}
-                        size={20}
-                        color={theme.colors.onSurfaceVariant}
+                      <Icon
+                        type={(isPasswordVisible ? "visibility_off" : "visibility") as any}
+                        size={20 as any}
+                        color={theme.colors.onSurfaceVariant as any}
                       />
                     )}
                     onPress={() => setIsPasswordVisible(!isPasswordVisible)}

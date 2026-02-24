@@ -1,24 +1,6 @@
+import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import {
-  faAddressBook,
-  faChevronDown,
-  faChevronRight,
-  faCog,
-  faCow,
-  faDollar,
-  faEgg,
-  faFish,
-  faHome,
-  faMoon,
-  faPlus,
-  faSignOutAlt,
-  faTimes,
-  faUsers,
-  faWarehouse,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -69,7 +51,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
 
   const sections = useMemo(() => {
     type Section = {
-      icon: IconDefinition | React.ComponentType<any>;
+      icon: string | React.ComponentType<any>;
       label: string;
       section: string;
       route?: string;
@@ -79,14 +61,14 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
 
     const base: Section[] = [
       {
-        icon: faHome,
+        icon: "home",
         label: "Dashboard",
         section: "Dashboard",
         route: `/${currentUserId}`,
         subItems: [],
       },
       {
-        icon: faAddressBook,
+        icon: "contacts",
         label: "CRM",
         section: "CRM",
         basePath: `/${currentUserId}/crm`,
@@ -118,7 +100,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
     if (userType === "Producer") {
       if (subTypes.includes("Poultry"))
         base.push({
-          icon: faEgg,
+          icon: "egg",
           label: "Poultry Farm",
           section: "Poultry Farm",
           route: `/${currentUserId}/poultry`,
@@ -126,7 +108,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         });
       if (subTypes.includes("Cattle Rearing"))
         base.push({
-          icon: faCow,
+          icon: "cruelty_free",
           label: "Cattle Rearing",
           section: "Cattle Rearing",
           route: `/${currentUserId}/cattle_rearing`,
@@ -144,7 +126,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
 
     base.push(
       {
-        icon: faUsers,
+        icon: "group",
         label: "Employees",
         section: "Employees",
         basePath: `/${currentUserId}/labour`,
@@ -160,7 +142,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         ],
       },
       {
-        icon: faDollar,
+        icon: "attach_money",
         label: "Finance Manager",
         section: "Finance",
         basePath: `/${currentUserId}/finance`,
@@ -177,14 +159,14 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         ],
       },
       {
-        icon: faWarehouse,
+        icon: "warehouse",
         label: "Storage",
         section: "Storage",
         route: `/${currentUserId}/storage`,
         subItems: [],
       },
       {
-        icon: faPlus,
+        icon: "add",
         label: "Manage Services",
         section: "Manage Services",
         route: `/${currentUserId}/add_service`,
@@ -237,7 +219,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           resizeMode="contain"
         />
         <TouchableOpacity onPress={closeSidebar} style={styles.closeButton}>
-          <FontAwesomeIcon icon={faTimes} size={24} color={iconColor} />
+          <Icon type={"close" as any} size={24} color={iconColor} />
         </TouchableOpacity>
       </View>
 
@@ -272,8 +254,8 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                             height={22}
                           />
                         ) : (
-                          <FontAwesomeIcon
-                            icon={section.icon}
+                          <Icon
+                            type={(section.icon) as any}
                             size={20}
                             color={iconColor}
                           />
@@ -287,8 +269,8 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                       >
                         {section.label}
                       </Text>
-                      <FontAwesomeIcon
-                        icon={isExpanded ? faChevronDown : faChevronRight}
+                      <Icon
+                        type={(isExpanded ? "expand_more" : "chevron_right") as any}
                         size={14}
                         color={iconColor}
                       />
@@ -339,8 +321,8 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                     {typeof section.icon === "function" ? (
                       <section.icon color={iconColor} width={22} height={22} />
                     ) : (
-                      <FontAwesomeIcon
-                        icon={section.icon}
+                      <Icon
+                        type={(section.icon) as any}
                         size={20}
                         color={iconColor}
                       />
@@ -363,7 +345,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={styles.iconWrapper}>
-                <FontAwesomeIcon icon={faMoon} size={20} color={iconColor} />
+                <Icon type={"dark_mode" as any} size={20} color={iconColor} />
               </View>
               <Text
                 style={[
@@ -381,7 +363,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
             onPress={navigateToSettings}
           >
             <View style={styles.iconWrapper}>
-              <FontAwesomeIcon icon={faCog} size={20} color={iconColor} />
+              <Icon type={"settings" as any} size={20} color={iconColor} />
             </View>
             <Text style={[styles.itemText, { color: theme.colors.onSurface }]}>
               Settings
@@ -398,8 +380,8 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           onPress={handleLogout}
           style={styles.logoutButton}
           icon={() => (
-            <FontAwesomeIcon
-              icon={faSignOutAlt}
+            <Icon
+              type={"logout" as any}
               size={18}
               color={theme.colors.primary}
             />

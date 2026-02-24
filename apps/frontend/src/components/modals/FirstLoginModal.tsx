@@ -485,7 +485,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
     if (step === "subType") {
       const AgricultureIcons: Record<string, JSX.Element> = {
         Poultry: <PoultryIcon />,
-        "Cattle Rearing": <Icon type={"cruelty_free" as any} />,
+        "Cattle Rearing": <Icon type={"cruelty_free"} />,
         Apiculture: <BeeIcon />,
       };
       return (

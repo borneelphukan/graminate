@@ -19,7 +19,7 @@ export const useFetchUserType = (
 
         setSubTypes(Array.isArray(sub) ? sub : []);
         setUserType(type || "Producer");
-      } catch (err) {
+      } catch (error) {
         console.error("Error fetching user type", err);
         setUserType("Producer");
         setSubTypes([]);

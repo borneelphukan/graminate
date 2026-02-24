@@ -66,7 +66,7 @@ const DropdownFilter = ({
           )}
         </span>
         {/* Dropdown Icon */}
-        <Icon type={"expand_more" as any} className="size-5" />
+        <Icon type={"expand_more"} className="size-5" />
       </button>
 
       {/* Dropdown Menu */}

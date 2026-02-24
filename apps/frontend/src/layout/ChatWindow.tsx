@@ -195,7 +195,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                     />
                   ) : (
                     <Icon
-                      type={"person" as any}
+                      type={"person"}
                       size="sm"
                       className="text-gray-100 dark:text-gray-400"
                     />
@@ -255,7 +255,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
             className="text-blue-500 disabled:text-gray-400 dark:disabled:text-gray-500"
             disabled={isLoading || input.trim() === ""}
           >
-            <Icon type={"arrow_circle_up" as any} size="lg" />
+            <Icon type={"arrow_circle_up"} size="lg" />
           </button>
         </div>
       </footer>

@@ -73,7 +73,7 @@ const Notifications = () => {
         } else {
           console.error("Failed to fetch user type");
         }
-      } catch (err) {
+      } catch (error) {
         console.error("Error fetching user type:", err);
       }
     };

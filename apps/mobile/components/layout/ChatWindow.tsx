@@ -1,11 +1,5 @@
+import { Icon } from "@graminate/ui";
 import Sparkles from "@/assets/icon/Sparkles";
-import {
-  faCircleArrowUp,
-  faTimesCircle,
-  faTrashAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
@@ -225,8 +219,8 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
               onPress={handleClearChat}
               textColor={theme.colors.error}
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
+                <Icon
+                  type={"delete" as any}
                   size={18}
                   color={theme.colors.error}
                 />
@@ -237,8 +231,8 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           )}
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faTimesCircle}
+              <Icon
+                type={"cancel" as any}
                 size={24}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -299,8 +293,8 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
                   </Surface>
                   {msg.sender === "user" && (
                     <View style={styles.avatarContainer}>
-                      <FontAwesomeIcon
-                        icon={faUser}
+                      <Icon
+                        type={"person" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -342,8 +336,8 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           />
           <IconButton
             icon={() => (
-              <FontAwesomeIcon
-                icon={faCircleArrowUp}
+              <Icon
+                type={"arrow_circle_up" as any}
                 size={38}
                 color={
                   isLoading || input.trim() === ""

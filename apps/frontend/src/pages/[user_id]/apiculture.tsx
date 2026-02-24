@@ -280,7 +280,7 @@ const Apiculture = () => {
                 onClick={() => setShowFinancials(!showFinancials)}
               >
                 <Icon
-                  type={showFinancials ? "expand_less" : "expand_more" as any}
+                  type={showFinancials ? "expand_less" : "expand_more"}
                   className="mr-2 h-3 w-3"
                 />
                 {showFinancials ? "Hide Finances" : "Show Finances"}

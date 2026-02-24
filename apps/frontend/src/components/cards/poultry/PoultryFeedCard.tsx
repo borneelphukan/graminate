@@ -76,7 +76,7 @@ const FeedStatItem = ({
 }: FeedStatItemProps) => (
   <div className="flex flex-col items-center justify-center text-center p-3 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
     <Icon
-      type={icon as any}
+      type={icon}
       className="h-5 w-5 text-blue-200 dark:text-blue-300 mb-1.5"
       aria-hidden="true"
     />
@@ -256,7 +256,7 @@ const PoultryFeedCard = ({
       return (
         <div className="flex-grow flex flex-col items-center justify-center text-center min-h-[200px] py-4">
           <Icon
-            type={"inventory" as any}
+            type={"inventory"}
             className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-3"
           />
           <p className="text-gray-500 dark:text-gray-400 text-md font-semibold">
@@ -295,7 +295,7 @@ const PoultryFeedCard = ({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                   <div className="flex flex-col items-center rounded">
                     <Icon
-                      type={"deployed_code" as any}
+                      type={"deployed_code"}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-1"
                     />
                     <span className="font-semibold text-sm text-dark dark:text-light">
@@ -307,7 +307,7 @@ const PoultryFeedCard = ({
                   </div>
                   <div className="flex flex-col items-center">
                     <Icon
-                      type={"show_chart" as any}
+                      type={"show_chart"}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-1"
                     />
                     <span className="font-semibold text-sm text-dark dark:text-light">
@@ -319,7 +319,7 @@ const PoultryFeedCard = ({
                   </div>
                   <div className="flex flex-col items-center">
                     <Icon
-                      type={"warehouse" as any}
+                      type={"warehouse"}
                       className="h-4 w-4 text-blue-200 dark:text-blue-300 mb-2"
                     />
                     <span

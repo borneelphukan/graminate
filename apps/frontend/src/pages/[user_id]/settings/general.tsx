@@ -272,7 +272,7 @@ const General = () => {
                                 aria-label={t("removeProfilePicture")}
                               >
                                 <Icon
-                                  type={"close" as any}
+                                  type={"close"}
                                   className="size-6"
                                 />
                               </button>

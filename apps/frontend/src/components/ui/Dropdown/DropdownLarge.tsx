@@ -96,7 +96,7 @@ const DropdownLarge = ({
         >
           {displayLabel}
           <Icon
-            type={"expand_more" as any}
+            type={"expand_more"}
             className="size-5 ml-2 -mr-1 text-gray-300"
           />
         </button>

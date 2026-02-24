@@ -66,7 +66,7 @@ const UploadContactImageModal = ({
             onClick={onClose}
             className="text-white hover:text-gray-200 transition-colors"
           >
-            <Icon className="w-5 h-5" type={"close" as any} />
+            <Icon className="w-5 h-5" type={"close"} />
           </button>
         </div>
 

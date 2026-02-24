@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import InventoryForm, {
   InventoryFormData,
 } from "@/components/form/warehouse/InventoryForm";
@@ -5,18 +6,6 @@ import WarehouseForm, {
   WarehouseFormData,
 } from "@/components/form/warehouse/WarehouseForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowLeft,
-  faBox,
-  faExclamationTriangle,
-  faMapMarkerAlt,
-  faPencilAlt,
-  faPhone,
-  faPlus,
-  faUserTie,
-  faWarehouse,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -230,8 +219,8 @@ const WarehouseDetailScreen = () => {
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -252,8 +241,8 @@ const WarehouseDetailScreen = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -275,8 +264,8 @@ const WarehouseDetailScreen = () => {
             mode="outlined"
             onPress={() => setIsWarehouseFormOpen(true)}
             icon={() => (
-              <FontAwesomeIcon
-                icon={faPencilAlt}
+              <Icon
+                type={"edit" as any}
                 size={16}
                 color={theme.colors.primary}
               />
@@ -287,8 +276,8 @@ const WarehouseDetailScreen = () => {
           <Button
             mode="contained"
             icon={() => (
-              <FontAwesomeIcon
-                icon={faPlus}
+              <Icon
+                type={"add" as any}
                 size={16}
                 color={theme.colors.onPrimary}
               />
@@ -309,8 +298,8 @@ const WarehouseDetailScreen = () => {
                   <List.Icon
                     {...props}
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faWarehouse}
+                      <Icon
+                        type={"warehouse" as any}
                         size={22}
                         color={props.color}
                       />
@@ -326,8 +315,8 @@ const WarehouseDetailScreen = () => {
                     <List.Icon
                       {...props}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faBox}
+                        <Icon
+                          type={"box" as any}
                           size={22}
                           color={props.color}
                         />
@@ -344,8 +333,8 @@ const WarehouseDetailScreen = () => {
                     <List.Icon
                       {...props}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faUserTie}
+                        <Icon
+                          type={"manage_accounts" as any}
                           size={22}
                           color={props.color}
                         />
@@ -362,8 +351,8 @@ const WarehouseDetailScreen = () => {
                     <List.Icon
                       {...props}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faPhone}
+                        <Icon
+                          type={"phone" as any}
                           size={22}
                           color={props.color}
                         />
@@ -386,8 +375,8 @@ const WarehouseDetailScreen = () => {
                     <List.Icon
                       {...props}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faMapMarkerAlt}
+                        <Icon
+                          type={"location_on" as any}
                           size={22}
                           color={props.color}
                         />
@@ -475,8 +464,8 @@ const WarehouseDetailScreen = () => {
                     <List.Icon
                       {...props}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faExclamationTriangle}
+                        <Icon
+                          type={"warning" as any}
                           size={22}
                           color={theme.colors.error}
                         />
@@ -517,8 +506,8 @@ const WarehouseDetailScreen = () => {
                     {isLowStock && (
                       <Chip
                         icon={() => (
-                          <FontAwesomeIcon
-                            icon={faExclamationTriangle}
+                          <Icon
+                            type={"warning" as any}
                             size={16}
                             color={theme.colors.error}
                           />

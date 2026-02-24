@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import CompanyForm, {
   CompanyFormData,
 } from "@/components/form/crm/CompanyForm";
@@ -12,21 +13,6 @@ import ReceiptForm, {
 } from "@/components/form/crm/ReceiptForm";
 import TaskForm, { TaskFormData } from "@/components/form/crm/TaskForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowDown,
-  faArrowUp,
-  faBuilding,
-  faCalendar,
-  faChevronDown,
-  faClipboardList,
-  faEnvelope,
-  faFileContract,
-  faPhone,
-  faPlus,
-  faReceipt,
-  faUserTie,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
@@ -131,7 +117,7 @@ const ContactCard = ({
         <View style={styles.cardRow}>
           {item.email && (
             <View style={styles.infoItem}>
-              <FontAwesomeIcon icon={faEnvelope} size={16} />
+              <Icon type={"mail" as any} size={16} />
               <Text style={styles.infoText}>{item.email}</Text>
             </View>
           )}
@@ -165,7 +151,7 @@ const CompanyCard = ({
         <View style={styles.cardRow}>
           {item.phone_number && (
             <View style={styles.infoItem}>
-              <FontAwesomeIcon icon={faPhone} size={16} />
+              <Icon type={"phone" as any} size={16} />
               <Text style={styles.infoText}>{item.phone_number}</Text>
             </View>
           )}
@@ -238,8 +224,8 @@ const ReceiptCard = ({
       <Card.Content>
         <View style={styles.cardRow}>
           <View style={styles.infoItem}>
-            <FontAwesomeIcon
-              icon={faCalendar}
+            <Icon
+              type={"calendar_month" as any}
               size={16}
               color={theme.colors.error}
             />
@@ -308,35 +294,35 @@ const CRM = () => {
         title: "Contacts",
         endpoint: `/contacts/${user_id}`,
         dataKey: "contacts",
-        icon: faUserTie,
+        icon: "manage_accounts",
         addText: "Contact",
       },
       companies: {
         title: "Companies",
         endpoint: `/companies/${user_id}`,
         dataKey: "companies",
-        icon: faBuilding,
+        icon: "domain",
         addText: "Company",
       },
       contracts: {
         title: "Contracts",
         endpoint: `/contracts/${user_id}`,
         dataKey: "contracts",
-        icon: faFileContract,
+        icon: "contract",
         addText: "Contract",
       },
       receipts: {
         title: "Receipts",
         endpoint: `/receipts/${user_id}`,
         dataKey: "receipts",
-        icon: faReceipt,
+        icon: "receipt",
         addText: "Receipt",
       },
       tasks: {
         title: "Projects",
         endpoint: `/tasks/${user_id}`,
         dataKey: "tasks",
-        icon: faClipboardList,
+        icon: "list_alt",
         addText: "Project",
       },
     }),
@@ -746,8 +732,8 @@ const CRM = () => {
       if (groupedTasksData.length === 0) {
         return (
           <View style={styles.centered}>
-            <FontAwesomeIcon
-              icon={VIEW_CONFIG[view].icon}
+            <Icon
+              type={(VIEW_CONFIG[view].icon) as any}
               size={64}
               color={theme.colors.onSurfaceDisabled}
             />
@@ -774,8 +760,8 @@ const CRM = () => {
     if (sortedData.length === 0) {
       return (
         <View style={styles.centered}>
-          <FontAwesomeIcon
-            icon={VIEW_CONFIG[view].icon}
+          <Icon
+            type={(VIEW_CONFIG[view].icon) as any}
             size={64}
             color={theme.colors.onSurfaceDisabled}
           />
@@ -823,7 +809,7 @@ const CRM = () => {
                   <Text variant="headlineMedium">
                     {VIEW_CONFIG[view].title}
                   </Text>
-                  <FontAwesomeIcon icon={faChevronDown} size={28} />
+                  <Icon type={"expand_more" as any} size={28} />
                 </>
               </TouchableRipple>
             }
@@ -848,8 +834,8 @@ const CRM = () => {
                 <Button
                   onPress={() => setSortMenuVisible(true)}
                   icon={({ size, color }) => (
-                    <FontAwesomeIcon
-                      icon={sortOrder === "desc" ? faArrowDown : faArrowUp}
+                    <Icon
+                      type={(sortOrder === "desc" ? "arrow_downward" : "arrow_upward") as any}
                       size={size}
                       color={color}
                     />
@@ -895,7 +881,7 @@ const CRM = () => {
         {renderContent()}
         <FAB
           icon={({ size, color }) => (
-            <FontAwesomeIcon icon={faPlus} size={size} color={color} />
+            <Icon type={"add" as any} size={size} color={color} />
           )}
           label={VIEW_CONFIG[view].addText}
           style={styles.fab}

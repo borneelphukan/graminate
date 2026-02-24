@@ -35,7 +35,7 @@ const BudgetCard = ({
     >
       <div className="flex items-center mb-2 gap-2">
         <Icon
-          type={icon as any}
+          type={icon}
           className={`${iconValueColor} text-2xl opacity-80`}
         />
         <h3 className="text-sm font-medium text-dark dark:text-light uppercase">

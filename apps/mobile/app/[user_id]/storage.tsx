@@ -1,17 +1,8 @@
+import { Icon } from "@graminate/ui";
 import WarehouseForm, {
   WarehouseFormData,
 } from "@/components/form/warehouse/WarehouseForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import {
-  faArrowLeft,
-  faBox,
-  faMapMarkerAlt,
-  faPhone,
-  faPlus,
-  faUser,
-  faWarehouse,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -76,8 +67,8 @@ const WarehouseCard = ({
       <Card.Content>
         {!!addressString && (
           <View style={styles.infoRow}>
-            <FontAwesomeIcon
-              icon={faMapMarkerAlt}
+            <Icon
+              type={"location_on" as any}
               size={16}
               color={theme.colors.onSurfaceVariant}
             />
@@ -89,8 +80,8 @@ const WarehouseCard = ({
         <View style={styles.contactRow}>
           {item.contact_person && (
             <View style={styles.infoRow}>
-              <FontAwesomeIcon
-                icon={faUser}
+              <Icon
+                type={"person" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -101,8 +92,8 @@ const WarehouseCard = ({
           )}
           {item.phone && (
             <View style={styles.infoRow}>
-              <FontAwesomeIcon
-                icon={faPhone}
+              <Icon
+                type={"phone" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -113,8 +104,8 @@ const WarehouseCard = ({
           )}
           {item.storage_capacity != null && (
             <View style={styles.infoRow}>
-              <FontAwesomeIcon
-                icon={faBox}
+              <Icon
+                type={"box" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -260,8 +251,8 @@ const StoragePage = () => {
     if (filteredWarehouses.length === 0) {
       return (
         <View style={styles.centeredContainer}>
-          <FontAwesomeIcon
-            icon={faWarehouse}
+          <Icon
+            type={"warehouse" as any}
             size={64}
             color={theme.colors.onSurfaceDisabled}
           />
@@ -295,8 +286,8 @@ const StoragePage = () => {
         <Appbar.Header>
           <Appbar.Action
             icon={() => (
-              <FontAwesomeIcon
-                icon={faArrowLeft}
+              <Icon
+                type={"arrow_back" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -319,8 +310,8 @@ const StoragePage = () => {
         {renderContent()}
         <FAB
           icon={() => (
-            <FontAwesomeIcon
-              icon={faPlus}
+            <Icon
+              type={"add" as any}
               size={22}
               color={theme.colors.onPrimaryContainer}
             />

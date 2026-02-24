@@ -225,7 +225,7 @@ const WarehouseForm = ({
               onClick={handleClose}
               aria-label="Close panel"
             >
-              <Icon type={"close" as any} className="w-5 h-5" />
+              <Icon type={"close"} className="w-5 h-5" />
             </button>
           </div>
 

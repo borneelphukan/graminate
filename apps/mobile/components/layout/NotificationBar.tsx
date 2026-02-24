@@ -1,6 +1,5 @@
+import { Icon } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import { faCog, faTimes, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -133,8 +132,8 @@ const NotificationBar = ({
                     <Text variant="titleLarge">Notifications</Text>
                     <IconButton
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faTimes}
+                        <Icon
+                          type={"close" as any}
                           size={24}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -150,8 +149,8 @@ const NotificationBar = ({
                       onPress={onClearAll}
                       textColor={theme.colors.error}
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faTrashAlt}
+                        <Icon
+                          type={"delete" as any}
                           size={18}
                           color={theme.colors.error}
                         />
@@ -161,8 +160,8 @@ const NotificationBar = ({
                     </Button>
                     <IconButton
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={faCog}
+                        <Icon
+                          type={"settings" as any}
                           size={20}
                           color={theme.colors.onSurfaceVariant}
                         />

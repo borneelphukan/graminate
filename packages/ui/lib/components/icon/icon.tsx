@@ -24,9 +24,11 @@ const iconVariants = cva("material-symbols-outlined leading-none", {
   },
 });
 
-type IconProps = React.ComponentPropsWithoutRef<"i"> &
-  VariantProps<typeof iconVariants> & {
-    type: IconType;
+type IconProps = Omit<React.ComponentPropsWithoutRef<"i">, "color"> &
+  Omit<VariantProps<typeof iconVariants>, "color" | "size"> & {
+    type?: IconType | any;
+    color?: VariantProps<typeof iconVariants>["color"] | (string & {});
+    size?: VariantProps<typeof iconVariants>["size"] | number;
   };
 
 const Icon = forwardRef<HTMLElement, IconProps>(
@@ -35,7 +37,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(
       <i
         ref={ref}
         className={cn(
-          iconVariants({ color, size, className }),
+          iconVariants({ color: color as any, size: size as any, className }),
           props.onClick && "cursor-pointer"
         )}
         {...props}

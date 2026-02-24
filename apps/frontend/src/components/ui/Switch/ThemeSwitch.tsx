@@ -17,12 +17,12 @@ const ThemeSwitch = ({ checked, onChange }: ThemeSwitchProps) => {
       checked={checked}
       checkedIcon={
         <div className="flex items-center justify-center w-full h-full bg-dark text-light rounded-full">
-          <Icon type={"dark_mode" as any} className="text-light" />
+          <Icon type={"dark_mode"} className="text-light" />
         </div>
       }
       uncheckedIcon={
         <div className="flex items-center justify-center w-full h-full text-dark rounded-full">
-          <Icon type={"light_mode" as any} className="text-yellow-200" />
+          <Icon type={"light_mode"} className="text-yellow-200" />
         </div>
       }
       height={30}

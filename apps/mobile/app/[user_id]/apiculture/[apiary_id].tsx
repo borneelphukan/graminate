@@ -1,19 +1,11 @@
+import { Icon } from "@graminate/ui";
 import ApicultureForm, {
   ApiaryFormData,
 } from "@/components/form/apiculture/ApicultureForm";
 import HiveForm, { HiveFormData } from "@/components/form/apiculture/HiveForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  faArrowLeft,
-  faBeer,
-  faCalendarDays,
-  faMapMarkerAlt,
-  faPlus,
-  faVectorSquare,
-} from "@fortawesome/free-solid-svg-icons";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -164,22 +156,22 @@ const ApicultureDetailPage = () => {
       {
         label: "Address",
         value: fullAddress || "N/A",
-        icon: faMapMarkerAlt,
+        icon: "location_on",
       },
       {
         label: "Total Hives",
         value: String(apiaryData.number_of_hives),
-        icon: faBeer,
+        icon: "sports_bar",
       },
       {
         label: "Area",
         value: apiaryData.area != null ? `${apiaryData.area} sq. m` : "N/A",
-        icon: faVectorSquare,
+        icon: "crop_square",
       },
       {
         label: "Created On",
         value: new Date(apiaryData.created_at).toLocaleDateString(),
-        icon: faCalendarDays,
+        icon: "calendar_month",
       },
     ];
   }, [apiaryData]);
@@ -201,8 +193,8 @@ const ApicultureDetailPage = () => {
       <Appbar.Header>
         <Appbar.Action
           icon={() => (
-            <FontAwesomeIcon
-              icon={faArrowLeft}
+            <Icon
+              type={"arrow_back" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -214,8 +206,8 @@ const ApicultureDetailPage = () => {
           onPress={() => setShowHiveForm(true)}
           textColor={theme.colors.primary}
           icon={() => (
-            <FontAwesomeIcon
-              icon={faPlus}
+            <Icon
+              type={"add" as any}
               size={18}
               color={theme.colors.primary}
             />
@@ -245,8 +237,8 @@ const ApicultureDetailPage = () => {
                       description={item.label}
                       left={(props) => (
                         <View {...props} style={styles.iconContainer}>
-                          <FontAwesomeIcon
-                            icon={item.icon}
+                          <Icon
+                            type={(item.icon) as any}
                             size={24}
                             color={theme.colors.onSurfaceVariant}
                           />

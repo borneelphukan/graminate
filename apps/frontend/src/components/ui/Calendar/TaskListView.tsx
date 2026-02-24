@@ -62,7 +62,7 @@ const TaskListView = ({
           className="p-2 rounded-full text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-700 dark:hover:text-light transition-colors duration-150 ease-in-out"
           aria-label="Back to calendar"
         >
-          <Icon type={"arrow_back" as any} className="h-5 w-5" />
+          <Icon type={"arrow_back"} className="h-5 w-5" />
         </button>
         <h3 className="text-md font-semibold text-gray-800 dark:text-white text-center">
           {getDayStatus(selectedDate)}
@@ -74,7 +74,7 @@ const TaskListView = ({
             className="p-2 rounded-full text-dark hover:text-light dark:text-light hover:bg-green-200 dark:hover:text-light transition-colors duration-150 ease-in-out"
             onClick={handleAddTaskClick}
           >
-            <Icon type={"add" as any} className="h-5 w-5" />
+            <Icon type={"add"} className="h-5 w-5" />
           </button>
         ) : (
           <div className="w-9 h-9"></div>
@@ -83,7 +83,7 @@ const TaskListView = ({
       <div className="my-6 space-y-1 max-h-60 overflow-y-auto pr-2">
         {isLoading ? (
           <div className="text-center text-gray-500 dark:text-gray-400">
-            <Icon type={"progress_activity" as any}  size="lg" className="mr-2 animate- animate-spin" />
+            <Icon type={"progress_activity"}  size="lg" className="mr-2 animate- animate-spin" />
             <Loader />
           </div>
         ) : tasks.length === 0 ? (

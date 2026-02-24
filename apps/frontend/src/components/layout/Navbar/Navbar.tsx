@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@graminate/ui";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -160,7 +161,7 @@ const Navbar = ({
                     aria-label={t("toggleSidebar")}
                     aria-expanded={isSidebarOpen}
                   >
-                    <Icon type={"menu" as any} className="size-6" />
+                    <Icon type={"menu"} className="size-6" />
                   </button>
                   <Image
                     src={imageSrc}
@@ -183,14 +184,14 @@ const Navbar = ({
                   className="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
                   onClick={toUserPreferences}
                 >
-                  <Icon type={"settings" as any} className="size-6" />
+                  <Icon type={"settings"} className="size-6" />
                 </button>
                 <button
                   className="relative text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
                   onClick={toggleNotificationBar}
                   aria-label={t("notifications")}
                 >
-                  <Icon type={"notifications" as any} className="size-6" />
+                  <Icon type={"notifications"} className="size-6" />
                   {notificationCount > 0 && (
                     <span className="absolute top-1 right-0 h-4 w-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center transform translate-x-1 -translate-y-1">
                       {notificationCount}
@@ -222,7 +223,7 @@ const Navbar = ({
                   onClick={toggleDropdown}
                 >
                   <Icon
-                    type={isDropdownOpen ? "expand_less" : "expand_more" as any}
+                    type={isDropdownOpen ? "expand_less" : "expand_more"}
                     className="size-5 transition-transform duration-200 ease-in-out"
                   />
                 </button>
@@ -278,7 +279,7 @@ const Navbar = ({
                           {t(item.nameKey)}
                           {item.external && (
                             <Icon
-                              type={"open_in_new" as any}
+                              type={"open_in_new"}
                               className="size-3 text-dark dark:text-light ml-1"
                             />
                           )}
@@ -292,9 +293,9 @@ const Navbar = ({
                       >
                         {t("signOut")}
                       </button>
-                      <a href="/privacy-policy" className="hover:underline">
+                      <Link href="/privacy-policy" className="hover:underline">
                         {t("privacyPolicy")}
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 )}

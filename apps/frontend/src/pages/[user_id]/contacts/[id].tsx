@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import { triggerToast } from "@/stores/toast";
 import { CONTACT_TYPES } from "@/constants/options";
-import Loader from "@/components/ui/Loader";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -376,7 +375,7 @@ const ContactDetails = () => {
                 )}
                 <div className="absolute inset-0 rounded-full hover:bg-gray-200/50 bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-200">
                   <Icon
-                    type={"edit" as any}
+                    type={"edit"}
                     className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   />
                 </div>
@@ -431,7 +430,7 @@ const ContactDetails = () => {
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
                         <Icon
-                          type={"phone" as any}
+                          type={"phone"}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>
@@ -449,7 +448,7 @@ const ContactDetails = () => {
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
                         <Icon
-                          type={"mail" as any}
+                          type={"mail"}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>
@@ -467,7 +466,7 @@ const ContactDetails = () => {
                     >
                       <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-1.5 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 transition-colors duration-150 ease-in-out">
                         <Icon
-                          type={"delete" as any}
+                          type={"delete"}
                           className="w-6 h-6 text-slate-600 dark:text-slate-300"
                         />
                       </div>

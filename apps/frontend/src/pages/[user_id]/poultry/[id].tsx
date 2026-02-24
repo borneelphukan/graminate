@@ -25,7 +25,6 @@ import {
   startOfWeek,
   endOfWeek,
   eachDayOfInterval,
-  isBefore,
   min as minDateFn,
   subDays,
   differenceInDays,
@@ -195,7 +194,7 @@ const PoultryDetail = () => {
   >([]);
   const [loadingPoultryInventory, setLoadingPoultryInventory] = useState(true);
 
-  const [sensorUrl, setSensorUrl] = useState<string | null>(null);
+  const [sensorUrl] = useState<string | null>(null);
 
   const [allEggRecords, setAllEggRecords] = useState<PoultryEggRecordFromApi[]>(
     []
@@ -259,7 +258,7 @@ const PoultryDetail = () => {
         records: PoultryFeedRecord[];
       }>(`/poultry-feeds/${parsedUserId}?flockId=${parsedFlockId}&limit=10000`);
       setAllFeedRecords(response.data.records || []);
-    } catch (error) {
+    } catch {
       setAllFeedRecords([]);
     } finally {
       setLoadingAllFeedRecords(false);
@@ -369,7 +368,7 @@ const PoultryDetail = () => {
         `/flock/${parsedFlockId}`
       );
       setSelectedFlockData(response.data);
-    } catch (error) {
+    } catch {
       setSelectedFlockData(null);
     } finally {
       setLoadingFlockData(false);
@@ -437,7 +436,7 @@ const PoultryDetail = () => {
           ageString = "0 days";
         }
         setFlockAge(ageString || "N/A");
-      } catch (error) {
+      } catch {
         setFlockAge("Error");
       }
     } else {
@@ -458,7 +457,7 @@ const PoultryDetail = () => {
         hour12: timeFormat === "12-hour",
       };
       return new Date(dateString).toLocaleString(locale, dateTimeOptions);
-    } catch (e) {
+    } catch {
       return "Invalid Date";
     }
   };
@@ -736,7 +735,7 @@ const PoultryDetail = () => {
           params: { item_group: "Poultry" },
         });
         setPoultryInventoryItems(response.data.items || []);
-      } catch (err) {
+      } catch {
         setPoultryInventoryItems([]);
       } finally {
         setLoadingPoultryInventory(false);

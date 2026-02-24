@@ -19,7 +19,7 @@ type MetricItemProps = {
 const MetricItem = ({ icon, value, label }: MetricItemProps) => (
   <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
     <Icon
-      type={icon as any}
+      type={icon}
       className="h-6 w-6 text-blue-200 dark:text-blue-300 mb-2"
       aria-hidden="true"
     />

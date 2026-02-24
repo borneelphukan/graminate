@@ -1,16 +1,5 @@
+import { Icon } from "@graminate/ui";
 import { FormModal } from "@/components/modals/FormModal";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import {
-  faBox,
-  faBug,
-  faChevronDown,
-  faClipboard,
-  faRulerCombined,
-  faTag,
-  faTruck,
-  faWarehouse,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import {
@@ -86,7 +75,7 @@ const PaperFormDropdown = ({
   error?: string;
   disabled?: boolean;
   placeholder?: string;
-  leftIcon?: IconDefinition;
+  leftIcon?: string;
 }) => {
   const [visible, setVisible] = useState(false);
   const theme = useTheme();
@@ -112,8 +101,8 @@ const PaperFormDropdown = ({
                   leftIcon && (
                     <TextInput.Icon
                       icon={() => (
-                        <FontAwesomeIcon
-                          icon={leftIcon}
+                        <Icon
+                          type={(leftIcon) as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -124,8 +113,8 @@ const PaperFormDropdown = ({
                 right={
                   <TextInput.Icon
                     icon={() => (
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
+                      <Icon
+                        type={"expand_more" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -271,8 +260,8 @@ const ApicultureForm = ({
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faTag}
+                <Icon
+                  type={"sell" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />
@@ -302,8 +291,8 @@ const ApicultureForm = ({
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faWarehouse}
+                    <Icon
+                      type={"warehouse" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -329,8 +318,8 @@ const ApicultureForm = ({
               left={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faRulerCombined}
+                    <Icon
+                      type={"straighten" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -349,7 +338,7 @@ const ApicultureForm = ({
           items={BEE_SPECIES}
           selectedValue={formData.bee_species}
           onSelect={(value: string) => handleInputChange("bee_species", value)}
-          leftIcon={faBug}
+          leftIcon={"bug_report"}
         />
 
         <PaperFormDropdown
@@ -357,7 +346,7 @@ const ApicultureForm = ({
           items={HIVE_TYPES}
           selectedValue={formData.hive_type}
           onSelect={(value: string) => handleInputChange("hive_type", value)}
-          leftIcon={faBox}
+          leftIcon={"box"}
         />
 
         <TextInput
@@ -369,8 +358,8 @@ const ApicultureForm = ({
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faTruck}
+                <Icon
+                  type={"local_shipping" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />
@@ -391,8 +380,8 @@ const ApicultureForm = ({
           left={
             <TextInput.Icon
               icon={() => (
-                <FontAwesomeIcon
-                  icon={faClipboard}
+                <Icon
+                  type={"content_paste" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />

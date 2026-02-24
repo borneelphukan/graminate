@@ -114,7 +114,7 @@ const Pricing = () => {
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start">
                           <Icon
-                            type={"check" as any}
+                            type={"check"}
                             className="size-3 text-green-200 mt-1 flex-shrink-0"
                           />
                           <span className="ml-3 text-dark dark:text-light">

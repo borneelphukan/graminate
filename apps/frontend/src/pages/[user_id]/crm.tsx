@@ -221,7 +221,7 @@ const CRM = () => {
         setContractsData(contractsRes.data.contracts || []);
         setReceiptsData(receiptsRes.data.receipts || []);
         setTasksData(tasksRes.data.tasks || []);
-      } catch (error) {
+      } catch {
         setContactsData([]);
         setCompaniesData([]);
         setContractsData([]);
@@ -606,7 +606,7 @@ const CRM = () => {
               {dropdownItems.find((item) => item.view === view)?.label ||
                 "Select View"}
               <Icon
-                type={dropdownOpen ? "expand_less" : "expand_more" as any}
+                type={dropdownOpen ? "expand_less" : "expand_more"}
                 className="ml-2 w-4 h-4"
                 aria-hidden="true"
               />
@@ -693,7 +693,7 @@ const CRM = () => {
                     onClick={handleClosePanelAnimation}
                     aria-label="Close panel"
                   >
-                    <Icon type={"close" as any} className="w-5 h-5" />
+                    <Icon type={"close"} className="w-5 h-5" />
                   </button>
                 </div>
 

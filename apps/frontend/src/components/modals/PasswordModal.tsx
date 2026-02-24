@@ -45,7 +45,7 @@ const PasswordModal = ({
               className="text-dark dark:text-light hover:text-gray-300 dark:hover:text-gray-300 px-1.5 py-0.5 hover:bg-gray-500 dark:hover:bg-gray-700 rounded-full "
               aria-label="Close modal"
             >
-              <Icon type={"close" as any} />
+              <Icon type={"close"} />
             </button>
           </div>
         )}

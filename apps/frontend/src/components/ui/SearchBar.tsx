@@ -35,7 +35,7 @@ const SearchBar = ({ value, placeholder = "", mode, onChange }: Props) => {
         aria-label="Search"
       >
         <Icon
-          type={"search" as any}
+          type={"search"}
           className="size-5 stroke-gray-800 dark:stroke-white"
         />
       </button>

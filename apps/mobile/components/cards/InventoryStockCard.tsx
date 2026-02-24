@@ -1,3 +1,4 @@
+import { Icon } from "@graminate/ui";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -8,12 +9,6 @@ import {
   useTheme,
 } from "react-native-paper";
 import axiosInstance from "@/lib/axiosInstance";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faBoxArchive,
-  faChevronDown,
-  faChevronUp,
-} from "@fortawesome/free-solid-svg-icons";
 
 type ItemRecord = {
   inventory_id: number;
@@ -112,8 +107,8 @@ const InventoryStockCard = ({
     if (inventoryItems.length === 0) {
       return (
         <View style={styles.centeredContainer}>
-          <FontAwesomeIcon
-            icon={faBoxArchive}
+          <Icon
+            type={"archive" as any}
             size={48}
             color={theme.colors.onSurfaceDisabled}
           />
@@ -189,8 +184,8 @@ const InventoryStockCard = ({
             >
               Quantity
             </Text>
-            <FontAwesomeIcon
-              icon={quantitySortAsc ? faChevronUp : faChevronDown}
+            <Icon
+              type={(quantitySortAsc ? "expand_less" : "expand_more") as any}
               size={12}
               color={theme.colors.onSurface}
             />

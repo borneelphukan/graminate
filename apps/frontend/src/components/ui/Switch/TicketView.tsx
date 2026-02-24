@@ -45,7 +45,7 @@ const TicketView = ({ isListView, toggleView }: TicketViewProps) => {
         }}
         aria-label="Switch to List View"
       >
-        <Icon type={"list" as any} className="size-6" />
+        <Icon type={"list"} className="size-6" />
       </button>
     </div>
   );

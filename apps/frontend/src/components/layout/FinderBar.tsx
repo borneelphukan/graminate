@@ -169,9 +169,9 @@ const FinderBar = ({ activeView }: Props) => {
             </svg>
             Sort
             {showDropdown ? (
-              <Icon type={"expand_less" as any} className="w-4 h-4" />
+              <Icon type={"expand_less"} className="w-4 h-4" />
             ) : (
-              <Icon type={"expand_more" as any} className="w-4 h-4" />
+              <Icon type={"expand_more"} className="w-4 h-4" />
             )}
           </button>
           {showDropdown && (

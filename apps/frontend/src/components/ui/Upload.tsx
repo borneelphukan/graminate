@@ -51,7 +51,7 @@ const Upload = ({ label, onFileSelect }: Props) => {
       <label className="flex justify-center w-full h-24 px-4 transition bg-light border-2 border-gray-400 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
         <span className="flex items-center space-x-2">
           <Icon
-            type={"cloud_upload" as any}
+            type={"cloud_upload"}
             className="size-6 text-gray-300"
           />
 
@@ -80,7 +80,7 @@ const Upload = ({ label, onFileSelect }: Props) => {
             aria-label="remove file"
             onClick={removeFile}
           >
-            <Icon type={"close" as any} className="size-6 text-red-200" />
+            <Icon type={"close"} className="size-6 text-red-200" />
           </button>
         </div>
       )}

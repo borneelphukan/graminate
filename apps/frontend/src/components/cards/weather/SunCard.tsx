@@ -356,7 +356,7 @@ const SunCard = ({ lat, lon }: Coordinates) => {
                 <div className="flex flex-col items-center w-full text-center rounded-md">
                   <div className="w-full flex flex-row items-center justify-center mb-2 gap-2">
                     <Icon
-                      type={"light_mode" as any}
+                      type={"light_mode"}
                       className="w-4 h-4 text-yellow-200"
                     />
                     <p className="text-sm uppercase tracking-wide text-gray-200 dark:text-light">

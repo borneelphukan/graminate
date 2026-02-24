@@ -63,7 +63,7 @@ const AddServicePage = () => {
 
   const AgricultureIcons: Record<string, JSX.Element> = {
     Poultry: <PoultryIcon />,
-    "Cattle Rearing": <Icon type={"cruelty_free" as any} />,
+    "Cattle Rearing": <Icon type={"cruelty_free"} />,
     Apiculture: <BeeIcon />,
   };
 
@@ -83,7 +83,7 @@ const AddServicePage = () => {
           throw new Error("Available sub-types not found.");
         }
         setAvailableSubTypes(available);
-      } catch (err) {
+      } catch (error) {
         console.error("Failed to fetch available service data:", err);
         toastMessage.set({
           message: "Failed to load service information. Please try again.",
@@ -143,7 +143,7 @@ const AddServicePage = () => {
       showToast.set(true);
       setUserSubTypes(newSubTypes);
       setSelectedSubTypes(new Set());
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to add user services:", err);
       toastMessage.set({
         message: "Failed to add services. Please try again.",
@@ -205,7 +205,7 @@ const AddServicePage = () => {
       showToast.set(true);
       setUserSubTypes(newSubTypes);
       setServicesToRemove(new Set());
-    } catch (err) {
+    } catch (error) {
       console.error("Failed to remove services or related data:", err);
       toastMessage.set({
         message:

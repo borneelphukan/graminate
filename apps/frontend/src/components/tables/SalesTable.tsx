@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
 import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
-import Loader from "@/components/ui/Loader";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -461,7 +460,7 @@ const SalesTable = ({
                       userId,
                     });
                     window.location.reload();
-                  } catch (err) {
+                  } catch (error) {
                     console.error(err);
                     Swal.fire("Error", "Failed to reset table.", "error");
                   }

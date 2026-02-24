@@ -1,10 +1,5 @@
+import { Icon } from "@graminate/ui";
 import { FormModal } from "@/components/modals/FormModal";
-import {
-  faCalendarAlt,
-  faChevronDown,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { format } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
@@ -49,8 +44,8 @@ const PaperFormDropdown = ({
               right={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faChevronDown}
+                    <Icon
+                      type={"expand_more" as any}
                       size={16}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -316,8 +311,8 @@ const InspectionForm = ({
             right={
               <TextInput.Icon
                 icon={() => (
-                  <FontAwesomeIcon
-                    icon={faCalendarAlt}
+                  <Icon
+                    type={"calendar_month" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -342,8 +337,8 @@ const InspectionForm = ({
               right={
                 <TextInput.Icon
                   icon={() => (
-                    <FontAwesomeIcon
-                      icon={faCalendarAlt}
+                    <Icon
+                      type={"calendar_month" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -454,8 +449,8 @@ const InspectionForm = ({
                     key={symptom}
                     onClose={() => handleRemoveSymptom(symptom)}
                     closeIcon={() => (
-                      <FontAwesomeIcon
-                        icon={faTimes}
+                      <Icon
+                        type={"close" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />

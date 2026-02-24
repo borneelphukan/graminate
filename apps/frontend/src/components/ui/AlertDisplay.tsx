@@ -95,7 +95,7 @@ const AlertDisplay = ({
             } (on ${new Date(latestFutureAppointment).toLocaleDateString()}).`,
           });
         }
-      } catch (e) {
+      } catch (error) {
         console.error("Error parsing nextVisit date for alert:", e);
       }
     }

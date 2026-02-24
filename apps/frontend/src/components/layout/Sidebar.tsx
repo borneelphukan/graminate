@@ -254,7 +254,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                   >
                     {typeof icon === "string" ? (
                       <Icon
-                        type={icon as any}
+                        type={icon}
                         className={`h-5 w-5 ${isCollapsed ? "" : "mr-3"}`}
                       />
                     ) : (
@@ -274,7 +274,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                         </span>
                         {hasSubItems && (
                           <Icon
-                            type={"chevron_right" as any}
+                            type={"chevron_right"}
                             className={`h-3 w-3 transition-transform duration-200 ${
                               expandedSection === section ? "rotate-90" : ""
                             } ${
@@ -340,7 +340,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
           title={isCollapsed ? t("expandSidebar") : t("collapseSidebar")}
         >
           <Icon
-            type={isCollapsed ? "chevron_right" : "chevron_left" as any}
+            type={isCollapsed ? "chevron_right" : "chevron_left"}
             className="h-5 w-5"
           />
         </button>

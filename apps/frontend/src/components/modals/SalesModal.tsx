@@ -85,7 +85,7 @@ const SalesModal = ({
         } else {
           setSubTypes([]);
         }
-      } catch (err) {
+      } catch (error) {
         console.error("Error fetching user sub_types:", err);
         setSubTypes([]);
       } finally {
@@ -247,7 +247,7 @@ const SalesModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <Icon type={"close" as any} className="w-5 h-5" />
+            <Icon type={"close"} className="w-5 h-5" />
           </button>
         </div>
 

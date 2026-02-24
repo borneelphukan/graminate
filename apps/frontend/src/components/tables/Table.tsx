@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
 import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
-import Loader from "@/components/ui/Loader";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -383,7 +382,7 @@ const Table = ({
                       userId,
                     });
                     window.location.reload();
-                  } catch (err) {
+                  } catch (error) {
                     console.error(err);
                     Swal.fire("Error", "Failed to reset table.", "error");
                   }
@@ -536,7 +535,7 @@ const Table = ({
                             if (typeof quantityValue !== "number")
                               return (
                                 <Icon
-                                  type={"circle" as any}
+                                  type={"circle"}
                                   className="text-red-200"
                                 />
                               );
@@ -568,7 +567,7 @@ const Table = ({
                             return Array.from({ length: count }).map((_, i) => (
                               <Icon
                                 key={i}
-                                type={"circle" as any}
+                                type={"circle"}
                                 className={color}
                               />
                             ));

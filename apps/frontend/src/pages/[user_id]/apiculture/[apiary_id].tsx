@@ -105,7 +105,7 @@ const ApicultureDetailPage = () => {
         temperatureScale === "Fahrenheit"
           ? convertToFahrenheit(celsiusValue)
           : celsiusValue;
-      let unit = temperatureScale === "Fahrenheit" ? "°F" : "°C";
+      const unit = temperatureScale === "Fahrenheit" ? "°F" : "°C";
       return showUnit
         ? `${Math.round(displayTemp)}${unit}`
         : `${Math.round(displayTemp)}°`;
@@ -148,7 +148,7 @@ const ApicultureDetailPage = () => {
         `/apiculture/${parsedApiaryId}`
       );
       setSelectedApiaryData(response.data);
-    } catch (error) {
+    } catch {
       console.error("Error fetching apiary details:", error);
       setSelectedApiaryData(null);
     } finally {
@@ -164,7 +164,7 @@ const ApicultureDetailPage = () => {
         `/bee-hives/apiary/${parsedApiaryId}`
       );
       setHives(response.data.hives || []);
-    } catch (error) {
+    } catch {
       console.error("Error fetching hives:", error);
       setHives([]);
     } finally {
@@ -192,7 +192,7 @@ const ApicultureDetailPage = () => {
           params: { item_group: "Apiculture" },
         });
         setApicultureInventoryItems(response.data.items || []);
-      } catch (error) {
+      } catch {
         console.error("Error fetching apiculture inventory:", error);
         setApicultureInventoryItems([]);
       } finally {

@@ -19,7 +19,7 @@ const CalendarHeader = ({
       onClick={previousMonth}
       aria-label="Previous month"
     >
-      <Icon type={"chevron_left" as any} className="size-5" />
+      <Icon type={"chevron_left"} className="size-5" />
     </button>
     <div className="flex items-center">
       <h2 className="text-lg font-semibold text-dark dark:text-light tracking-wide">
@@ -33,7 +33,7 @@ const CalendarHeader = ({
       onClick={nextMonth}
       aria-label="Next month"
     >
-      <Icon type={"chevron_right" as any} className="size-5" />
+      <Icon type={"chevron_right"} className="size-5" />
     </button>
   </div>
 );

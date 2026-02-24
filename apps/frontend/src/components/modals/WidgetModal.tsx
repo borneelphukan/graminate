@@ -168,7 +168,7 @@ const WidgetModal = ({
             onClick={onClose}
             aria-label="Close modal"
           >
-            <Icon type={"close" as any} className="w-5 h-5" />
+            <Icon type={"close"} className="w-5 h-5" />
           </button>
         </div>
 
@@ -185,7 +185,7 @@ const WidgetModal = ({
                     <div className="h-5 w-5 text-green-200 flex items-center justify-center">
                       {typeof icon === "string" ? (
                         <Icon
-                          type={icon as any}
+                          type={icon}
                           className="h-full w-full"
                         />
                       ) : (

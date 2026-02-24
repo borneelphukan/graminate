@@ -31,7 +31,7 @@ const ToggleSwitch = <T extends string>({
               : "text-dark dark:text-light hover:bg-gray-300/50 dark:hover:bg-dark/50"
           }`}
         >
-          <Icon type={option.icon as any} className="size-4" />
+          <Icon type={option.icon} className="size-4" />
           <span>{option.label}</span>
         </button>
       ))}
