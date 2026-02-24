@@ -8,6 +8,7 @@ import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, TranslationKey } from "@/translations";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
+import CattleIcon from "@/icons/CattleIcon";
 
 type SidebarSection = {
   icon: string | React.ElementType;
@@ -88,7 +89,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
       }
       if (subTypes.includes("Cattle Rearing")) {
         base.push({
-          icon: "cruelty_free",
+          icon: CattleIcon,
           labelKey: "cattleRearing",
           section: "Cattle Rearing",
           route: `/${userId}/cattle_rearing`,

@@ -1,5 +1,6 @@
 import { Icon } from "@graminate/ui";
 import React, { useEffect, useMemo, useState } from "react";
+import CattleIcon from "@/assets/icon/CattleIcon";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
@@ -113,11 +114,11 @@ const WidgetModal = ({
     return orderedGroups;
   }, [availableWidgets]);
 
-  const categoryIcons: Record<string, string> = {
+  const categoryIcons: Record<string, string | React.ComponentType<any>> = {
     General: "drag_handle",
     Financial: "show_chart",
     Poultry: "egg",
-    "Cattle Rearing": "cruelty_free",
+    "Cattle Rearing": CattleIcon,
     Apiculture: "bug_report",
   };
 
@@ -161,13 +162,18 @@ const WidgetModal = ({
               <Card key={category} style={styles.card}>
                 <Card.Title
                   title={category}
-                  left={(props) => (
-                    <Icon
-                      type={(categoryIcons[category]) as any}
-                      size={22}
-                      color={theme.colors.onSurfaceVariant}
-                    />
-                  )}
+                  left={(props) => {
+                    const IconComp = categoryIcons[category];
+                    return typeof IconComp === "function" ? (
+                      <IconComp color={theme.colors.onSurfaceVariant} width={22} height={22} />
+                    ) : (
+                      <Icon
+                        type={IconComp as any}
+                        size={22}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    );
+                  }}
                 />
                 <Card.Content>
                   {widgetsInCategory.map((widget) => (

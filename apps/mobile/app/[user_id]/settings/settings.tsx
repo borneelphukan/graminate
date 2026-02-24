@@ -1,5 +1,6 @@
 import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
+import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -67,7 +68,7 @@ const SettingsScreen = () => {
             label: "Cattle Rearing",
             type: "navigate",
             routeName: `/${user_id}/settings/cattle-rearing`,
-            icon: "cruelty_free",
+            icon: CattleIcon,
           });
         if (subTypes.includes("Apiculture"))
           preferenceItems.push({

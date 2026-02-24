@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { Checkbox } from "@graminate/ui";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
+import CattleIcon from "@/icons/CattleIcon";
 
 interface WidgetModalProps {
   isOpen: boolean;
@@ -105,7 +106,7 @@ const WidgetModal = ({
     General: "drag_indicator",
     Financial: "attach_money",
     Poultry: PoultryIcon,
-    "Cattle Rearing": "cruelty_free",
+    "Cattle Rearing": CattleIcon,
     Apiculture: BeeIcon,
   };
 

@@ -6,6 +6,7 @@ import TextField from "../ui/TextField";
 import RadioButton from "../ui/Radio";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
+import CattleIcon from "@/icons/CattleIcon";
 
 type Step = "businessName" | "address" | "businessType" | "subType";
 
@@ -485,7 +486,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
     if (step === "subType") {
       const AgricultureIcons: Record<string, JSX.Element> = {
         Poultry: <PoultryIcon />,
-        "Cattle Rearing": <Icon type={"cruelty_free"} />,
+        "Cattle Rearing": <CattleIcon />,
         Apiculture: <BeeIcon />,
       };
       return (

@@ -1,5 +1,6 @@
 import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
+import CattleIcon from "@/assets/icon/CattleIcon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
@@ -108,7 +109,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         });
       if (subTypes.includes("Cattle Rearing"))
         base.push({
-          icon: "cruelty_free",
+          icon: CattleIcon,
           label: "Cattle Rearing",
           section: "Cattle Rearing",
           route: `/${currentUserId}/cattle_rearing`,

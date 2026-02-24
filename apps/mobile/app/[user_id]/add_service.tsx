@@ -1,5 +1,6 @@
 import { Icon } from "@graminate/ui";
 import BeeIcon from "@/assets/icon/BeeIcon";
+import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,7 +50,7 @@ const AgricultureIcons: Record<
   string | React.ComponentType<any>
 > = {
   Poultry: "egg",
-  "Cattle Rearing": "cruelty_free",
+  "Cattle Rearing": CattleIcon,
   Apiculture: BeeIcon,
 };
 

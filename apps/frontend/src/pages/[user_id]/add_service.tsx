@@ -13,6 +13,7 @@ import TextField from "@/components/ui/TextField";
 import PasswordModal from "@/components/modals/PasswordModal";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
+import CattleIcon from "@/icons/CattleIcon";
 
 type ServiceConfig = {
   [key: string]: {
@@ -63,7 +64,7 @@ const AddServicePage = () => {
 
   const AgricultureIcons: Record<string, JSX.Element> = {
     Poultry: <PoultryIcon />,
-    "Cattle Rearing": <Icon type={"cruelty_free"} />,
+    "Cattle Rearing": <CattleIcon />,
     Apiculture: <BeeIcon />,
   };
 
@@ -84,7 +85,7 @@ const AddServicePage = () => {
         }
         setAvailableSubTypes(available);
       } catch (error) {
-        console.error("Failed to fetch available service data:", err);
+        console.error("Failed to fetch available service data:", error);
         toastMessage.set({
           message: "Failed to load service information. Please try again.",
           type: "error",
@@ -144,7 +145,7 @@ const AddServicePage = () => {
       setUserSubTypes(newSubTypes);
       setSelectedSubTypes(new Set());
     } catch (error) {
-      console.error("Failed to add user services:", err);
+      console.error("Failed to add user services:", error);
       toastMessage.set({
         message: "Failed to add services. Please try again.",
         type: "error",
@@ -206,7 +207,7 @@ const AddServicePage = () => {
       setUserSubTypes(newSubTypes);
       setServicesToRemove(new Set());
     } catch (error) {
-      console.error("Failed to remove services or related data:", err);
+      console.error("Failed to remove services or related data:", error);
       toastMessage.set({
         message:
           "Failed to remove services. Some related data may not have been cleared. Please try again.",
