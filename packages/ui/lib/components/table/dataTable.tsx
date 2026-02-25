@@ -224,13 +224,13 @@ export function DataTable<TData, TValue, TProperty extends string = string>({
                             <Icon
                               size="base"
                               type="keyboard_arrow_up"
-                              className="w-4 h-4 rounded-sm bg-black/90 text-neutral-white"
+                              className="w-4 h-4 rounded-[var(--radius-sm)] bg-black/90 text-neutral-white"
                             />
                           ) : (
                             <Icon
                               size="base"
                               type="keyboard_arrow_down"
-                              className="w-4 h-4 rounded-sm bg-black/90 text-neutral-white"
+                              className="w-4 h-4 rounded-[var(--radius-sm)] bg-black/90 text-neutral-white"
                             />
                           )
                         ) : (
@@ -340,7 +340,7 @@ export function DataTable<TData, TValue, TProperty extends string = string>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-6 text-center text-[#B8BCB9]"
+                  className="h-6 text-center text-neutral-light-gray"
                 >
                   Keine Daten vorhanden.
                 </TableCell>
@@ -367,7 +367,7 @@ export function DataTable<TData, TValue, TProperty extends string = string>({
                       disabled={pageIndex === 0}
                       icon={{ left: "keyboard_arrow_left" }}
                     />
-                    <div className="flex h-6 min-w-[3rem] items-center justify-center rounded-md border border-neutral-light-gray px-3 text-sm">
+                    <div className="flex h-6 min-w-[3rem] items-center justify-center rounded-[var(--radius-md)] border border-neutral-light-gray px-3 text-sm">
                       {pageIndex + 1}/{Math.ceil(rowCount / pageSize)}
                     </div>
                     <Button

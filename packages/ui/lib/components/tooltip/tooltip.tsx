@@ -68,7 +68,7 @@ const TooltipContent = forwardRef<
           side={side}
           className={cn(
             "z-50 px-3 py-2 text-sm",
-            "rounded-lg bg-popover text-popover-foreground border border-neutral-dark-gray/20",
+            "rounded-[var(--radius-lg)] bg-popover text-popover-foreground border border-neutral-dark-gray/20",
             "animate-in fade-in-0 zoom-in-95",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
             "data-[side=bottom]:slide-in-from-top-2",

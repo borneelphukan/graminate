@@ -58,7 +58,7 @@ function AlertDialogContent({
         )}
         {...props}
       >
-        <div className="grid w-full gap-4 rounded-xl border border-neutral-dark-gray/20 bg-background p-6 shadow-sm">
+        <div className="grid w-full gap-4 rounded-[var(--radius-xl)] border border-neutral-dark-gray/20 bg-background p-6 shadow-sm">
           {children}
         </div>
       </AlertDialogPrimitive.Content>

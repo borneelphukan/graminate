@@ -78,7 +78,7 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
         <div
           {...getRootProps()}
           className={cn(
-            "border-dashed border-[oklch(var(--neutral-dark-gray)_/_30%)] hover:border-[oklch(var(--neutral-dark-gray)_/_50%)] cursor-pointer rounded-lg border p-8 text-center transition-colors",
+            "border-dashed border-[oklch(var(--neutral-dark-gray)_/_30%)] hover:border-[oklch(var(--neutral-dark-gray)_/_50%)] cursor-pointer rounded-[var(--radius-lg)] border p-8 text-center transition-colors",
             isDragActive && "border-brand-green bg-brand-green/5",
             "flex flex-col items-center justify-center gap-2"
           )}
@@ -110,10 +110,10 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
             {value.map((file, index) => (
               <div
                 key={`${file.name}-${index}`}
-                className="bg-neutral-light-gray/50 border-neutral-dark-gray/10 flex items-center justify-between rounded-md border p-3"
+                className="bg-neutral-light-gray/50 border-neutral-dark-gray/10 flex items-center justify-between rounded-[var(--radius-md)] border p-3"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="bg-blue-400/10 text-blue-400 flex size-10 shrink-0 items-center justify-center rounded">
+                  <div className="flex size-10 shrink-0 items-center justify-center">
                     <Icon type="description" />
                   </div>
                   <div className="flex min-w-0 flex-col">

@@ -28,7 +28,7 @@ function ToggleGroup({
       data-variant={variant}
       data-size={size}
       className={cn(
-        "group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs",
+        "group/toggle-group flex w-fit items-center rounded-[var(--radius-md)] data-[variant=outline]:shadow-xs",
         className
       )}
       {...props}
@@ -78,7 +78,7 @@ const ToggleGroupItem = React.forwardRef<
           {...props}
         >
           {icon && (
-            <div className="flex-shrink-0 rounded-md bg-gray-200 p-2">
+            <div className="flex-shrink-0 rounded-[var(--radius-md)] bg-gray-200 p-2">
               <span className="material-symbols-outlined text-foreground">
                 {icon}
               </span>

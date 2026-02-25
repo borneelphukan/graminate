@@ -79,7 +79,7 @@ toast.success = (
       ...options,
       description: (
         <div className="flex items-center gap-2">
-          <span className="bg-neutral-600/20 text-neutral-600 text-xs px-1.5 py-0.5 rounded-md font-medium">
+          <span className="bg-neutral-600/20 text-neutral-600 text-xs px-1.5 py-0.5 rounded-[var(--radius-md)] font-medium">
             {options.label}
           </span>
           <span>

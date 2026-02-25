@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "../../utils";
 
 const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-[color,box-shadow] aria-invalid:ring-destructive/20 aria-invalid:border-destructive whitespace-nowrap",
+  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-[color,box-shadow] aria-invalid:ring-destructive/20 aria-invalid:border-destructive whitespace-nowrap",
   {
     variants: {
       variant: {
@@ -56,7 +56,7 @@ const Toggle = React.forwardRef<
     },
     ref
   ) => {
-    if (description || icon) {
+    if (description) {
       return (
         <TogglePrimitive.Root
           ref={ref}
@@ -64,33 +64,24 @@ const Toggle = React.forwardRef<
           pressed={isActive}
           onPressedChange={onClick}
           className={cn(
-            "flex w-full items-center gap-3 rounded-lg border p-2 transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
+            "flex w-full items-center gap-4 rounded-[var(--radius-lg)] border p-3 transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
             isActive
-              ? "bg-accent border-[#149184]"
+              ? "bg-accent ring-1 border-neutral-light-gray"
               : "bg-card border-neutral-light-gray",
             className
           )}
           {...props}
         >
           {icon && (
-            <div
-              className={cn(
-                "flex-shrink-0 rounded-md p-2",
-                isActive ? "bg-white" : "bg-accent"
-              )}
-            >
-              <span className="material-symbols-outlined text-foreground text-[20px]">
+            <div className="flex-shrink-0 rounded-[var(--radius-md)] bg-gray-200 p-2">
+              <span className="material-symbols-outlined text-foreground">
                 {icon}
               </span>
             </div>
           )}
-          <div className="text-left flex-1 min-w-0">
-            <div className="text-sm text-card-foreground break-words hyphens-auto">
-              {label}
-            </div>
-            {description && (
-              <div className="text-xs text-muted-foreground">{description}</div>
-            )}
+          <div className="text-left">
+            <div className="text-base text-card-foreground">{label}</div>
+            <div className="text-sm text-muted-foreground">{description}</div>
           </div>
         </TogglePrimitive.Root>
       );

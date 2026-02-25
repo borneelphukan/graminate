@@ -42,7 +42,6 @@ type Props = Omit<
   values: Values;
   hint?: ReactNode;
   error?: ReactNode;
-  required?: boolean;
   switchItems?: SwitchValue[];
   actionButton?: ActionButton;
 };
@@ -106,7 +105,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) => {
     values,
     hint,
     error,
-    required,
     switchItems,
     actionButton,
     ...restProps
@@ -156,7 +154,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) => {
           )}
         >
           {label}
-          {required && <span className="text-red-200 ml-1">*</span>}
         </label>
 
         <SelectContext.Provider
@@ -199,7 +196,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) => {
               <div
                 // Actually looks like the button now
                 className={cn(
-                  "flex flex-row gap-2 items-center py-1.5 px-3 rounded-lg border-1 shadow-xs shadow-black/20 transition-colors border-input aria-invalid:border-destructive w-full min-w-32 justify-between bg-transparent text-base whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                  "flex flex-row gap-2 items-center py-1.5 px-3 rounded-[var(--radius-lg)] border-1 shadow-xs shadow-black/20 transition-colors border-input aria-invalid:border-destructive w-full min-w-32 justify-between bg-transparent text-base whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
                   "transition-colors duration-150 group-focus-within/select:!ring-[2px] group-focus-within/select:!ring-offset-2 group-data-[state=open]/select:!ring-[2px] group-data-[state=open]/select:!ring-offset-2 text-left",
                   isInvalid
                     ? "group-focus-within/select:!ring-red-200 group-data-[state=open]/select:!ring-red-200"
@@ -241,7 +238,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) => {
               <RadixSelect.Content
                 data-slot="select-content"
                 position="popper"
-                className="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border-1 border-neutral-light-gray shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1"
+                className="bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-[var(--radius-md)] border-1 border-neutral-light-gray shadow-md data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1"
               >
                 <RadixSelect.ScrollUpButton
                   data-slot="select-scroll-up-button"
@@ -352,7 +349,7 @@ function Item({ label, value, icon }: InnerValue) {
       value={value}
       data-slot="select-item"
       onSelect={multiple ? (e) => e.preventDefault() : undefined}
-      className="focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
+      className="focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-[var(--radius-sm)] py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2"
     >
       <span className="absolute right-2 flex size-3.5 items-center justify-center">
         {multiple ? (
@@ -392,7 +389,7 @@ function SwitchItem({ label, id, checked, onChange, icon }: SwitchValue) {
       aria-checked={internalChecked}
       data-slot="select-switch-item"
       onClick={handleClick}
-      className="focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent"
+      className="focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-[var(--radius-sm)] py-1.5 px-2 text-sm outline-hidden select-none hover:bg-accent"
     >
       <div className="flex items-center gap-2">
         {icon && (
@@ -409,7 +406,7 @@ function SwitchItem({ label, id, checked, onChange, icon }: SwitchValue) {
         className={cn(
           "relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent",
           "transition-colors duration-200 ease-in-out",
-          internalChecked ? "bg-[#149184]" : "bg-neutral-light-gray"
+          internalChecked ? "bg-brand-mute-green" : "bg-neutral-light-gray"
         )}
       >
         <span
@@ -437,7 +434,7 @@ function ActionButtonItem({ label, icon, onClick }: ActionButton) {
       type="button"
       data-slot="select-action-button"
       onClick={handleClick}
-      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm py-1.5 px-2 text-sm outline-hidden select-none border border-dashed border-[oklch(var(--neutral-dark-gray)_/_30%)] hover:bg-accent transition-colors mt-1"
+      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-sm)] py-1.5 px-2 text-sm outline-hidden select-none border border-dashed border-[oklch(var(--neutral-dark-gray)_/_30%)] hover:bg-accent transition-colors mt-1"
     >
       {icon && (
         <Icon type={icon} size="md" className="text-neutral-gray shrink-0" />

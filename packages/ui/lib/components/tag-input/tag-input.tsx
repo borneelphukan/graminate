@@ -123,7 +123,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
     const inputContainer = (
       <div
         className={cn(
-          "flex flex-wrap gap-2 items-center py-2 px-3 rounded-lg border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors min-h-[42px]",
+          "flex flex-wrap gap-2 items-center py-2 px-3 rounded-[var(--radius-lg)] border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors min-h-[42px]",
           (error || inputError) && "border-red-200",
           "group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2",
           error || inputError
@@ -144,7 +144,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
         {value.map((tag, index) => (
           <span
             key={`${tag}-${index}`}
-            className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-gray/10 border border-neutral-black/20 text-sm font-medium text-neutral-black"
+            className="flex items-center gap-1 px-2 py-0.5 rounded-[var(--radius-md)] bg-neutral-gray/10 border border-neutral-black/20 text-sm font-medium text-neutral-black"
           >
             {tag}
             <button
@@ -220,7 +220,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
                       <button
                         key={opt}
                         type="button"
-                        className="text-left px-2 py-1.5 text-sm hover:bg-neutral-gray/10 rounded-sm transition-colors text-neutral-black"
+                        className="text-left px-2 py-1.5 text-sm hover:bg-neutral-gray/10 rounded-[var(--radius-sm)] transition-colors text-neutral-black"
                         onClick={() => handleOptionSelect(opt)}
                       >
                         {opt}

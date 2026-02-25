@@ -80,7 +80,7 @@ export const WithActions: Story = {
         </span>
         <div className="flex gap-2">
           <Button variant="secondary" label="Confirm" />
-          <Button label="Replace Position" className="bg-[#14786e]" />
+          <Button label="Replace Position" />
         </div>
       </AlertDescription>
     </Alert>

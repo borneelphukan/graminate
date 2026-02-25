@@ -18,7 +18,7 @@ type ButtonProps = React.ComponentProps<"button"> &
   };
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 h-fit whitespace-nowrap text-base font-medium transition-all disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus:!ring-[2px] focus:!ring-brand-mute-green focus:!ring-offset-2 focus-visible:!ring-[3px] focus-visible:!ring-[#149184] focus-visible:!ring-offset-2 aria-invalid:!ring-red-200 aria-invalid:border-destructive cursor-pointer ease-out",
+  "relative inline-flex items-center justify-center gap-2 h-fit whitespace-nowrap text-base font-medium transition-all disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus:!ring-[2px] focus:!ring-brand-mute-green focus:!ring-offset-2 focus-visible:!ring-[3px] focus-visible:!ring-brand-mute-green focus-visible:!ring-offset-2 aria-invalid:!ring-red-200 aria-invalid:border-destructive cursor-pointer ease-out",
   {
     variants: {
       variant: {

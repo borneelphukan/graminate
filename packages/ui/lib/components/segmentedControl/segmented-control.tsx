@@ -11,7 +11,7 @@ const segmentedControlItemVariants = cva(
       selected: {
         true: "border rounded-[var(--radius-sm)] border-[rgba(65,65,65,0.15)] bg-white shadow-xs",
         false:
-          "text-[var(--color-neutral-gray)] opacity-70 hover:opacity-100  hover:text-[var(--color-neutral-black)]",
+          "text-neutral-gray opacity-70 hover:opacity-100  hover:text-neutral-black",
       },
     },
     defaultVariants: {
@@ -77,7 +77,7 @@ function SegmentedControl({
       data-slot="segmented-control"
       className={cn(
         className,
-        "flex items-center h-[38px] bg-[#FBFBFB] border border-solid border-[rgba(65,65,65,0.10)] p-[1px] rounded-[var(--radius-md)]"
+        "flex items-center h-[38px] bg-neutral-white border border-solid border-[rgba(65,65,65,0.10)] p-[1px] rounded-[var(--radius-md)]"
       )}
       {...props}
     >

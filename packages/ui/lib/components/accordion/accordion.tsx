@@ -44,7 +44,7 @@ function AccordionItem({
       className={cn(
         mode === "text" && "border-b last:border-b-0 border-neutral-light-gray",
         mode === "card" &&
-          "bg-card text-card-foreground rounded-lg border border-neutral-light-gray bg-accent",
+          "bg-card text-card-foreground rounded-[var(--radius-lg)] border border-neutral-light-gray bg-accent",
         className
       )}
       {...props}
@@ -68,7 +68,7 @@ function AccordionTrigger({
         data-slot="accordion-trigger"
         className={cn(
           "focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 py-4 text-left text-sm font-medium transition-all outline-none group focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
-          mode === "text" && "rounded-md",
+          mode === "text" && "rounded-[var(--radius-md)]",
           mode === "card" && "px-6",
           className
         )}
@@ -107,7 +107,7 @@ function AccordionContent({
       {mode === "card" ? (
         <div
           className={cn(
-            "bg-white border border-neutral-light-gray rounded-lg p-2 m-2",
+            "bg-white border border-neutral-light-gray rounded-[var(--radius-lg)] p-2 m-2",
             className
           )}
         >

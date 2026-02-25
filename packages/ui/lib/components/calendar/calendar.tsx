@@ -173,15 +173,15 @@ function Calendar({
             defaultClassNames.day
           ),
           range_start: cn(
-            "rounded-l-full rounded-r-none bg-[#F0FDF4]",
+            "rounded-l-full rounded-r-none bg-green-200/10",
             defaultClassNames.range_start
           ),
           range_middle: cn(
-            "rounded-none bg-[#F0FDF4]",
+            "rounded-none bg-green-200/10",
             defaultClassNames.range_middle
           ),
           range_end: cn(
-            "rounded-r-full rounded-l-none bg-[#F0FDF4]",
+            "rounded-r-full rounded-l-none bg-green-200/10",
             defaultClassNames.range_end
           ),
           today: cn(
@@ -317,7 +317,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "data-[selected-single=true]:bg-[#149184] data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-[#149184] data-[range-middle=true]:bg-[#F0FDF4] data-[range-middle=true]:text-accent-foreground data-[range-middle=true]:hover:bg-[#F0FDF4] data-[range-start=true]:bg-[#149184] data-[range-start=true]:text-primary-foreground data-[range-start=true]:hover:bg-[#149184] data-[range-end=true]:bg-[#149184] data-[range-end=true]:text-primary-foreground data-[range-end=true]:hover:bg-[#149184] group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 hover:bg-accent hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal rounded-full group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-middle=true]:rounded-none [&>span]:text-xs [&>span]:opacity-70",
+        "data-[selected-single=true]:bg-brand-mute-green data-[selected-single=true]:text-primary-foreground data-[selected-single=true]:hover:bg-brand-mute-green data-[range-middle=true]:bg-green-200/10 data-[range-middle=true]:text-accent-foreground data-[range-middle=true]:hover:bg-green-200/10 data-[range-start=true]:bg-brand-mute-green data-[range-start=true]:text-primary-foreground data-[range-start=true]:hover:bg-brand-mute-green data-[range-end=true]:bg-brand-mute-green data-[range-end=true]:text-primary-foreground data-[range-end=true]:hover:bg-brand-mute-green group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 hover:bg-accent hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal rounded-full group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-middle=true]:rounded-none [&>span]:text-xs [&>span]:opacity-70",
         isWeekend && "text-neutral-gray",
         modifiers.outside && "text-neutral-light-gray",
         defaultClassNames.day,

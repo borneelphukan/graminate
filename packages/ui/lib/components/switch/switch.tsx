@@ -83,11 +83,11 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
               "focus:!ring-[2px] focus:!ring-offset-2 focus-visible:!ring-[2px] focus-visible:!ring-offset-2",
               error
                 ? "focus:!ring-red-200 focus-visible:!ring-red-200"
-                : "focus:!ring-brand-mute-green focus-visible:!ring-brand-mute-green",
+                : "focus:!ring-brand-tech-green focus-visible:!ring-brand-tech-green",
               "transition-colors duration-200 ease-in-out",
               "ml-2",
               disabled ? "opacity-50 cursor-not-allowed" : "",
-              displayChecked ? "bg-[#149184]" : "bg-neutral-light-gray",
+              displayChecked ? "bg-brand-green" : "bg-neutral-light-gray",
               className
             )}
           >

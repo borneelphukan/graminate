@@ -14,7 +14,7 @@ function Table({
         "relative w-full overflow-x-auto",
         inline
           ? "bg-neutral-nearly-white/50 [&_td]:first:pl-14 [&_th]:first:pl-14 [&_tr]:border-none"
-          : "rounded-md border border-neutral-dark-gray/20"
+          : "rounded-[var(--radius-md)] border border-neutral-dark-gray/20"
       )}
     >
       <table
@@ -31,7 +31,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
     <thead
       data-slot="table-header"
       className={cn(
-        "rounded-md rounded-tr-none bg-neutral-nearly-white/50",
+        "rounded-[var(--radius-md)] rounded-tr-none bg-neutral-nearly-white/50",
         className
       )}
       {...props}

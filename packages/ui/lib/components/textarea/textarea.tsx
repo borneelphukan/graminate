@@ -9,22 +9,11 @@ type TextareaProps = React.ComponentPropsWithoutRef<"textarea"> & {
   hideLabel?: boolean;
   hint?: string;
   error?: string;
-  required?: boolean;
 };
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
-    {
-      className,
-      id,
-      label,
-      hideLabel,
-      hint,
-      error,
-      placeholder,
-      required,
-      ...props
-    },
+    { className, id, label, hideLabel, hint, error, placeholder, ...props },
     ref
   ) => {
     return (
@@ -38,12 +27,11 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             }
           >
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
           </span>
 
           <div
             className={cn(
-              "flex flex-row gap-2 items-start py-2 px-3 rounded-md border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors",
+              "flex flex-row gap-2 items-start py-2 px-3 rounded-[var(--radius-md)] border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors",
               error && "border-red-200",
               "group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2",
               error

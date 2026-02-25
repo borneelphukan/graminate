@@ -8,46 +8,36 @@ const StepperContext = React.createContext<{
   orientation: "horizontal" | "vertical";
   isSubStepper: boolean;
   disableConnector: boolean;
-  completedSteps?: number[];
 }>({
   activeStep: 0,
   orientation: "horizontal",
   isSubStepper: false,
   disableConnector: false,
-  completedSteps: undefined,
 });
 
 interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   activeStep?: number;
   orientation?: "horizontal" | "vertical";
   disableConnector?: boolean;
-  completedSteps?: number[];
 }
 
 function Stepper({
   activeStep = 0,
   orientation = "horizontal",
   disableConnector = false,
-  completedSteps,
   className,
   children,
   ...props
 }: StepperProps) {
   return (
     <StepperContext.Provider
-      value={{
-        activeStep,
-        orientation,
-        isSubStepper: false,
-        disableConnector,
-        completedSteps,
-      }}
+      value={{ activeStep, orientation, isSubStepper: false, disableConnector }}
     >
       <div
         data-slot="stepper"
         className={cn(
           "flex",
-          orientation === "vertical" ? "flex-col gap-0" : "flex-row",
+          orientation === "vertical" ? "flex-col gap-4" : "flex-row",
           className
         )}
         {...props}
@@ -84,17 +74,9 @@ function StepperItem({
   isLast,
   ...props
 }: StepperItemProps) {
-  const {
-    activeStep,
-    orientation,
-    isSubStepper,
-    disableConnector,
-    completedSteps,
-  } = React.useContext(StepperContext);
-  const isCompleted =
-    completedSteps !== undefined
-      ? completedSteps.includes(index)
-      : index < activeStep;
+  const { activeStep, orientation, isSubStepper, disableConnector } =
+    React.useContext(StepperContext);
+  const isCompleted = index < activeStep;
   const isActive = index === activeStep;
 
   const childrenArray = React.Children.toArray(children);
@@ -150,23 +132,21 @@ function StepperItem({
             orientation === "vertical"
               ? isSubStepper
                 ? "flex-row items-start gap-4"
-                : "flex-row items-start gap-4"
+                : "flex-row items-start gap-6"
               : "flex-col items-center text-center"
           )}
         >
           {orientation === "vertical" && !isLast && !disableConnector && (
             <div
               className={cn(
-                "absolute w-[2px] bg-border",
+                "absolute w-[3px] bg-border",
                 isSubStepper ? "bottom-[-0.5rem]" : "bottom-[-1rem]",
-                isSubStepper
-                  ? "left-[5px] top-[10px]"
-                  : "left-[11px] top-[12px]"
+                isSubStepper ? "left-[5px] top-[8px]" : "left-[19px] top-[20px]"
               )}
             >
               <div
                 className={cn(
-                  "w-full bg-[#13B76A] transition-all duration-300 ease-linear"
+                  "w-full bg-brand-mute-green transition-all duration-300 ease-linear"
                 )}
                 style={{
                   height: isCompleted
@@ -182,12 +162,12 @@ function StepperItem({
           {orientation === "horizontal" && !isLast && !disableConnector && (
             <div
               className={cn(
-                "absolute top-[12px] left-[50%] w-full h-[1.5px] bg-border -z-10 group-data-[orientation=horizontal]:block"
+                "absolute top-[20px] left-[50%] w-full h-[2px] bg-border -z-10 group-data-[orientation=horizontal]:block"
               )}
             >
               <div
                 className={cn(
-                  "h-full bg-primary transition-all duration-300 ease-linear"
+                  "h-full bg-brand-mute-green transition-all duration-300 ease-linear"
                 )}
                 style={{
                   width: isCompleted
@@ -200,25 +180,9 @@ function StepperItem({
             </div>
           )}
 
-          <div
-            className={cn(
-              "flex w-full rounded-md transition-colors duration-200",
-              orientation === "vertical"
-                ? isSubStepper
-                  ? "flex-row items-start gap-4"
-                  : "flex-row items-start gap-4"
-                : "flex-col items-center text-center",
-              !isSubStepper && disableConnector && "p-2",
-              isActive &&
-                !isSubStepper &&
-                disableConnector &&
-                "bg-accent border border-neutral-light-gray"
-            )}
-          >
-            {indicator}
+          {indicator}
 
-            <div className={cn("flex flex-col w-full pt-0.5")}>{content}</div>
-          </div>
+          <div className={cn("flex flex-col w-full pt-1.5")}>{content}</div>
         </div>
       </div>
     </StepperItemContext.Provider>
@@ -244,21 +208,21 @@ function StepperIndicator({
   isFirst,
   ...props
 }: StepperIndicatorProps) {
-  const { isSubStepper, disableConnector } = React.useContext(StepperContext);
+  const { isSubStepper } = React.useContext(StepperContext);
 
   if (isSubStepper) {
     let bgColor = "bg-neutral-light-gray";
     if (isActive) {
-      bgColor = "bg-[#13B76A] ring-4 ring-[#13B76A]";
+      bgColor = "bg-brand-green ring-4 ring-brand-mute-green";
     } else if (isCompleted) {
-      bgColor = "bg-[#13B76A] ring-2 ring-[#F0FDF4]";
+      bgColor = "bg-brand-mute-green ring-2 ring-brand-mute-green";
     }
 
     return (
       <div
         data-slot="stepper-indicator"
         className={cn(
-          "relative z-10 flex h-3 w-3 shrink-0 rounded-full mt-1 transition-colors",
+          "relative z-10 flex h-3 w-3 shrink-0 rounded-full mt-1.5 transition-colors",
           bgColor,
           className
         )}
@@ -271,30 +235,27 @@ function StepperIndicator({
     <div
       data-slot="stepper-indicator"
       className={cn(
-        "relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-medium transition-all duration-200",
-        !disableConnector && "bg-background",
-        isCompleted
-          ? "bg-[#13B76A] text-white"
-          : isActive
-            ? disableConnector
-              ? "text-primary"
-              : "border-2 border-card text-primary"
-            : disableConnector
-              ? "text-muted-foreground"
-              : "border-2 border-muted text-muted-foreground",
+        "relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 bg-background",
+        isActive
+          ? "border-2 border-card text-primary"
+          : isCompleted
+            ? "bg-brand-mute-green text-white"
+            : "border-2 border-muted text-muted-foreground",
         className
       )}
       {...props}
     >
-      {isActive && !disableConnector && (
+      {isActive && (
         <div
           className={cn(
-            "absolute -inset-[3px] rounded-full border-[2px] border-neutral-light-gray rotate-45 pointer-events-none",
-            !isFirst && !isLast && "border-b-[#13B76A] border-l-[#13B76A]"
+            "absolute -inset-[5px] rounded-full border-[3px] border-neutral-light-gray rotate-45 pointer-events-none",
+            !isFirst &&
+              !isLast &&
+              "border-b-brand-mute-green border-l-brand-mute-green"
           )}
         />
       )}
-      {isCompleted ? <Check className="h-3 w-3" /> : icon || step}
+      {isCompleted ? <Check className="h-5 w-5" /> : icon || step}
     </div>
   );
 }
@@ -330,7 +291,7 @@ function StepperTitle({
       data-slot="stepper-title"
       className={cn(
         "font-medium leading-none tracking-tight",
-        isSubStepper ? "text-xs" : "text-sm",
+        isSubStepper ? "text-sm" : "text-base",
         className
       )}
       {...props}
@@ -345,7 +306,7 @@ function StepperDescription({
   return (
     <p
       data-slot="stepper-description"
-      className={cn("text-xs text-muted-foreground mt-1", className)}
+      className={cn("text-sm text-muted-foreground mt-1", className)}
       {...props}
     />
   );
