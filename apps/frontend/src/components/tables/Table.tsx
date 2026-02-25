@@ -383,7 +383,7 @@ const Table = ({
                     });
                     window.location.reload();
                   } catch (error) {
-                    console.error(err);
+                    console.error(error);
                     Swal.fire("Error", "Failed to reset table.", "error");
                   }
                 }
@@ -447,7 +447,7 @@ const Table = ({
                       checked={selectAll && paginatedRows.length > 0}
                       onCheckedChange={handleSelectAllChange}
                       disabled={paginatedRows.length === 0}
-                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      className="h-4 w-4"
                       aria-label={selectAll ? "Deselect all" : "Select all"}
                     />
                   </th>

@@ -24,6 +24,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "cookie": "^1.0.2",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dom-to-image": "^2.6.0",
     "dotenv": "^16.4.7",
     "html2canvas": "^1.4.1",

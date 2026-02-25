@@ -74,7 +74,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
         const validTasks = tasks.filter((t: Task) => t.task && typeof t.task === "string" && t.task.trim() !== "");
         setTaskList(sortTasks(validTasks, prioritySortAsc));
       } catch (error) {
-        console.error("Failed to fetch tasks:", err);
+        console.error("Failed to fetch tasks:", error);
         setError("Failed to load tasks. Please try again later.");
       } finally {
         setIsLoading(false);
@@ -101,7 +101,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       );
       setEditingPriority(null);
     } catch (error) {
-      console.error("Failed to update priority:", err);
+      console.error("Failed to update priority:", error);
       setError("Failed to update task priority. Please try again.");
     }
   };
@@ -124,7 +124,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
         )
       );
     } catch (error) {
-      console.error("Failed to update task:", err);
+      console.error("Failed to update task:", error);
       setError("Failed to update task status. Please try again.");
     }
   };
@@ -148,7 +148,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       setNewTaskPriority("Medium");
       setError(null);
     } catch (error) {
-      console.error("Failed to create task:", err);
+      console.error("Failed to create task:", error);
       setError("Failed to create new task. Please try again.");
     }
   };
@@ -159,19 +159,19 @@ const TaskManager = ({ userId, projectType }: Props) => {
       setTaskList((prev) => prev.filter((task) => task.task_id !== taskId));
       setError(null);
     } catch (error) {
-      console.error("Failed to delete task:", err);
+      console.error("Failed to delete task:", error);
       setError("Failed to delete task. Please try again.");
     }
   };
 
-  const capitalizedProjectType =
+  const projectName =
     projectType.charAt(0).toUpperCase() + projectType.slice(1);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-80 flex flex-col">
       <div className="flex justify-between items-center gap-2 mb-4">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {capitalizedProjectType} Task List
+          {projectName} Task List
         </h2>
         <button
           onClick={() => {
@@ -182,11 +182,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
           className="text-sm bg-gray-500 dark:bg-gray-700 text-dark dark:text-light px-2 py-1 rounded hover:bg-gray-400 dark:hover:bg-dark flex items-center cursor-pointer"
         >
           Priority
-          <span className="ml-2">
-            <Icon
-              type={prioritySortAsc ? "expand_less" : "expand_more"}
-            />
-          </span>
+          <Icon
+            type={prioritySortAsc ? "expand_less" : "expand_more"}
+          />
         </button>
       </div>
 
@@ -308,7 +306,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
               className="w-12 h-12 text-gray-300 mb-3"
             />
             <p className="text-gray-300">
-              No tasks for {capitalizedProjectType}.
+              No tasks for {projectName}.
             </p>
             <p className="text-xs text-gray-300 mt-1">
               Add a task above to get started.
