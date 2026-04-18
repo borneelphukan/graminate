@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -39,20 +39,31 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && userId) {
       const stored = localStorage.getItem(`chatMessages_${userId}`);
-      setMessages(stored ? JSON.parse(stored) : []);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            setMessages(parsed);
+          }
+        } catch (e) {
+          console.error("Error parsing chat history:", e);
+        }
+      }
+      setIsInitialized(true);
     }
   }, [userId]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && userId && isInitialized) {
       localStorage.setItem(`chatMessages_${userId}`, JSON.stringify(messages));
     }
-  }, [messages, userId]);
+  }, [messages, userId, isInitialized]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,7 +129,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
 
   if (plan === "FREE") {
     return (
-      <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-2xl rounded-lg flex flex-col overflow-hidden items-center justify-center relative">
+      <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col overflow-hidden items-center justify-center relative">
         <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
           <h1 className="text-lg text-dark font-bold dark:text-light">
             Graminate AI
@@ -142,7 +153,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
   }
 
   return (
-    <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-2xl rounded-lg flex flex-col overflow-hidden">
+    <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col overflow-hidden">
       <header className="px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
         <h1 className="text-lg text-dark font-bold dark:text-light">
           Graminate AI
@@ -250,13 +261,16 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
             className="text-dark dark:text-light flex-1 border border-gray-300 dark:border-gray-600 bg-transparent rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-40"
             disabled={isLoading}
           />
-          <button
+          <Button
             onClick={() => handleSend()}
-            className="text-blue-500 disabled:text-gray-400 dark:disabled:text-gray-500"
             disabled={isLoading || input.trim() === ""}
-          >
-            <Icon type={"arrow_circle_up"} size="lg" />
-          </button>
+            isLoading={isLoading}
+            variant="ghost"
+            shape="circle"
+            size="icon"
+            icon={{ left: "send" }}
+            className="text-blue-500"
+          />
         </div>
       </footer>
     </div>

@@ -276,7 +276,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                         {hasSubItems && (
                           <Icon
                             type={"chevron_right"}
-                            className={`h-3 w-3 transition-transform duration-200 ${
+                            className={`h-4 w-4 transition-transform duration-200 ${
                               expandedSection === section ? "rotate-90" : ""
                             } ${
                               isActive
@@ -334,7 +334,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
 
       <div className="mt-auto p-3 border-t border-gray-700">
         <button
-          className={`w-full flex items-center p-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
+          className={`w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
             isCollapsed ? "justify-center" : "justify-end"
           }`}
           onClick={toggleCollapse}

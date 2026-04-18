@@ -908,7 +908,7 @@ const PoultryDetail = () => {
               {parsedUserId && (
                 <Button
                   label="All Flocks"
-                  icon={{ left: "arrow_back" }}
+                  icon={{ left: "chevron_left" }}
                   variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/poultry`)
@@ -921,7 +921,7 @@ const PoultryDetail = () => {
                 parsedFlockId && (
                   <Button
                     label="Health Records"
-                    variant="primary"
+                    variant="secondary"
                     onClick={handleManageHealthRecordsClick}
                   />
                 )}
@@ -934,7 +934,7 @@ const PoultryDetail = () => {
                 ) && (
                   <Button
                     label="Egg Records"
-                    variant="primary"
+                    variant="secondary"
                     onClick={handleLogEggCollection}
                   />
                 )}
@@ -944,7 +944,7 @@ const PoultryDetail = () => {
                 parsedFlockId && (
                   <Button
                     label="Feed Records"
-                    variant="primary"
+                    variant="secondary"
                     onClick={handleManageFeedRecordsClick}
                   />
                 )}

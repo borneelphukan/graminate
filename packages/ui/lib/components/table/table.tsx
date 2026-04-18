@@ -344,7 +344,7 @@ const Table = ({
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 dark:hover:bg-gray-700 divide-y divide-neutral-100 dark:divide-neutral-800/50">
+            <tbody className="bg-white dark:bg-gray-800">
               {sortedAndPaginatedRows.map((row, rowIndex) => (
                 <tr
                   key={`row-${rowIndex}-${(row as any[])[0]}`}
@@ -352,7 +352,7 @@ const Table = ({
                     selectedRows[rowIndex]
                       ? "bg-primary-50/40 dark:bg-primary-900/10"
                       : "hover:bg-neutral-50/80 dark:hover:bg-neutral-800/40"
-                  }`}
+                  } border-b border-gray-400 dark:border-gray-200`}
                   onClick={(e) => {
                     if (
                       (e.target as HTMLElement).tagName !== "INPUT" &&
@@ -476,8 +476,9 @@ const Table = ({
               Showing <span className="text-neutral-900 dark:text-neutral-100">{Math.min((currentPage - 1) * itemsPerPage + 1, totalRecordCount)}</span> to <span className="text-neutral-900 dark:text-neutral-100">{Math.min(currentPage * itemsPerPage, totalRecordCount)}</span> of <span className="text-neutral-900 dark:text-neutral-100">{totalRecordCount}</span>
             </p>
             <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800 hidden sm:block" />
-            <div className="relative">
+            <div className="relative z-[60]">
               <Dropdown
+                direction="up"
                 items={paginationItems}
                 selectedItem={`${itemsPerPage} per page`}
                 onSelect={handleSelect}
@@ -496,10 +497,10 @@ const Table = ({
                 if (currentPage > 1) setCurrentPage(currentPage - 1);
               }}
             />
-            <div className="flex items-center bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg px-3 py-1.5 shadow-sm">
-              <span className="text-[13px] font-bold text-primary-600 dark:text-primary-400">{currentPage}</span>
-              <span className="mx-1.5 text-neutral-300 dark:text-neutral-700 font-light">/</span>
-              <span className="text-[13px] font-medium text-neutral-500 dark:text-neutral-500">{Math.ceil(totalRecordCount / itemsPerPage) || 1}</span>
+            <div className="flex items-center rounded-lg px-3 py-1.5 shadow-sm">
+              <span className="text-[13px] text-primary-600 dark:text-primary-400">{currentPage}</span>
+              <span className="mx-1.5 text-neutral-300 dark:text-neutral-700">/</span>
+              <span className="text-[13px] text-neutral-500 dark:text-neutral-500">{Math.ceil(totalRecordCount / itemsPerPage) || 1}</span>
             </div>
             <Button
               label="Next"

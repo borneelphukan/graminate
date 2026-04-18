@@ -303,9 +303,9 @@ const Warehouse = () => {
         <div className="mb-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-4 md:mb-0">
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              <h1 className="text-2xl font-bold">
                 Inventory for{" "}
-                <span className="text-primary">{dynamicWarehouseName}</span>
+                <span>{dynamicWarehouseName}</span>
               </h1>
               <p className="text-sm text-gray-300 mt-1">
                 {loadingInventory

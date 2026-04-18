@@ -16,16 +16,19 @@ const Sidebar = ({ adminId, isOpen }: SidebarProps) => {
       label: "Dashboard",
       icon: "home",
       path: `/platform/${adminId}`,
+      subItems: [],
     },
     {
       label: "Users",
       icon: "group",
       path: `/platform/${adminId}/users`,
+      subItems: [],
     },
     {
       label: "Documents",
       icon: "description",
       path: `/platform/${adminId}/documents`,
+      subItems: [],
     },
   ];
 
@@ -49,6 +52,8 @@ const Sidebar = ({ adminId, isOpen }: SidebarProps) => {
       <nav className="flex-1 overflow-y-auto py-4 space-y-1">
         {navItems.map((item) => {
           const isActive = router.pathname === item.path;
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+
           return (
             <div key={item.label} className="relative px-3">
               <div
@@ -67,9 +72,17 @@ const Sidebar = ({ adminId, isOpen }: SidebarProps) => {
                   className={`h-5 w-5 ${isCollapsed ? "" : "mr-3"}`}
                 />
                 {!isCollapsed && (
-                  <span className="flex-grow font-medium text-sm truncate">
-                    {item.label}
-                  </span>
+                  <>
+                    <span className="flex-grow font-medium text-sm truncate">
+                      {item.label}
+                    </span>
+                    {hasSubItems && (
+                      <Icon
+                        type="chevron_right"
+                        className="h-4 w-4 text-gray-500 group-hover:text-gray-300 transition-transform duration-200"
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -90,7 +103,7 @@ const Sidebar = ({ adminId, isOpen }: SidebarProps) => {
         </button>
 
         <button
-          className={`w-full flex items-center p-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
+          className={`w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
             isCollapsed ? "justify-center" : "justify-end"
           }`}
           onClick={toggleCollapse}
