@@ -249,7 +249,7 @@ const Navbar = ({
                           </p>
                           <p className="text-sm text-gray-300">{user.email}</p>
                           {user.business && (
-                            <p className="text-sm text-gray-100 dark:text-white">
+                            <p className="text-sm">
                               {user.business}
                             </p>
                           )}

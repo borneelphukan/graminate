@@ -219,8 +219,8 @@ const Table = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border border-neutral-200/60 dark:border-neutral-800/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden transition-all">
-      <div className="px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden transition-all">
+      <div className="px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
           <div className="w-full sm:w-72">
             <SearchBar
@@ -233,12 +233,13 @@ const Table = ({
             />
           </div>
           {selectedRowCount > 0 && (
-            <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/50 animate-in fade-in slide-in-from-left-2 duration-300">
-              <span className="text-primary-700 dark:text-primary-300 text-xs font-semibold uppercase tracking-wider">
+            <div className="flex items-center gap-3 px-4 py-2 animate-in fade-in slide-in-from-left-2 duration-300 flex-shrink-0">
+              <span className="text-primary-700 dark:text-primary-300 whitespace-nowrap leading-none">
                 {selectedRowCount} Selected
               </span>
+              <div className="w-px h-3 bg-primary-200 dark:bg-primary-800 flex-shrink-0" />
               <button
-                className="text-red-600 dark:text-red-400 text-xs font-bold hover:text-red-700 dark:hover:text-red-300 transition-colors uppercase tracking-wider underline underline-offset-2"
+                className="text-red-600 dark:text-red-400 text-[11px] font-black hover:text-red-700 dark:hover:text-red-300 transition-colors whitespace-nowrap leading-none"
                 onClick={(event) => {
                   event.preventDefault();
                   handleDeleteSelected();
@@ -271,7 +272,7 @@ const Table = ({
                 onClick={() => setShowExportDropdown(!showExportDropdown)}
               />
               {showExportDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-700 border dark:border-gray-200 rounded-xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
                   <button
                     className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 transition-colors"
                     onClick={() => {
@@ -283,7 +284,7 @@ const Table = ({
                     Export as PDF
                   </button>
                   <button
-                    className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 border-t border-neutral-100 dark:border-neutral-800/50 transition-colors"
+                    className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 border-t border-gray-400 dark:border-gray-600 transition-colors"
                     onClick={() => {
                       exportTableData("xlsx");
                       setShowExportDropdown(false);
@@ -307,7 +308,7 @@ const Table = ({
         />
       ) : sortedAndPaginatedRows.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-gray-900">
+          <table className="min-w-full divide-y divide-neutral-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
             <thead className="bg-neutral-50/50 dark:bg-neutral-800/30">
               <tr>
                 {!hideChecks && (
@@ -328,13 +329,13 @@ const Table = ({
                 {data.columns.map((column, index) => column !== "#" && (
                   <th
                     key={index}
-                    className="px-6 py-4 text-left text-[11px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest cursor-pointer group transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    className="px-6 py-4 text-left text-[11px] font-bold text-neutral-500 dark:text-neutral-400 cursor-pointer group transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                     onClick={() => toggleSort(index)}
                   >
                     <div className="flex items-center gap-1.5 justify-start">
                       <span>{column}</span>
                       <Icon 
-                        type={sortColumn === index ? (sortOrder === "asc" ? "arrow_upward" : "arrow_downward") : "unfold_more"} 
+                        type={sortColumn === index ? (sortOrder === "asc" ? "arrow_drop_up" : "arrow_drop_down") : "unfold_more"} 
                         size={14} 
                         className={`transition-opacity duration-200 ${sortColumn === index ? "opacity-100 text-primary-500" : "opacity-0 group-hover:opacity-40"}`}
                       />
@@ -343,7 +344,7 @@ const Table = ({
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-neutral-100 dark:divide-neutral-800/50">
+            <tbody className="bg-white dark:bg-gray-800 dark:hover:bg-gray-700 divide-y divide-neutral-100 dark:divide-neutral-800/50">
               {sortedAndPaginatedRows.map((row, rowIndex) => (
                 <tr
                   key={`row-${rowIndex}-${(row as any[])[0]}`}

@@ -263,7 +263,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
                     <td className="py-2 px-2 align-middle text-center">
                       <Button
                         label="Delete"
-                        variant="danger"
+                        variant="destructive"
                         onClick={() => deleteTask(task.task_id)}
                       />
                     </td>

@@ -27,8 +27,8 @@ const SearchBar = ({ value, placeholder = "", mode, onChange, className }: Props
         type="text"
         value={value}
         placeholder={placeholder}
-        className="w-full px-4 py-2 border border-neutral-200 dark:border-neutral-800 focus:border-brand-mute-green 
-                   rounded-lg dark:bg-neutral-900 focus:outline-none 
+        className="w-full px-4 py-2 border border-neutral-200 dark:border-gray-200 focus:border-brand-mute-green 
+                   rounded-lg dark:bg-gray-700 focus:outline-none 
                    text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-600 shadow-sm transition-all"
         onChange={onChange}
       />
