@@ -6,7 +6,7 @@ import TicketModal from "@/components/modals/crm/TicketModal";
 
 import SearchBar from "@/components/ui/SearchBar";
 import PlatformLayout from "@/layout/PlatformLayout";
-import TicketView from "@/components/ui/Switch/TicketView";
+import SegmentedControl from "@/components/ui/SegmentedControl";
 
 import {
   DndContext,
@@ -33,7 +33,7 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import TaskModal from "@/components/modals/crm/TaskModal";
 
 const formatDeadlineForInput = (
@@ -51,7 +51,7 @@ const formatDeadlineForInput = (
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
   } catch (error) {
-    console.error(`Error formatting date string: ${deadlineString}`, e);
+    console.error(`Error formatting date string: ${deadlineString}`, error);
     return "";
   }
 };
@@ -240,7 +240,7 @@ const Tasks = () => {
       setNewColumnTitle("");
       setIsAddingColumn(false);
     } catch (error) {
-      console.error("Failed to add column:", err);
+      console.error("Failed to add column:", error);
       Swal.fire("Error", "Failed to add column", "error");
     }
   };
@@ -755,14 +755,15 @@ const Tasks = () => {
                     onClick={() => setSelectedFilterLabels([])}
                   />
                 )}
-                <DropdownSmall
+                <Dropdown
                   items={["None", "Low", "Medium", "High"]}
                   direction="down"
                   placeholder="Priority"
-                  selected={selectedPriority}
+                  selectedItem={selectedPriority}
                   onSelect={setSelectedPriority}
+                  variant="small"
                 />
-                <TicketView isListView={isListView} toggleView={toggleView} />
+                <SegmentedControl isListView={isListView} toggleView={toggleView} />
               </div>
             </div>
           </div>

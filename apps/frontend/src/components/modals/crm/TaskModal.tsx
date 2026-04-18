@@ -6,7 +6,7 @@ import CustomTextArea from "@/components/ui/CustomTextArea";
 import Swal from "sweetalert2";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 
 
 type TaskModalProps = {
@@ -371,7 +371,7 @@ const TaskModal = ({
                 Details
               </h3>
               <div className="space-y-5">
-                <DropdownLarge
+                <Dropdown
                   key={`status-${taskData.id}`}
                   items={statusOptions}
                   selectedItem={taskData.status}
@@ -380,7 +380,7 @@ const TaskModal = ({
                   width="full"
                 />
 
-                <DropdownLarge
+                <Dropdown
                   key={`priority-${taskData.id}`}
                   items={priorityOptions}
                   selectedItem={taskData.priority}
@@ -389,7 +389,7 @@ const TaskModal = ({
                   width="full"
                 />
 
-                <DropdownLarge
+                <Dropdown
                   key={`deadline-${taskData.id}`}
                   items={[]}
                   selectedItem={taskData.deadline || "Set deadline"}

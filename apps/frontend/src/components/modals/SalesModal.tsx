@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "../ui/Dropdown/DropdownSmall";
+import Dropdown from "../ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
@@ -278,14 +278,14 @@ const SalesModal = ({
                 </div>
               </div>
             ) : (
-              <DropdownSmall
+              <Dropdown
                 label="Sale Occupation"
                 items={
                   subTypes.length > 0
                     ? subTypes
                     : ["N/A - No occupations found"]
                 }
-                selected={occupation}
+                selectedItem={occupation}
                 onSelect={(val) =>
                   setOccupation(val === "N/A - No occupations found" ? "" : val)
                 }

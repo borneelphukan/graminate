@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 
 const CATTLE_TYPES_OPTIONS = ["Cows", "Buffalo", "Goat"];
 
@@ -242,24 +242,24 @@ const CattleForm = ({
                 type={cattleErrors.number_of_animals ? "error" : ""}
                 errorMessage={cattleErrors.number_of_animals}
               />
-              <DropdownLarge
+              <Dropdown
                 label="Cattle Type (Animal)"
                 items={CATTLE_TYPES_OPTIONS}
                 selectedItem={cattleData.cattle_type}
                 onSelect={(val: string) => {
                   setCattleData({ ...cattleData, cattle_type: val });
                 }}
-                type="form"
+                
                 width="full"
               />
-              <DropdownLarge
+              <Dropdown
                 label="Purpose"
                 items={CATTLE_PURPOSE_OPTIONS}
                 selectedItem={cattleData.purpose}
                 onSelect={(val: string) => {
                   setCattleData({ ...cattleData, purpose: val });
                 }}
-                type="form"
+                
                 width="full"
               />
 

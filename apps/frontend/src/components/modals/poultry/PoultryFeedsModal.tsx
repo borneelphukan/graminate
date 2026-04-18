@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import { UNITS } from "@/constants/options";
 
 type FeedRecord = {
@@ -296,10 +296,10 @@ const PoultryFeedsModal = ({
             </div>
           ) : (
             <div>
-              <DropdownSmall
+              <Dropdown
                 label="Feed Given"
                 items={dropdownItems}
-                selected={feedGiven}
+                selectedItem={feedGiven}
                 onSelect={handleFeedGivenSelect}
                 placeholder="Select a feed"
               />
@@ -321,10 +321,10 @@ const PoultryFeedsModal = ({
               width="large"
             />
             <div>
-              <DropdownSmall
+              <Dropdown
                 label="Unit"
                 items={UNITS}
-                selected={units}
+                selectedItem={units}
                 onSelect={handleUnitsSelect}
                 placeholder="Select unit"
               />

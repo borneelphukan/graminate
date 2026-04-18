@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "../ui/Dropdown/DropdownSmall";
+import Dropdown from "../ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import InfoModal from "./InfoModal";
@@ -232,7 +232,7 @@ const ExpenseModal = ({
                   </div>
                 </div>
               ) : (
-                <DropdownSmall
+                <Dropdown
                   direction="up"
                   label="Related Occupation"
                   items={
@@ -240,7 +240,7 @@ const ExpenseModal = ({
                       ? subTypes
                       : ["N/A - No occupations found"]
                   }
-                  selected={occupation}
+                  selectedItem={occupation}
                   onSelect={(val) =>
                     setOccupation(
                       val === "N/A - No occupations found" ? "" : val
@@ -250,11 +250,11 @@ const ExpenseModal = ({
                 />
               )}
 
-              <DropdownSmall
+              <Dropdown
                 direction="up"
                 label="Expense Category"
                 items={EXPENSE_CATEGORIES}
-                selected={category}
+                selectedItem={category}
                 onSelect={(val) => setCategory(val)}
                 placeholder="Select a category"
               />

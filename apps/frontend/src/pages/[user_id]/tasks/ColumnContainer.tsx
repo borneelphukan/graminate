@@ -6,7 +6,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Button from "@/components/ui/Button";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import TextArea from "@/components/ui/TextArea";
 import SortableItem from "./SortableItem";
 import TaskCard from "./TaskCard";
@@ -169,11 +169,11 @@ const ColumnContainer = ({
               </div>
 
               <div className="mt-3 flex flex-col mx-auto gap-2">
-                <DropdownSmall
+                <Dropdown
                   items={["Low", "Medium", "High"]}
                   direction="down"
                   placeholder="Select Priority"
-                  selected={newTaskPriority}
+                  selectedItem={newTaskPriority}
                   onSelect={setNewTaskPriority}
                 />
 

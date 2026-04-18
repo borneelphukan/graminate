@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -361,11 +361,11 @@ const LabourDetails = () => {
                   onChange={(val) => setDateOfBirth(val)}
                   width="large"
                 />
-                <DropdownLarge
+                <Dropdown
                   items={GENDER}
                   selectedItem={gender}
                   onSelect={(value: string) => setGender(value)}
-                  type="form"
+                  
                   label="Gender"
                   width="full"
                 />
@@ -435,12 +435,12 @@ const LabourDetails = () => {
                   onChange={setBaseSalary}
                   width="large"
                 />
-                <DropdownLarge
+                <Dropdown
                   label="Payment Frequency"
                   items={["Monthly", "Weekly", "Bi-weekly", "Daily"]}
                   selectedItem={paymentFrequency}
                   onSelect={(value) => setPaymentFrequency(value)}
-                  type="form"
+                  
                   width="full"
                 />
                 <TextField
@@ -512,11 +512,11 @@ const LabourDetails = () => {
                   width="large"
                 />
 
-                <DropdownLarge
+                <Dropdown
                   items={YESNO}
                   selectedItem={disabilityStatus}
                   onSelect={(value: string) => setDisabilityStatus(value)}
-                  type="form"
+                  
                   label="Disability Status"
                   width="full"
                 />
@@ -535,11 +535,11 @@ const LabourDetails = () => {
                   width="large"
                 />
 
-                <DropdownLarge
+                <Dropdown
                   items={YESNO}
                   selectedItem={pmKisan}
                   onSelect={(value: string) => setPmKisan(value)}
-                  type="form"
+                  
                   label="PM-KISAN"
                   width="full"
                 />

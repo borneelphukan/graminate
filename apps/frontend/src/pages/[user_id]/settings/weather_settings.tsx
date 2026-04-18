@@ -4,7 +4,7 @@ import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import Loader from "@/components/ui/Loader";
@@ -160,16 +160,17 @@ const WeatherSettings = () => {
                         }
                         width="large"
                       />
-                      <DropdownSmall
+                      <Dropdown
                         label={t("scale" as TranslationKey)}
                         items={["Celsius", "Fahrenheit"]}
-                        selected={weatherSettings.scale}
+                        selectedItem={weatherSettings.scale}
                         onSelect={(val) =>
                           setWeatherSettings((prev) => ({
                             ...prev,
                             scale: val as TemperatureScaleOption,
                           }))
                         }
+                        variant="small"
                       />
                         <Checkbox
                           id="ai-suggestions"

@@ -1,26 +1,35 @@
+import { Icon } from "@graminate/ui";
 import { useState, useRef, useEffect } from "react";
 
-type Props = {
+type DropdownProps = {
   items: string[] | Record<string, string[]>;
-  selected: string;
+  selectedItem: string;
   onSelect: (item: string) => void;
   direction?: "up" | "down";
   label?: string | null;
   placeholder?: string;
   disabledItems?: string[];
   isDisabled?: boolean;
+  variant?: "small" | "large";
+  width?: "full" | "half" | "auto";
+  isDatePicker?: boolean;
+  className?: string;
 };
 
-const DropdownSmall = ({
+const Dropdown = ({
   items,
-  selected,
+  selectedItem,
   onSelect,
   direction = "down",
   label = null,
   placeholder = "Select an option",
   disabledItems = [],
   isDisabled = false,
-}: Props) => {
+  variant = "large",
+  width = "auto",
+  isDatePicker = false,
+  className = "",
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const dropdownId = `dropdown-${Math.random().toString(36).substring(2, 15)}`;
@@ -59,11 +68,24 @@ const DropdownSmall = ({
     };
   }, []);
 
-  const buttonTextClasses = isDisabled
-    ? "text-gray-300 dark:text-gray-500"
-    : selected
-    ? "text-dark dark:text-light"
-    : "text-gray-300 dark:text-light";
+  if (isDatePicker) {
+    return (
+      <div className={`w-full ${className}`}>
+        {label && (
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {label}
+          </label>
+        )}
+        <input
+          type="date"
+          value={selectedItem === "Set deadline" ? "" : selectedItem}
+          onChange={(e) => onSelect(e.target.value)}
+          disabled={isDisabled}
+          className="w-full p-2 border border-gray-400 dark:border-gray-200 rounded-md dark:bg-gray-700 text-dark dark:text-light disabled:opacity-50 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-green-200"
+        />
+      </div>
+    );
+  }
 
   const renderItems = () => {
     if (Array.isArray(items)) {
@@ -72,10 +94,10 @@ const DropdownSmall = ({
           key={item}
           role="option"
           tabIndex={0}
-          className={`px-4 py-2 text-sm ${
+          className={`px-4 py-2 text-sm transition-colors duration-150 ${
             disabledItems.includes(item)
-              ? "font-semibold text-dark dark:text-gray-300 bg-gray-500 dark:bg-gray-800 cursor-default"
-              : "text-dark dark:text-gray-300 hover:bg-gray-500 dark:hover:bg-gray-600 cursor-pointer"
+              ? "font-semibold text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 cursor-default"
+              : "text-dark dark:bg-gray-700 dark:text-light hover:bg-gray-500 dark:hover:bg-gray-600 cursor-pointer"
           }`}
           onClick={() => handleSelect(item)}
           onKeyDown={(event) => {
@@ -84,7 +106,7 @@ const DropdownSmall = ({
               handleSelect(item);
             }
           }}
-          aria-selected={selected === item && !disabledItems.includes(item)}
+          aria-selectedItem={selectedItem === item && !disabledItems.includes(item)}
           aria-disabled={disabledItems.includes(item)}
         >
           {item}
@@ -93,15 +115,15 @@ const DropdownSmall = ({
     } else {
       return Object.entries(items).map(([groupName, groupItems]) => (
         <div key={groupName}>
-          <li className="px-4 py-2 text-sm font-medium text-dark dark:text-gray-300 bg-light dark:bg-gray-800">
-            --- {groupName} ---
+          <li className="px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50">
+            {groupName}
           </li>
           {groupItems.map((item) => (
             <li
               key={item}
               role="option"
               tabIndex={0}
-              className="px-6 py-2 text-sm text-dark dark:text-gray-300 hover:bg-gray-500 dark:hover:bg-gray-600 cursor-pointer"
+              className="px-6 py-2 text-sm text-dark dark:text-gray-200 hover:bg-gray-500 dark:hover:bg-gray-600 cursor-pointer transition-colors duration-150"
               onClick={() => handleSelect(item)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -109,7 +131,7 @@ const DropdownSmall = ({
                   handleSelect(item);
                 }
               }}
-              aria-selected={selected === item}
+              aria-selectedItem={selectedItem === item}
             >
               {item}
             </li>
@@ -119,12 +141,17 @@ const DropdownSmall = ({
     }
   };
 
+  const widthClass = width === "full" ? "w-full" : width === "half" ? "w-1/2" : "w-auto";
+  const containerClasses = `${variant === "small" ? "md:w-auto" : ""} ${widthClass} ${className}`;
+
   return (
-    <div className="relative w-full md:w-auto" ref={dropdownRef}>
+    <div className={`relative ${containerClasses}`} ref={dropdownRef}>
       {label && (
         <label
           htmlFor={dropdownId}
-          className="block mb-1 text-sm font-medium text-dark dark:text-gray-300"
+          className={`block mb-1 text-sm font-medium ${
+            variant === "small" ? "text-dark dark:text-gray-300" : "text-gray-200 dark:text-gray-300"
+          }`}
         >
           {label}
         </label>
@@ -133,33 +160,27 @@ const DropdownSmall = ({
       <button
         id={dropdownId}
         type="button"
-        className={`w-full flex items-center justify-between p-2.5 text-sm rounded-md border ${
+        className={`w-full flex items-center justify-between transition-all duration-200 border ${
+          variant === "small" ? "p-2.5 text-sm" : "px-4 py-2 text-sm"
+        } rounded-md ${
           isDisabled
-            ? "bg-gray-500 dark:bg-gray-700 border-gray-400 dark:border-gray-700 cursor-not-allowed"
-            : "border-gray-400 dark:border-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-green-200"
+            ? "bg-white dark:bg-gray-200 border-gray-400 dark:border-gray-700 cursor-not-allowed"
+            : "dark:bg-gray-700 border-gray-400 dark:border-gray-200 hover:border-gray-500 dark:hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-green-200"
         }`}
         onClick={toggleDropdown}
         disabled={isDisabled}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className={`truncate ${buttonTextClasses}`}>
-          {selected || placeholder}
+        <span className={`truncate ${!selectedItem ? "text-dark dark:text-light" : "text-dark dark:text-light"}`}>
+          {selectedItem || placeholder}
         </span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className={`w-5 h-5 ml-2 text-gray-300 dark:text-gray-500 transform transition-transform duration-200 ${
+        <Icon
+          type={variant === "small" ? "expand_more" : "expand_more"}
+          className={`size-5 ml-2 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
-          }`}
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-            clipRule="evenodd"
-          />
-        </svg>
+          } ${variant === "small" ? "text-gray-400 dark:text-gray-500" : "text-gray-300"}`}
+        />
       </button>
 
       {isOpen && !isDisabled && (
@@ -168,9 +189,9 @@ const DropdownSmall = ({
             direction === "up" ? "bottom-full mb-1" : "top-full mt-1"
           } left-0 w-full 
                      bg-white dark:bg-gray-700 
-                     border border-gray-500 dark:border-gray-600 
-                     rounded-md shadow-lg 
-                     max-h-60 overflow-y-auto z-10`}
+                     border border-gray-400 dark:border-gray-200 
+                     rounded-md shadow-xl 
+                     max-h-60 overflow-y-auto z-50`}
           role="listbox"
           aria-labelledby={dropdownId}
         >
@@ -181,4 +202,4 @@ const DropdownSmall = ({
   );
 };
 
-export default DropdownSmall;
+export default Dropdown;

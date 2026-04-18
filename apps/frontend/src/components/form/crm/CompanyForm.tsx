@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
@@ -168,13 +168,13 @@ const CompanyForm = ({ userId, onClose }: CompanyFormProps) => {
         type={companyErrors.phoneNumber ? "error" : ""}
         errorMessage={companyErrors.phoneNumber}
       />
-      <DropdownLarge
+      <Dropdown
         items={companyType}
         selectedItem={companyValues.type}
         onSelect={(value: string) =>
           setCompanyValues({ ...companyValues, type: value })
         }
-        type="form"
+        
         label="Type"
         width="full"
       />

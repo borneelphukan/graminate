@@ -27,7 +27,7 @@ import {
   addDays as addDaysDateFns,
 } from "date-fns";
 import Loader from "@/components/ui/Loader";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
 
@@ -449,10 +449,10 @@ const PoultryEggCard = ({
               style="ghost"
               isDisabled={navigationStates.isPrevDisabled || loading}
             />
-            <DropdownSmall
+            <Dropdown
               direction="up"
               items={TIME_RANGE_OPTIONS}
-              selected={selectedTimeRange}
+              selectedItem={selectedTimeRange}
               onSelect={handleTimeRangeSelect}
             />
             <Button

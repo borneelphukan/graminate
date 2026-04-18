@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
@@ -246,13 +246,13 @@ const WarehouseForm = ({
                 errorMessage={warehouseErrors.name}
               />
 
-              <DropdownLarge
+              <Dropdown
                 items={WAREHOUSE_TYPES}
                 selectedItem={warehouseData.type}
                 onSelect={(value: string) =>
                   setWarehouseData({ ...warehouseData, type: value })
                 }
-                type="form"
+                
                 label="Warehouse Type"
                 width="full"
               />

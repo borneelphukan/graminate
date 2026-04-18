@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { UNITS } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
@@ -374,14 +374,14 @@ const InventoryForm = ({
                 )}
               </div>
 
-              <DropdownLarge
+              <Dropdown
                 items={UNITS}
                 selectedItem={inventoryItem.units}
                 onSelect={(value: string) => {
                   setInventoryItem({ ...inventoryItem, units: value });
                   setInventoryErrors({ ...inventoryErrors, units: undefined });
                 }}
-                type="form"
+                
                 label="Units"
                 width="full"
               />

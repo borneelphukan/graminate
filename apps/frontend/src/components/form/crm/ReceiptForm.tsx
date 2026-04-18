@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 import Loader from "@/components/ui/Loader";
@@ -408,10 +408,10 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
               </div>
             </div>
           ) : (
-            <DropdownSmall
+            <Dropdown
               label="Link to Sale (Optional)"
               items={salesDropdownItems.map((item) => item.label)}
-              selected={selectedSaleForDisplay || "None (No Linked Sale)"}
+              selectedItem={selectedSaleForDisplay || "None (No Linked Sale)"}
               onSelect={(selectedLabel) => {
                 const selectedItem = salesDropdownItems.find(
                   (item) => item.label === selectedLabel

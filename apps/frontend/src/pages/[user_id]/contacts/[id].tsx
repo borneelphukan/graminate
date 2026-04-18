@@ -1,6 +1,6 @@
 import { Icon } from "@graminate/ui";
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
@@ -506,11 +506,11 @@ const ContactDetails = () => {
                   value={formData.phoneNumber}
                   onChange={(val) => handleInputChange("phoneNumber", val)}
                 />
-                <DropdownLarge
+                <Dropdown
                   items={CONTACT_TYPES}
                   selectedItem={formData.type}
                   onSelect={(value: string) => handleInputChange("type", value)}
-                  type="form"
+                  
                   label="Type"
                   width="full"
                 />

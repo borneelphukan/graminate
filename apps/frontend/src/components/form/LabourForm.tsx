@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { GENDER } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
@@ -261,13 +261,13 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
                   }
                 />
               </div>
-              <DropdownLarge
+              <Dropdown
                 items={GENDER}
                 selectedItem={labourValues.gender}
                 onSelect={(value: string) =>
                   setLabourValues({ ...labourValues, gender: value })
                 }
-                type="form"
+                
                 label="Gender"
                 width="full"
               />
@@ -375,7 +375,7 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
                     type={labourErrors.baseSalary ? "error" : ""}
                     errorMessage={labourErrors.baseSalary}
                   />
-                  <DropdownLarge
+                  <Dropdown
                     items={["Monthly", "Weekly", "Bi-weekly", "Daily"]}
                     selectedItem={labourValues.paymentFrequency}
                     onSelect={(value: string) =>
@@ -384,7 +384,7 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
                         paymentFrequency: value,
                       })
                     }
-                    type="form"
+                    
                     label="Payment Frequency"
                     width="full"
                   />

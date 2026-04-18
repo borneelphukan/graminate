@@ -7,8 +7,7 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { POULTRY_TYPES, HOUSING_TYPES } from "@/constants/options";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import TextArea from "@/components/ui/TextArea";
 
 type FlockData = {
@@ -277,7 +276,7 @@ const FlockForm = ({
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l dark:border-gray-200 border-gray-400 overflow-y-auto"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
           transition: "transform 300ms ease-out",
@@ -315,7 +314,7 @@ const FlockForm = ({
                 type={flockErrors.flock_name ? "error" : ""}
                 errorMessage={flockErrors.flock_name}
               />
-              <DropdownLarge
+              <Dropdown
                 label="Flock Type"
                 items={POULTRY_TYPES}
                 selectedItem={flockData.flock_type}
@@ -323,7 +322,7 @@ const FlockForm = ({
                   setFlockData({ ...flockData, flock_type: val, breed: "" });
                   setFlockErrors({ ...flockErrors, flock_type: undefined });
                 }}
-                type="form"
+                
                 width="full"
               />
               {flockErrors.flock_type && (
@@ -347,10 +346,10 @@ const FlockForm = ({
                 errorMessage={flockErrors.quantity}
               />
 
-              <DropdownSmall
+              <Dropdown
                 label="Breed"
                 items={filteredBreedItems}
-                selected={flockData.breed}
+                selectedItem={flockData.breed}
                 onSelect={(val: string) => {
                   setFlockData({ ...flockData, breed: val });
                 }}
@@ -366,14 +365,14 @@ const FlockForm = ({
                   setFlockData({ ...flockData, source: val });
                 }}
               />
-              <DropdownLarge
+              <Dropdown
                 label="Housing Type (Optional)"
                 items={HOUSING_TYPES.map((h) => h.name)}
                 selectedItem={flockData.housing_type}
                 onSelect={(val: string) => {
                   setFlockData({ ...flockData, housing_type: val });
                 }}
-                type="form"
+                
                 width="full"
               />
               <TextArea

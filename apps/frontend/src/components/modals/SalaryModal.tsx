@@ -2,7 +2,7 @@ import { useState } from "react";
 import { showToast, toastMessage } from "@/stores/toast";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import { useSalaryModalPrefill } from "@/hooks/modals";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -190,12 +190,12 @@ const SalaryModal = ({
             />
           </div>
 
-          <DropdownLarge
+          <Dropdown
             items={["Pending", "Paid"]}
             selectedItem={paymentStatus}
             onSelect={setPaymentStatus}
             label="Payment Status"
-            type="form"
+            
             width="full"
           />
 

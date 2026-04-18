@@ -222,7 +222,7 @@ const PoultryDetail = () => {
   const [loadingAllFeedRecords, setLoadingAllFeedRecords] = useState(true);
   const [feedInventoryDays, setFeedInventoryDays] = useState<number>(0);
   const [avgDailyConsumptionKg, setAvgDailyConsumptionKg] = useState<number>(0);
-  const avgDailyConsumptionDisplay = useState<string>("N/A");
+  const [avgDailyConsumptionDisplay, setAvgDailyConsumptionDisplay] = useState<string>("N/A");
   const [timesFedToday, setTimesFedToday] = useState<number>(0);
   const [targetFeedingsPerDay] = useState<number>(7);
   const [loadingCalculatedFeedData, setLoadingCalculatedFeedData] =

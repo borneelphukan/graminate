@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "../TextField";
-import DropdownSmall from "../Dropdown/DropdownSmall";
+import Dropdown from "../Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../Loader";
 import Button from "../Button";
@@ -151,11 +151,11 @@ const AddTaskView = ({
         />
 
         <div className="mb-4">
-          <DropdownSmall
+          <Dropdown
             label="Priority"
             placeholder="Select priority"
             items={["Low", "Medium", "High"]}
-            selected={priority}
+            selectedItem={priority}
             onSelect={(item) => setPriority(item as "Low" | "Medium" | "High")}
           />
         </div>

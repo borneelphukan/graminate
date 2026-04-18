@@ -1,12 +1,12 @@
 import { Icon } from "@graminate/ui";
 import React from "react";
 
-type TicketViewProps = {
+type SegmentedControlProps = {
   isListView: boolean;
   toggleView: (view: boolean) => void;
 };
 
-const TicketView = ({ isListView, toggleView }: TicketViewProps) => {
+const SegmentedControl = ({ isListView, toggleView }: SegmentedControlProps) => {
   return (
     <div className="flex items-center space-x-2 hover:bg-gray-400 dark:hover:bg-gray-800 rounded-md">
       {/* Kanban View Icon */}
@@ -51,4 +51,4 @@ const TicketView = ({ isListView, toggleView }: TicketViewProps) => {
   );
 };
 
-export default TicketView;
+export default SegmentedControl;

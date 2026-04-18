@@ -6,7 +6,7 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import TextArea from "@/components/ui/TextArea";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 
 export type HiveData = {
   hive_id?: number;
@@ -268,17 +268,17 @@ const HiveForm = ({
               type={errors.hive_name ? "error" : ""}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <DropdownSmall
+              <Dropdown
                 label="Hive Type"
                 items={HIVE_TYPES_STRUCTURED}
-                selected={hiveData.hive_type}
+                selectedItem={hiveData.hive_type}
                 onSelect={(val: string) => handleInputChange("hive_type", val)}
                 placeholder="Select a Hive Type"
               />
-              <DropdownSmall
+              <Dropdown
                 label="Bee Species"
                 items={beeSpeciesOptions}
-                selected={hiveData.bee_species}
+                selectedItem={hiveData.bee_species}
                 onSelect={(val: string) =>
                   handleInputChange("bee_species", val)
                 }
@@ -303,20 +303,20 @@ const HiveForm = ({
                 value={hiveData.honey_capacity}
                 onChange={(val) => handleInputChange("honey_capacity", val)}
               />
-              <DropdownSmall
+              <Dropdown
                 label="Unit"
                 items={unitOptions}
-                selected={hiveData.unit}
+                selectedItem={hiveData.unit}
                 onSelect={(val: string) => handleInputChange("unit", val)}
                 placeholder="Select Unit"
                 isDisabled={!hiveData.honey_capacity || !hiveData.hive_type}
               />
             </div>
 
-            <DropdownSmall
+            <Dropdown
               label="Ventilation Status"
               items={ventilationOptions}
-              selected={hiveData.ventilation_status}
+              selectedItem={hiveData.ventilation_status}
               onSelect={(val: string) =>
                 handleInputChange("ventilation_status", val)
               }

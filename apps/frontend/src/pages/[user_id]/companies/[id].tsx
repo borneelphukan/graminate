@@ -1,6 +1,6 @@
 import { Icon } from "@graminate/ui";
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -473,21 +473,21 @@ const CompanyDetails = () => {
                   value={formData.website}
                   onChange={(val) => handleInputChange("website", val)}
                 />
-                <DropdownLarge
+                <Dropdown
                   items={INDUSTRY_OPTIONS}
                   selectedItem={formData.industry}
                   onSelect={(value: string) =>
                     handleInputChange("industry", value)
                   }
-                  type="form"
+                  
                   label="Industry"
                   width="full"
                 />
-                <DropdownLarge
+                <Dropdown
                   items={COMPANY_TYPES}
                   selectedItem={formData.type}
                   onSelect={(value: string) => handleInputChange("type", value)}
-                  type="form"
+                  
                   label="Type"
                   width="full"
                 />

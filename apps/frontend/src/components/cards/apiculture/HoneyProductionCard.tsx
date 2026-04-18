@@ -20,7 +20,7 @@ import {
   CartesianScaleOptions,
 } from "chart.js";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -848,10 +848,10 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               </div>
               {!isCustomDateRangeActive && (
                 <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                  <DropdownSmall
+                  <Dropdown
                     label="Time Range"
                     items={TIME_RANGE_OPTIONS.slice()}
-                    selected={selectedTimeRange}
+                    selectedItem={selectedTimeRange}
                     onSelect={(item) => {
                       setSelectedTimeRange(item as TimeRange);
                       setStartDate(null);

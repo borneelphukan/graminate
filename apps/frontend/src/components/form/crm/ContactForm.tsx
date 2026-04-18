@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -169,13 +169,13 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
         type={contactErrors.phoneNumber ? "error" : ""}
         errorMessage={contactErrors.phoneNumber}
       />
-      <DropdownLarge
+      <Dropdown
         items={CONTACT_TYPES}
         selectedItem={contactValues.type}
         onSelect={(value: string) =>
           setContactValues({ ...contactValues, type: value })
         }
-        type="form"
+        
         label="Type"
         width="full"
       />

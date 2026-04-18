@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import TextField from "@/components/ui/TextField";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -207,11 +207,11 @@ const ContractDetails = () => {
               onChange={(val) => setAmount(val)}
               placeholder="e.g., 50000"
             />
-            <DropdownLarge
+            <Dropdown
               items={CONTRACT_STATUS}
               selectedItem={status}
               onSelect={(value: string) => setStatus(value)}
-              type="form"
+              
               label="Stage"
               width="full"
             />
@@ -221,31 +221,31 @@ const ContractDetails = () => {
               onChange={(val) => setCategory(val)}
               placeholder="e.g., Service Agreement, Product Sale"
             />
-            <DropdownLarge
+            <Dropdown
               items={PRIORITY_OPTIONS || ["Low", "Medium", "High"]}
               selectedItem={priority}
               onSelect={(value: string) => setPriority(value)}
-              type="form"
+              
               label="Priority"
               width="full"
             />
-            <DropdownLarge
+            <Dropdown
               label="Start Date"
               selectedItem={startDate}
               onSelect={(val) => setStartDate(val)}
               items={[]}
               isDatePicker={true}
               width="full"
-              type="form"
+              
             />
-            <DropdownLarge
+            <Dropdown
               label="End Date"
               selectedItem={endDate}
               onSelect={(val) => setEndDate(val)}
               items={[]}
               isDatePicker={true}
               width="full"
-              type="form"
+              
             />
           </div>
           <div className="flex flex-row mt-8 space-x-4 justify-end">

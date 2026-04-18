@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { CONTRACT_STATUS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -256,10 +256,10 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
           </div>
         )}
       </div>
-      <DropdownSmall
+      <Dropdown
         label="Contract Stage"
         items={CONTRACT_STATUS}
-        selected={contractsValues.status}
+        selectedItem={contractsValues.status}
         onSelect={(val: string) =>
           setContractsValues({ ...contractsValues, status: val })
         }
@@ -325,10 +325,10 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
           </div>
         )}
       </div>
-      <DropdownSmall
+      <Dropdown
         label="Priority"
         items={["Low", "Medium", "High"]}
-        selected={contractsValues.priority}
+        selectedItem={contractsValues.priority}
         onSelect={(val: string) =>
           setContractsValues({ ...contractsValues, priority: val })
         }

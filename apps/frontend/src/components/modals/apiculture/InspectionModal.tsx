@@ -2,7 +2,7 @@ import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import Button from "@/components/ui/Button";
 import TextArea from "@/components/ui/TextArea";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { format } from "date-fns";
 import TextField from "@/components/ui/TextField";
@@ -308,10 +308,10 @@ const InspectionModal = ({
             type={errors.inspection_date ? "error" : ""}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DropdownSmall
+            <Dropdown
               label="Queen Status"
               items={QUEEN_STATUS_OPTIONS}
-              selected={formData.queen_status}
+              selectedItem={formData.queen_status}
               onSelect={(val) => handleInputChange("queen_status", val)}
               placeholder="Select Queen Status"
             />
@@ -325,17 +325,17 @@ const InspectionModal = ({
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DropdownSmall
+            <Dropdown
               label="Brood Pattern"
               items={BROOD_PATTERN_OPTIONS}
-              selected={formData.brood_pattern}
+              selectedItem={formData.brood_pattern}
               onSelect={(val) => handleInputChange("brood_pattern", val)}
               placeholder="Select Brood Pattern"
             />
-            <DropdownSmall
+            <Dropdown
               label="Population Strength"
               items={POPULATION_STRENGTH_OPTIONS}
-              selected={formData.population_strength}
+              selectedItem={formData.population_strength}
               onSelect={(val) => handleInputChange("population_strength", val)}
               placeholder="Select Population"
             />
@@ -370,19 +370,19 @@ const InspectionModal = ({
             </div>
           </div>
 
-          <DropdownSmall
+          <Dropdown
             label="Room to Lay?"
             items={ROOM_TO_LAY_OPTIONS}
-            selected={formData.room_to_lay}
+            selectedItem={formData.room_to_lay}
             onSelect={(val) => handleInputChange("room_to_lay", val)}
             placeholder="Select available space"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DropdownSmall
+            <Dropdown
               label="Queen Cells Observed?"
               items={QUEEN_CELLS_OBSERVED_OPTIONS}
-              selected={formData.queen_cells_observed}
+              selectedItem={formData.queen_cells_observed}
               onSelect={(val) => handleInputChange("queen_cells_observed", val)}
               placeholder="Select Yes or No"
             />
@@ -397,10 +397,10 @@ const InspectionModal = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <DropdownSmall
+            <Dropdown
               label="Varroa Mite Method"
               items={VARROA_MITE_METHODS}
-              selected={formData.varroa_mite_method}
+              selectedItem={formData.varroa_mite_method}
               onSelect={(val) => handleInputChange("varroa_mite_method", val)}
               placeholder="Select Test Method"
             />

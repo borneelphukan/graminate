@@ -7,7 +7,7 @@ import NavPanel from "@/components/layout/NavPanel";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
 import Loader from "@/components/ui/Loader";
@@ -336,16 +336,16 @@ const General = () => {
                           isDisabled={true}
                         />
                         <div className="flex gap-4">
-                          <DropdownSmall
+                          <Dropdown
                             label={t("language")}
                             items={languageDropdownDisplayItems}
-                            selected={selectedLanguageLabel}
+                            selectedItem={selectedLanguageLabel}
                             onSelect={handleLanguageSelect}
                           />
-                          <DropdownSmall
+                          <Dropdown
                             label={t("timeFormat")}
                             items={TIME_FORMAT.map((tf) => String(tf))}
-                            selected={user.timeFormat}
+                            selectedItem={user.timeFormat}
                             onSelect={(val) =>
                               setUser((prev) => ({
                                 ...prev,

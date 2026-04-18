@@ -38,7 +38,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import Loader from "@/components/ui/Loader";
@@ -817,10 +817,10 @@ const TrendGraph = ({
         </p>
         <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 my-4">
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-            <DropdownSmall
+            <Dropdown
               label="Financial Metric"
               items={FINANCIAL_METRICS.slice()}
-              selected={selectedMetric}
+              selectedItem={selectedMetric}
               onSelect={(item) => setSelectedMetric(item as FinancialMetric)}
               placeholder="Select Metric"
             />
@@ -854,10 +854,10 @@ const TrendGraph = ({
           </div>
           {!isCustomDateRangeActive && (
             <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-              <DropdownSmall
+              <Dropdown
                 label="Time Range"
                 items={TIME_RANGE_OPTIONS.slice()}
-                selected={selectedTimeRange}
+                selectedItem={selectedTimeRange}
                 onSelect={(item) => {
                   setSelectedTimeRange(item as TimeRange);
                   setStartDate(null);

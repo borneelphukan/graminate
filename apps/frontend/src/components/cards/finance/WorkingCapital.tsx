@@ -30,7 +30,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 
@@ -495,10 +495,10 @@ const WorkingCapital = () => {
           </div>
           {!isCustomDateRangeActive && (
             <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-              <DropdownSmall
+              <Dropdown
                 label="Time Range"
                 items={TIME_RANGE_OPTIONS.slice()}
-                selected={selectedTimeRange}
+                selectedItem={selectedTimeRange}
                 onSelect={(i) => {
                   setSelectedTimeRange(i as TimeRange);
                   setStartDate(null);

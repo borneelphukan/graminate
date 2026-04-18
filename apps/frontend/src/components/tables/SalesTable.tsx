@@ -3,7 +3,7 @@ import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -707,7 +707,7 @@ const SalesTable = ({
               />
             </div>
             <div className="relative">
-              <DropdownLarge
+              <Dropdown
                 items={paginationItems}
                 selectedItem={`${itemsPerPage} per page`}
                 onSelect={handleSelect}

@@ -1,7 +1,7 @@
 import { Icon } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
-import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -199,7 +199,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
             }
           }}
         />
-        <DropdownLarge
+        <Dropdown
           items={PRIORITY_OPTIONS}
           selectedItem={newTaskPriority}
           onSelect={(item) => setNewTaskPriority(item as Priority)}

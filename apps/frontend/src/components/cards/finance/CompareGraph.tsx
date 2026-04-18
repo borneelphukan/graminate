@@ -30,7 +30,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import Loader from "@/components/ui/Loader";
@@ -512,18 +512,18 @@ const CompareGraph = ({
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4 my-4">
           <div className="w-full sm:col-span-1 xl:col-span-1">
-            <DropdownSmall
+            <Dropdown
               label="First Financial Metric"
               items={FINANCIAL_METRICS.slice()}
-              selected={selectedMetric1}
+              selectedItem={selectedMetric1}
               onSelect={(i) => setSelectedMetric1(i as FinancialMetric)}
             />
           </div>
           <div className="w-full sm:col-span-1 xl:col-span-1">
-            <DropdownSmall
+            <Dropdown
               label="Second Financial Metric"
               items={FINANCIAL_METRICS.slice()}
-              selected={selectedMetric2}
+              selectedItem={selectedMetric2}
               onSelect={(i) => setSelectedMetric2(i as FinancialMetric)}
             />
           </div>
@@ -556,10 +556,10 @@ const CompareGraph = ({
           </div>
           {!isCustomDateRangeActive && (
             <div className="w-full sm:col-span-2 xl:col-span-1">
-              <DropdownSmall
+              <Dropdown
                 label="Time Range"
                 items={TIME_RANGE_OPTIONS.slice()}
-                selected={selectedTimeRange}
+                selectedItem={selectedTimeRange}
                 onSelect={(i) => {
                   setSelectedTimeRange(i as TimeRange);
                   setStartDate(null);

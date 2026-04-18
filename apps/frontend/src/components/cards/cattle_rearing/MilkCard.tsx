@@ -20,7 +20,7 @@ import {
   CartesianScaleOptions,
 } from "chart.js";
 import TextField from "@/components/ui/TextField";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
+import Dropdown from "@/components/ui/Dropdown";
 import Button from "@/components/ui/Button";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -881,10 +881,10 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
               </div>
               {!isCustomDateRangeActive && (
                 <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                  <DropdownSmall
+                  <Dropdown
                     label="Time Range"
                     items={TIME_RANGE_OPTIONS.slice()}
-                    selected={selectedTimeRange}
+                    selectedItem={selectedTimeRange}
                     onSelect={(item) => {
                       setSelectedTimeRange(item as TimeRange);
                       setStartDate(null);
@@ -896,10 +896,10 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
               )}
               {availableAnimals.length > 1 && (
                 <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                  <DropdownSmall
+                  <Dropdown
                     label="Filter by Animal"
                     items={availableAnimals}
-                    selected={selectedAnimalFilter}
+                    selectedItem={selectedAnimalFilter}
                     onSelect={(item) => setSelectedAnimalFilter(item)}
                     placeholder="Select Animal"
                   />
