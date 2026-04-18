@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -9,11 +9,10 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import Button from "@/components/ui/Button";
 import Loader from "@/components/ui/Loader";
 import HiveForm, { HiveData } from "@/components/form/apiculture/HiveForm";
 import axios from "axios";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
 import InspectionModal, {
@@ -62,6 +61,7 @@ const HiveDetailsPage = () => {
   const [activeView, setActiveView] = useState<HiveView>("status");
   const [inspectionToEdit, setInspectionToEdit] =
     useState<InspectionData | null>(null);
+  const { handleDeleteRows, handleResetTable } = useTableActions("inspections");
 
   const [weatherData, setWeatherData] = useState<{
     temperature: number | null;
@@ -118,7 +118,7 @@ const HiveDetailsPage = () => {
     try {
       const response = await axiosInstance.get(`/bee-hives/${hiveId}`);
       setHiveData(response.data);
-    } catch {
+    } catch (error) {
       console.error("Error fetching hive details:", error);
       setHiveData(null);
       Swal.fire("Error", "Could not load hive details.", "error");
@@ -135,7 +135,7 @@ const HiveDetailsPage = () => {
         `/hive-inspections/hive/${hiveId}`
       );
       setInspections(response.data.inspections);
-    } catch {
+    } catch (error) {
       console.error("Error fetching inspections:", error);
       setInspections([]);
     } finally {
@@ -270,7 +270,7 @@ const HiveDetailsPage = () => {
         await axiosInstance.delete(`/bee-hives/delete/${hiveId}`);
         Swal.fire("Deleted!", "The hive has been deleted.", "success");
         router.push(`/${userId}/apiculture/${apiaryId}`);
-      } catch {
+      } catch (error) {
         Swal.fire("Error", "Failed to delete the hive.", "error");
         console.error("Failed to delete hive:", error);
       }
@@ -588,9 +588,9 @@ const HiveDetailsPage = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
-              text="Bee Yard"
-              arrow="left"
-              style="secondary"
+              label="Bee Yard"
+              icon={{ left: "arrow_back" }}
+              variant="secondary"
               onClick={() =>
                 router.push(`/${userId}/apiculture/${apiaryId}`)
               }
@@ -598,13 +598,13 @@ const HiveDetailsPage = () => {
             {hiveData && (
               <>
                 <Button
-                  text="Edit Hive"
-                  style="secondary"
+                  label="Edit Hive"
+                  variant="secondary"
                   onClick={() => setShowHiveForm(true)}
                 />
                 <Button
-                  text="Delete Hive"
-                  style="delete"
+                  label="Delete Hive"
+                  variant="destructive"
                   onClick={handleDelete}
                 />
               </>
@@ -659,9 +659,8 @@ const HiveDetailsPage = () => {
               />
               {activeView === "inspection" && (
                 <Button
-                  add
-                  text="Log Inspection"
-                  style="primary"
+                  label="Log Inspection"
+                  variant="primary"
                   onClick={handleAddInspectionClick}
                 />
               )}
@@ -699,15 +698,15 @@ const HiveDetailsPage = () => {
                 setCurrentPage={() => {}}
                 itemsPerPage={25}
                 setItemsPerPage={() => {}}
-                paginationItems={PAGINATION_ITEMS.filter(
-                  (i) => parseInt(i) <= 10
-                ).map((item) => `${item} per page`)}
+                paginationItems={PAGINATION_ITEMS}
                 searchQuery=""
                 setSearchQuery={() => {}}
                 totalRecordCount={inspections.length}
                 view="inspections"
                 loading={loadingInspections}
                 hideChecks={false}
+                onDeleteRows={handleDeleteRows}
+                onResetTable={handleResetTable}
               />
             )}
           </div>

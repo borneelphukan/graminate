@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -60,8 +60,8 @@ function Error({ statusCode, message, isTypeError }: ErrorProps) {
 
           <Link href="/">
             <Button
-              text="Go Back Home"
-              style="primary"
+              label="Go Back Home"
+              variant="primary"
               onClick={() => {
                 router.back();
               }}

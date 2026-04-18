@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 
 import type { OTPModal } from "@/types/card-props";
 
@@ -82,8 +82,8 @@ const OTPModal = ({ isOpen, email, onValidate, onClose }: OTPModal) => {
         </div>
 
         <div className="flex justify-center space-x-2">
-          <Button text="Cancel" style="secondary" onClick={onClose} />
-          <Button text="Validate" style="primary" onClick={handleValidateOTP} />
+          <Button label="Cancel" variant="secondary" onClick={onClose} />
+          <Button label="Validate" variant="primary" onClick={handleValidateOTP} />
         </div>
       </div>
     </div>

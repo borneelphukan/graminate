@@ -1,8 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Button from "@/components/ui/Button";
 import LoginLayout from "@/layout/LoginLayout";
 
 const Pricing = () => {
@@ -126,16 +125,15 @@ const Pricing = () => {
                   </div>
                   <div className="px-6 py-4">
                     <Button
-                      text={plan.buttonText}
-                      style={
+                      label={plan.buttonText}
+                      variant={
                         plan.buttonDisabled
                           ? "ghost"
                           : selectedPlan === plan.name
                           ? "primary"
                           : "secondary"
                       }
-                      isDisabled={plan.buttonDisabled}
-                      width="large"
+                      disabled={plan.buttonDisabled}
                       onClick={() => {
                         handleCardClick(plan.name);
                       }}

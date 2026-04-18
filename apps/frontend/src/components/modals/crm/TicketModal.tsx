@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import React, { useState } from "react";
 
@@ -58,30 +58,15 @@ const TicketModal = ({
 
             {newLimit.trim() && (
               <div className="mt-6">
-                <Button
-                  text="Reset"
-                  width="large"
-                  style="ghost"
-                  onClick={clearLimit}
-                />
+                <Button label="Reset" variant="ghost" onClick={clearLimit} />
               </div>
             )}
           </div>
         </div>
 
         <div className="px-6 py-4 dark:bg-gray-800 flex justify-end gap-3">
-          <Button
-            text="Cancel"
-            width="medium"
-            style="ghost"
-            onClick={onCancel}
-          />
-          <Button
-            text="Save"
-            width="medium"
-            style="primary"
-            onClick={handleSave}
-          />
+          <Button label="Cancel" variant="ghost" onClick={onCancel} />
+          <Button label="Save" variant="primary" onClick={handleSave} />
         </div>
       </div>
     </div>

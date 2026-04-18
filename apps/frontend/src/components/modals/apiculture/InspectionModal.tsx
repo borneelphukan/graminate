@@ -1,6 +1,5 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
-import Button from "@/components/ui/Button";
 import TextArea from "@/components/ui/TextArea";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -426,9 +425,9 @@ const InspectionModal = ({
                 onKeyDown={handleSymptomKeyDown}
               />
               <Button
-                text="Add"
+                label="Add"
                 type="button"
-                style="secondary"
+                variant="secondary"
                 onClick={handleAddSymptom}
                 aria-label="Add symptom"
               />
@@ -472,14 +471,14 @@ const InspectionModal = ({
 
           <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
             <Button
-              text="Cancel"
+              label="Cancel"
               type="button"
-              style="secondary"
+              variant="secondary"
               onClick={onClose}
-              isDisabled={isSubmitting}
+              disabled={isSubmitting}
             />
             <Button
-              text={
+              label={
                 isSubmitting
                   ? "Saving..."
                   : inspectionToEdit
@@ -487,8 +486,8 @@ const InspectionModal = ({
                   : "Add Inspection"
               }
               type="submit"
-              style="primary"
-              isDisabled={isSubmitting}
+              variant="primary"
+              disabled={isSubmitting}
             />
           </div>
         </form>

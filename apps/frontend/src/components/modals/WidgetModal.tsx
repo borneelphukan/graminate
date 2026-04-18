@@ -1,6 +1,5 @@
-import { Icon, Checkbox } from "@graminate/ui";
+import { Icon, Checkbox, Button } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import Button from "@/components/ui/Button";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
@@ -217,10 +216,10 @@ const WidgetModal = ({
         </div>
 
         <div className="flex justify-end gap-4 pt-4 border-t border-gray-400 dark:border-gray-700">
-          <Button text="Cancel" style="secondary" onClick={onClose} />
+          <Button label="Cancel" variant="secondary" onClick={onClose} />
           <Button
-            text="Save Changes"
-            style="primary"
+            label="Save Changes"
+            variant="primary"
             onClick={handleSaveClick}
           />
         </div>

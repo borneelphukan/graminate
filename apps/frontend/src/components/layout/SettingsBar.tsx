@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, translations } from "@/translations";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -129,9 +129,9 @@ const SettingsBar = () => {
     <div className="w-72 px-4 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-light border-r border-gray-400 dark:border-gray-200 min-h-screen -m-6">
       <div className="flex items-center pt-4">
         <Button
-          text={t("settingsBarBack" as GeneralTranslationKeys)}
-          style="ghost"
-          arrow="left"
+          label={t("settingsBarBack" as GeneralTranslationKeys)}
+          variant="ghost"
+          icon={{ left: "arrow_back" }}
           onClick={() => router.back()}
         />
       </div>

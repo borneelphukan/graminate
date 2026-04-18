@@ -1,10 +1,9 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
-import Table from "@/components/tables/Table";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
+import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -104,10 +103,12 @@ const Warehouse = () => {
   const [currentWarehouseDetails, setCurrentWarehouseDetails] =
     useState<WarehouseDetails | null>(null);
   const [isInventoryFormOpen, setIsInventoryFormOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ItemRecord | null>(null);
   const [isWarehouseFormOpen, setIsWarehouseFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
+  const { handleDeleteRows, handleResetTable } = useTableActions("inventory");
   const [loadingInventory, setLoadingInventory] = useState(true);
   const [loadingWarehouseDetails, setLoadingWarehouseDetails] = useState(true);
 
@@ -316,25 +317,24 @@ const Warehouse = () => {
             </div>
             <div className="flex flex-wrap gap-2">
               <Button
-                arrow="left"
-                text="All Warehouses"
-                style="secondary"
+                icon={{ left: "arrow_back" }}
+                label="All Warehouses"
+                variant="secondary"
                 onClick={() => router.push(`/${parsedUserId}/storage`)}
               />
               {parsedId && currentWarehouseDetails && (
                 <Button
-                  text="Edit Warehouse"
-                  style="secondary"
+                  label="Edit Warehouse"
+                  variant="secondary"
                   onClick={() => setIsWarehouseFormOpen(true)}
-                  isDisabled={loadingWarehouseDetails}
+                  disabled={loadingWarehouseDetails}
                 />
               )}
               <Button
-                text="Add Item"
-                style="primary"
-                add
+                label="Add Item"
+                variant="primary"
                 onClick={() => setIsInventoryFormOpen(true)}
-                isDisabled={!parsedId}
+                disabled={!parsedId}
               />
             </div>
           </div>
@@ -511,19 +511,41 @@ const Warehouse = () => {
           paginationItems={PAGINATION_ITEMS}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          totalRecordCount={searchedInventory.length}
+          totalRecordCount={inventoryForWarehouse.length}
+          onRowClick={(row) => {
+            const inventoryId = row[0] as number;
+            const item = inventoryForWarehouse.find(
+              (i) => i.inventory_id === inventoryId
+            );
+            if (item) {
+              setEditingItem(item);
+              setIsInventoryFormOpen(true);
+            }
+          }}
           view="inventory"
           loading={loadingInventory}
-          reset={true}
-          hideChecks={false}
-          download={true}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
 
         {isInventoryFormOpen && parsedId && (
           <InventoryForm
-            onClose={() => setIsInventoryFormOpen(false)}
-            formTitle={`Add Item to ${dynamicWarehouseName}`}
+            onClose={() => {
+              setIsInventoryFormOpen(false);
+              setEditingItem(null);
+            }}
+            formTitle={
+              editingItem
+                ? `Edit ${editingItem.item_name}`
+                : `Add Item to ${dynamicWarehouseName}`
+            }
             warehouseId={parseInt(parsedId, 10)}
+            initialData={editingItem || undefined}
+            onSuccess={() => {
+              setIsInventoryFormOpen(false);
+              setEditingItem(null);
+              router.replace(router.asPath);
+            }}
           />
         )}
         {isWarehouseFormOpen && parsedId && currentWarehouseDetails && (

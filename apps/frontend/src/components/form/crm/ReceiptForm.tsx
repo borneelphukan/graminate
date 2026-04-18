@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Button } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 import Loader from "@/components/ui/Loader";
@@ -514,18 +513,18 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
+      <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
         <Button
-          text="Cancel"
-          style="secondary"
+          label="Cancel"
+          variant="secondary"
           onClick={onClose}
-          isDisabled={isLoading || isLoadingSales}
+          disabled={isLoading || isLoadingSales}
         />
         <Button
-          text={isLoading || isLoadingSales ? "Creating..." : "Create Invoice"}
-          style="primary"
+          label={isLoading || isLoadingSales ? "Creating..." : "Create Invoice"}
+          variant="primary"
           type="submit"
-          isDisabled={isLoading || isLoadingSales}
+          disabled={isLoading || isLoadingSales}
         />
       </div>
     </form>

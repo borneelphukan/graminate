@@ -1,4 +1,4 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -8,7 +8,7 @@ import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskManager from "@/components/cards/TaskManager";
 import InventoryStockCard from "@/components/cards/InventoryStock";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -92,6 +92,7 @@ const Apiculture = () => {
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
   const view: View = "apiculture";
+  const { handleDeleteRows, handleResetTable } = useTableActions(view);
 
   const [apicultureRecords, setApicultureRecords] = useState<
     ApicultureRecord[]
@@ -375,6 +376,8 @@ const Apiculture = () => {
             reset={true}
             hideChecks={false}
             download={true}
+            onDeleteRows={handleDeleteRows}
+            onResetTable={handleResetTable}
           />
         )}
 

@@ -1,5 +1,4 @@
-import { Dropdown, Icon } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -407,9 +406,9 @@ const ContactDetails = () => {
                   {initialFullName || "Contact Details"}
                 </h1>
                 <Button
-                  text="All Contacts"
-                  style="secondary"
-                  arrow="left"
+                  label="All Contacts"
+                  variant="secondary"
+                  icon={{ left: "arrow_back" }}
                   onClick={() =>
                     router.push(`/${user_id}/crm?view=contacts`)
                   }
@@ -551,19 +550,17 @@ const ContactDetails = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-end mt-10 pt-6 border-t border-gray-400 dark:border-gray-700 space-y-3 sm:space-y-0 sm:space-x-4">
             <Button
-              text="Cancel"
-              style="secondary"
-              width="large"
+              label="Cancel"
+              variant="secondary"
               onClick={() =>
                 router.push(`/${user_id}/crm?view=contacts`)
               }
             />
             <Button
-              text={saving ? "Saving..." : "Save Changes"}
-              style="primary"
-              width="large"
+              label={saving ? "Saving..." : "Save Changes"}
+              variant="primary"
               onClick={handleSave}
-              isDisabled={!hasChanges || saving}
+              disabled={!hasChanges || saving}
             />
           </div>
         </div>

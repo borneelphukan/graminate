@@ -1,11 +1,10 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useMemo } from "react";
 import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import Button from "@/components/ui/Button";
 
 import TextArea from "@/components/ui/TextArea";
 import SortableItem from "./SortableItem";
@@ -179,15 +178,13 @@ const ColumnContainer = ({
 
                 <div className="flex justify-start gap-2 ">
                   <Button
-                    text="Add"
-                    style="primary"
-                    width="large"
+                    label="Add"
+                    variant="primary"
                     onClick={handleAddTask}
                   />
                   <Button
-                    text="Cancel"
-                    style="secondary"
-                    width="large"
+                    label="Cancel"
+                    variant="secondary"
                     onClick={() => setIsAddingTask(false)}
                   />
                 </div>
@@ -196,10 +193,8 @@ const ColumnContainer = ({
           ) : (
             <div className="mt-auto pt-2">
               <Button
-                text="Create Issue"
-                style="primary"
-                add
-                width="large"
+                label="Create Issue"
+                variant="primary"
                 onClick={() => setIsAddingTask(true)}
               />
             </div>

@@ -1,4 +1,4 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -28,7 +28,6 @@ import {
 } from "date-fns";
 import Loader from "@/components/ui/Loader";
 
-import Button from "@/components/ui/Button";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
 
 ChartJS.register(
@@ -443,11 +442,11 @@ const PoultryEggCard = ({
           </div>
           <div className="flex items-center justify-center space-x-2 mt-5">
             <Button
-              arrow="left"
-              text="Previous"
+              icon={{ left: "arrow_back" }}
+              label="Previous"
               onClick={handlePrev}
-              style="ghost"
-              isDisabled={navigationStates.isPrevDisabled || loading}
+              variant="ghost"
+              disabled={navigationStates.isPrevDisabled || loading}
             />
             <Dropdown
               direction="up"
@@ -456,11 +455,11 @@ const PoultryEggCard = ({
               onSelect={handleTimeRangeSelect}
             />
             <Button
-              arrow="right"
-              text="Next"
+              icon={{ right: "arrow_forward" }}
+              label="Next"
               onClick={handleNext}
-              style="ghost"
-              isDisabled={navigationStates.isNextDisabled || loading}
+              variant="ghost"
+              disabled={navigationStates.isNextDisabled || loading}
             />
           </div>
         </>

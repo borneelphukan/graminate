@@ -38,8 +38,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import Loader from "@/components/ui/Loader";
 import { DailyFinancialEntry } from "@/pages/[user_id]/finance_dashboard";
@@ -809,7 +808,7 @@ const TrendGraph = ({
   return (
     <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
       <div className="mb-4">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 text-center sm:text-left">
+        <h3 className="text-xl font-semibold mb-1 text-center sm:text-left">
           Financial Trends
         </h3>
         <p className="text-sm text-dark dark:text-light mb-4 text-center sm:text-left">
@@ -877,17 +876,17 @@ const TrendGraph = ({
           {showTimeNavControls && (
             <div className="flex justify-center items-center gap-x-3 mt-4">
               <Button
-                text="Previous"
-                arrow="left"
-                style="ghost"
-                isDisabled={isPrevDisabled}
+                label="Previous"
+                icon={{ left: "arrow_back" }}
+                variant="ghost"
+                disabled={isPrevDisabled}
                 onClick={handlePrev}
               />{" "}
               <Button
-                text="Next"
-                arrow="right"
-                style="ghost"
-                isDisabled={isNextDisabled}
+                label="Next"
+                icon={{ right: "arrow_forward" }}
+                variant="ghost"
+                disabled={isNextDisabled}
                 onClick={handleNext}
               />
             </div>

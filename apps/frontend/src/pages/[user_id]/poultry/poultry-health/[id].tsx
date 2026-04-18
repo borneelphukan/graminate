@@ -1,9 +1,8 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import jsPDF from "jspdf";
@@ -220,7 +219,7 @@ const PoultryHealthDetails = () => {
             Record Not Found
           </h1>
           <Button
-            text="Go Back to Health Records"
+            label="Go Back to Health Records"
             onClick={() => {
               if (parsedUserId && backFlockId) {
                 router.push(
@@ -230,7 +229,7 @@ const PoultryHealthDetails = () => {
                 router.push(`/${parsedUserId}/poultry`);
               }
             }}
-            style="secondary"
+            variant="secondary"
           />
         </div>
       </PlatformLayout>
@@ -274,8 +273,8 @@ const PoultryHealthDetails = () => {
         <div className="max-w-3xl mx-auto">
           <div className="mb-6 flex justify-between items-center">
             <Button
-              text="Back"
-              arrow="left"
+              label="Back"
+              icon={{ left: "arrow_back" }}
               onClick={() => {
                 const flockIdForBack = parsedFlockIdFromUrl || record.flock_id;
                 if (parsedUserId && flockIdForBack) {
@@ -284,9 +283,9 @@ const PoultryHealthDetails = () => {
                   );
                 }
               }}
-              style="ghost"
+              variant="ghost"
             />
-            <Button text="Download PDF" onClick={generatePDF} style="primary" />
+            <Button label="Download PDF" onClick={generatePDF} variant="primary" />
           </div>
 
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">

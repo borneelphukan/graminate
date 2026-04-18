@@ -4,7 +4,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PasswordModal from "@/components/modals/PasswordModal";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -127,7 +127,7 @@ const Account = () => {
         );
       }
     } catch (error) {
-      console.error("Failed to delete account", err);
+      console.error("Failed to delete account", error);
       openModal("info", {
         titleKey: "errorTitle",
         messageKey: "accountDeletionError",
@@ -159,13 +159,13 @@ const Account = () => {
             footerContent={
               <>
                 <Button
-                  text={t("cancelButton")}
-                  style="secondary"
+                  label={t("cancelButton")}
+                  variant="secondary"
                   onClick={handleModalHeaderClose}
                 />
                 <Button
-                  text={t("deleteButton")}
-                  style="primary"
+                  label={t("deleteButton")}
+                  variant="primary"
                   onClick={handleConfirmDeletion}
                 />
               </>
@@ -190,16 +190,16 @@ const Account = () => {
             footerContent={
               <>
                 <Button
-                  text={t("cancelButton")}
-                  style="secondary"
+                  label={t("cancelButton")}
+                  variant="secondary"
                   onClick={handleModalHeaderClose}
-                  isDisabled={isVerifying}
+                  disabled={isVerifying}
                 />
                 <Button
-                  text={t("confirmButton")}
-                  style="primary"
+                  label={t("confirmButton")}
+                  variant="primary"
                   onClick={handlePasswordVerification}
-                  isDisabled={isVerifying || !password}
+                  disabled={isVerifying || !password}
                 />
               </>
             }
@@ -233,8 +233,8 @@ const Account = () => {
             title={t(infoModalContent.titleKey)}
             footerContent={
               <Button
-                text={t("okButton")}
-                style="primary"
+                label={t("okButton")}
+                variant="primary"
                 onClick={closeModal}
               />
             }

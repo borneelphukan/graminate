@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Button from "@/components/ui/Button";
+import { Button, Table } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import VeterinaryForm from "@/components/form/poultry/VeterinaryForm";
 
 type PoultryHealthRecord = {
@@ -46,6 +46,7 @@ const PoultryHealth = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
+  const { handleDeleteRows, handleResetTable } = useTableActions("poultry_health");
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -153,8 +154,8 @@ const PoultryHealth = () => {
 
           <div className="flex gap-3 mt-3 sm:mt-0">
             <Button
-              arrow="left"
-              text=" Dashboard"
+              icon={{ left: "arrow_back" }}
+              label="Dashboard"
               onClick={() => {
                 if (parsedUserId && parsedFlockId) {
                   router.push(
@@ -162,12 +163,12 @@ const PoultryHealth = () => {
                   );
                 }
               }}
-              style="secondary"
+              variant="secondary"
             />
             <Button
-              text="Log Health Data"
+              label="Log Health Data"
               onClick={() => setShowVeterinaryForm(true)}
-              style="primary"
+              variant="primary"
             />
           </div>
         </div>
@@ -179,15 +180,15 @@ const PoultryHealth = () => {
           setCurrentPage={setCurrentPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          paginationItems={["10 per page", "25 per page", "50 per page", "100 per page"]}
+          paginationItems={["10 per page", "25 per page", "50 per page"]}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           totalRecordCount={filteredRecords.length}
-          loading={loading}
-          view="poultry_health"
-          reset={true}
-          download={true}
           onRowClick={handleRowClick}
+          view="poultry_health"
+          loading={loading}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
       </div>
       {showVeterinaryForm && (

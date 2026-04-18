@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import Button from "@/components/ui/Button";
+import { Checkbox, Button } from "@graminate/ui";
 import { API_BASE_URL } from "@/constants/constants";
-import { Checkbox } from "@graminate/ui";
 
 type NotificationSettings = {
   orders: {
@@ -119,7 +118,7 @@ const Notifications = () => {
                 <p className="mt-2 text-sm text-dark dark:text-gray-400">
                   Manage how you receive notifications for your operations
                 </p>
-                <Button text="Save Changes" style="primary" />
+                <Button label="Save Changes" variant="primary" />
               </div>
 
               <div className="space-y-6">

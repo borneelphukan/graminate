@@ -1,8 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -327,8 +326,8 @@ const VeterinaryForm = ({
               />
 
               <div className="flex justify-end gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button text="Cancel" style="secondary" onClick={handleClose} />
-                <Button text="Save Record" style="primary" type="submit" />
+                <Button label="Cancel" variant="secondary" onClick={handleClose} />
+                <Button label="Save Record" variant="primary" type="submit" />
               </div>
             </form>
           </div>

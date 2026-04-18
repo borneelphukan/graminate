@@ -6,7 +6,7 @@ import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator } from "@/translations";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import { showToast, toastMessage } from "@/stores/toast";
 import TextField from "@/components/ui/TextField";
 import PasswordModal from "@/components/modals/PasswordModal";
@@ -279,16 +279,16 @@ const AddServicePage = () => {
           <>
             <Button
               type="button"
-              style="secondary"
+              variant="secondary"
               onClick={() => setIsModalOpen(false)}
-              text="Cancel"
-              isDisabled={isVerifyingPassword}
+              label="Cancel"
+              disabled={isVerifyingPassword}
             />
             <Button
               type="submit"
-              style="delete"
-              text={isVerifyingPassword ? "Verifying..." : "Remove Service"}
-              isDisabled={isVerifyingPassword || !password}
+              variant="delete"
+              label={isVerifyingPassword ? "Verifying..." : "Remove Service"}
+              disabled={isVerifyingPassword || !password}
             />
           </>
         }
@@ -389,11 +389,11 @@ const AddServicePage = () => {
             <div className="mt-8 flex justify-end">
               <Button
                 type="submit"
-                style="primary"
-                isDisabled={
+                variant="primary"
+                disabled={
                   isSubmitting || selectedSubTypes.size === 0 || isProFeature
                 }
-                text={
+                label={
                   isProFeature
                     ? "Upgrade to Add Services"
                     : isSubmitting
@@ -473,9 +473,9 @@ const AddServicePage = () => {
               <div className="mt-8 flex justify-end">
                 <Button
                   type="submit"
-                  style="delete"
-                  isDisabled={isRemoving || servicesToRemove.size === 0}
-                  text={isRemoving ? "Removing..." : "Remove Selected Services"}
+                  variant="delete"
+                  disabled={isRemoving || servicesToRemove.size === 0}
+                  label={isRemoving ? "Removing..." : "Remove Selected Services"}
                 />
               </div>
             </form>

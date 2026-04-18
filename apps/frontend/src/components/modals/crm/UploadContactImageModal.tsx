@@ -1,6 +1,5 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useState, useRef, ChangeEvent, useEffect } from "react";
-import Button from "@/components/ui/Button";
 import Image from "next/image";
 
 type UploadContactImageModalProps = {
@@ -124,12 +123,12 @@ const UploadContactImageModal = ({
         </div>
 
         <div className="px-6 py-4 border-t border-gray-400 dark:border-gray-700 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-          <Button text="Cancel" onClick={onClose} style="secondary" />
+          <Button label="Cancel" onClick={onClose} variant="secondary" />
           <Button
-            text="Confirm"
+            label="Confirm"
             onClick={handleConfirm}
-            isDisabled={!selectedFile}
-            style="primary"
+            disabled={!selectedFile}
+            variant="primary"
           />
         </div>
       </div>

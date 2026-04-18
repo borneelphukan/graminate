@@ -1,5 +1,4 @@
-import Button from "@/components/ui/Button";
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -334,9 +333,9 @@ const LabourDetails = () => {
         </Head>
         <div className="px-6">
           <Button
-            text="Back"
-            style="ghost"
-            arrow="left"
+            label="Back"
+            variant="ghost"
+            icon={{ left: "arrow_back" }}
             onClick={() =>
               router.push(`/${router.query.user_id}/labour_database`)
             }
@@ -582,14 +581,14 @@ const LabourDetails = () => {
             {/* Action Buttons */}
             <div className="flex flex-row mt-6 space-x-4">
               <Button
-                text={saving ? "Updating..." : "Update"}
-                style="primary"
+                label={saving ? "Updating..." : "Update"}
+                variant="primary"
                 onClick={handleSave}
-                isDisabled={!hasChanges || saving}
+                disabled={!hasChanges || saving}
               />
               <Button
-                text="Cancel"
-                style="secondary"
+                label="Cancel"
+                variant="secondary"
                 onClick={() =>
                   router.push(
                     `/${router.query.user_id}/labour_database`

@@ -1,6 +1,6 @@
+import { Button } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 
@@ -140,9 +140,9 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-        <Button text="Cancel" style="secondary" onClick={onClose} />
-        <Button text="Create Project" style="primary" type="submit" />
+      <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+        <Button label="Cancel" variant="secondary" onClick={onClose} />
+        <Button label="Create Project" variant="primary" type="submit" />
       </div>
     </form>
   );

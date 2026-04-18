@@ -1,5 +1,4 @@
-import Button from "@/components/ui/Button";
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -180,9 +179,9 @@ const ContractDetails = () => {
               {displayContractName || "Contract Details"}
             </h1>
             <Button
-              text="All Contracts"
-              style="secondary"
-              arrow="left"
+              label="All Contracts"
+              variant="secondary"
+              icon={{ left: "arrow_back" }}
               onClick={() =>
                 router.push(`/${user_id}/crm?view=contracts`)
               }
@@ -250,17 +249,17 @@ const ContractDetails = () => {
           </div>
           <div className="flex flex-row mt-8 space-x-4 justify-end">
             <Button
-              text="Cancel"
-              style="secondary"
+              label="Cancel"
+              variant="secondary"
               onClick={() =>
                 router.push(`/${user_id}/crm?view=contracts`)
               }
             />
             <Button
-              text={saving ? "Updating..." : "Update Contract"}
-              style="primary"
+              label={saving ? "Updating..." : "Update Contract"}
+              variant="primary"
               onClick={handleSave}
-              isDisabled={!hasChanges || saving}
+              disabled={!hasChanges || saving}
             />
           </div>
         </div>

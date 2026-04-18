@@ -1,7 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import InfoModal from "./InfoModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -74,14 +73,13 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
             </div>
             <div className="flex flex-col gap-4">
               <Button
-                text="Reset Password"
-                width="large"
-                style="primary"
+                label="Reset Password"
+                variant="primary"
                 type="submit"
               />
               <Button
-                text="Back to log in"
-                style="ghost"
+                label="Back to log in"
+                variant="ghost"
                 onClick={closeModal}
               />
             </div>

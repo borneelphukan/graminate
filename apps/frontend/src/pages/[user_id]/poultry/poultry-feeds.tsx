@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Button from "@/components/ui/Button";
+import { Button, Table } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import { parseISO, format } from "date-fns";
 import PoultryFeedsModal from "@/components/modals/poultry/PoultryFeedsModal";
 import Swal from "sweetalert2"; 
@@ -66,6 +66,7 @@ const PoultryFeedsPage = () => {
     []
   );
   const [loadingFeedItems, setLoadingFeedItems] = useState(true);
+  const { handleDeleteRows, handleResetTable } = useTableActions("poultry_feeds");
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -239,8 +240,8 @@ const PoultryFeedsPage = () => {
 
           <div className="flex gap-3 mt-3 sm:mt-0">
             <Button
-              arrow="left"
-              text="Dashboard"
+              icon={{ left: "arrow_back" }}
+              label="Dashboard"
               onClick={() => {
                 if (parsedUserId && parsedFlockId) {
                   router.push(
@@ -248,13 +249,13 @@ const PoultryFeedsPage = () => {
                   );
                 }
               }}
-              style="secondary"
+              variant="secondary"
             />
             <Button
-              text="Log Feed"
+              label="Log Feed"
               onClick={handleAddRecord}
-              style="primary"
-              isDisabled={loadingFeedItems}
+              variant="primary"
+              disabled={loadingFeedItems}
             />
           </div>
         </div>
@@ -266,15 +267,22 @@ const PoultryFeedsPage = () => {
           setCurrentPage={setCurrentPage}
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
-          paginationItems={["10 per page", "25 per page", "50 per page", "100 per page"]}
+          paginationItems={["10 per page", "25 per page", "50 per page"]}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           totalRecordCount={filteredRecords.length}
-          loading={loading}
+          onRowClick={(row) => {
+            const recordId = row[0] as number;
+            const record = feedRecords.find((r) => r.feed_id === recordId);
+            if (record) {
+              setEditingRecord(record);
+              setShowFeedModal(true);
+            }
+          }}
           view="poultry_feeds"
-          reset={true}
-          download={true}
-          onRowClick={handleRowClick}
+          loading={loading}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
       </div>
       {showFeedModal && parsedUserId && parsedFlockId && (

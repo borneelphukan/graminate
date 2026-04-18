@@ -20,11 +20,11 @@ import {
   CartesianScaleOptions,
 } from "chart.js";
 import TextField from "@/components/ui/TextField";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Button, Table } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
+import { useTableActions } from "@/hooks/useTableActions";
 import {
   format,
   subMonths,
@@ -38,7 +38,6 @@ import {
   parseISO,
 } from "date-fns";
 import { useRouter } from "next/router";
-import Table from "@/components/tables/Table";
 import {
   useUserPreferences,
   SupportedLanguage,
@@ -191,6 +190,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
+  const { handleDeleteRows, handleResetTable } = useTableActions("honey_harvests");
 
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
@@ -772,8 +772,8 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               />
               <div className="flex justify-end gap-2 pt-4">
                 <Button
-                  text="Cancel"
-                  style="secondary"
+                  label="Cancel"
+                  variant="secondary"
                   onClick={() =>
                     editingRecord
                       ? setActiveView("table")
@@ -781,10 +781,10 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
                   }
                 />
                 <Button
-                  text={editingRecord ? "Update Harvest" : "Log Harvest"}
+                  label={editingRecord ? "Update Harvest" : "Log Harvest"}
                   type="submit"
-                  style="primary"
-                  isDisabled={isSubmitting}
+                  variant="primary"
+                  disabled={isSubmitting}
                 />
               </div>
             </form>
@@ -802,12 +802,12 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
             paginationItems={PAGINATION_ITEMS}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            totalRecordCount={tableData.rows.length}
-            view="honey_production"
-            loading={isLoading}
-            reset={true}
-            download={true}
+            totalRecordCount={filteredHoneyRecordsForTable.length}
             onRowClick={handleRowClick}
+            view="honey_harvests"
+            loading={isLoading}
+            onDeleteRows={handleDeleteRows}
+            onResetTable={handleResetTable}
           />
         );
       case "chart":
@@ -883,17 +883,17 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               !isLoading && (
                 <div className="flex justify-center items-center gap-x-3 mt-4">
                   <Button
-                    text="Previous"
-                    arrow="left"
-                    style="ghost"
-                    isDisabled={isPrevDisabled}
+                    label="Previous"
+                    icon={{ left: "arrow_back" }}
+                    variant="ghost"
+                    disabled={isPrevDisabled}
                     onClick={handlePrev}
                   />
                   <Button
-                    text="Next"
-                    arrow="right"
-                    style="ghost"
-                    isDisabled={isNextDisabled}
+                    label="Next"
+                    icon={{ right: "arrow_forward" }}
+                    variant="ghost"
+                    disabled={isNextDisabled}
                     onClick={handleNext}
                   />
                 </div>
@@ -915,29 +915,29 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
           <div className="flex items-center gap-2">
             {activeView !== "chart" && (
               <Button
-                text="Back"
-                style="ghost"
-                arrow="left"
+                label="Back"
+                variant="ghost"
+                icon={{ left: "arrow_back" }}
                 onClick={handleBackToChart}
               />
             )}
             {activeView === "chart" && (
               <Button
-                text="View Logs"
-                style="secondary"
+                label="View Logs"
+                variant="secondary"
                 onClick={() => setActiveView("table")}
-                isDisabled={!userId || !hiveId || allHoneyRecords.length === 0}
+                disabled={!userId || !hiveId || allHoneyRecords.length === 0}
               />
             )}
             {activeView !== "form" && (
               <Button
-                text="Log Harvest"
-                style="primary"
+                label="Log Harvest"
+                variant="primary"
                 onClick={() => {
                   setEditingRecord(null);
                   setActiveView("form");
                 }}
-                isDisabled={!userId || !hiveId}
+                disabled={!userId || !hiveId}
               />
             )}
           </div>

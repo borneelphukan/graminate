@@ -2,8 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import Table from "@/components/tables/Table";
+import { Table } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useTableActions } from "@/hooks/useTableActions";
 
 type Labour = {
   id: string | number;
@@ -55,6 +56,7 @@ const LabourPayment = () => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const { handleDeleteRows, handleResetTable } = useTableActions("labour_payment");
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -298,6 +300,8 @@ const LabourPayment = () => {
           reset={false}
           hideChecks={true}
           download={false}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
       </div>
     </PlatformLayout>

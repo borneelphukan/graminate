@@ -1,7 +1,6 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
@@ -336,14 +335,14 @@ const PoultryFeedsModal = ({
 
           <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
             <Button
-              text="Cancel"
+              label="Cancel"
               type="button"
-              style="secondary"
+              variant="secondary"
               onClick={onClose}
-              isDisabled={isSubmitting}
+              disabled={isSubmitting}
             />
             <Button
-              text={
+              label={
                 isSubmitting
                   ? "Saving..."
                   : feedRecordToEdit
@@ -351,8 +350,8 @@ const PoultryFeedsModal = ({
                   : "Add Record"
               }
               type="submit"
-              style="primary"
-              isDisabled={isSubmitting || loadingInventoryFeedItems}
+              variant="primary"
+              disabled={isSubmitting || loadingInventoryFeedItems}
             />
           </div>
         </form>

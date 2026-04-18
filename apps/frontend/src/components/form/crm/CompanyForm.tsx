@@ -1,7 +1,6 @@
+import { Dropdown, Button } from "@graminate/ui";
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 
@@ -228,9 +227,9 @@ const CompanyForm = ({ userId, onClose }: CompanyFormProps) => {
           errorMessage={companyErrors.postal_code}
         />
       </div>
-      <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-        <Button text="Cancel" style="secondary" onClick={onClose} />
-        <Button text="Create" style="primary" type="submit" />
+      <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+        <Button label="Cancel" variant="secondary" onClick={onClose} />
+        <Button label="Create" variant="primary" type="submit" />
       </div>
     </form>
   );

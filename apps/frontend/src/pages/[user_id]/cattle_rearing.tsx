@@ -1,4 +1,4 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,7 +7,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import { PAGINATION_ITEMS, POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import CattleForm from "@/components/form/CattleForm";
@@ -54,6 +54,7 @@ const CattleRearing = () => {
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
+  const { handleDeleteRows, handleResetTable } = useTableActions(view);
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
@@ -335,6 +336,8 @@ const CattleRearing = () => {
             reset={true}
             hideChecks={false}
             download={true}
+            onDeleteRows={handleDeleteRows}
+            onResetTable={handleResetTable}
           />
         )}
 

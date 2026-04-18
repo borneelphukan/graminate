@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import TextArea from "@/components/ui/TextArea";
 import CustomTable from "@/components/tables/CustomTable";
@@ -389,9 +389,9 @@ const ReceiptDetails = () => {
       <div className="px-4 sm:px-6 pb-10">
         <div className="pt-4 exclude-from-pdf-view">
           <Button
-            text="Back"
-            style="ghost"
-            arrow="left"
+            label="Back"
+            variant="ghost"
+            icon={{ left: "arrow_back" }}
             onClick={() => router.back()}
           />
         </div>
@@ -568,21 +568,21 @@ const ReceiptDetails = () => {
 
         <div className="flex flex-col sm:flex-row mt-10 space-y-3 sm:space-y-0 sm:space-x-4 exclude-from-pdf-view">
           <Button
-            text={saving ? "Updating..." : "Update Invoice"}
-            style="primary"
+            label={saving ? "Updating..." : "Update Invoice"}
+            variant="primary"
             onClick={handleSave}
-            isDisabled={!hasChanges || saving}
+            disabled={!hasChanges || saving}
           />
           <div className="hidden md:block w-full sm:w-auto">
             <Button
-              text="Download PDF"
-              style="primary"
+              label="Download PDF"
+              variant="primary"
               onClick={handleDownload}
             />
           </div>
           <Button
-            text="Cancel"
-            style="secondary"
+            label="Cancel"
+            variant="secondary"
             onClick={() =>
               router.push(`/${user_id}/crm?view=receipts`)
             }

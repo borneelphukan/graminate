@@ -8,7 +8,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
@@ -336,9 +336,9 @@ const CattleDetailPage = () => {
             <div className="flex flex-wrap gap-2">
               {parsedUserId && (
                 <Button
-                  text="All Cattle Records"
-                  arrow="left"
-                  style="secondary"
+                  label="All Cattle Records"
+                  icon={{ left: "arrow_back" }}
+                  variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/cattle_rearing`)
                   }
@@ -347,8 +347,8 @@ const CattleDetailPage = () => {
 
               {selectedCattleData && !loadingCattleData && (
                 <Button
-                  text="Edit Record"
-                  style="secondary"
+                  label="Edit Record"
+                  variant="secondary"
                   onClick={() => setShowCattleForm(true)}
                 />
               )}

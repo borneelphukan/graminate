@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@graminate/ui";
-import Table from "@/components/tables/Table";
+import { Button, Table } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
+import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -40,6 +40,7 @@ const WarehousePage = () => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const { handleDeleteRows, handleResetTable } = useTableActions(view);
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -184,6 +185,8 @@ const WarehousePage = () => {
           reset={true}
           hideChecks={false}
           download={true}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
 
         {isSidebarOpen && (

@@ -1,18 +1,17 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button, Checkbox } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-
-import Button from "@/components/ui/Button";
 import { UNITS } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../ui/Loader";
-import Checkbox from "../ui/Checkbox";
 
 interface InventoryFormProps extends SidebarProp {
   warehouseId?: number;
+  initialData?: any;
+  onSuccess?: () => void;
 }
 
 type InventoryItemData = {
@@ -50,6 +49,8 @@ const InventoryForm = ({
   onClose,
   formTitle,
   warehouseId,
+  initialData,
+  onSuccess,
 }: InventoryFormProps) => {
   const router = useRouter();
   const { user_id: queryUserId } = router.query;
@@ -59,13 +60,13 @@ const InventoryForm = ({
 
   const [animate, setAnimate] = useState(false);
   const [inventoryItem, setInventoryItem] = useState<InventoryItemData>({
-    itemName: "",
-    itemGroup: "",
-    units: "",
-    quantity: "",
-    pricePerUnit: "",
-    minimumLimit: "",
-    feed: false,
+    itemName: initialData?.item_name || "",
+    itemGroup: initialData?.item_group || "",
+    units: initialData?.units || "",
+    quantity: initialData?.quantity?.toString() || "",
+    pricePerUnit: initialData?.price_per_unit?.toString() || "",
+    minimumLimit: initialData?.minimum_limit?.toString() || "",
+    feed: !!initialData?.feed,
   });
   const [inventoryErrors, setInventoryErrors] = useState<InventoryFormErrors>(
     {}
@@ -260,19 +261,36 @@ const InventoryForm = ({
       payload.minimum_limit = Number(inventoryItem.minimumLimit);
     }
 
-    await axiosInstance.post(`/inventory/add`, payload);
-    setInventoryItem({
-      itemName: "",
-      itemGroup: "",
-      units: "",
-      quantity: "",
-      pricePerUnit: "",
-      minimumLimit: "",
-      feed: false,
-    });
-    setInventoryErrors({});
-    handleClose();
-    window.location.reload();
+    try {
+      if (initialData?.inventory_id) {
+        await axiosInstance.put(
+          `/inventory/update/${initialData.inventory_id}`,
+          payload
+        );
+      } else {
+        await axiosInstance.post(`/inventory/add`, payload);
+      }
+
+      setInventoryItem({
+        itemName: "",
+        itemGroup: "",
+        units: "",
+        quantity: "",
+        pricePerUnit: "",
+        minimumLimit: "",
+        feed: false,
+      });
+      setInventoryErrors({});
+      handleClose();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error saving inventory item:", error);
+      alert("Failed to save inventory item. Please try again.");
+    }
   };
 
   return (
@@ -299,7 +317,7 @@ const InventoryForm = ({
             </button>
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-2 -mr-2 custom-scrollbar">
+          <div className="flex-grow overflow-y-auto px-1 custom-scrollbar">
             <form
               className="flex flex-col gap-4 w-full"
               onSubmit={handleSubmitInventoryItem}
@@ -433,9 +451,13 @@ const InventoryForm = ({
                 errorMessage={inventoryErrors.minimumLimit}
               />
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button text="Cancel" style="secondary" onClick={handleClose} />
-                <Button text="Add Item" style="primary" type="submit" />
+              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button label="Cancel" variant="secondary" onClick={handleClose} />
+                <Button
+                  label={initialData ? "Update Item" : "Add Item"}
+                  variant="primary"
+                  type="submit"
+                />
               </div>
             </form>
           </div>

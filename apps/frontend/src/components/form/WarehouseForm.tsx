@@ -1,9 +1,7 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-
-import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -229,7 +227,7 @@ const WarehouseForm = ({
             </button>
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-2 -mr-2 custom-scrollbar">
+          <div className="flex-grow overflow-y-auto px-1 custom-scrollbar">
             <form
               className="flex flex-col gap-4 w-full"
               onSubmit={handleSubmitWarehouse}
@@ -356,11 +354,11 @@ const WarehouseForm = ({
                 errorMessage={warehouseErrors.storage_capacity}
               />
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button text="Cancel" style="secondary" onClick={handleClose} />
+              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button label="Cancel" variant="secondary" onClick={handleClose} />
                 <Button
-                  text={isEditMode ? "Update" : "Create"}
-                  style="primary"
+                  label={isEditMode ? "Update" : "Create"}
+                  variant="primary"
                   type="submit"
                 />
               </div>

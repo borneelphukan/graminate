@@ -1,8 +1,6 @@
-import { Dropdown, Icon, Checkbox } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox, Button } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
-
-import Button from "@/components/ui/Button";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../ui/Loader";
@@ -196,11 +194,11 @@ const TaskManager = ({ userId, projectType }: Props) => {
           }}
         />
         <Button
-          text="Task"
-          style="primary"
+          label="Task"
+          variant="primary"
           onClick={addNewTask}
-          isDisabled={!newTaskText.trim()}
-          add
+          disabled={!newTaskText.trim()}
+          icon={{ left: "add" }}
         />
       </div>
 
@@ -264,8 +262,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
                     </td>
                     <td className="py-2 px-2 align-middle text-center">
                       <Button
-                        text="Delete"
-                        style="delete"
+                        label="Delete"
+                        variant="danger"
                         onClick={() => deleteTask(task.task_id)}
                       />
                     </td>

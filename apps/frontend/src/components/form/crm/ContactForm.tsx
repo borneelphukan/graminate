@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Button } from "@graminate/ui";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
@@ -230,8 +229,8 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
         />
       </div>
       <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-        <Button text="Cancel" style="secondary" onClick={onClose} />
-        <Button text="Create Contact" style="primary" type="submit" />
+        <Button label="Cancel" variant="secondary" onClick={onClose} />
+        <Button label="Create Contact" variant="primary" type="submit" />
       </div>
     </form>
   );

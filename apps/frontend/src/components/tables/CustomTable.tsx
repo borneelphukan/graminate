@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import TextField from "../ui/TextField";
 
 type Item = {
@@ -134,7 +134,7 @@ const CustomTable = ({ items, onItemsChange, loading }: CustomTableProps) => {
 
       {!loading && (
         <div className="pt-4">
-          <Button text="+ Add Item" style="primary" onClick={addItem} />
+          <Button label="+ Add Item" variant="primary" onClick={addItem} />
         </div>
       )}
     </div>

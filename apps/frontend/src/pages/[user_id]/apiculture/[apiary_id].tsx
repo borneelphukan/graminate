@@ -7,12 +7,12 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import Button from "@/components/ui/Button";
+import { Button, Table } from "@graminate/ui";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
 import ApicultureForm from "@/components/form/apiculture/ApicultureForm";
-import Table from "@/components/tables/Table";
+import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import HiveForm, {
   HiveData,
@@ -79,6 +79,7 @@ const ApicultureDetailPage = () => {
   const [hiveSearchQuery, setHiveSearchQuery] = useState("");
   const [hiveCurrentPage, setHiveCurrentPage] = useState(1);
   const [hiveItemsPerPage, setHiveItemsPerPage] = useState(5);
+  const { handleDeleteRows, handleResetTable } = useTableActions("hives");
 
   const [apicultureInventoryItems, setApicultureInventoryItems] = useState<
     ItemRecord[]
@@ -148,7 +149,7 @@ const ApicultureDetailPage = () => {
         `/apiculture/${parsedApiaryId}`
       );
       setSelectedApiaryData(response.data);
-    } catch {
+    } catch (error) {
       console.error("Error fetching apiary details:", error);
       setSelectedApiaryData(null);
     } finally {
@@ -164,7 +165,7 @@ const ApicultureDetailPage = () => {
         `/bee-hives/apiary/${parsedApiaryId}`
       );
       setHives(response.data.hives || []);
-    } catch {
+    } catch (error) {
       console.error("Error fetching hives:", error);
       setHives([]);
     } finally {
@@ -192,7 +193,7 @@ const ApicultureDetailPage = () => {
           params: { item_group: "Apiculture" },
         });
         setApicultureInventoryItems(response.data.items || []);
-      } catch {
+      } catch (error) {
         console.error("Error fetching apiculture inventory:", error);
         setApicultureInventoryItems([]);
       } finally {
@@ -369,9 +370,9 @@ const ApicultureDetailPage = () => {
             <div className="flex flex-wrap gap-2">
               {parsedUserId && (
                 <Button
-                  text="All Bee Yards"
-                  arrow="left"
-                  style="secondary"
+                  label="All Bee Yards"
+                  icon={{ left: "arrow_back" }}
+                  variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/apiculture`)
                   }
@@ -380,13 +381,13 @@ const ApicultureDetailPage = () => {
               {selectedApiaryData && !loadingApiaryData && (
                 <>
                   <Button
-                    text="Edit Bee Yard"
-                    style="secondary"
+                    label="Edit Bee Yard"
+                    variant="secondary"
                     onClick={() => setShowApiaryForm(true)}
                   />
                   <Button
-                    text="Add Hive"
-                    style="primary"
+                    label="Add Hive"
+                    variant="primary"
                     onClick={() => setShowHiveForm(true)}
                   />
                 </>
@@ -435,18 +436,13 @@ const ApicultureDetailPage = () => {
             Hives in this Bee Yard
           </h2>
           <Table
-            data={{
-              columns: hiveTableData.columns,
-              rows: hiveTableData.rows,
-            }}
+            data={hiveTableData}
             filteredRows={hiveTableData.rows}
             currentPage={hiveCurrentPage}
-            setCurrentPage={setHiveCurrentPage}
             itemsPerPage={hiveItemsPerPage}
+            setCurrentPage={setHiveCurrentPage}
             setItemsPerPage={setHiveItemsPerPage}
-            paginationItems={PAGINATION_ITEMS.filter(
-              (item) => parseInt(item) <= 10
-            )}
+            paginationItems={PAGINATION_ITEMS}
             searchQuery={hiveSearchQuery}
             setSearchQuery={setHiveSearchQuery}
             totalRecordCount={hiveTableData.rows.length}
@@ -460,9 +456,8 @@ const ApicultureDetailPage = () => {
             }}
             view="hives"
             loading={loadingHives}
-            reset={true}
-            download={true}
-            hideChecks={false}
+            onDeleteRows={handleDeleteRows}
+            onResetTable={handleResetTable}
           />
         </div>
       </div>

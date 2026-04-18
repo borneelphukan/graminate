@@ -1,6 +1,5 @@
-import { Icon, Dropdown } from "@graminate/ui";
+import { Icon, Dropdown, Button } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
@@ -272,19 +271,19 @@ const ExpenseModal = ({
 
             <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
               <Button
-                text="Cancel"
+                label="Cancel"
                 type="button"
-                style="secondary"
+                variant="secondary"
                 onClick={onClose}
-                isDisabled={isLoading || isLoadingSubTypes}
+                disabled={isLoading || isLoadingSubTypes}
               />
               <Button
-                text={
+                label={
                   isLoading || isLoadingSubTypes ? "Logging..." : "Log Expense"
                 }
                 type="submit"
-                style="primary"
-                isDisabled={isLoading || isLoadingSubTypes}
+                variant="primary"
+                disabled={isLoading || isLoadingSubTypes}
               />
             </div>
           </form>

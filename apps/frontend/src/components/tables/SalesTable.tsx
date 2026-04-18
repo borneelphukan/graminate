@@ -2,8 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
-import Button from "@/components/ui/Button";
-import { Dropdown, Checkbox } from "@graminate/ui";
+import { Dropdown, Checkbox, Button } from "@graminate/ui";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -429,9 +428,9 @@ const SalesTable = ({
         <div className="flex flex-row gap-2">
           {reset && (
             <Button
-              style="secondary"
-              text="Reset"
-              isDisabled={filteredRows.length === 0}
+              variant="secondary"
+              label="Reset"
+              disabled={filteredRows.length === 0}
               onClick={async () => {
                 if (filteredRows.length === 0) return;
                 const entityNames: Record<string, string> = {
@@ -471,9 +470,9 @@ const SalesTable = ({
           {download && (
             <div className="relative" ref={dropdownRef}>
               <Button
-                style="secondary"
-                text="Download Data"
-                isDisabled={sortedAndPaginatedRows.length === 0}
+                variant="secondary"
+                label="Download Data"
+                disabled={sortedAndPaginatedRows.length === 0}
                 onClick={() => setShowExportDropdown(!showExportDropdown)}
               />
               {showExportDropdown && (
@@ -612,16 +611,16 @@ const SalesTable = ({
                       {isInvoiceColumn && view === "sales" ? (
                         invoiceCreated ? (
                           <Button
-                            text="View Receipt"
-                            style="ghost"
+                            label="View Receipt"
+                            variant="ghost"
                             onClick={() => {
                               handleViewReceiptClick(saleId);
                             }}
                           />
                         ) : (
                           <Button
-                            text="Add Receipt"
-                            style="secondary"
+                            label="Add Receipt"
+                            variant="secondary"
                             onClick={() => {
                               handleAddInvoiceClick(saleId);
                             }}
@@ -678,10 +677,10 @@ const SalesTable = ({
             </div>
             <div className="flex items-center">
               <Button
-                text="Previous"
-                style="ghost"
-                arrow="left"
-                isDisabled={currentPage === 1}
+                label="Previous"
+                variant="ghost"
+                icon={{ left: "arrow_back" }}
+                disabled={currentPage === 1}
                 onClick={() => {
                   if (currentPage > 1) setCurrentPage(currentPage - 1);
                 }}
@@ -692,10 +691,10 @@ const SalesTable = ({
                 </span>
               </p>
               <Button
-                text="Next"
-                style="ghost"
-                arrow="right"
-                isDisabled={
+                label="Next"
+                variant="ghost"
+                icon={{ right: "arrow_forward" }}
+                disabled={
                   currentPage === Math.ceil(totalRecordCount / itemsPerPage) ||
                   totalRecordCount === 0
                 }
@@ -715,9 +714,9 @@ const SalesTable = ({
           </div>
           <div className="flex sm:hidden flex-1 justify-between items-center">
             <Button
-              text="Prev"
-              style="ghost"
-              isDisabled={currentPage === 1}
+              label="Prev"
+              variant="ghost"
+              disabled={currentPage === 1}
               onClick={() => {
                 if (currentPage > 1) setCurrentPage(currentPage - 1);
               }}
@@ -726,9 +725,9 @@ const SalesTable = ({
               Page <span className="font-medium">{currentPage}</span>
             </p>
             <Button
-              text="Next"
-              style="ghost"
-              isDisabled={
+              label="Next"
+              variant="ghost"
+              disabled={
                 currentPage === Math.ceil(totalRecordCount / itemsPerPage) ||
                 totalRecordCount === 0
               }

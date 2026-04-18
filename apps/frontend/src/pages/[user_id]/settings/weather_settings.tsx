@@ -4,8 +4,7 @@ import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
-import { Dropdown, Checkbox } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Checkbox, Button } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -185,10 +184,10 @@ const WeatherSettings = () => {
                         />
                       <div className="mt-6">
                         <Button
-                          style="primary"
-                          text={t("saveWeatherSettings" as TranslationKey)}
+                          variant="primary"
+                          label={t("saveWeatherSettings" as TranslationKey)}
                           onClick={handleSaveWeatherSettings}
-                          isDisabled={isSavingWeather}
+                          disabled={isSavingWeather}
                         />
                       </div>
                       {weatherSuccessMessage && (

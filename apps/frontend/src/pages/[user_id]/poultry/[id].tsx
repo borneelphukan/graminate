@@ -37,7 +37,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import FlockForm from "@/components/form/poultry/FlockForm";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
@@ -907,9 +907,9 @@ const PoultryDetail = () => {
             <div className="flex flex-wrap gap-2">
               {parsedUserId && (
                 <Button
-                  text="All Flocks"
-                  arrow="left"
-                  style="secondary"
+                  label="All Flocks"
+                  icon={{ left: "arrow_back" }}
+                  variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/poultry`)
                   }
@@ -920,8 +920,8 @@ const PoultryDetail = () => {
                 parsedUserId &&
                 parsedFlockId && (
                   <Button
-                    text="Health Records"
-                    style="primary"
+                    label="Health Records"
+                    variant="primary"
                     onClick={handleManageHealthRecordsClick}
                   />
                 )}
@@ -933,8 +933,8 @@ const PoultryDetail = () => {
                   selectedFlockData.flock_type
                 ) && (
                   <Button
-                    text="Egg Records"
-                    style="primary"
+                    label="Egg Records"
+                    variant="primary"
                     onClick={handleLogEggCollection}
                   />
                 )}
@@ -943,15 +943,15 @@ const PoultryDetail = () => {
                 parsedUserId &&
                 parsedFlockId && (
                   <Button
-                    text="Feed Records"
-                    style="primary"
+                    label="Feed Records"
+                    variant="primary"
                     onClick={handleManageFeedRecordsClick}
                   />
                 )}
               {selectedFlockData && !loadingFlockData && (
                 <Button
-                  text="Edit Flock Details"
-                  style="secondary"
+                  label="Edit Flock Details"
+                  variant="secondary"
                   onClick={() => setShowFlockForm(true)}
                 />
               )}

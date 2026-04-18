@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, translations } from "@/translations";
@@ -55,7 +55,7 @@ const PoultrySettings = () => {
                     <p className="mt-2 text-sm text-dark dark:text-light">
                       Manage how you receive notifications for your operations
                     </p>
-                    <Button text="Save Changes" style="primary" />
+                    <Button label="Save Changes" variant="primary" />
                   </div>
                   <div className="rounded-lg p-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

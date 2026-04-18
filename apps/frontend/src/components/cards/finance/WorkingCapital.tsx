@@ -30,8 +30,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
+import { Dropdown, Button } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 
 ChartJS.register(
@@ -516,17 +515,17 @@ const WorkingCapital = () => {
       {showTimeNavCtrl && (
         <div className="flex justify-center items-center gap-x-3 mt-4">
           <Button
-            text="Previous"
-            arrow="left"
-            style="ghost"
-            isDisabled={isPrevDisabled}
+            label="Previous"
+            icon={{ left: "arrow_back" }}
+            variant="ghost"
+            disabled={isPrevDisabled}
             onClick={handlePrev}
           />{" "}
           <Button
-            text="Next"
-            arrow="right"
-            style="ghost"
-            isDisabled={isNextDisabled}
+            label="Next"
+            icon={{ right: "arrow_forward" }}
+            variant="ghost"
+            disabled={isNextDisabled}
             onClick={handleNext}
           />
         </div>

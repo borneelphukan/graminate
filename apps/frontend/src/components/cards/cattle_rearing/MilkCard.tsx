@@ -20,10 +20,14 @@ import {
   CartesianScaleOptions,
 } from "chart.js";
 import TextField from "@/components/ui/TextField";
-import { Dropdown } from "@graminate/ui";
-import Button from "@/components/ui/Button";
-import Loader from "@/components/ui/Loader";
+import { Dropdown, Button, Table } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useTableActions } from "@/hooks/useTableActions";
+import {
+  useUserPreferences,
+  SupportedLanguage,
+} from "@/contexts/UserPreferencesContext";
+import Loader from "@/components/ui/Loader";
 import Swal from "sweetalert2";
 import {
   format,
@@ -37,11 +41,6 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
-import Table from "@/components/tables/Table";
-import {
-  useUserPreferences,
-  SupportedLanguage,
-} from "@/contexts/UserPreferencesContext";
 
 ChartJS.register(
   CategoryScale,
@@ -138,6 +137,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
+  const { handleDeleteRows, handleResetTable } = useTableActions("milk_records");
 
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
@@ -805,8 +805,8 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
               </div>
               <div className="flex justify-end gap-2 pt-4">
                 <Button
-                  text="Cancel"
-                  style="secondary"
+                  label="Cancel"
+                  variant="secondary"
                   onClick={() =>
                     editingRecord
                       ? setActiveView("table")
@@ -814,10 +814,10 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
                   }
                 />
                 <Button
-                  text={editingRecord ? "Update Record" : "Add Record"}
+                  label={editingRecord ? "Update Record" : "Add Record"}
                   type="submit"
-                  style="primary"
-                  isDisabled={isSubmitting}
+                  variant="primary"
+                  disabled={isSubmitting}
                 />
               </div>
             </form>
@@ -835,12 +835,12 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             paginationItems={PAGINATION_ITEMS}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            totalRecordCount={tableData.rows.length}
-            view="cattle_milk"
-            loading={isLoading}
-            reset={true}
-            download={true}
+            totalRecordCount={filteredMilkRecordsForTable.length}
             onRowClick={handleRowClick}
+            view="milk_records"
+            loading={isLoading}
+            onDeleteRows={handleDeleteRows}
+            onResetTable={handleResetTable}
           />
         );
       case "chart":
@@ -928,17 +928,17 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
               !isLoading && (
                 <div className="flex justify-center items-center gap-x-3 mt-4">
                   <Button
-                    text="Previous"
-                    arrow="left"
-                    style="ghost"
-                    isDisabled={isPrevDisabled}
+                    label="Previous"
+                    icon={{ left: "arrow_back" }}
+                    variant="ghost"
+                    disabled={isPrevDisabled}
                     onClick={handlePrev}
                   />
                   <Button
-                    text="Next"
-                    arrow="right"
-                    style="ghost"
-                    isDisabled={isNextDisabled}
+                    label="Next"
+                    icon={{ right: "arrow_forward" }}
+                    variant="ghost"
+                    disabled={isNextDisabled}
                     onClick={handleNext}
                   />
                 </div>
@@ -960,29 +960,29 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
           <div className="flex items-center gap-2">
             {activeView !== "chart" && (
               <Button
-                text="Back"
-                style="ghost"
-                arrow="left"
+                label="Back"
+                variant="ghost"
+                icon={{ left: "arrow_back" }}
                 onClick={handleBackToChart}
               />
             )}
             {activeView === "chart" && (
               <Button
-                text="View Logs"
-                style="secondary"
+                label="View Logs"
+                variant="secondary"
                 onClick={() => setActiveView("table")}
-                isDisabled={!userId || !cattleId || allMilkRecords.length === 0}
+                disabled={!userId || !cattleId || allMilkRecords.length === 0}
               />
             )}
             {activeView !== "form" && (
               <Button
-                text="Log Milk"
-                style="primary"
+                label="Log Milk"
+                variant="primary"
                 onClick={() => {
                   setEditingRecord(null);
                   setActiveView("form");
                 }}
-                isDisabled={!userId || !cattleId}
+                disabled={!userId || !cattleId}
               />
             )}
           </div>

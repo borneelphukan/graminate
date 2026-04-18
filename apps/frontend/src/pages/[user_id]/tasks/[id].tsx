@@ -1,7 +1,3 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/router";
-import Swal from "sweetalert2";
-import Button from "@/components/ui/Button";
 import TicketModal from "@/components/modals/crm/TicketModal";
 
 import SearchBar from "@/components/ui/SearchBar";
@@ -33,8 +29,11 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Button } from "@graminate/ui";
 import TaskModal from "@/components/modals/crm/TaskModal";
+import React, { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 const formatDeadlineForInput = (
   deadlineString: string | null | undefined
@@ -723,9 +722,9 @@ const Tasks = () => {
         >
           <div className="mb-4 px-2">
             <Button
-              text="Back"
-              style="ghost"
-              arrow="left"
+              label="Back"
+              variant="ghost"
+              icon={{ left: "arrow_back" }}
               onClick={() => router.back()}
             />
           </div>
@@ -749,9 +748,8 @@ const Tasks = () => {
               <div className="flex items-center gap-2">
                 {selectedFilterLabels.length > 0 && (
                   <Button
-                    text="Clear Filters"
-                    style="secondary"
-                    width="small"
+                    label="Clear Filters"
+                    variant="secondary"
                     onClick={() => setSelectedFilterLabels([])}
                   />
                 )}
@@ -873,13 +871,13 @@ const Tasks = () => {
                       />
                       <div className="flex gap-2 mt-2">
                         <Button
-                          text="Add"
-                          style="primary"
+                          label="Add"
+                          variant="primary"
                           onClick={handleCreateColumn}
                         />
                         <Button
-                          text="Cancel"
-                          style="ghost"
+                          label="Cancel"
+                          variant="ghost"
                           onClick={() => setIsAddingColumn(false)}
                         />
                       </div>

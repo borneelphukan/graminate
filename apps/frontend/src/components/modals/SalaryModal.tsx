@@ -1,8 +1,7 @@
+import { Dropdown, Button } from "@graminate/ui";
 import { useState } from "react";
 import { showToast, toastMessage } from "@/stores/toast";
-import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import { Dropdown } from "@graminate/ui";
 import { useSalaryModalPrefill } from "@/hooks/modals";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -201,14 +200,14 @@ const SalaryModal = ({
 
           <div className="flex justify-end gap-4 pt-6 mt-8">
             <Button
-              text="Cancel"
-              style="secondary"
+              label="Cancel"
+              variant="secondary"
               onClick={onClose}
               type="button"
-              isDisabled={loading}
+              disabled={loading}
             />
             <Button
-              text={
+              label={
                 loading
                   ? editMode
                     ? "Updating..."
@@ -217,9 +216,9 @@ const SalaryModal = ({
                   ? "Update Salary"
                   : "Add Salary"
               }
-              style="primary"
+              variant="primary"
               type="submit"
-              isDisabled={loading}
+              disabled={loading}
             />
           </div>
         </form>

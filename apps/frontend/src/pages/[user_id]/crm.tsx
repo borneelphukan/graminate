@@ -1,8 +1,7 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, SearchBar, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import SearchDropdown from "@/components/ui/SearchDropdown";
-import Table from "@/components/tables/Table";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -12,6 +11,7 @@ import CompanyForm from "@/components/form/crm/CompanyForm";
 import ContractForm from "@/components/form/crm/ContractForm";
 import ReceiptForm from "@/components/form/crm/ReceiptForm";
 import TaskForm from "@/components/form/crm/TaskForm";
+import { useTableActions } from "@/hooks/useTableActions";
 import {
   useUserPreferences,
   SupportedLanguage,
@@ -586,6 +586,8 @@ const CRM = () => {
     }
   };
 
+  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+
   return (
     <PlatformLayout>
       <Head>
@@ -672,6 +674,8 @@ const CRM = () => {
           setItemsPerPage={() => {}}
           setSearchQuery={setSearchQuery}
           loading={loading}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
         {isSidebarOpen && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">

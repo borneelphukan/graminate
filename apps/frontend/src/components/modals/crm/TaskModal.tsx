@@ -1,10 +1,9 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import CustomTextArea from "@/components/ui/CustomTextArea";
 
 import Swal from "sweetalert2";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -325,15 +324,15 @@ const TaskModal = ({
                   />
                   <div className="flex space-x-2 mt-2">
                     <Button
-                      text="Save"
+                      label="Save"
                       onClick={handleSaveDescription}
-                      style="primary"
+                      variant="primary"
                     />
 
                     <Button
-                      text="Cancel"
+                      label="Cancel"
                       onClick={handleCancelDescription}
-                      style="secondary"
+                      variant="secondary"
                     />
                   </div>
                 </>

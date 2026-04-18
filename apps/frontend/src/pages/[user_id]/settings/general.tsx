@@ -1,4 +1,4 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,8 +7,6 @@ import NavPanel from "@/components/layout/NavPanel";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
-
-import Button from "@/components/ui/Button";
 import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -460,10 +458,10 @@ const General = () => {
 
                       <div className="mt-6">
                         <Button
-                          style="primary"
-                          text={t("saveChanges")}
+                          variant="primary"
+                          label={t("saveChanges")}
                           onClick={handleSaveProfileChanges}
-                          isDisabled={isSavingProfile}
+                          disabled={isSavingProfile}
                         />
                       </div>
                       {profileSuccessMessage && (

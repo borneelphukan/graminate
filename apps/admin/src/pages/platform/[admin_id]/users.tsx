@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Button from "@/components/ui/Button";
-import Table from "@/components/tables/Table";
+import { Button, Table, SearchBar } from "@graminate/ui";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -44,6 +43,9 @@ const AdminUsersPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -204,6 +206,43 @@ const AdminUsersPage = () => {
     },
   });
 
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery) return users;
+    return users.filter((user) =>
+      Object.values(user).some((value) =>
+        String(value).toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [users, searchQuery]);
+
+  const tableData = useMemo(
+    () => ({
+      columns: [
+        "Owner Name",
+        "Contact Email",
+        "Business Name",
+        "Type",
+        "Services Opted",
+        "Plan",
+        "Plan Expiry",
+      ],
+      rows: filteredUsers.map((user) => [
+        `${user.first_name} ${user.last_name}`,
+        user.email,
+        user.business_name || "N/A",
+        user.type,
+        String(user.sub_type || "").split(",").filter(Boolean).length,
+        user.plan,
+        user.plan === "FREE"
+          ? "Unlimited"
+          : user.subscription_expires_at
+          ? new Date(user.subscription_expires_at).toLocaleDateString()
+          : "N/A",
+      ]),
+    }),
+    [filteredUsers]
+  );
+
   return (
     <>
       <Head>
@@ -279,11 +318,29 @@ const AdminUsersPage = () => {
                 </div>
               </section>
               {admin_id && (
-                <Table
-                  users={users}
-                  isLoading={isLoading}
-                  admin_id={admin_id as string}
-                />
+                <div className="mt-8">
+                  <Table
+                    data={tableData}
+                    filteredRows={tableData.rows}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    itemsPerPage={itemsPerPage}
+                    setItemsPerPage={setItemsPerPage}
+                    paginationItems={["25 per page", "50 per page", "100 per page"]}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    totalRecordCount={filteredUsers.length}
+                    onRowClick={(row) => {
+                      const userEmail = row[1] as string;
+                      const user = users.find((u) => u.email === userEmail);
+                      if (user) {
+                        router.push(`/platform/${admin_id}/users/${user.user_id}`);
+                      }
+                    }}
+                    view="admin_users"
+                    loading={isLoading}
+                  />
+                </div>
               )}
             </>
           )}

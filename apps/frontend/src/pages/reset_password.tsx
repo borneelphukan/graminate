@@ -1,10 +1,9 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Swal from "sweetalert2";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import HomeNavbar from "@/components/layout/Navbar/HomeNavbar";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
@@ -134,9 +133,8 @@ const ResetPasswordPage = () => {
           </div>
           <div className="mt-4">
             <Button
-              text="Reset Password"
-              width="large"
-              style="primary"
+              label="Reset Password"
+              variant="primary"
               onClick={handleResetPassword}
             />
           </div>

@@ -3,7 +3,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import Table from "@/components/tables/Table";
+import { Table } from "@graminate/ui";
+import { useTableActions } from "@/hooks/useTableActions";
 import SalaryModal from "@/components/modals/SalaryModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -51,6 +52,7 @@ const LabourPaymentDetails = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(25);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const { handleDeleteRows, handleResetTable } = useTableActions("labour_payment");
   const PAGINATION_ITEMS = ["10 per page", "25 per page", "50 per page", "100 per page"];
 
   useEffect(() => {
@@ -213,6 +215,8 @@ const LabourPaymentDetails = () => {
           }}
           reset={false}
           hideChecks={true}
+          onDeleteRows={handleDeleteRows}
+          onResetTable={handleResetTable}
         />
 
         {showSalaryModal && (

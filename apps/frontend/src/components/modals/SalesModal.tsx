@@ -1,6 +1,5 @@
-import { Icon, Dropdown } from "@graminate/ui";
+import { Icon, Dropdown, Button } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
-import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
@@ -363,10 +362,10 @@ const SalesModal = ({
                   <div className={index === 0 ? "pt-[21px] sm:pt-0" : ""}>
                     <Button
                       type="button"
-                      style="delete"
+                      variant="danger"
                       onClick={() => handleRemoveItem(index)}
                       aria-label="Remove item"
-                      text="X"
+                      label="X"
                     />
                   </div>
                 )}
@@ -388,9 +387,9 @@ const SalesModal = ({
             )}
             <Button
               type="button"
-              style="secondary"
+              variant="secondary"
               onClick={handleAddItem}
-              text="Add Item"
+              label="Add Item"
             />
           </div>
 
@@ -400,17 +399,17 @@ const SalesModal = ({
 
           <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400">
             <Button
-              text="Cancel"
+              label="Cancel"
               type="button"
-              style="secondary"
+              variant="secondary"
               onClick={onClose}
-              isDisabled={isLoading || isLoadingSubTypes}
+              disabled={isLoading || isLoadingSubTypes}
             />
             <Button
-              text={isLoading || isLoadingSubTypes ? "Logging..." : "Log Sale"}
+              label={isLoading || isLoadingSubTypes ? "Logging..." : "Log Sale"}
               type="submit"
-              style="primary"
-              isDisabled={isLoading || isLoadingSubTypes}
+              variant="primary"
+              disabled={isLoading || isLoadingSubTypes}
             />
           </div>
         </form>

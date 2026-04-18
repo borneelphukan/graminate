@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import LoginLayout from "@/layout/LoginLayout";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 import OTPModal from "@/components/modals/OTPModal";
 import axios from "axios";
@@ -406,9 +406,8 @@ const SignIn = () => {
                   )}
                   <div className="mx-auto flex flex-row justify-center">
                     <Button
-                      text="Login"
-                      width="large"
-                      style="primary"
+                      label="Login"
+                      variant="primary"
                       type="submit"
                     />
                   </div>
@@ -538,9 +537,8 @@ const SignIn = () => {
                   </div>
                   <div className="mx-auto flex flex-row justify-center">
                     <Button
-                      text="Sign Up"
-                      width="large"
-                      style="primary"
+                      label="Sign Up"
+                      variant="primary"
                       type="submit"
                     />
                   </div>
