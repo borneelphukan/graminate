@@ -221,7 +221,7 @@ const LabourPayment = () => {
       <div className="min-h-screen container mx-auto p-4">
         <div className="flex justify-between items-center dark:bg-dark relative mb-4">
           <div>
-            <h1 className="text-lg font-semibold dark:text-white">
+            <h1 className="text-lg font-semibold">
               Salary Manager
             </h1>
           </div>
@@ -232,7 +232,7 @@ const LabourPayment = () => {
             <h2 className="text-base font-semibold text-dark dark:text-gray-300 mb-1">
               Basic Salary Confirmed
             </h2>
-            <p className="text-xl font-bold text-dark dark:text-white">
+            <p className="text-xl font-bold">
               ₹ {basicSalaryToPay.toFixed(2)}
             </p>
           </div>
@@ -241,7 +241,7 @@ const LabourPayment = () => {
             <h2 className="text-base font-semibold text-dark dark:text-gray-300 mb-1">
               Overall Salary Due
             </h2>
-            <p className="text-xl font-bold text-dark dark:text-white">
+            <p className="text-xl font-bold">
               ₹ {combinedSalaryToPay.toFixed(2)}
             </p>
             <p className="text-xs text-gray-300">
@@ -269,7 +269,7 @@ const LabourPayment = () => {
           </div>
         </div>
 
-        <h2 className="text-md font-semibold dark:text-white mb-2 mt-6">
+        <h2 className="text-md font-semibold mb-2 mt-6">
           Employee List
         </h2>
         <Table

@@ -1,5 +1,5 @@
 import { Icon, Button } from "@graminate/ui";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
@@ -32,6 +32,130 @@ const PlatformLayout = ({ children }: Props) => {
   const { user_id } = router.query;
 
   const { isFirstLogin, fetchUserSubTypes } = useUserPreferences();
+
+  // Floating Chat Button Position and Dragging
+  const [chatPos, setChatPos] = useState({ x: -1, y: -1 });
+  const [isDocked, setIsDocked] = useState(false);
+  const [dockSide, setDockSide] = useState<"left" | "right">("right");
+  const dragInfo = useRef({ 
+    isDragging: false, 
+    startX: 0, 
+    startY: 0, 
+    moved: false,
+    lastX: 0,
+    lastY: 0
+  });
+
+  useEffect(() => {
+    const sidebarWidth = window.innerWidth > 1024 ? 260 : 0;
+    const margin = 16;
+    const buttonSize = 56;
+
+    if (chatPos.x === -1) {
+      setChatPos({
+        x: window.innerWidth - buttonSize - margin,
+        y: window.innerHeight - buttonSize - margin,
+      });
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragInfo.current.isDragging) return;
+      
+      const dx = e.clientX - dragInfo.current.startX;
+      const dy = e.clientY - dragInfo.current.startY;
+      
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        dragInfo.current.moved = true;
+      }
+
+      setChatPos((prev) => {
+        let newX = prev.x + dx;
+        let newY = prev.y + dy;
+
+        const navbarHeight = 64;
+        
+        // Allow temporary free movement during drag, but limit to loosely within screen
+        newX = Math.max(-20, Math.min(window.innerWidth - 30, newX));
+        newY = Math.max(navbarHeight, Math.min(window.innerHeight - 50, newY));
+
+        return { x: newX, y: newY };
+      });
+
+      dragInfo.current.startX = e.clientX;
+      dragInfo.current.startY = e.clientY;
+    };
+
+    const handleMouseUp = () => {
+      if (!dragInfo.current.isDragging) return;
+      dragInfo.current.isDragging = false;
+      document.body.style.userSelect = "";
+
+      const sidebarWidth = window.innerWidth > 1024 ? 260 : 0;
+      const margin = 16;
+      const buttonSize = 56;
+      const halfWindow = (window.innerWidth + sidebarWidth) / 2;
+
+      setChatPos((prev) => {
+        let finalX;
+        let finalY = Math.max(72, Math.min(window.innerHeight - buttonSize - margin, prev.y));
+        
+        // Check for Docking (hiding at edges) - ONLY FOR RIGHT
+        if (prev.x > window.innerWidth - buttonSize - 5) {
+          setIsDocked(true);
+          setDockSide("right");
+          finalX = window.innerWidth - buttonSize / 2;
+        } else {
+          setIsDocked(false);
+          // Snap to Left or Right
+          if (prev.x < halfWindow) {
+            finalX = sidebarWidth + margin; // Always fully visible on left
+            setDockSide("left");
+          } else {
+            finalX = window.innerWidth - buttonSize - margin;
+            setDockSide("right");
+          }
+        }
+        return { x: finalX, y: finalY };
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [chatPos.x]);
+
+  const handleDragStart = (e: React.MouseEvent) => {
+    dragInfo.current = {
+      isDragging: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      moved: false,
+      lastX: chatPos.x,
+      lastY: chatPos.y
+    };
+    document.body.style.userSelect = "none";
+  };
+
+  const handleChatToggle = () => {
+    if (!dragInfo.current.moved) {
+      if (isDocked) {
+        // Undock on click
+        setIsDocked(false);
+        const sidebarWidth = window.innerWidth > 1024 ? 260 : 0;
+        const margin = 16;
+        const buttonSize = 56;
+        setChatPos(prev => ({
+          ...prev,
+          x: dockSide === "left" ? sidebarWidth + margin : window.innerWidth - buttonSize - margin
+        }));
+      } else {
+        setIsChatOpen((prev) => !prev);
+      }
+    }
+  };
 
   useEffect(() => {
     if (isSidebarOpen || isChatOpen) {
@@ -225,14 +349,53 @@ const PlatformLayout = ({ children }: Props) => {
           </div>
         </div>
 
-        <Button
-          onClick={() => setIsChatOpen((prev) => !prev)}
-          variant="primary"
-          shape="circle"
-          className="fixed bottom-4 right-4 h-14 w-14 shadow-lg z-50"
+        <div
+          style={
+            chatPos.x !== -1
+              ? {
+                  position: "fixed",
+                  left: `${chatPos.x}px`,
+                  top: `${chatPos.y}px`,
+                  zIndex: 50,
+                  transition: dragInfo.current.isDragging ? "none" : "all 0.3s ease-out",
+                }
+              : {
+                  position: "fixed",
+                  bottom: "16px",
+                  right: "16px",
+                  zIndex: 50,
+                }
+          }
+          onMouseDown={handleDragStart}
         >
-          <Icon type={"smart_toy"} size="lg" />
-        </Button>
+          <Button
+            onClick={handleChatToggle}
+            variant={isDocked ? "ghost" : "outline"}
+            shape={isDocked ? "default" : "circle"}
+            className={`h-14 w-14 shadow-lg active:scale-95 transition-all relative ${
+              dragInfo.current.isDragging ? "cursor-grabbing" : "cursor-grab"
+            } ${
+              isDocked
+                ? `opacity-50 hover:opacity-100 ${
+                    dockSide === "left"
+                      ? "rounded-l-none rounded-r-lg"
+                      : "rounded-r-none rounded-l-lg"
+                  }`
+                : ""
+            }`}
+          >
+            {isDocked ? (
+              <Icon
+                type={dockSide === "left" ? "chevron_right" : "chevron_left"}
+                className={`text-2xl! ${
+                  dockSide === "left" ? "translate-x-4" : "-translate-x-4"
+                } animate-pulse`}
+              />
+            ) : (
+              <Icon type={"smart_toy"} size="lg" />
+            )}
+          </Button>
+        </div>
 
         {isChatOpen && (
           <div

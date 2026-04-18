@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type Props = {
   columns: string[];

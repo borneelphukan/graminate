@@ -120,7 +120,7 @@ const SalaryModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out">
       <div className="bg-white dark:bg-gray-800 w-full max-w-3xl max-h-[90vh] my-auto overflow-y-auto p-8 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
         <div className="mb-6 pb-4 border-b border-gray-200 dark:border-gray-600">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-xl font-semibold">
             {editMode ? "Update Salary" : "Add New Salary"}
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1"></p>

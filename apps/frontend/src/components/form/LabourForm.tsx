@@ -1,9 +1,7 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-
-import Button from "@/components/ui/Button";
 import { GENDER } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
@@ -208,13 +206,13 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
           transition: "transform 300ms ease-out",
         }}
       >
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-dark dark:text-light">
               {formTitle ? formTitle : "Add New Employee"}
@@ -228,7 +226,7 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
             </button>
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-2 -mr-2">
+          <div className="flex-grow overflow-y-auto custom-scrollbar px-1">
             <form
               className="flex flex-col gap-4 w-full"
               onSubmit={handleSubmitLabour}
@@ -439,8 +437,12 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button text="Cancel" style="secondary" onClick={handleClose} />
-                <Button text="Add Labour" style="primary" type="submit" />
+                <Button
+                  label="Cancel"
+                  variant="secondary"
+                  onClick={handleClose}
+                />
+                <Button label="Add Labour" variant="primary" type="submit" />
               </div>
             </form>
           </div>

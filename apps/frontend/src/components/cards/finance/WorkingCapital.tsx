@@ -458,7 +458,7 @@ const WorkingCapital = () => {
   return (
     <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
       <div className="mb-4">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 text-center sm:text-left">
+        <h3 className="text-xl font-semibold mb-1 text-center sm:text-left">
           Working Capital Analysis
         </h3>
         <p className="text-sm text-dark dark:text-light mb-4 text-center sm:text-left">

@@ -1,7 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Checkbox } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Button from "@/components/ui/Button";
-import Checkbox from "@/components/ui/Checkbox";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";

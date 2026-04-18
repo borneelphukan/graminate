@@ -5,7 +5,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import Button from "@/components/ui/Button";
 import { API_BASE_URL } from "@/constants/constants";
-import Checkbox from "@/components/ui/Checkbox";
+import { Checkbox } from "@graminate/ui";
 
 type NotificationSettings = {
   orders: {

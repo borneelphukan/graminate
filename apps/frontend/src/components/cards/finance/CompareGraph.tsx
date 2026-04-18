@@ -504,10 +504,10 @@ const CompareGraph = ({
   return (
     <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
       <div className="mb-4">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 text-center sm:text-left">
+        <h3 className="text-xl font-semibold mb-1 text-center sm:text-left">
           {selectedMetric1} vs {selectedMetric2}
         </h3>
-        <p className="text-sm text-dark dark:text-light mb-4 text-center sm:text-left">
+        <p className="text-sm mb-4 text-center sm:text-left">
           Compare two financial metrics over a selected time period.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4 my-4">

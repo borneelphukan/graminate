@@ -1,6 +1,6 @@
 import { useAllRowsSelected } from "@/hooks/tables";
 import React, { useState, JSX } from "react";
-import Checkbox from "@/components/ui/Checkbox";
+import { Icon, Checkbox } from "@graminate/ui";
 
 type FilterTasksFn = (column: {
   id: string;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import Table from "@/components/tables/Table";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -116,16 +116,16 @@ const LabourDatabase = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              text="View Salaries"
-              style="primary"
+              label="View Salaries"
+              variant="secondary"
               onClick={() =>
                 router.push(`/${parsedUserId}/labour_payment`)
               }
             />
             <Button
-              text="Add Employee"
-              style="primary"
-              add
+              label="Add Employee"
+              variant="primary"
+              icon={{ left: "add" }}
               onClick={() => setIsSidebarOpen(true)}
             />
           </div>

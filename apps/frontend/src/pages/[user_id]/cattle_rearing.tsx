@@ -1,9 +1,8 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
-import Button from "@/components/ui/Button";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { PAGINATION_ITEMS, POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -247,8 +246,9 @@ const CattleRearing = () => {
               </div>
             </div>
             <Button
-              text="Add Herd"
-              style="primary"
+              label="Add Herd"
+              variant="primary"
+              icon={{ left: "add" }}
               onClick={() => {
                 setEditingCattle(null);
                 setIsSidebarOpen(true);

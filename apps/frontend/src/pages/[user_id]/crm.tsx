@@ -1,7 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
 import SearchDropdown from "@/components/ui/SearchDropdown";
 import Table from "@/components/tables/Table";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -620,8 +619,9 @@ const CRM = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              text={getButtonText(view)}
-              style="primary"
+              label={getButtonText(view)}
+              variant="primary"
+              icon={{ left: "add" }}
               onClick={() => setIsSidebarOpen(true)}
             />
           </div>

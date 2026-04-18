@@ -1,4 +1,3 @@
-import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, JSX } from "react";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -406,8 +405,8 @@ const AddServicePage = () => {
           </form>
         ) : (
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-              {"Available Services"}
+            <h2 className="text-xl font-semibold mb-2">
+              Available Services
             </h2>
             <p className="text-gray-600 dark:text-gray-300">
               {"You have subscribed to all available services."}

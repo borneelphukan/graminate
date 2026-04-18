@@ -100,31 +100,44 @@ const InventoryStockCard = ({
         <>
           {inventoryItems.length > 0 ? (
             <div className="flex-grow overflow-hidden">
-              <ul className="space-y-3 h-full overflow-y-auto pr-2 pb-2 custom-scrollbar">
-                {inventoryItems.map((item) => {
-                  const statusInfo = getItemStatus(item);
-                  return (
-                    <li
-                      key={item.inventory_id}
-                      className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-md hover:bg-gray-400 dark:hover:bg-dark transition-colors duration-150"
-                    >
-                      <span className="text-sm text-dark dark:text-light flex-1 truncate pr-2">
-                        {item.item_name}
-                      </span>
-                      <div className="flex items-center space-x-3">
-                        <span className="font-medium text-sm text-gray-900 dark:text-white whitespace-nowrap">
-                          {item.quantity} {item.units}
-                        </span>
-                        <span
-                          className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusInfo.className}`}
+              <div className="h-full overflow-y-auto pr-2 custom-scrollbar bg-inherit">
+                <table className="w-full text-sm border-separate border-spacing-y-2 bg-inherit">
+                  <thead className="sticky top-0 z-10 bg-inherit">
+                    <tr className="text-gray-300 text-xs uppercase bg-gray-400 dark:bg-gray-800 tracking-wider bg-inherit">
+                      <th className="font-medium pb-2 text-left bg-inherit">Item Name</th>
+                      <th className="font-medium pb-2 text-center w-24 bg-inherit">Stock</th>
+                      <th className="font-medium pb-2 text-center w-24 bg-inherit">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                    {inventoryItems.map((item) => {
+                      const statusInfo = getItemStatus(item);
+                      return (
+                        <tr
+                          key={item.inventory_id}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
-                          {statusInfo.text}
-                        </span>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+                          <td className="py-2 align-middle">
+                            <span className="text-dark dark:text-light truncate block max-w-[120px] sm:max-w-none">
+                              {item.item_name}
+                            </span>
+                          </td>
+                          <td className="py-2 px-2 align-middle text-center font-medium whitespace-nowrap">
+                            {item.quantity} {item.units}
+                          </td>
+                          <td className="py-2 align-middle text-center">
+                            <span
+                              className={`text-xs font-semibold px-2.5 py-1 rounded-full inline-block min-w-[75px] ${statusInfo.className}`}
+                            >
+                              {statusInfo.text}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center flex-grow py-4">

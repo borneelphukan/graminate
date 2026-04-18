@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -8,7 +8,6 @@ import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskManager from "@/components/cards/TaskManager";
 import InventoryStockCard from "@/components/cards/InventoryStock";
-import Button from "@/components/ui/Button";
 import Table from "@/components/tables/Table";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -286,9 +285,9 @@ const Apiculture = () => {
               </div>
             </div>
             <Button
-              add
-              text=" Bee Yard"
-              style="primary"
+              label="Bee Yard"
+              variant="primary"
+              icon={{ left: "add" }}
               onClick={() => {
                 setEditingApiary(null);
                 setIsSidebarOpen(true);

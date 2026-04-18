@@ -1,4 +1,4 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox } from "@graminate/ui";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
@@ -8,7 +8,6 @@ import Button from "@/components/ui/Button";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import Checkbox from "@/components/ui/Checkbox";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 type RowType = unknown[];

@@ -3,12 +3,11 @@ import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Checkbox } from "@graminate/ui";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Checkbox from "@/components/ui/Checkbox";
 import { useRouter } from "next/router";
 
 export type TableCellValue =

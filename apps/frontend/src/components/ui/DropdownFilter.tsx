@@ -1,7 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Checkbox } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import type { DropdownFilter } from "@/types/card-props";
-import Checkbox from "@/components/ui/Checkbox";
 
 const DropdownFilter = ({
   items,

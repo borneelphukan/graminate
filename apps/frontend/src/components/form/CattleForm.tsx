@@ -1,8 +1,7 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -185,13 +184,13 @@ const CattleForm = ({
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
           transition: "transform 300ms ease-out",
         }}
       >
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-500 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-dark dark:text-light">
               {formTitle ||
@@ -206,7 +205,7 @@ const CattleForm = ({
             </button>
           </div>
 
-          <div className="flex-grow overflow-y-auto pr-2 -mr-2 custom-scrollbar">
+          <div className="flex-grow overflow-y-auto custom-scrollbar px-1">
             <form
               className="flex flex-col gap-4 w-full"
               onSubmit={handleSubmitCattle}
@@ -264,16 +263,16 @@ const CattleForm = ({
 
               <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
                 <Button
-                  text="Cancel"
-                  style="secondary"
+                  label="Cancel"
+                  variant="secondary"
                   onClick={handleClose}
-                  isDisabled={isLoading}
+                  disabled={isLoading}
                 />
                 <Button
-                  text={cattleToEdit ? "Update Herd" : "Add Herd"}
-                  style="primary"
+                  label={cattleToEdit ? "Update Herd" : "Add Herd"}
+                  variant="primary"
                   type="submit"
-                  isDisabled={isLoading}
+                  disabled={isLoading}
                 />
               </div>
             </form>

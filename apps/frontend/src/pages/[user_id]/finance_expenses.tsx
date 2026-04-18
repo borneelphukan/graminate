@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
@@ -160,8 +160,9 @@ const Expenses = () => {
                     </h2>
                   </div>
                   <Button
-                    text="Log New Expense"
-                    style="primary"
+                    label="Log Cost"
+                    variant="primary"
+                    icon={{ left: "add" }}
                     onClick={() => setIsExpenseModalOpen(true)}
                   />
                 </header>

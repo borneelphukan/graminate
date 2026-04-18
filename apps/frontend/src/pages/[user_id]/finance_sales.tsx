@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
@@ -172,13 +172,14 @@ const Sales = () => {
               <div className="mb-12">
                 <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
                   <div className="flex items-center mb-3 sm:mb-0">
-                    <h2 className="text-lg font-semibold dark:text-white">
+                    <h2 className="text-lg font-semibold">
                       Sales Records
                     </h2>
                   </div>
                   <Button
-                    text="Log New Sale"
-                    style="primary"
+                    label="Log Sales"
+                    variant="primary"
+                    icon={{ left: "add" }}
                     onClick={() => setIsSalesModalOpen(true)}
                   />
                 </header>

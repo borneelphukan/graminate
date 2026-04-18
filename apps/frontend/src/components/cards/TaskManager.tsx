@@ -1,14 +1,13 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
 
 import Button from "@/components/ui/Button";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Checkbox from "@/components/ui/Checkbox";
 import Loader from "../ui/Loader";
 
-type Priority = "High" | "Medium" | "Low";
+type Priority = "High" | "Medium" | "Low" | "";
 type TaskStatus = "To Do" | "In Progress" | "Checks" | "Completed";
 
 type Task = {
@@ -29,17 +28,16 @@ type Props = {
 const TaskManager = ({ userId, projectType }: Props) => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [newTaskText, setNewTaskText] = useState("");
-  const [newTaskPriority, setNewTaskPriority] = useState<Priority>("Medium");
   const [prioritySortAsc, setPrioritySortAsc] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [editingPriority, setEditingPriority] = useState<number | null>(null);
 
   const sortTasks = useCallback((list: Task[], asc: boolean) => {
     const priorityRankLocal: Record<Priority, number> = {
       High: 1,
       Medium: 2,
       Low: 3,
+      "": 4,
     };
 
     const sorted = [...list].sort((a, b) => {
@@ -99,7 +97,6 @@ const TaskManager = ({ userId, projectType }: Props) => {
           prioritySortAsc
         )
       );
-      setEditingPriority(null);
     } catch (error) {
       console.error("Failed to update priority:", error);
       setError("Failed to update task priority. Please try again.");
@@ -138,14 +135,13 @@ const TaskManager = ({ userId, projectType }: Props) => {
         project: projectType,
         task: newTaskText.trim(),
         status: "To Do",
-        priority: newTaskPriority,
+        priority: "Medium",
       });
 
       setTaskList((prev) =>
         sortTasks([...prev, response.data], prioritySortAsc)
       );
       setNewTaskText("");
-      setNewTaskPriority("Medium");
       setError(null);
     } catch (error) {
       console.error("Failed to create task:", error);
@@ -199,13 +195,6 @@ const TaskManager = ({ userId, projectType }: Props) => {
             }
           }}
         />
-        <Dropdown
-          items={PRIORITY_OPTIONS}
-          selectedItem={newTaskPriority}
-          onSelect={(item) => setNewTaskPriority(item as Priority)}
-          width="auto"
-          isDisabled={!newTaskText.trim()}
-        />
         <Button
           text="Task"
           style="primary"
@@ -225,80 +214,66 @@ const TaskManager = ({ userId, projectType }: Props) => {
             <p className="text-red-200">{error}</p>
           </div>
         ) : taskList.length > 0 ? (
-          <ul className="space-y-2 h-full overflow-y-auto pr-2 custom-scrollbar">
-            {taskList.map((task) => (
-              <li
-                key={task.task_id}
-                className="flex items-center p-1.5 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <Checkbox
-                  id={`task-${task.task_id}`}
-                  checked={task.status === "Completed"}
-                  onCheckedChange={() => toggleTaskCompletion(task.task_id)}
-                  className="mr-3 flex-shrink-0"
-                />
-                <span
-                  className={`text-sm flex-1 ${
-                    task.status === "Completed"
-                      ? "line-through text-gray-300"
-                      : "text-dark dark:text-gray-300"
-                  }`}
-                >
-                  {task.task}
-                </span>
-
-                {task.status === "Completed" ? (
-                  <button
-                    onClick={() => deleteTask(task.task_id)}
-                    className="ml-2 text-xs font-semibold bg-red-200 text-light px-2 py-1 rounded  hover:bg-red-100 transition-colors"
+          <div className="h-full overflow-y-auto pr-2 custom-scrollbar">
+            <table className="w-full text-sm border-separate border-spacing-y-2 bg-inherit">
+              <thead className="sticky top-0 z-10 bg-inherit">
+                <tr className="text-gray-300 text-xs uppercase tracking-wider bg-inherit dark:bg-gray-800">
+                  <th className="font-medium pb-2 text-center w-10 bg-inherit"></th>
+                  <th className="font-medium pb-2 text-left bg-inherit">Task</th>
+                  <th className="font-medium pb-2 text-center w-28 bg-inherit">Priority</th>
+                  <th className="font-medium pb-2 text-center w-20 bg-inherit">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                {taskList.map((task) => (
+                  <tr
+                    key={task.task_id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
-                    Delete
-                  </button>
-                ) : editingPriority === task.task_id ? (
-                  <div className="ml-2 flex gap-1">
-                    {(["High", "Medium", "Low"] as Priority[]).map(
-                      (priority) => (
-                        <button
-                          key={priority}
-                          onClick={() =>
-                            handlePriorityChange(task.task_id, priority)
-                          }
-                          className={`text-xs font-medium px-2 py-1 rounded ${
-                            priority === "High"
-                              ? "bg-red-200 text-light"
-                              : priority === "Medium"
-                              ? "bg-yellow-200 text-dark"
-                              : "bg-green-200 text-light"
-                          }`}
-                        >
-                          {priority}
-                        </button>
-                      )
-                    )}
-                    <button
-                      onClick={() => setEditingPriority(null)}
-                      className="text-xs font-medium px-2 py-1 rounded bg-gray-400 text-dark hover:bg-gray-300"
-                    >
-                      <Icon type={"close"} className="size-2" />
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setEditingPriority(task.task_id)}
-                    className={`ml-2 text-xs font-medium px-2 py-1 rounded ${
-                      task.priority === "High"
-                        ? "bg-red-100 text-light hover:bg-red-200"
-                        : task.priority === "Medium"
-                        ? "bg-yellow-200 text-dark"
-                        : "bg-green-200 text-light"
-                    }`}
-                  >
-                    {task.priority}
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
+                    <td className="py-2 text-center align-middle">
+                      <div className="flex justify-center">
+                        <Checkbox
+                          id={`task-${task.task_id}`}
+                          checked={task.status === "Completed"}
+                          onCheckedChange={() => toggleTaskCompletion(task.task_id)}
+                        />
+                      </div>
+                    </td>
+                    <td className="py-2 px-2 align-middle">
+                      <span
+                        className={`block truncate max-w-[150px] sm:max-w-none ${
+                          task.status === "Completed"
+                            ? "line-through text-gray-300"
+                            : "text-dark dark:text-gray-300"
+                        }`}
+                      >
+                        {task.task}
+                      </span>
+                    </td>
+                    <td className="py-2 px-2 align-middle">
+                      <Dropdown
+                        variant="small"
+                        items={PRIORITY_OPTIONS}
+                        selectedItem={task.priority}
+                        onSelect={(item) =>
+                          handlePriorityChange(task.task_id, item as Priority)
+                        }
+                        placeholder="-"
+                        className="w-full"
+                      />
+                    </td>
+                    <td className="py-2 px-2 align-middle text-center">
+                      <Button
+                        text="Delete"
+                        style="delete"
+                        onClick={() => deleteTask(task.task_id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center flex-grow h-full">
             <Icon

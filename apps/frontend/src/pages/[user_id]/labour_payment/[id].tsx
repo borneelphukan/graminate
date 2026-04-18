@@ -1,9 +1,8 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import Button from "@/components/ui/Button";
 import Table from "@/components/tables/Table";
 import SalaryModal from "@/components/modals/SalaryModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -149,20 +148,20 @@ const LabourPaymentDetails = () => {
         <title>Graminate | Salary Details</title>
       </Head>
       <Button
-        text="Back"
-        style="ghost"
-        arrow="left"
+        label="Back"
+        variant="ghost"
+        icon={{ left: "arrow_back" }}
         onClick={() => router.push(`/${parsedUserId}/labour_payment`)}
       />
       <div className="min-h-screen container mx-auto px-4">
         <div className="flex flex-row items-start justify-between mt-4">
-          <h1 className="text-lg font-semibold dark:text-white">
+          <h1 className="text-lg font-semibold">
             Salary Details
           </h1>
           <Button
-            text="Add Salary"
-            style="primary"
-            add
+            label="Add Salary"
+            variant="primary"
+            icon={{ left: "add" }}
             onClick={() => {
               setSelectedRecord(null);
               setShowSalaryModal(true);

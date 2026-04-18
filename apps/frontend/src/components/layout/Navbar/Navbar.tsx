@@ -277,12 +277,6 @@ const Navbar = ({
                           target={item.external ? "_blank" : "_self"}
                         >
                           {t(item.nameKey)}
-                          {item.external && (
-                            <Icon
-                              type={"open_in_new"}
-                              className="size-3 text-dark dark:text-light ml-1"
-                            />
-                          )}
                         </a>
                       ))}
                     </div>

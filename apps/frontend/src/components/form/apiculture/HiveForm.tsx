@@ -1,7 +1,6 @@
-import { Dropdown, Icon } from "@graminate/ui";
+import { Dropdown, Icon, Button } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -235,13 +234,13 @@ const HiveForm = ({
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
           transition: "transform 300ms ease-out",
         }}
       >
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-500 dark:border-gray-700">
             <h2 className="text-xl font-semibold text-dark dark:text-light">
               {formTitle}
@@ -254,10 +253,11 @@ const HiveForm = ({
               <Icon type={"close"} className="w-5 h-5" />
             </button>
           </div>
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-4 flex-grow overflow-y-auto pr-2 -mr-2 custom-scrollbar"
-          >
+          <div className="flex-grow overflow-y-auto custom-scrollbar px-1 mt-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-4 flex-grow"
+            >
             <TextField
               label="Hive Name / Identifier Number"
               placeholder="Enter Hive Name or Identifier"
@@ -328,25 +328,26 @@ const HiveForm = ({
               onChange={(val) => handleInputChange("notes", val)}
             />
 
-            <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-              <Button
-                text="Cancel"
-                style="secondary"
-                onClick={handleClose}
-                isDisabled={isLoading}
-              />
-              <Button
-                text={hiveToEdit ? "Update Hive" : "Add Hive"}
-                style="primary"
-                type="submit"
-                isDisabled={isLoading}
-              />
-            </div>
+              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
+                <Button
+                  label="Cancel"
+                  variant="secondary"
+                  onClick={handleClose}
+                  disabled={isLoading}
+                />
+                <Button
+                  label={hiveToEdit ? "Update Hive" : "Add Hive"}
+                  variant="primary"
+                  type="submit"
+                  disabled={isLoading}
+                />
+              </div>
           </form>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default HiveForm;

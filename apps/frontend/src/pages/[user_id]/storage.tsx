@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import Table from "@/components/tables/Table";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -137,7 +137,7 @@ const WarehousePage = () => {
       <div className="min-h-screen container mx-auto p-4">
         <div className="flex justify-between items-center dark:bg-dark relative mb-4">
           <div>
-            <h1 className="text-lg font-semibold text-dark dark:text-white">
+            <h1 className="text-lg font-semibold">
               Your Warehouses
             </h1>
             <p className="text-xs text-dark dark:text-light">
@@ -150,9 +150,9 @@ const WarehousePage = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              text="Add Warehouse"
-              style="primary"
-              add
+              label="Add Warehouse"
+              variant="primary"
+              icon={{ left: "add" }}
               onClick={() => setIsSidebarOpen(true)}
             />
           </div>

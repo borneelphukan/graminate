@@ -1,13 +1,13 @@
-import React, { InputHTMLAttributes } from "react";
+import React, { type InputHTMLAttributes } from "react";
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   label?: string;
   id: string;
   onCheckedChange?: (checked: boolean) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Checkbox = ({
+export const Checkbox = ({
   label,
   id,
   className = "",
@@ -42,11 +42,10 @@ const Checkbox = ({
           w-4 h-4 flex items-center justify-center mr-2 rounded-sm border
           ${
             checked
-              ? "border-green-200 bg-green-200 text-white"
+              ? "border-green-300 bg-green-100 text-white"
               : "border-gray-300 bg-white dark:bg-gray-800"
           }
           relative transition-all duration-200
-          ${!disabled && "group-hover:border-green-100"}
         `}
         >
           {checked && (
@@ -78,5 +77,3 @@ const Checkbox = ({
     </div>
   );
 };
-
-export default Checkbox;
