@@ -13,13 +13,13 @@ const CalendarHeader = ({
   previousMonth,
   nextMonth,
 }: CalendarHeaderProps) => (
-  <div className="flex items-center justify-between mb-4 px-1">
+  <div className="flex items-center justify-between mb-4">
     <button
-      className="p-2 rounded-full text-dark dark:text-light hover:bg-gray-400 dark:hover:text-light dark:hover:bg-gray-200 transition-colors duration-300 ease-in-out"
+      className="flex w-9 h-9 items-center justify-center rounded-full text-dark dark:text-light hover:bg-gray-400 dark:hover:text-light dark:hover:bg-gray-200 transition-colors duration-300 ease-in-out"
       onClick={previousMonth}
       aria-label="Previous month"
     >
-      <Icon type={"chevron_left"} className="size-5" />
+      <Icon type={"chevron_left"} size="lg" />
     </button>
     <div className="flex items-center">
       <h2 className="text-lg font-semibold text-dark dark:text-light tracking-wide">
@@ -29,11 +29,11 @@ const CalendarHeader = ({
       </h2>
     </div>
     <button
-      className="p-2 rounded-full text-dark dark:text-light hover:bg-gray-400 dark:hover:text-light dark:hover:bg-gray-200 transition-colors duration-300 ease-in-out"
+      className="flex w-9 h-9 items-center justify-center rounded-full text-dark dark:text-light hover:bg-gray-400 dark:hover:text-light dark:hover:bg-gray-200 transition-colors duration-300 ease-in-out"
       onClick={nextMonth}
       aria-label="Next month"
     >
-      <Icon type={"chevron_right"} className="size-5" />
+      <Icon type={"chevron_right"} size="lg" />
     </button>
   </div>
 );

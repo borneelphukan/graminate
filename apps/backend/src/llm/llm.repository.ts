@@ -23,8 +23,7 @@ export class LlmRepository {
     private readonly httpService: HttpService,
   ) {
     this.llmClient = new OpenAI({
-      apiKey: this.configService.get<string>('DEEPSEEK_API_KEY'),
-      baseURL: 'https://api.deepseek.com/v1',
+      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
     });
   }
 
@@ -197,7 +196,7 @@ export class LlmRepository {
 
     try {
       const initialResponse = await this.llmClient.chat.completions.create({
-        model: 'deepseek-chat',
+        model: 'gpt-4o',
         messages: conversationHistory,
         tools: tools,
         tool_choice: 'auto',
@@ -573,7 +572,7 @@ export class LlmRepository {
         }
 
         const finalResponse = await this.llmClient.chat.completions.create({
-          model: 'deepseek-chat',
+          model: 'gpt-4o',
           messages: conversationHistory,
         });
 

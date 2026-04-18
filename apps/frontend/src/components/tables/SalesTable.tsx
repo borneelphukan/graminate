@@ -461,7 +461,7 @@ const SalesTable = ({
                     });
                     window.location.reload();
                   } catch (error) {
-                    console.error(err);
+                    console.error(error);
                     Swal.fire("Error", "Failed to reset table.", "error");
                   }
                 }

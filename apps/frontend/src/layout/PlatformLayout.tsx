@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Navbar from "@/components/layout/Navbar/Navbar";
@@ -225,12 +225,14 @@ const PlatformLayout = ({ children }: Props) => {
           </div>
         </div>
 
-        <button
+        <Button
           onClick={() => setIsChatOpen((prev) => !prev)}
-          className="fixed bottom-4 right-4 bg-green-200 text-white p-4 rounded-full shadow-lg hover:bg-green-100 z-50"
+          variant="primary"
+          shape="circle"
+          className="fixed bottom-4 right-4 h-14 w-14 shadow-lg z-50"
         >
-          <Icon type={"smart_toy"} />
-        </button>
+          <Icon type={"smart_toy"} size="lg" />
+        </Button>
 
         {isChatOpen && (
           <div

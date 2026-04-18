@@ -16,7 +16,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/types/*": ["./types/*"],
-      "@/icons/*": ["./public/icon/*"]
+      "@/icons/*": ["./public/icon/*"],
+      "@graminate/ui": ["../../packages/ui/lib/index.ts"],
+      "@graminate/shared": ["../../packages/shared/src/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
