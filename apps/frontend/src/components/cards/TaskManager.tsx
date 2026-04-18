@@ -168,9 +168,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
     projectType.charAt(0).toUpperCase() + projectType.slice(1);
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-80 flex flex-col">
+    <div className="dark:bg-gray-800 p-6 rounded-lg shadow-md h-80 flex flex-col">
       <div className="flex justify-between items-center gap-2 mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+        <h2 className="text-xl font-semibold dark:text-light">
           {projectName} Task List
         </h2>
         <button

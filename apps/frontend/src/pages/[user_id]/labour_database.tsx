@@ -107,7 +107,7 @@ const LabourDatabase = () => {
       <div className="min-h-screen container mx-auto py-4">
         <div className="flex justify-between items-center dark:bg-dark relative mb-4">
           <div>
-            <h1 className="text-lg font-semibold dark:text-white">
+            <h1 className="text-lg font-semibold text-dark dark:text-light">
               Employee Database
             </h1>
             <p className="text-xs text-dark dark:text-light">

@@ -82,8 +82,8 @@ const InventoryStockCard = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 h-80 flex flex-col">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+    <div className="dark:bg-gray-800 shadow-md rounded-lg p-6 h-80 flex flex-col">
+      <h2 className="text-xl font-semibold mb-4">
         {title}
       </h2>
       {loading && (

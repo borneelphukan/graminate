@@ -495,14 +495,14 @@ const CompareGraph = ({
 
   if (isLoadingData) {
     return (
-      <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
+      <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
         <Loader />
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
+    <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 text-center sm:text-left">
           {selectedMetric1} vs {selectedMetric2}

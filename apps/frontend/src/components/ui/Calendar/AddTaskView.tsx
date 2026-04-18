@@ -88,7 +88,7 @@ const AddTaskView = ({
   return (
     <div className="animate-fadeIn">
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+        <h3 className="text-lg font-semibold text-dark dark:text-light">
           Add Task
         </h3>
       </div>
@@ -112,20 +112,20 @@ const AddTaskView = ({
           />
           {showSuggestions &&
             (isLoadingSuggestions ? (
-              <div className="absolute z-10 mt-1 w-full rounded-md bg-white dark:bg-gray-700 py-1 text-xs p-2 text-gray-400 dark:text-gray-500 shadow-lg">
+              <div className="absolute z-10 mt-1 w-full rounded-md bg-white dark:bg-dark-100 py-1 text-xs p-2 text-gray-400 dark:text-gray-200 shadow-lg">
                 <Loader />
               </div>
             ) : (
               suggestions.length > 0 && (
                 <div
                   ref={suggestionsRef as React.RefObject<HTMLDivElement>}
-                  className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg focus:outline-none sm:text-sm"
+                  className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md bg-white dark:bg-dark-100 py-1 text-base shadow-lg focus:outline-none sm:text-sm"
                 >
                   <p className="text-xs p-2 text-gray-300">Suggestions</p>
                   {suggestions.map((suggestion: string, index: number) => (
                     <div
                       key={index}
-                      className="px-4 py-2 hover:bg-gray-500 dark:hover:bg-gray-600 cursor-pointer text-sm text-gray-800 dark:text-gray-200"
+                      className="px-4 py-2 hover:bg-gray-400 dark:hover:bg-gray-200 cursor-pointer text-sm text-dark dark:text-light"
                       onClick={() => selectSuggestion(suggestion)}
                     >
                       {suggestion}
@@ -160,7 +160,7 @@ const AddTaskView = ({
           />
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-400 dark:border-gray-600">
+        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-400 dark:border-gray-200">
           <Button
             text="Add Task"
             style="primary"

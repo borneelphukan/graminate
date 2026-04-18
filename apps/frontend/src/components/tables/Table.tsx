@@ -486,7 +486,7 @@ const Table = ({
                   className={`cursor-pointer transition-colors duration-200 ${
                     selectedRows[rowIndex]
                       ? "bg-primary-50 dark:bg-primary-900/30"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                      : "hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
                   }`}
                   onClick={(e) => {
                     if (

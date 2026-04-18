@@ -411,7 +411,7 @@ const Calendar = () => {
     today.setHours(0, 0, 0, 0);
 
     if (day === null) {
-      classes += "text-gray-300 dark:text-dark cursor-default ";
+      classes += "text-gray-300 dark:text-gray-700 cursor-default ";
     } else {
       const isSelected =
         day === selectedDate.getDate() &&
@@ -427,20 +427,20 @@ const Calendar = () => {
         classes += "bg-green-200 text-white shadow-md ";
       } else if (isToday) {
         classes +=
-          "text-dark dark:text-light dark:border-blue-400 hover:bg-green-300 dark:hover:bg-green-100 ";
+          "text-dark dark:text-light dark:border-blue-400 hover:bg-green-300 dark:hover:bg-green-200 ";
       } else if (isPast) {
         classes +=
-          "text-gray-300 dark:text-light cursor-default  hover:bg-gray-500 dark:hover:bg-gray-700 ";
+          "text-gray-300 dark:text-gray-200 cursor-default hover:bg-gray-400 dark:hover:bg-gray-200 ";
       } else {
         classes +=
-          "text-gray-700 dark:text-light hover:bg-gray-400 dark:hover:bg-gray-600 ";
+          "text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-200 ";
       }
     }
     return classes;
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-gray-800 dark:text-gray-100 relative min-h-[400px]">
+    <div className="dark:bg-gray-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
       <InfoModal
         isOpen={showInvalidTimeModal}
         onClose={() => setShowInvalidTimeModal(false)}

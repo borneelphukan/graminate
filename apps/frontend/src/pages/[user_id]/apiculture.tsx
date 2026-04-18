@@ -262,7 +262,7 @@ const Apiculture = () => {
       <div className="min-h-screen container mx-auto p-4 space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-lg font-semibold dark:text-white">
+            <h1 className="text-lg font-semibold text-dark dark:text-light">
               Apiculture Records
             </h1>
             <p className="text-xs text-dark dark:text-light">

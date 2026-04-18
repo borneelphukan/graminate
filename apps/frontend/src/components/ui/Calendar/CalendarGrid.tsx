@@ -61,7 +61,7 @@ const CalendarGrid = ({
               <div className={getDayClasses(day)}>{day || ""}</div>
               {hasTasks && (
                 <span
-                  className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-light dark:bg-green-400 rounded-full"
+                  className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-green-200 dark:bg-green-200 rounded-full"
                   title="Tasks present"
                 ></span>
               )}

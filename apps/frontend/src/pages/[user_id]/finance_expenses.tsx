@@ -155,7 +155,7 @@ const Expenses = () => {
               <div>
                 <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
                   <div className="flex items-center mb-3 sm:mb-0">
-                    <h2 className="text-lg font-semibold dark:text-white">
+                    <h2 className="text-lg font-semibold text-dark dark:text-light">
                       Expense Records
                     </h2>
                   </div>

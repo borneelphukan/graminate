@@ -807,7 +807,7 @@ const TrendGraph = ({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
+    <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 text-center sm:text-left">
           Financial Trends

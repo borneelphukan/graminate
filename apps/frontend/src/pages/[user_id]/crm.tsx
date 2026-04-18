@@ -598,7 +598,7 @@ const CRM = () => {
         <div className="flex justify-between items-center dark:bg-dark relative mb-4">
           <div className="relative">
             <button
-              className="flex items-center text-lg font-semibold dark:text-white rounded focus:outline-none"
+              className="flex items-center text-lg font-semibold text-dark dark:text-light rounded focus:outline-none"
               onClick={() => setDropdownOpen(!dropdownOpen)}
               aria-haspopup="true"
               aria-expanded={dropdownOpen}

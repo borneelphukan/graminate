@@ -504,7 +504,7 @@ const Finance = () => {
         <main className="min-h-screen bg-light dark:bg-gray-900 p-4">
           <header className="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b border-gray-400 dark:border-gray-700">
             <div className="flex items-center mb-3 sm:mb-0">
-              <h1 className="text-xl font-semibold dark:text-white ml-3">
+              <h1 className="text-xl font-semibold text-dark dark:text-light ml-3">
                 Finance Dashboard
               </h1>
             </div>

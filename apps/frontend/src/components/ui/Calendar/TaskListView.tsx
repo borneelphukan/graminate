@@ -56,15 +56,15 @@ const TaskListView = ({
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4 border-b border-gray-400 dark:border-gray-600 pb-2">
+      <div className="flex justify-between items-center mb-4 border-b border-gray-400 dark:border-gray-200 pb-2">
         <button
           onClick={handleBackClick}
-          className="p-2 rounded-full text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-700 dark:hover:text-light transition-colors duration-150 ease-in-out"
+          className="p-2 rounded-full text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-200 transition-colors duration-150 ease-in-out"
           aria-label="Back to calendar"
         >
           <Icon type={"arrow_back"} className="h-5 w-5" />
         </button>
-        <h3 className="text-md font-semibold text-gray-800 dark:text-white text-center">
+        <h3 className="text-md font-semibold text-dark dark:text-light text-center">
           {getDayStatus(selectedDate)}
         </h3>
 
@@ -100,7 +100,7 @@ const TaskListView = ({
                 <div className="flex items-center flex-1 min-w-0">
                   <input
                     type="checkbox"
-                    className={`form-checkbox h-5 w-5 rounded text-green-200 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-green-200 focus:ring-green-100 dark:focus:ring-green-100 mr-3 ${
+                    className={`form-checkbox h-5 w-5 rounded text-green-200 border-gray-300 dark:border-gray-200 dark:bg-gray-100 dark:checked:bg-green-200 focus:ring-green-100 dark:focus:ring-green-200 mr-3 ${
                       isSelectedDatePast
                         ? "cursor-not-allowed opacity-70"
                         : "cursor-pointer"
@@ -114,7 +114,7 @@ const TaskListView = ({
                   />
                   <div className="flex-1 min-w-0">
                     <p
-                      className={`text-sm font-medium text-gray-900 dark:text-white truncate ${
+                      className={`text-sm font-medium text-dark dark:text-light truncate ${
                         task.status === "Completed"
                           ? "line-through text-gray-500 dark:text-gray-400"
                           : ""

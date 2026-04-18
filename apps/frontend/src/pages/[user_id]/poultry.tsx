@@ -231,7 +231,7 @@ const Poultry = () => {
       <div className="min-h-screen container mx-auto p-4">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-lg font-semibold dark:text-white">
+            <h1 className="text-lg font-semibold text-dark dark:text-light">
               Poultry Flocks
             </h1>
             <p className="text-xs text-dark dark:text-light">
