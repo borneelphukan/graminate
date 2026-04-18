@@ -212,6 +212,32 @@ select {
   --gradientPercentage: -108.33%;
 }
 
+.btn-destructive {
+  --gradientPercentage: -210.69%;
+  background: radial-gradient(
+      118.97% 279.17% at 45.98% -36.11%,
+      oklch(var(--red-300) / 72%) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      355.59deg,
+      var(--color-red-400) var(--gradientPercentage),
+      var(--color-red-300) 388.92%
+    );
+
+  box-shadow:
+    0 2px 0.7px 0 #f9f3f33d inset,
+    0 1px 0 0 #781414 inset,
+    0 -2px 0.5px 0 #f9f3f31c inset,
+    0 -1px 0 0 #781414 inset;
+
+  transition: --gradientPercentage ease-out 0.2s;
+}
+
+.btn-destructive:hover {
+  --gradientPercentage: 101.11%;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

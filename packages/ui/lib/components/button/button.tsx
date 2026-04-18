@@ -26,7 +26,7 @@ const buttonVariants = cva(
         success:
           "text-neutral-white bg-gradient-to-b from-green-200 via-green-300 to-green-400 bg-size-[200%_200%] bg-position-[center_-2px] hover:bg-bottom shadow-button border border-solid border-[oklch(var(--neutral-dark-gray)_/_12%)] box-border",
         destructive:
-          "text-neutral-white bg-gradient-to-b from-red-200 via-red-300 to-red-400 bg-size-[200%_200%] bg-position-[center_-2px] hover:bg-bottom shadow-button border border-solid border-[oklch(var(--neutral-dark-gray)_/_12%)] box-border focus:!ring-red-200 focus-visible:!ring-red-200",
+          "text-white btn-destructive focus:!ring-red-200 focus-visible:!ring-red-200",
         outline:
           "text-foreground border bg-white shadow-[0_1px_2px_0_oklch(var(--neutral-overlay)_/_10%)]",
         secondary:

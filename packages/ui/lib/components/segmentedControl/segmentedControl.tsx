@@ -9,7 +9,7 @@ const segmentedControlItemVariants = cva(
   {
     variants: {
       selected: {
-        true: "border rounded-sm bg-white shadow-xs",
+        true: "border dark:border-gray-600 rounded-sm shadow-xs",
         false:
           "text-neutral-gray opacity-70 hover:opacity-100  hover:text-neutral-black",
       },
@@ -77,7 +77,7 @@ function SegmentedControl({
       data-slot="segmented-control"
       className={cn(
         className,
-        "flex items-center h-[38px] bg-neutral-white border border-solid p-[1px] rounded-md"
+        "flex items-center h-[40px] bg-neutral-white border border-gray-400 dark:border-gray-700 p-1 rounded-lg shadow-sm"
       )}
       {...props}
     >

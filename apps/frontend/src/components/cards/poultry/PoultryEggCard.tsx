@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, SegmentedControl } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -28,7 +28,7 @@ import {
 } from "date-fns";
 import Loader from "@/components/ui/Loader";
 
-import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
+
 
 ChartJS.register(
   CategoryScale,
@@ -117,14 +117,7 @@ const PoultryEggCard = ({
     useState<PeriodOption>("Weekly");
   const [dateOffset, setDateOffset] = useState(0);
 
-  const viewToggleOptions: {
-    value: ViewOption;
-    label: string;
-    icon: string;
-  }[] = [
-    { value: "graphs", label: "Graphs", icon: "show_chart" },
-    { value: "metrics", label: "Metrics", icon: "grid_view" },
-  ];
+
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
@@ -474,10 +467,22 @@ const PoultryEggCard = ({
         <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
           Egg Collection & Grading
         </h2>
-        <ToggleSwitch
-          options={viewToggleOptions}
-          activeOption={activeView}
-          onToggle={(option) => setActiveView(option)}
+        <SegmentedControl
+          defaultValue={activeView === "graphs" ? "first" : "second"}
+          options={{
+            first: {
+              value: "graphs",
+              label: "Graphs",
+              icon: "show_chart",
+              onClick: () => setActiveView("graphs"),
+            },
+            second: {
+              value: "metrics",
+              label: "Metrics",
+              icon: "grid_view",
+              onClick: () => setActiveView("metrics"),
+            },
+          }}
         />
       </div>
 
