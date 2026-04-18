@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import PlatformLayout from "@/layout/PlatformLayout";

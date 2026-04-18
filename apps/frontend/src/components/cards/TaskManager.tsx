@@ -1,7 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "@/components/ui/Dropdown";
+
 import Button from "@/components/ui/Button";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";

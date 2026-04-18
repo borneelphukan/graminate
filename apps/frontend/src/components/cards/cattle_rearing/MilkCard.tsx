@@ -20,7 +20,7 @@ import {
   CartesianScaleOptions,
 } from "chart.js";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import Button from "@/components/ui/Button";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";

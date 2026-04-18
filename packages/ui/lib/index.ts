@@ -53,6 +53,7 @@ export * from "./components/tooltip/tooltip";
 export * from "./components/tag-input/tag-input";
 export * from "./components/upload/upload";
 export * from "./components/stepper/stepper";
+export * from "./components/dropdown/dropdown";
 
 export { LinkComponentProvider } from "./components/linkComponent/linkComponent";
 

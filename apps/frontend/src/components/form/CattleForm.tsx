@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
@@ -6,7 +6,6 @@ import Button from "@/components/ui/Button";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Dropdown from "@/components/ui/Dropdown";
 
 const CATTLE_TYPES_OPTIONS = ["Cows", "Buffalo", "Goat"];
 

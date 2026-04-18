@@ -4,9 +4,8 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import Swal from "sweetalert2";
-import Button from "@/components/ui/Button";
+import { Button, Icon, Dropdown } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
-import DropdownLarge from "../ui/Dropdown/DropdownLarge";
 import SearchBar from "../ui/SearchBar";
 
 type User = {
@@ -184,9 +183,9 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
         <div className="flex flex-row gap-2">
           <div className="relative" ref={dropdownRef}>
             <Button
-              style="secondary"
-              text="Download Data"
-              isDisabled={users.length === 0}
+              variant="secondary"
+              label="Download Data"
+              disabled={users.length === 0}
               onClick={() => setShowExportDropdown(!showExportDropdown)}
             />
             {showExportDropdown && (
@@ -324,10 +323,10 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
             </div>
             <div className="flex items-center">
               <Button
-                text="Previous"
-                style="ghost"
-                arrow="left"
-                isDisabled={currentPage === 1}
+                label="Previous"
+                variant="ghost"
+                icon={{ left: "chevron_left" }}
+                disabled={currentPage === 1}
                 onClick={() => {
                   if (currentPage > 1) setCurrentPage(currentPage - 1);
                 }}
@@ -338,10 +337,10 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
                 </span>
               </p>
               <Button
-                text="Next"
-                style="ghost"
-                arrow="right"
-                isDisabled={
+                label="Next"
+                variant="ghost"
+                icon={{ right: "chevron_right" }}
+                disabled={
                   currentPage === Math.ceil(totalRecordCount / itemsPerPage) ||
                   totalRecordCount === 0
                 }
@@ -352,7 +351,7 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
               />
             </div>
             <div className="relative">
-              <DropdownLarge
+              <Dropdown
                 items={paginationItems}
                 selectedItem={`${itemsPerPage} per page`}
                 onSelect={handleSelect}
@@ -361,9 +360,9 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
           </div>
           <div className="flex sm:hidden flex-1 justify-between items-center">
             <Button
-              text="Prev"
-              style="ghost"
-              isDisabled={currentPage === 1}
+              label="Prev"
+              variant="ghost"
+              disabled={currentPage === 1}
               onClick={() => {
                 if (currentPage > 1) setCurrentPage(currentPage - 1);
               }}
@@ -372,9 +371,9 @@ const Table = ({ users, isLoading, admin_id }: Props) => {
               Page <span className="font-medium">{currentPage}</span>
             </p>
             <Button
-              text="Next"
-              style="ghost"
-              isDisabled={
+              label="Next"
+              variant="ghost"
+              disabled={
                 currentPage === Math.ceil(totalRecordCount / itemsPerPage) ||
                 totalRecordCount === 0
               }

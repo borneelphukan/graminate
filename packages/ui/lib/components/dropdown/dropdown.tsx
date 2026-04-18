@@ -1,5 +1,5 @@
-import { Icon } from "@graminate/ui";
 import { useState, useRef, useEffect } from "react";
+import { Icon } from "../icon/icon";
 
 type DropdownProps = {
   items: string[] | Record<string, string[]>;
@@ -202,4 +202,5 @@ const Dropdown = ({
   );
 };
 
-export default Dropdown;
+export { Dropdown };
+export type { DropdownProps };

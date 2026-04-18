@@ -1,6 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -92,8 +92,6 @@ const CompanyDetails = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const avatarDropdownRef = useRef<HTMLDivElement>(null);
-
-
 
   const isLoading = !company;
 

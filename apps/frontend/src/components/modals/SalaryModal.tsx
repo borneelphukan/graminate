@@ -2,7 +2,7 @@ import { useState } from "react";
 import { showToast, toastMessage } from "@/stores/toast";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import { useSalaryModalPrefill } from "@/hooks/modals";
 import axiosInstance from "@/lib/utils/axiosInstance";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import Button from "@/components/ui/Button";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";

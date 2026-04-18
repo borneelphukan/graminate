@@ -1,10 +1,10 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
 import Swal from "sweetalert2";
 import SearchBar from "@/components/ui/SearchBar";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -63,7 +63,6 @@ const Table = ({
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [itemsPerPage, setItemsPerPageState] = useState(10);
-
 
   const effectiveLoading = loading;
 

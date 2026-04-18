@@ -30,7 +30,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import Loader from "@/components/ui/Loader";

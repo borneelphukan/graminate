@@ -172,7 +172,7 @@ export const UserPreferencesProvider = ({
       setSubTypesState(Array.isArray(user.sub_type) ? user.sub_type : []);
       setWidgetsState(Array.isArray(user.widgets) ? user.widgets : []);
     } catch (error) {
-      console.error("Error fetching user sub_types:", err);
+      console.error("Error fetching user sub_types:", error);
       setIsFirstLoginState(true);
       setUserType("Producer");
       setPlan(null);

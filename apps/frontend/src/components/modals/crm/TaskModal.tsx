@@ -1,13 +1,10 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import CustomTextArea from "@/components/ui/CustomTextArea";
-
 
 import Swal from "sweetalert2";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
-
 
 type TaskModalProps = {
   isOpen: boolean;

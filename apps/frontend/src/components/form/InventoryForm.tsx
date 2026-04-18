@@ -1,8 +1,8 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "@/components/ui/Dropdown";
+
 import Button from "@/components/ui/Button";
 import { UNITS } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";

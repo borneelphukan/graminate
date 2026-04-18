@@ -1,6 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
@@ -102,8 +102,6 @@ const ContactDetails = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const avatarDropdownRef = useRef<HTMLDivElement>(null);
-
-
 
   const isLoading = !contact;
 

@@ -33,7 +33,7 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import TaskModal from "@/components/modals/crm/TaskModal";
 
 const formatDeadlineForInput = (

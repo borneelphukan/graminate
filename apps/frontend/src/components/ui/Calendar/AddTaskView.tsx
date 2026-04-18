@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextField from "../TextField";
-import Dropdown from "../Dropdown";
+import { Dropdown } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../Loader";
 import Button from "../Button";

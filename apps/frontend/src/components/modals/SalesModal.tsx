@@ -1,8 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Dropdown } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "../ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
@@ -86,7 +85,7 @@ const SalesModal = ({
           setSubTypes([]);
         }
       } catch (error) {
-        console.error("Error fetching user sub_types:", err);
+        console.error("Error fetching user sub_types:", error);
         setSubTypes([]);
       } finally {
         setIsLoadingSubTypes(false);

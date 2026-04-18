@@ -230,7 +230,7 @@ const Navbar = ({
                 {isDropdownOpen && (
                   <div
                     ref={dropdownRef}
-                    className="origin-top-right absolute right-0 top-12 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-gray-700"
+                    className="origin-top-right absolute right-0 top-12 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-gray-800"
                   >
                     <div className="px-4 pb-3 border-b border-gray-500 dark:border-gray-300">
                       <div className="flex items-center">

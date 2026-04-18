@@ -1,5 +1,5 @@
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+import { Dropdown } from "@graminate/ui";
 import TextField from "@/components/ui/TextField";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";

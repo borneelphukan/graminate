@@ -1,8 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Dropdown } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
-import Dropdown from "../ui/Dropdown";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import InfoModal from "./InfoModal";
@@ -78,7 +77,7 @@ const ExpenseModal = ({
           setSubTypes([]);
         }
       } catch (error) {
-        console.error("Error fetching user sub_types:", err);
+        console.error("Error fetching user sub_types:", error);
         setSubTypes([]);
         setInfoModalState({
           isOpen: true,

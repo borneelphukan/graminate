@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
@@ -6,7 +6,6 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import TextArea from "@/components/ui/TextArea";
-import Dropdown from "@/components/ui/Dropdown";
 
 export type HiveData = {
   hive_id?: number;

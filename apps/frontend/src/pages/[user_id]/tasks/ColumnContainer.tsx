@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import React, { useState, useMemo } from "react";
 import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
@@ -6,7 +6,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
+
 import TextArea from "@/components/ui/TextArea";
 import SortableItem from "./SortableItem";
 import TaskCard from "./TaskCard";

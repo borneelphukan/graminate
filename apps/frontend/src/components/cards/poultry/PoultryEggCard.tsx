@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Dropdown, Icon } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -27,7 +27,7 @@ import {
   addDays as addDaysDateFns,
 } from "date-fns";
 import Loader from "@/components/ui/Loader";
-import Dropdown from "@/components/ui/Dropdown";
+
 import Button from "@/components/ui/Button";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
 
