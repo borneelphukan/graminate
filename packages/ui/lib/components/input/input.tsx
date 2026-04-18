@@ -36,6 +36,7 @@ type InputProps = React.ComponentPropsWithoutRef<"input"> & {
   hideLabel?: boolean;
   hint?: string;
   error?: string;
+  required?: boolean;
   options?: string[];
   selectedOption?: string;
   onOptionChange?: (option: string) => void;
@@ -58,6 +59,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       hideLabel,
       hint,
       error,
+      required,
       disabled,
       options,
       selectedOption,
@@ -116,10 +118,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             }
           >
             {label}
+            {required && <span className="text-red-200 ml-1">*</span>}
           </span>
           <div
             className={cn(
-              "flex flex-row gap-2 items-center py-2 px-3 rounded-[var(--radius-lg)] border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors",
+              "flex flex-row gap-2 items-center py-2 px-3 rounded-lg border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors",
               error && "border-red-200",
               "group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2",
               error

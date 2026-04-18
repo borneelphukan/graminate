@@ -37,9 +37,9 @@ const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
             aria-invalid={!!error}
             aria-describedby={[hintId, errorId].filter(Boolean).join(" ")}
             className={cn(
-              "peer mt-0.5 size-3.5 shrink-0 rounded-sm border [border-color:rgba(102,102,102,0.30)] hover:cursor-pointer",
-              "focus-visible:outline-none focus:!ring-[2px] focus:!ring-brand-mute-green focus:!ring-offset-2 focus-visible:!ring-[2px] focus-visible:!ring-brand-mute-green focus-visible:!ring-offset-2",
-              "data-[state=checked]:bg-[#149184] data-[state=checked]:text-primary-foreground",
+              "peer mt-0.5 size-3.5 shrink-0 rounded-sm border border-neutral-light-gray hover:cursor-pointer",
+              "focus-visible:outline-none focus:!ring-[2px] focus:!ring-brand-tech-green focus:!ring-offset-2 focus-visible:!ring-[2px] focus-visible:!ring-brand-mute-green focus-visible:!ring-offset-2",
+              "data-[state=checked]:bg-brand-green data-[state=checked]:text-primary-foreground",
               "aria-invalid:!ring-red-200 aria-invalid:border-destructive"
             )}
             {...props}
