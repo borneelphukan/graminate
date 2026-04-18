@@ -5,7 +5,7 @@ import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
 import Button from "@/components/ui/Button";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 import Loader from "../ui/Loader";
 
 type Priority = "High" | "Medium" | "Low";

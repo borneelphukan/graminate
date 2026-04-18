@@ -6,7 +6,7 @@ import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
 import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
 import Button from "@/components/ui/Button";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -171,9 +171,9 @@ const WeatherSettings = () => {
                           }))
                         }
                       />
-                      <div className="flex items-center gap-2">
                         <Checkbox
                           id="ai-suggestions"
+                          label={t("enableAISuggestions" as TranslationKey)}
                           checked={weatherSettings.aiSuggestions}
                           onCheckedChange={() =>
                             setWeatherSettings((prev) => ({
@@ -181,15 +181,8 @@ const WeatherSettings = () => {
                               aiSuggestions: !prev.aiSuggestions,
                             }))
                           }
-                          className="w-5 h-5 text-green-200 mt-2"
+                          className="mt-2"
                         />
-                        <label
-                          htmlFor="ai-suggestions"
-                          className="text-sm dark:text-light"
-                        >
-                          {t("enableAISuggestions" as TranslationKey)}
-                        </label>
-                      </div>
                       <div className="mt-6">
                         <Button
                           style="primary"

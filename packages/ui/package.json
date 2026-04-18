@@ -73,12 +73,9 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
-    "@storybook/addon-docs": "^9.1.3",
-    "@storybook/react": "^9.1.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react-swc": "^3.11.0",
-    "storybook": "^9.1.3",
     "tw-animate-css": "^1.3.7",
     "typescript": "^5.9.3",
     "vite": "^6.3.5",

@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 import { useRouter } from "next/router";
 
 export type TableCellValue =
@@ -585,7 +585,7 @@ const SalesTable = ({
                     <Checkbox
                       id={`row-checkbox-${rowIndex}`}
                       checked={selectedRows[rowIndex] || false}
-                      onCheckedChange={(checked) => handleRowCheckboxChange(rowIndex, !!checked)}
+                      onCheckedChange={(checked: boolean) => handleRowCheckboxChange(rowIndex, !!checked)}
                       className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                       aria-label={`Select row ${rowIndex + 1}`}
                     />

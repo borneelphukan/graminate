@@ -1,7 +1,7 @@
 import { Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import type { DropdownFilter } from "@/types/card-props";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 
 const DropdownFilter = ({
   items,
@@ -77,20 +77,14 @@ const DropdownFilter = ({
           }`}
         >
           {items.map((item) => (
-            <label
-              key={item}
-              className="flex items-center px-4 py-2 cursor-pointer dark:hover:bg-blue-100 hover:bg-gray-400"
-            >
               <Checkbox
+                key={item}
                 id={`filter-${item}`}
                 checked={isItemSelected(item)}
                 onCheckedChange={() => toggleItem(item)}
-                className="h-4 w-4 text-blue-600"
+                label={item}
+                className="px-4 py-2 hover:bg-gray-400 dark:hover:bg-blue-100"
               />
-              <span className="ml-2 text-sm text-dark dark:text-light">
-                {item}
-              </span>
-            </label>
           ))}
         </div>
       )}

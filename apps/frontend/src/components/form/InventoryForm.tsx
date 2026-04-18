@@ -9,6 +9,7 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../ui/Loader";
+import Checkbox from "../ui/Checkbox";
 
 interface InventoryFormProps extends SidebarProp {
   warehouseId?: number;
@@ -126,7 +127,7 @@ const InventoryForm = ({
           setSubTypes(Array.isArray(user.sub_type) ? user.sub_type : []);
         }
       } catch (error) {
-        console.error("Error fetching user sub_types:", err);
+        console.error("Error fetching user sub_types:", error);
         setSubTypes([]);
       } finally {
         setIsLoadingSubTypes(false);
@@ -320,26 +321,18 @@ const InventoryForm = ({
               />
 
               {inventoryItem.itemName.trim().length > 0 && (
-                <div className="flex items-center gap-2 mt-1 mb-2">
-                  <input
-                    type="checkbox"
-                    id="feedCheckbox"
-                    checked={inventoryItem.feed}
-                    onChange={(e) =>
-                      setInventoryItem({
-                        ...inventoryItem,
-                        feed: e.target.checked,
-                      })
-                    }
-                    className="h-4 w-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 bg-gray-100 dark:bg-gray-700"
-                  />
-                  <label
-                    htmlFor="feedCheckbox"
-                    className="text-sm font-medium text-dark dark:text-light"
-                  >
-                    Is it a Feed ?
-                  </label>
-                </div>
+                <Checkbox
+                  id="feedCheckbox"
+                  label="Is it a Feed ?"
+                  checked={inventoryItem.feed}
+                  onCheckedChange={(checked: boolean) =>
+                    setInventoryItem({
+                      ...inventoryItem,
+                      feed: checked,
+                    })
+                  }
+                  className="mt-1 mb-2 font-medium"
+                />
               )}
 
               <div className="relative">

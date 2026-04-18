@@ -1,7 +1,7 @@
 import { Icon } from "@graminate/ui";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Button from "@/components/ui/Button";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
@@ -204,7 +204,7 @@ const WidgetModal = ({
                           id={`widget-${widget.id}`}
                           label={widget.name}
                           checked={selectedWidgets.includes(widget.id)}
-                          onCheckedChange={(checked) =>
+                          onCheckedChange={(checked: boolean) =>
                             handleCheckboxChange(widget.id, !!checked)
                           }
                         />

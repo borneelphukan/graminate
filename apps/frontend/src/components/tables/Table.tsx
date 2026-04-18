@@ -8,8 +8,8 @@ import DropdownLarge from "@/components/ui/Dropdown/DropdownLarge";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import Checkbox from "@/components/ui/Checkbox";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { Checkbox } from "@graminate/ui";
 
 type RowType = unknown[];
 
@@ -400,7 +400,7 @@ const Table = ({
                 onClick={() => setShowExportDropdown(!showExportDropdown)}
               />
               {showExportDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-50 transition transform duration-200">
+                <div className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-dark rounded-lg shadow-lg z-50 transition transform duration-200">
                   <button
                     className="w-full text-left text-sm px-4 py-2 hover:bg-gray-500 dark:hover:bg-gray-600 rounded-t-lg"
                     onClick={() => {
@@ -505,7 +505,7 @@ const Table = ({
                       <Checkbox
                         id={`row-checkbox-${rowIndex}`}
                         checked={selectedRows[rowIndex] || false}
-                        onCheckedChange={(checked) => handleRowCheckboxChange(rowIndex, !!checked)}
+                        onCheckedChange={(checked: boolean) => handleRowCheckboxChange(rowIndex, !!checked)}
                         className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                         aria-label={`Select row ${rowIndex + 1}`}
                       />

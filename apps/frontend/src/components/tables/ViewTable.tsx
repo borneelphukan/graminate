@@ -1,6 +1,6 @@
 import { useAllRowsSelected } from "@/hooks/tables";
 import React, { useState, JSX } from "react";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 
 type FilterTasksFn = (column: {
   id: string;
@@ -167,7 +167,7 @@ const ViewTable = ({
                   <Checkbox
                     id={`task-checkbox-${task.id}`}
                     checked={selectedRows.has(task.id)}
-                    onCheckedChange={(checked) =>
+                    onCheckedChange={(checked: boolean) =>
                       toggleRowSelection(task.id, !!checked)
                     }
                     className="h-4 w-4"

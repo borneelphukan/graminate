@@ -21,9 +21,7 @@ Additionally it is also important to import the built css file in the applicatio
 All components should:
 
 - use [radix-ui primitives](https://www.radix-ui.com/primitives/docs/overview/introduction) as a base
-- include stories for each component that showcase the different variants
 
 TODOS:
 
-1. storybook (and other users) should not need to import the style file separately.
-2. Css linting. The css should not include colors etc. that are defined in main.css. Also it might make sense to enforce the order of properties in css rules.
+1. Css linting. The css should not include colors etc. that are defined in main.css. Also it might make sense to enforce the order of properties in css rules.

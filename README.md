@@ -33,7 +33,6 @@ This project is built using [TurboRepo](https://turbo.build/) and managed with [
 | `apps/mobile` | **Mobile App** | Expo | Mobile interface for on-the-field operations. |
 | `apps/admin` | **Admin Panel** | Next.js | System administration and oversight dashboard. |
 | `apps/website` | **Landing Page** | Next.js | Public-facing marketing website. |
-| `apps/storybook` | **UI Docs** | Storybook | Component library documentation. |
 
 ### Packages
 - `packages/ui`: Shared UI components and design system.

@@ -5,7 +5,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import Button from "@/components/ui/Button";
 import { API_BASE_URL } from "@/constants/constants";
-import { Checkbox } from "@graminate/ui";
+import Checkbox from "@/components/ui/Checkbox";
 
 type NotificationSettings = {
   orders: {
@@ -74,7 +74,7 @@ const Notifications = () => {
           console.error("Failed to fetch user type");
         }
       } catch (error) {
-        console.error("Error fetching user type:", err);
+        console.error("Error fetching user type:", error);
       }
     };
 
@@ -129,38 +129,22 @@ const Notifications = () => {
                   enabled={settings.orders.enabled}
                   onToggle={() => handleToggle("orders")}
                 >
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.orders.enabled ? "opacity-50" : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="orders-email-notifications"
-                      checked={settings.orders.email}
-                      onCheckedChange={() => handleCheckboxChange("orders", "email")}
-                      disabled={!settings.orders.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      Email Notifications
-                    </span>
-                  </label>
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.orders.enabled ? "opacity-50" : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="orders-sms-alerts"
-                      checked={settings.orders.sms}
-                      onCheckedChange={() => handleCheckboxChange("orders", "sms")}
-                      disabled={!settings.orders.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      SMS Alerts
-                    </span>
-                  </label>
+                  <Checkbox
+                    id="orders-email-notifications"
+                    label="Email Notifications"
+                    checked={settings.orders.email}
+                    onCheckedChange={() => handleCheckboxChange("orders", "email")}
+                    disabled={!settings.orders.enabled}
+                    className={!settings.orders.enabled ? "opacity-50" : ""}
+                  />
+                  <Checkbox
+                    id="orders-sms-alerts"
+                    label="SMS Alerts"
+                    checked={settings.orders.sms}
+                    onCheckedChange={() => handleCheckboxChange("orders", "sms")}
+                    disabled={!settings.orders.enabled}
+                    className={!settings.orders.enabled ? "opacity-50" : ""}
+                  />
                 </SectionCard>
 
                 <SectionCard
@@ -169,46 +153,22 @@ const Notifications = () => {
                   enabled={settings.inventory.enabled}
                   onToggle={() => handleToggle("inventory")}
                 >
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.inventory.enabled
-                        ? "opacity-50"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="inventory-low-stock"
-                      checked={settings.inventory.lowStock}
-                      onChange={() =>
-                        handleCheckboxChange("inventory", "lowStock")
-                      }
-                      disabled={!settings.inventory.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      Low Stock Warnings
-                    </span>
-                  </label>
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.inventory.enabled
-                        ? "opacity-50"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="inventory-replenish"
-                      checked={settings.inventory.replenish}
-                      onChange={() =>
-                        handleCheckboxChange("inventory", "replenish")
-                      }
-                      disabled={!settings.inventory.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      Replenishment Reminders
-                    </span>
-                  </label>
+                  <Checkbox
+                    id="inventory-low-stock"
+                    label="Low Stock Warnings"
+                    checked={settings.inventory.lowStock}
+                    onCheckedChange={() => handleCheckboxChange("inventory", "lowStock")}
+                    disabled={!settings.inventory.enabled}
+                    className={!settings.inventory.enabled ? "opacity-50" : ""}
+                  />
+                  <Checkbox
+                    id="inventory-replenish"
+                    label="Replenishment Reminders"
+                    checked={settings.inventory.replenish}
+                    onCheckedChange={() => handleCheckboxChange("inventory", "replenish")}
+                    disabled={!settings.inventory.enabled}
+                    className={!settings.inventory.enabled ? "opacity-50" : ""}
+                  />
                 </SectionCard>
 
                 {showWeatherAlerts && (
@@ -218,46 +178,22 @@ const Notifications = () => {
                     enabled={settings.weather.enabled}
                     onToggle={() => handleToggle("weather")}
                   >
-                    <label
-                      className={`flex items-center space-x-3 ${
-                        !settings.weather.enabled
-                          ? "opacity-50"
-                          : "cursor-pointer"
-                      }`}
-                    >
                       <Checkbox
                         id="weather-alerts"
+                        label="Severe Weather Alerts"
                         checked={settings.weather.alerts}
-                        onChange={() =>
-                          handleCheckboxChange("weather", "alerts")
-                        }
+                        onCheckedChange={() => handleCheckboxChange("weather", "alerts")}
                         disabled={!settings.weather.enabled}
-                        className="h-4 w-4 text-green-200"
+                        className={!settings.weather.enabled ? "opacity-50" : ""}
                       />
-                      <span className="text-sm text-dark dark:text-light">
-                        Severe Weather Alerts
-                      </span>
-                    </label>
-                    <label
-                      className={`flex items-center space-x-3 ${
-                        !settings.weather.enabled
-                          ? "opacity-50"
-                          : "cursor-pointer"
-                      }`}
-                    >
                       <Checkbox
                         id="weather-forecasts"
+                        label="Daily Forecasts"
                         checked={settings.weather.forecasts}
-                        onChange={() =>
-                          handleCheckboxChange("weather", "forecasts")
-                        }
+                        onCheckedChange={() => handleCheckboxChange("weather", "forecasts")}
                         disabled={!settings.weather.enabled}
-                        className="h-4 w-4 text-green-200"
+                        className={!settings.weather.enabled ? "opacity-50" : ""}
                       />
-                      <span className="text-sm text-dark dark:text-light">
-                        Daily Forecasts
-                      </span>
-                    </label>
                   </SectionCard>
                 )}
 
@@ -267,41 +203,23 @@ const Notifications = () => {
                   enabled={settings.system.enabled}
                   onToggle={() => handleToggle("system")}
                 >
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.system.enabled ? "opacity-50" : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="system-maintenance"
-                      checked={settings.system.maintenance}
-                      onChange={() =>
-                        handleCheckboxChange("system", "maintenance")
-                      }
-                      disabled={!settings.system.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      Maintenance Notices
-                    </span>
-                  </label>
+                  <Checkbox
+                    id="system-maintenance"
+                    label="Maintenance Notices"
+                    checked={settings.system.maintenance}
+                    onCheckedChange={() => handleCheckboxChange("system", "maintenance")}
+                    disabled={!settings.system.enabled}
+                    className={!settings.system.enabled ? "opacity-50" : ""}
+                  />
 
-                  <label
-                    className={`flex items-center space-x-3 ${
-                      !settings.system.enabled ? "opacity-50" : "cursor-pointer"
-                    }`}
-                  >
-                    <Checkbox
-                      id="system-updates"
-                      checked={settings.system.updates}
-                      onCheckedChange={() => handleCheckboxChange("system", "updates")}
-                      disabled={!settings.system.enabled}
-                      className="h-4 w-4 text-green-200"
-                    />
-                    <span className="text-sm text-dark dark:text-light">
-                      Software Updates
-                    </span>
-                  </label>
+                  <Checkbox
+                    id="system-updates"
+                    label="Software Updates"
+                    checked={settings.system.updates}
+                    onCheckedChange={() => handleCheckboxChange("system", "updates")}
+                    disabled={!settings.system.enabled}
+                    className={!settings.system.enabled ? "opacity-50" : ""}
+                  />
                 </SectionCard>
               </div>
             </div>
