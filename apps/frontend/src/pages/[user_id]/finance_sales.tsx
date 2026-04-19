@@ -3,13 +3,17 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import { Button } from "@graminate/ui";
+import { Button, Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
   TableData as TableDataFormat,
 } from "@/components/tables/SalesTable";
 import SalesModal from "@/components/modals/SalesModal";
+import BudgetCard from "@/components/cards/finance/BudgetCard";
+import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import Swal from "sweetalert2";
 
 type SaleRecord = {
@@ -55,6 +59,7 @@ const Sales = () => {
   const [salesCurrentPage, setSalesCurrentPage] = useState(1);
   const [salesItemsPerPage, setSalesItemsPerPage] = useState(25);
   const [isSalesModalOpen, setIsSalesModalOpen] = useState(false);
+  const [showFinancials, setShowFinancials] = useState(true);
 
   const fetchSalesData = useCallback(async () => {
     if (!currentUserId) {
@@ -95,6 +100,55 @@ const Sales = () => {
     fetchUserDetails();
     fetchSalesData();
   }, [currentUserId, fetchSalesData]);
+
+  const { fullHistoricalData, isLoadingFinancials: isFinancialLoading } = useSubTypeFinancialData({
+    userId: currentUserId,
+    targetSubType: "All",
+    expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
+  });
+
+  const currentDate = useMemo(() => new Date(), []);
+
+  const salesCardData = useMemo(() => {
+    const currentMonthStart = startOfMonth(currentDate);
+    const currentMonthEnd = endOfMonth(currentDate);
+    let totalRevenue = 0, totalCogs = 0, totalExpenses = 0;
+
+    fullHistoricalData.forEach((entry: DailyFinancialEntry) => {
+      if (isWithinInterval(entry.date, { start: currentMonthStart, end: currentMonthEnd })) {
+        totalRevenue += entry.revenue.total;
+        totalCogs += entry.cogs.total;
+        totalExpenses += entry.expenses.total;
+      }
+    });
+
+    const grossProfit = totalRevenue - totalCogs;
+    const netProfit = grossProfit - totalExpenses;
+
+    return [
+      {
+        title: "Total Revenue",
+        value: totalRevenue,
+        icon: "attach_money",
+        bgColor: "bg-green-300 dark:bg-green-800",
+        iconValueColor: "text-green-200 dark:text-green-200",
+      },
+      {
+        title: "Gross Profit",
+        value: grossProfit,
+        icon: "pie_chart",
+        bgColor: "bg-cyan-300 dark:bg-cyan-100",
+        iconValueColor: "text-cyan-200",
+      },
+      {
+        title: "Net Profit",
+        value: netProfit,
+        icon: "savings",
+        bgColor: "bg-blue-300 dark:bg-blue-100",
+        iconValueColor: "text-blue-200",
+      },
+    ];
+  }, [fullHistoricalData, currentDate]);
 
   const filteredSalesRows = useMemo(() => {
     return salesData
@@ -169,20 +223,57 @@ const Sales = () => {
             </div>
           ) : (
             <>
-              <div className="mb-12">
+              <div>
                 <header className="flex flex-col sm:flex-row justify-between items-center mb-4">
                   <div className="flex items-center mb-3 sm:mb-0">
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="text-lg font-semibold text-dark dark:text-light">
                       Sales Records
                     </h2>
                   </div>
-                  <Button
-                    label="Log Sales"
-                    variant="primary"
-                    icon={{ left: "add" }}
-                    onClick={() => setIsSalesModalOpen(true)}
-                  />
+                  <div className="flex flex-row gap-6">
+                    <div className="flex justify-end items-center">
+                      <div
+                        className="flex items-center cursor-pointer text-sm text-blue-200 dark:hover:text-blue-300"
+                        onClick={() => setShowFinancials(!showFinancials)}
+                      >
+                        <Icon
+                          type={showFinancials ? "expand_less" : "expand_more"}
+                        />
+                        {showFinancials ? "Hide Finances" : "Show Finances"}
+                      </div>
+                    </div>
+                    <Button
+                      label="Log Sales"
+                      variant="primary"
+                      icon={{ left: "add" }}
+                      onClick={() => setIsSalesModalOpen(true)}
+                    />
+                  </div>
                 </header>
+
+                <div
+                  className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                    showFinancials
+                      ? "max-h-[500px] opacity-100 mb-6"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-2">
+                    {salesCardData.map((card, index) => (
+                      <BudgetCard
+                        key={index}
+                        title={card.title}
+                        value={card.value}
+                        date={currentDate}
+                        icon={card.icon}
+                        bgColor={card.bgColor}
+                        iconValueColor={card.iconValueColor}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-12">
                 <SalesTable
                   data={salesTableDataFormatted}
                   filteredRows={filteredSalesRows}
@@ -203,8 +294,9 @@ const Sales = () => {
                   currentUserId={currentUserId}
                 />
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
         </main>
       </PlatformLayout>
 

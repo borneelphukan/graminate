@@ -402,13 +402,13 @@ const ContactDetails = () => {
 
             <div className="flex-grow text-center sm:text-left">
               <div className="flex flex-col sm:flex-row justify-between items-center">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-0">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-0">
                   {initialFullName || "Contact Details"}
                 </h1>
                 <Button
                   label="All Contacts"
                   variant="secondary"
-                  icon={{ left: "arrow_back" }}
+                  icon={{ left: "chevron_left" }}
                   onClick={() =>
                     router.push(`/${user_id}/crm?view=contacts`)
                   }

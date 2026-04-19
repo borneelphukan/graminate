@@ -242,76 +242,7 @@ const General = () => {
                           {t("profileSettingsDescription")}
                         </p>
                       </div>
-                      <div className="flex items-center gap-4 mb-8 relative">
-                        <div className="relative group w-24 h-24">
-                          <Image
-                            src={
-                              user.profilePicture ||
-                              `https://eu.ui-avatars.com/api/?name=${encodeURIComponent(
-                                user.firstName
-                              )}+${encodeURIComponent(user.lastName)}&size=250`
-                            }
-                            alt="Profile Picture"
-                            width={96}
-                            height={96}
-                            className="rounded-full object-cover border border-gray-300 dark:border-gray-600"
-                            unoptimized={!user.profilePicture}
-                          />
-                          {user.profilePicture && (
-                            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                              <button
-                                onClick={() =>
-                                  setUser((prev) => ({
-                                    ...prev,
-                                    profilePicture: "",
-                                  }))
-                                }
-                                className="rounded-full p-2 text-white hover:text-red-400"
-                                aria-label={t("removeProfilePicture")}
-                              >
-                                <Icon
-                                  type={"close"}
-                                  className="size-6"
-                                />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm font-medium text-dark dark:text-light mb-1">
-                            {t("uploadProfilePicture")}
-                          </label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            id="profile-upload"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                if (file.size > 2 * 1024 * 1024) {
-                                  alert(t("max2MB"));
-                                  return;
-                                }
-                                const imageUrl = URL.createObjectURL(file);
-                                setUser((prev) => ({
-                                  ...prev,
-                                  profilePicture: imageUrl,
-                                }));
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor="profile-upload"
-                            className="cursor-pointer bg-green-200 text-white px-3 py-1 rounded text-sm text-center w-fit hover:bg-green-100"
-                          >
-                            {t("chooseFile")}
-                          </label>
-                          <p className="text-xs text-dark dark:text-light mt-1">
-                            {t("max2MB")}
-                          </p>
-                        </div>
-                      </div>
+
                       <div className="flex flex-col gap-4 max-w-lg">
                         <TextField
                           label={t("firstName")}

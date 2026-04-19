@@ -2,7 +2,6 @@ import TicketModal from "@/components/modals/crm/TicketModal";
 
 import SearchBar from "@/components/ui/SearchBar";
 import PlatformLayout from "@/layout/PlatformLayout";
-import SegmentedControl from "@/components/ui/SegmentedControl";
 
 import {
   DndContext,
@@ -29,7 +28,7 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import { Dropdown, Button } from "@graminate/ui";
+import { Dropdown, Button, SegmentedControl } from "@graminate/ui";
 import TaskModal from "@/components/modals/crm/TaskModal";
 import React, { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -94,7 +93,6 @@ const Tasks = () => {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<FrontendTaskType | null>(null);
 
-  const [isListView, setIsListView] = useState(false);
   const [taskActionDropdownOpen, setTaskActionDropdownOpen] = useState<{
     taskId: Id;
   } | null>(null);
@@ -111,7 +109,29 @@ const Tasks = () => {
   const [selectedFilterLabels, setSelectedFilterLabels] = useState<string[]>(
     []
   );
-  const [selectedPriority, setSelectedPriority] = useState<string>("None");
+  const [isListView, setIsListView] = useState(false);
+  const [selectedPriority, setSelectedPriority] = useState<string>("Priority");
+
+  useEffect(() => {
+    const savedPriority = localStorage.getItem("taskPriorityFilter");
+    if (savedPriority) setSelectedPriority(savedPriority);
+
+    const savedView = localStorage.getItem("taskViewPreference");
+    if (savedView) setIsListView(savedView === "list");
+  }, []);
+
+  useEffect(() => {
+    if (selectedPriority !== "Priority") {
+      localStorage.setItem("taskPriorityFilter", selectedPriority);
+    } else {
+      localStorage.removeItem("taskPriorityFilter");
+    }
+  }, [selectedPriority]);
+
+  useEffect(() => {
+    localStorage.setItem("taskViewPreference", isListView ? "list" : "board");
+  }, [isListView]);
+
   const dropdownItems = useMemo(() => {
     const labelsFromTasks = tasks.flatMap(
       (t: FrontendTaskType) =>
@@ -187,10 +207,22 @@ const Tasks = () => {
 
         const mappedTasks: FrontendTaskType[] = actualApiTasks.map(
           (task: ApiTask): FrontendTaskType => {
-            let columnId = mappedColumns.find(c => c.id === task.status || c.title === task.status)?.id;
-            
-            if (!columnId) {
-               columnId = mapStatusToColumnId(task.status);
+            // Find column by ID or Title (case-insensitive)
+            let column = mappedColumns.find(
+              (c) =>
+                String(c.id) === String(task.status) ||
+                c.title.toLowerCase() === task.status?.toLowerCase()
+            );
+
+            let columnId: Id;
+            if (column) {
+              columnId = column.id;
+            } else {
+              // Fallback to initial column mapping logic
+              const fallbackId = mapStatusToColumnId(task.status);
+              // Verify fallback actually exists in mappedColumns
+              const exists = mappedColumns.some((c) => c.id === fallbackId);
+              columnId = exists ? fallbackId : (mappedColumns[0]?.id || "todo");
             }
 
             return {
@@ -262,6 +294,7 @@ const Tasks = () => {
         task.id.toString().toLowerCase().includes(searchLower);
       const priorityMatch =
         selectedPriority === "None" ||
+        selectedPriority === "Priority" ||
         (task.priority &&
           task.priority.toLowerCase() === selectedPriority.toLowerCase());
 
@@ -761,7 +794,23 @@ const Tasks = () => {
                   onSelect={setSelectedPriority}
                   variant="small"
                 />
-                <SegmentedControl isListView={isListView} toggleView={toggleView} />
+                <SegmentedControl
+                  defaultValue={isListView ? "first" : "second"}
+                  options={{
+                    first: {
+                      label: "List",
+                      icon: "list",
+                      value: "first",
+                      onClick: () => toggleView(true),
+                    },
+                    second: {
+                      label: "Board",
+                      icon: "grid_view",
+                      value: "second",
+                      onClick: () => toggleView(false),
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>

@@ -233,9 +233,11 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                 expandedSection === section;
 
               return (
-                <div key={section} className="relative px-3">
+                <div key={section} className={`relative ${isCollapsed ? "px-1" : "px-3"}`}>
                   <div
-                    className={`flex items-center p-3 rounded-lg cursor-pointer group transition-colors duration-200 ${
+                    className={`flex items-center ${
+                      isCollapsed ? "p-2" : "p-3"
+                    } rounded-lg cursor-pointer group transition-colors duration-200 ${
                       isActive
                         ? "bg-gray-700 text-white shadow-md"
                         : "text-gray-400 hover:bg-gray-700 hover:text-gray-300"
@@ -256,11 +258,11 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
                     {typeof icon === "string" ? (
                       <Icon
                         type={icon}
-                        className={`h-5 w-5 ${isCollapsed ? "" : "mr-3"}`}
+                        className={`h-5 w-5 flex-shrink-0 ${isCollapsed ? "" : "mr-3"}`}
                       />
                     ) : (
                       <div
-                        className={`h-5 w-5 ${
+                        className={`h-5 w-5 flex-shrink-0 ${
                           isCollapsed ? "" : "mr-3"
                         } flex items-center justify-center text-current`}
                       >

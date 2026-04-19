@@ -572,7 +572,7 @@ const HiveDetailsPage = () => {
           <div className="mb-4 md:mb-0">
             {hiveData ? (
               <>
-                <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                <h1 className="text-2xl font-bold">
                   Hive Details
                 </h1>
                 <h2 className="text-sm font-thin text-dark dark:text-light mt-1">
@@ -614,7 +614,7 @@ const HiveDetailsPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+            <h3 className="text-lg font-semibold mb-3">
               Hive Information
             </h3>
             {hiveData && (
