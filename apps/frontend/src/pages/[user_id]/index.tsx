@@ -547,10 +547,10 @@ const Dashboard = () => {
                   Welcome to your dashboard.
                 </p>
               </div>
-              <div className="flex flex-col items-start sm:items-end gap-2 mt-2 sm:mt-0">
+              <div className="flex flex-col items-start sm:items-end gap-1 mt-3 sm:mt-0 bg-gray-50 dark:bg-gray-800/50">
                 <div className="text-sm text-dark dark:text-light sm:text-right">
                   <p className="font-semibold">{formatDate(currentDateTime)}</p>
-                  <p>{formatTime(currentDateTime)}</p>
+                  <p className="font-mono">{formatTime(currentDateTime)}</p>
                 </div>
               </div>
             </div>

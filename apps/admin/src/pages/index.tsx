@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import TextField from "@/components/ui/TextField";
 import Button from "@/components/ui/Button";
-import DefaultLayout from "@/layouts/LoginLayout";
+import DefaultLayout from "@/layout/LoginLayout";
 import Head from "next/head";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;

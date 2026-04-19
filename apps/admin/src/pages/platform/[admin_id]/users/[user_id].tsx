@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import PlatformLayout from "@/layouts/PlatformLayout";
+import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import Button from "@/components/ui/Button";
+import { Avatar, AvatarFallback, Button } from "@graminate/ui";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -105,7 +105,7 @@ const AdminUserDetailsPage = () => {
         </title>
       </Head>
       <PlatformLayout>
-        <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen bg-neutral-light/30">
+        <div className="mx-auto min-h-screen bg-neutral-light/30">
           {isLoading ? (
             <div className="flex justify-center items-center h-96">
               <Loader />
@@ -121,34 +121,37 @@ const AdminUserDetailsPage = () => {
             <div className="space-y-8 animate-in fade-in duration-500">
               {/* Header Section */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                  <h1 className="text-3xl font-bold text-dark dark:text-light tracking-tight">
-                    User Profile
-                  </h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Viewing details for ID: <span className="font-mono text-xs">{user.user_id}</span>
-                  </p>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    icon={{ left: "chevron_left" }}
+                    onClick={() => router.push(`/platform/${admin_id}/users`)}
+                  />
+                  <div>
+                    <h1 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
+                      User Profile
+                    </h1>
+                    <p className="text-sm text-dark dark:text-light mt-1">
+                      Viewing details for User ID: <span className="font-mono text-xs">{user.user_id}</span>
+                    </p>
+                  </div>
                 </div>
-                <Button
-                  text="All Users"
-                  style="secondary"
-                  arrow="left"
-                  onClick={() => router.push(`/platform/${admin_id}/users`)}
-                />
               </div>
 
               {/* Main Info Card */}
               <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden">
-                <div className="p-6 md:p-8 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+                <div className="p-6 md:p-8 border-b border-gray-400 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/30">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div className="size-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-2xl font-bold">
-                      {user.first_name[0]}{user.last_name[0]}
-                    </div>
+                    <Avatar className="size-16 rounded-2xl">
+                      <AvatarFallback className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-2xl">
+                        {user.first_name[0]}{user.last_name[0]}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
                       <h2 className="text-2xl font-bold text-dark dark:text-light">
                         {user.first_name} {user.last_name}
                       </h2>
-                      <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
+                      <p className="text-dark dark:text-light">{user.email}</p>
                     </div>
                   </div>
                 </div>
@@ -200,8 +203,8 @@ const AdminUserDetailsPage = () => {
                     </div>
 
                     {/* Services Section */}
-                    <div className="md:col-span-2 pt-6 border-t border-gray-100 dark:border-gray-800">
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+                    <div className="md:col-span-2 pt-6 border-t border-gray-400 dark:border-gray-600">
+                      <h3 className="text-sm font-bold text-dark dark:text-light mb-4">
                         Services Opted ({services.length})
                       </h3>
                       {services.length > 0 ? (
@@ -209,7 +212,7 @@ const AdminUserDetailsPage = () => {
                           {services.map((service, index) => (
                             <span 
                               key={index}
-                              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-dark dark:text-light shadow-sm"
+                              className="px-4 py-2 rounded-xl border border-gray-400 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-dark dark:text-light"
                             >
                               {service}
                             </span>
@@ -231,8 +234,8 @@ const AdminUserDetailsPage = () => {
               <h3 className="text-lg font-bold text-dark">User Not Found</h3>
               <p className="text-gray-500 mt-1">We couldn't locate details for this user ID.</p>
               <Button
-                text="Back to Dashboard"
-                style="primary"
+                label="Back to Dashboard"
+                variant="primary"
                 className="mt-6"
                 onClick={() => router.push(`/platform/${admin_id}/users`)}
               />

@@ -222,7 +222,7 @@ const Table = ({
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden transition-all">
       <div className="px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-          <div className="w-full sm:w-72">
+          <div className="w-full max-w-[280px]">
             <SearchBar
               mode="table"
               placeholder="Search data..."
