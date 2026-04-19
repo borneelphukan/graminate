@@ -6,6 +6,7 @@ type Props = {
   width?: "small" | "medium" | "large";
   add?: boolean;
   type?: "button" | "submit" | "reset";
+  className?: string;
   onClick?: () => void;
 };
 
@@ -17,6 +18,7 @@ const Button = ({
   width,
   add = false,
   type = "button",
+  className = "",
   onClick,
 }: Props) => {
   const getWidth = (): string => {
@@ -61,7 +63,7 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`${buttonClass} flex items-center`}
+      className={`${buttonClass} ${className} flex items-center`}
       disabled={isDisabled}
       onClick={onClick}
     >

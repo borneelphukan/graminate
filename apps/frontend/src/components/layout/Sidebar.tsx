@@ -68,11 +68,6 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
             labelKey: "contracts",
             route: `/${userId}/crm?view=contracts`,
           },
-          {
-            labelKey: "receipts",
-            route: `/${userId}/crm?view=receipts`,
-          },
-          { labelKey: "projects", route: `/${userId}/crm?view=tasks` },
         ],
       },
     ];
@@ -84,6 +79,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
           labelKey: "poultryFarm",
           section: "Poultry Farm",
           route: `/${userId}/poultry`,
+          basePath: `/${userId}/poultry`,
           subItems: [],
         });
       }
@@ -93,6 +89,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
           labelKey: "cattleRearing",
           section: "Cattle Rearing",
           route: `/${userId}/cattle_rearing`,
+          basePath: `/${userId}/cattle_rearing`,
           subItems: [],
         });
       }
@@ -102,6 +99,7 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
           labelKey: "apiculture",
           section: "Apiculture",
           route: `/${userId}/apiculture`,
+          basePath: `/${userId}/apiculture`,
           subItems: [],
         });
       }
@@ -149,6 +147,10 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
             labelKey: "expenses",
             route: `/${userId}/finance_expenses`,
           },
+          {
+            labelKey: "receipts",
+            route: `/${userId}/crm?view=receipts`,
+          },
         ],
       },
       {
@@ -180,9 +182,11 @@ const Sidebar = ({ isOpen, userId, onSectionChange }: SidebarProps) => {
     hasSubItems: boolean,
     route?: string
   ) => {
-    if (route && !hasSubItems) {
+    if (route) {
       navigateTo(route);
-    } else if (hasSubItems) {
+    }
+    
+    if (hasSubItems) {
       const isOpen = expandedSection === section;
       setExpandedSection(isOpen ? null : section);
       if (!isOpen && onSectionChange) onSectionChange(section);

@@ -77,7 +77,7 @@ function SegmentedControl({
       data-slot="segmented-control"
       className={cn(
         className,
-        "flex items-center h-[40px] bg-neutral-white border border-gray-400 dark:border-gray-700 p-1 rounded-lg shadow-sm"
+        "flex items-center h-[42px] bg-neutral-white border border-gray-400 dark:border-gray-700 p-1 rounded-md"
       )}
       {...props}
     >

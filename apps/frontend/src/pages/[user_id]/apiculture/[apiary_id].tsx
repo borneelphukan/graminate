@@ -353,7 +353,7 @@ const ApicultureDetailPage = () => {
                 <Loader />
               ) : selectedApiaryData ? (
                 <>
-                  <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  <h1 className="text-2xl font-bold">
                     Bee Yard Management
                   </h1>
                   <h2 className="text-sm font-thin text-dark dark:text-light mt-1">
@@ -432,7 +432,7 @@ const ApicultureDetailPage = () => {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold dark:text-white">
+          <h2 className="text-xl font-semibold">
             Hives in this Bee Yard
           </h2>
           <Table

@@ -1,4 +1,4 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { Icon, Button, Table, SegmentedControl } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -10,8 +10,9 @@ import Loader from "@/components/ui/Loader";
 import FlockForm from "@/components/form/poultry/FlockForm";
 import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import TaskManager from "@/components/cards/TaskManager";
 import InventoryStockCard from "@/components/cards/InventoryStock";
+import TaskBoard from "@/components/tasks/TaskBoard";
+
 
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 
@@ -45,7 +46,7 @@ const Poultry = () => {
   const { user_id } = router.query;
   const parsedUserId = Array.isArray(user_id) ? user_id[0] : user_id;
   const numericUserId = parsedUserId ? parseInt(parsedUserId, 10) : undefined;
-  const view: View = "flock";
+  const currentView: View | "tasks" = router.query.view === "flock" ? "flock" : "tasks";
 
   const [flockRecords, setFlockRecords] = useState<FlockApiData[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -57,7 +58,7 @@ const Poultry = () => {
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+  const { handleDeleteRows, handleResetTable } = useTableActions("flock");
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
@@ -226,128 +227,138 @@ const Poultry = () => {
   return (
     <PlatformLayout>
       <Head>
-        <title>Graminate | Flocks</title>
+        <title>Graminate | {currentView === "tasks" ? "Tasks" : "Flocks"}</title>
       </Head>
-      <div className="min-h-screen container mx-auto p-4">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-lg font-semibold text-dark dark:text-light">
-              Poultry Flocks
-            </h1>
-            <p className="text-xs text-dark dark:text-light">
-              {loadingFlocks
-                ? "Loading records..."
-                : `${filteredFlockRecords.length} Record(s) found ${
-                    searchQuery ? "(filtered)" : ""
-                  }`}
-            </p>
-          </div>
-          <div className="flex flex-row gap-6">
-            <div className="flex justify-end items-center">
-              <div
-                className="flex items-center cursor-pointer text-sm text-blue-200 dark:hover:text-blue-300"
+      <div className="min-h-screen container mx-auto p-4 flex flex-col items-stretch gap-12">
+        {/* Operations Section */}
+        <section className="flex flex-col gap-6">
+          <div className="flex justify-between items-end border-b border-gray-400 dark:border-gray-600 pb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
+                Poultry Operations
+              </h1>
+              <p className="text-sm text-dark dark:text-light mt-1">
+                {loadingFlocks
+                  ? "Syncing flock data..."
+                  : `Managing ${filteredFlockRecords.length} active flock cycles`}
+              </p>
+            </div>
+            <div className="flex flex-row gap-4 items-center">
+              <button
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-500 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setShowFinancials(!showFinancials)}
               >
                 <Icon
                   type={showFinancials ? "expand_less" : "expand_more"}
                 />
-                {showFinancials ? "Hide Finances" : "Show Finances"}
-              </div>
+                {showFinancials ? "Collapse Finances" : "View Finances"}
+              </button>
+              <Button
+                label="New Flock"
+                variant="primary"
+                icon={{ left: "add" }}
+                onClick={() => {
+                  setEditingFlock(null);
+                  setIsSidebarOpen(true);
+                }}
+              />
             </div>
-            <Button
-              label="Add Flock"
-              variant="primary"
-              icon={{ left: "add" }}
-              onClick={() => {
-                setEditingFlock(null);
-                setIsSidebarOpen(true);
-              }}
-            />
           </div>
-        </div>
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            showFinancials
-              ? "max-h-[500px] opacity-100 mb-6"
-              : "max-h-0 opacity-0"
-          }`}
-        >
-          {isLoadingFinancials ? (
-            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 py-2">
-              {Array(5)
-                .fill(0)
-                .map((_, index) => (
-                  <div
+          
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              showFinancials
+                ? "max-h-[600px] opacity-100"
+                : "max-h-0 opacity-0"
+            }`}
+          >
+            {isLoadingFinancials ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
+                {Array(5)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center animate-pulse"
+                    >
+                      <Loader />
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
+                {poultryCardData.map((card, index) => (
+                  <BudgetCard
                     key={index}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center"
-                  >
-                    <Loader />
-                  </div>
+                    title={card.title}
+                    value={card.value}
+                    date={currentDate}
+                    icon={card.icon}
+                    bgColor={card.bgColor}
+                    iconValueColor={card.iconValueColor}
+                  />
                 ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 py-2">
-              {poultryCardData.map((card, index) => (
-                <BudgetCard
-                  key={index}
-                  title={card.title}
-                  value={card.value}
-                  date={currentDate}
-                  icon={card.icon}
-                  bgColor={card.bgColor}
-                  iconValueColor={card.iconValueColor}
-                />
-              ))}
+              </div>
+            )}
+          </div>
+
+          {numericUserId && !isNaN(numericUserId) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InventoryStockCard
+                userId={parsedUserId}
+                title="Poultry Inventory"
+                category="Poultry"
+              />
             </div>
           )}
-        </div>
 
-        {numericUserId && !isNaN(numericUserId) && (
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <TaskManager userId={numericUserId} projectType="Poultry" />
-            <InventoryStockCard
-              userId={parsedUserId}
-              title="Poultry Inventory"
-              category="Poultry"
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden">
+            <Table
+              data={tableData}
+              filteredRows={tableData.rows}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              paginationItems={PAGINATION_ITEMS}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              totalRecordCount={filteredFlockRecords.length}
+              onRowClick={(row) => {
+                const flockId = row[0] as number;
+                const flockName = row[1] as string;
+                if (parsedUserId && flockId) {
+                  router.push({
+                    pathname: `/${parsedUserId}/poultry/${flockId}`,
+                    query: { flockName: encodeURIComponent(flockName) },
+                  });
+                }
+              }}
+              view="flock"
+              loading={loadingFlocks && flockRecords.length > 0}
+              reset={true}
+              hideChecks={false}
+              download={true}
+              onDeleteRows={handleDeleteRows}
+              onResetTable={handleResetTable}
             />
           </div>
-        )}
+        </section>
 
-        {loadingFlocks && !flockRecords.length ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader />
+        {/* Projects Section */}
+        <section className="flex flex-col gap-6 pt-8 border-t border-gray-400 dark:border-gray-700">
+          <div>
+            <h2 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
+              Your Poultry Tasks
+            </h2>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              All your poultry tasks visualized
+            </p>
           </div>
-        ) : (
-          <Table
-            data={tableData}
-            filteredRows={tableData.rows}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
-            paginationItems={PAGINATION_ITEMS}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            totalRecordCount={filteredFlockRecords.length}
-            onRowClick={(row) => {
-              const flockId = row[0] as number;
-              const flockName = row[1] as string;
-              if (parsedUserId && flockId) {
-                router.push({
-                  pathname: `/${parsedUserId}/poultry/${flockId}`,
-                  query: { flockName: encodeURIComponent(flockName) },
-                });
-              }
-            }}
-            view={view}
-            loading={loadingFlocks && flockRecords.length > 0}
-            reset={true}
-            hideChecks={false}
-            download={true}
-            onDeleteRows={handleDeleteRows}
-            onResetTable={handleResetTable}
-          />
-        )}
+          <div className="bg-gray-50/50 dark:bg-gray-900/30 rounded-3xl p-6 border border-gray-400 dark:border-gray-800">
+            <TaskBoard projectTitle="Poultry" userId={parsedUserId as string} />
+          </div>
+        </section>
 
         {isSidebarOpen && (
           <FlockForm

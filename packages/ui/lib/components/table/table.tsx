@@ -239,7 +239,7 @@ const Table = ({
               </span>
               <div className="w-px h-3 bg-primary-200 dark:bg-primary-800 flex-shrink-0" />
               <button
-                className="text-red-600 dark:text-red-400 text-[11px] font-black hover:text-red-700 dark:hover:text-red-300 transition-colors whitespace-nowrap leading-none"
+                className="text-red-200 dark:text-red-400 hover:text-red-300 hover:cursor-pointer dark:hover:text-red-300 transition-colors whitespace-nowrap leading-none"
                 onClick={(event) => {
                   event.preventDefault();
                   handleDeleteSelected();
@@ -309,11 +309,11 @@ const Table = ({
       ) : sortedAndPaginatedRows.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-neutral-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-            <thead className="bg-neutral-50/50 dark:bg-neutral-800/30">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-500 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 {!hideChecks && (
                   <th
-                    className="px-6 py-4 text-left"
+                    className="px-6 py-3 text-left"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <Checkbox
@@ -329,7 +329,7 @@ const Table = ({
                 {data.columns.map((column, index) => column !== "#" && (
                   <th
                     key={index}
-                    className="px-6 py-4 text-left text-[11px] font-bold text-neutral-500 dark:text-neutral-400 cursor-pointer group transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    className="px-6 py-3 text-left text-xs font-bold text-neutral-500 dark:text-neutral-400 cursor-pointer group transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                     onClick={() => toggleSort(index)}
                   >
                     <div className="flex items-center gap-1.5 justify-start">
@@ -351,8 +351,8 @@ const Table = ({
                   className={`group cursor-pointer transition-all duration-200 ${
                     selectedRows[rowIndex]
                       ? "bg-primary-50/40 dark:bg-primary-900/10"
-                      : "hover:bg-neutral-50/80 dark:hover:bg-neutral-800/40"
-                  } border-b border-gray-400 dark:border-gray-200`}
+                      : "hover:bg-gray-50 dark:hover:bg-gray-600"
+                  } border-b border-neutral-200 dark:border-gray-700`}
                   onClick={(e) => {
                     if (
                       (e.target as HTMLElement).tagName !== "INPUT" &&
@@ -380,7 +380,7 @@ const Table = ({
                   {(row as any[]).map((cell, cellIndex) => data.columns[cellIndex] !== "#" && (
                     <td
                       key={cellIndex}
-                      className="px-6 py-4 whitespace-nowrap text-[13.5px] font-medium text-neutral-700 dark:text-neutral-300 max-w-[240px] truncate"
+                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-dark dark:text-light max-w-[240px] truncate"
                       title={
                         Array.isArray(cell)
                           ? cell.join(", ")

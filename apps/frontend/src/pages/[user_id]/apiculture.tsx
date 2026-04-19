@@ -1,4 +1,4 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { Icon, Button, Table, SegmentedControl } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -6,7 +6,7 @@ import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import TaskManager from "@/components/cards/TaskManager";
+import TaskBoard from "@/components/tasks/TaskBoard";
 import InventoryStockCard from "@/components/cards/InventoryStock";
 import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -91,8 +91,8 @@ const Apiculture = () => {
   const numericUserId = parsedUserId ? parseInt(parsedUserId, 10) : undefined;
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const view: View = "apiculture";
-  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+  const currentView: View | "tasks" = router.query.view === "apiculture" ? "apiculture" : "tasks";
+  const { handleDeleteRows, handleResetTable } = useTableActions("apiculture");
 
   const [apicultureRecords, setApicultureRecords] = useState<
     ApicultureRecord[]
@@ -257,129 +257,138 @@ const Apiculture = () => {
   return (
     <PlatformLayout>
       <Head>
-        <title>Graminate | Apiculture</title>
+        <title>Graminate | {currentView === "tasks" ? "Tasks" : "Apiaries"}</title>
       </Head>
-      <div className="min-h-screen container mx-auto p-4 space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-lg font-semibold text-dark dark:text-light">
-              Apiculture Records
-            </h1>
-            <p className="text-xs text-dark dark:text-light">
-              {loadingApiculture
-                ? "Loading records..."
-                : `${filteredApicultureRecords.length} Record(s) found ${
-                    searchQuery ? "(filtered)" : ""
-                  }`}
-            </p>
-          </div>
-          <div className="flex flex-row gap-6">
-            <div className="flex justify-end items-center">
-              <div
-                className="flex items-center cursor-pointer text-sm text-blue-200 dark:hover:text-blue-300"
+      <div className="min-h-screen container mx-auto p-4 flex flex-col items-stretch gap-12">
+        {/* Operations Section */}
+        <section className="flex flex-col gap-6">
+          <div className="flex justify-between items-end border-b border-gray-500 dark:border-gray-700 pb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
+                Apiary Dashboard
+              </h1>
+              <p className="text-sm text-dark dark:text-light mt-1">
+                {loadingApiculture
+                  ? "Loading hive records..."
+                  : `Managing ${filteredApicultureRecords.length} active apiaries`}
+              </p>
+            </div>
+            <div className="flex flex-row gap-4 items-center">
+               <button
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-500 dark:hover:bg-gray-700 transition-colors"
                 onClick={() => setShowFinancials(!showFinancials)}
               >
                 <Icon
                   type={showFinancials ? "expand_less" : "expand_more"}
                 />
-                {showFinancials ? "Hide Finances" : "Show Finances"}
-              </div>
+                {showFinancials ? "Collapse Finances" : "View Finances"}
+              </button>
+              <Button
+                label="New Apiary"
+                variant="primary"
+                icon={{ left: "add" }}
+                onClick={() => {
+                  setEditingApiary(null);
+                  setIsSidebarOpen(true);
+                }}
+              />
             </div>
-            <Button
-              label="Bee Yard"
-              variant="primary"
-              icon={{ left: "add" }}
-              onClick={() => {
-                setEditingApiary(null);
-                setIsSidebarOpen(true);
-              }}
-            />
           </div>
-        </div>
 
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            showFinancials
-              ? "max-h-[500px] opacity-100 mb-6"
-              : "max-h-0 opacity-0"
-          }`}
-        >
-          {isLoadingFinancials ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 py-2">
-              {Array(5)
-                .fill(0)
-                .map((_, index) => (
-                  <div
+          <div
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${
+              showFinancials
+                ? "max-h-[600px] opacity-100"
+                : "max-h-0 opacity-0"
+            }`}
+          >
+            {isLoadingFinancials ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
+                {Array(5)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center animate-pulse"
+                    >
+                      <Loader />
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
+                {apicultureCardData.map((card, index) => (
+                  <BudgetCard
                     key={index}
-                    className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center"
-                  >
-                    <Loader />
-                  </div>
+                    title={card.title}
+                    value={card.value}
+                    date={currentDate}
+                    icon={card.icon}
+                    bgColor={card.bgColor}
+                    iconValueColor={card.iconValueColor}
+                  />
                 ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 py-2">
-              {apicultureCardData.map((card, index) => (
-                <BudgetCard
-                  key={index}
-                  title={card.title}
-                  value={card.value}
-                  date={currentDate}
-                  icon={card.icon}
-                  bgColor={card.bgColor}
-                  iconValueColor={card.iconValueColor}
-                />
-              ))}
+              </div>
+            )}
+          </div>
+
+          {numericUserId && !isNaN(numericUserId) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InventoryStockCard
+                userId={parsedUserId}
+                title="Apiculture Inventory"
+                category="Apiculture"
+              />
             </div>
           )}
-        </div>
 
-        {numericUserId && !isNaN(numericUserId) && (
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <TaskManager userId={numericUserId} projectType="Apiculture" />
-            <InventoryStockCard
-              userId={parsedUserId}
-              title="Apiculture Inventory"
-              category="Apiculture"
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
+            <Table
+              data={tableData}
+              filteredRows={tableData.rows}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              paginationItems={PAGINATION_ITEMS}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              totalRecordCount={filteredApicultureRecords.length}
+              onRowClick={(row) => {
+                const apiaryId = row[0] as number;
+                const apiaryName = row[1] as string;
+                if (parsedUserId && apiaryId) {
+                  router.push({
+                    pathname: `/${parsedUserId}/apiculture/${apiaryId}`,
+                    query: { apiaryName: encodeURIComponent(apiaryName) },
+                  });
+                }
+              }}
+              view="apiculture"
+              loading={loadingApiculture && apicultureRecords.length > 0}
+              reset={true}
+              hideChecks={false}
+              download={true}
+              onDeleteRows={handleDeleteRows}
+              onResetTable={handleResetTable}
             />
           </div>
-        )}
+        </section>
 
-        {loadingApiculture && !apicultureRecords.length ? (
-          <div className="flex justify-center items-center py-10">
-            <Loader />
+        {/* Projects Section */}
+        <section className="flex flex-col gap-6">
+          <div>
+            <h2 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
+              Your Apiculture Tasks
+            </h2>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              All your apiculture tasks visualized
+            </p>
           </div>
-        ) : (
-          <Table
-            data={tableData}
-            filteredRows={tableData.rows}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
-            paginationItems={PAGINATION_ITEMS}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            totalRecordCount={filteredApicultureRecords.length}
-            onRowClick={(row) => {
-              const apiaryId = row[0] as number;
-              const apiaryName = row[1] as string;
-              if (parsedUserId && apiaryId) {
-                router.push({
-                  pathname: `/${parsedUserId}/apiculture/${apiaryId}`,
-                  query: { apiaryName: encodeURIComponent(apiaryName) },
-                });
-              }
-            }}
-            view={view}
-            loading={loadingApiculture && apicultureRecords.length > 0}
-            reset={true}
-            hideChecks={false}
-            download={true}
-            onDeleteRows={handleDeleteRows}
-            onResetTable={handleResetTable}
-          />
-        )}
+          <div className="rounded-3xl p-6 border shadow-xs">
+             <TaskBoard projectTitle="Apiculture" userId={parsedUserId as string} />
+          </div>
+        </section>
 
         {isSidebarOpen && (
           <ApicultureForm

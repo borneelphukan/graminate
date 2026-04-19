@@ -7,7 +7,7 @@ import NavPanel from "@/components/layout/NavPanel";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import TextField from "@/components/ui/TextField";
-import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
+import { LANGUAGES, TIME_FORMAT, UNITS } from "@/constants/options";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
@@ -46,6 +46,22 @@ const General = () => {
     city: "",
     state: "",
     postalCode: "",
+  });
+
+  const [storageSettings, setStorageSettings] = useState({
+    provider: "Amazon S3",
+    bucketName: "",
+    region: "",
+    accessKeyId: "",
+    secretAccessKey: "",
+    maxFileSize: "10",
+    publicAccess: "Private",
+    // Physical Storage Defaults
+    defaultWarehouseType: "Ambient Storage",
+    capacityUnit: "sq. ft.",
+    defaultInventoryUnit: "kg",
+    globalLowStockThreshold: "5",
+    enableLowStockAlerts: true,
   });
 
   useEffect(() => {
@@ -119,6 +135,7 @@ const General = () => {
     const buttons = [
       { nameKey: "profile" as NavPanelTranslationKey, view: "profile" },
       { nameKey: "crm" as NavPanelTranslationKey, view: "crm" },
+      { nameKey: "storage" as NavPanelTranslationKey, view: "storage" },
     ];
     return buttons.map((btn) => ({
       ...btn,
@@ -409,7 +426,7 @@ const General = () => {
                   )}
 
                   {currentViewFromRouter === "crm" && (
-                    <div className="rounded-lg p-4">
+                    <div className="rounded-lg p-0">
                       <h2 className="text-lg font-semibold mb-4 dark:text-light">
                         {t("crmSettings" as NavPanelTranslationKey)}
                       </h2>
@@ -419,6 +436,80 @@ const General = () => {
                       <p className="dark:text-light">
                         CRM specific settings and configurations will go here.
                       </p>
+                    </div>
+                  )}
+
+                  {currentViewFromRouter === "storage" && (
+                    <div className="rounded-lg p-0">
+                      <h2 className="text-lg font-semibold mb-4 dark:text-light">
+                        {t("storageSettings" as NavPanelTranslationKey) || "Storage Settings"}
+                      </h2>
+                      <p className="text-gray-300 mb-6">
+                        {t("storageSettingsDescription" as NavPanelTranslationKey) || "Configure your cloud storage provider and bucket details for file uploads."}
+                      </p>
+                      
+                      <div className="flex flex-col gap-6 max-w-lg">
+
+                        {/* Physical Storage & Warehouse Section */}
+                        <div className="border-b border-gray-700 pb-6">
+                          <h3 className="text-sm font-semibold mb-4 text-gray-200 uppercase tracking-wider">{t("warehouseSettings" as NavPanelTranslationKey) || "Warehouse & Inventory"}</h3>
+                          <div className="flex flex-col gap-4">
+                            <Dropdown
+                              label={t("defaultWarehouseType" as NavPanelTranslationKey) || "Default Warehouse Type"}
+                              items={["Ambient Storage", "Cold Storage", "Climate Controlled Storage", "Bulk Silo Storage", "Packhouse"]}
+                              selectedItem={storageSettings.defaultWarehouseType}
+                              onSelect={(val) => setStorageSettings(prev => ({ ...prev, defaultWarehouseType: val }))}
+                            />
+                            
+                            <Dropdown
+                              label={t("capacityUnit" as NavPanelTranslationKey) || "Area/Capacity Unit"}
+                              items={["sq. ft.", "sq. meters", "cubic meters"]}
+                              selectedItem={storageSettings.capacityUnit}
+                              onSelect={(val) => setStorageSettings(prev => ({ ...prev, capacityUnit: val }))}
+                            />
+
+                            <Dropdown
+                              label={t("defaultInventoryUnit" as NavPanelTranslationKey) || "Default Inventory Unit"}
+                              items={UNITS}
+                              selectedItem={storageSettings.defaultInventoryUnit}
+                              onSelect={(val) => setStorageSettings(prev => ({ ...prev, defaultInventoryUnit: val }))}
+                            />
+
+                            <TextField
+                              label={t("globalLowStockThreshold" as NavPanelTranslationKey) || "Global Low Stock Threshold"}
+                              placeholder="5"
+                              number
+                              value={storageSettings.globalLowStockThreshold}
+                              onChange={(val) => setStorageSettings(prev => ({ ...prev, globalLowStockThreshold: val }))}
+                              width="medium"
+                            />
+
+                            <div className="flex items-center gap-3 py-2">
+                              <input 
+                                type="checkbox" 
+                                id="enableAlerts"
+                                checked={storageSettings.enableLowStockAlerts}
+                                onChange={(e) => setStorageSettings(prev => ({ ...prev, enableLowStockAlerts: e.target.checked }))}
+                                className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-green-200 focus:ring-green-500"
+                              />
+                              <label htmlFor="enableAlerts" className="text-sm text-gray-200">
+                                {t("enableLowStockAlerts" as NavPanelTranslationKey) || "Enable low stock visual alerts in warehouse dashboard"}
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-8">
+                        <Button
+                          variant="primary"
+                          label={t("saveStorageSettings")}
+                          onClick={() => {
+                            console.log("Saving combined storage settings:", storageSettings);
+                            setProfileSuccessMessage(t("saveStorageSettings") + " " + t("profileUpdateSuccess"));
+                          }}
+                        />
+                      </div>
                     </div>
                   )}
                 </section>

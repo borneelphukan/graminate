@@ -20,17 +20,12 @@ type UserDetails = {
   created_at: string;
 };
 
-type LoginHistoryEntry = {
-  logged_in_at: string;
-  logged_out_at: string | null;
-  session_duration: string | null;
-};
+
 
 const AdminUserDetailsPage = () => {
   const router = useRouter();
   const { admin_id, user_id } = router.query;
   const [user, setUser] = useState<UserDetails | null>(null);
-  const [loginHistory, setLoginHistory] = useState<LoginHistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,16 +43,11 @@ const AdminUserDetailsPage = () => {
       }
 
       try {
-        const [userResponse, historyResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/admin/users/${user_id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`${API_BASE_URL}/admin/users/${user_id}/login-history`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+        const userResponse = await fetch(`${API_BASE_URL}/admin/users/${user_id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (userResponse.status === 401 || historyResponse.status === 401) {
+        if (userResponse.status === 401) {
           localStorage.removeItem("admin_token");
           router.push("/");
           return;
@@ -66,21 +56,13 @@ const AdminUserDetailsPage = () => {
         if (!userResponse.ok) {
           throw new Error("Failed to fetch user details.");
         }
-        if (!historyResponse.ok) {
-          throw new Error("Failed to fetch login history.");
-        }
 
         const userResult = await userResponse.json();
-        const historyResult = await historyResponse.json();
 
         if (userResult.data?.user) {
           setUser(userResult.data.user);
         } else {
           throw new Error("User not found.");
-        }
-
-        if (historyResult.data?.history) {
-          setLoginHistory(historyResult.data.history);
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -111,21 +93,7 @@ const AdminUserDetailsPage = () => {
     }
   };
 
-  const formattedDateTime = (dateString?: string | null) => {
-    if (!dateString) return "N/A";
-    try {
-      return new Date(dateString).toLocaleString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-    } catch (e) {
-      return "Invalid Date";
-    }
-  };
+
 
   return (
     <>
@@ -137,140 +105,138 @@ const AdminUserDetailsPage = () => {
         </title>
       </Head>
       <PlatformLayout>
-        <div className="p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="p-4 md:p-8 max-w-5xl mx-auto min-h-screen bg-neutral-light/30">
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
+            <div className="flex justify-center items-center h-96">
               <Loader />
             </div>
           ) : error ? (
             <div
-              className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
+              className="p-4 mb-4 text-sm text-red-800 rounded-2xl bg-red-50 border border-red-100"
               role="alert"
             >
               <span className="font-medium">Error!</span> {error}
             </div>
           ) : user ? (
-            <div className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                <div className="p-4 sm:px-6 flex flex-col md:flex-row justify-between items-start md:items-center">
-                  <div className="mb-4 md:mb-0">
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                      User Information
-                    </h1>
-                    <h2 className="text-sm font-thin text-dark dark:text-light mt-1">
-                      <span className="font-semibold">Admin ID:</span>{" "}
-                      {admin_id}
-                    </h2>
-                  </div>
-                  <Button
-                    text="Back to All Users"
-                    style="secondary"
-                    arrow="left"
-                    onClick={() => router.push(`/platform/${admin_id}/users`)}
-                  />
+            <div className="space-y-8 animate-in fade-in duration-500">
+              {/* Header Section */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-dark dark:text-light tracking-tight">
+                    User Profile
+                  </h1>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Viewing details for ID: <span className="font-mono text-xs">{user.user_id}</span>
+                  </p>
                 </div>
-
-                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 p-4 sm:px-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm text-gray-700 dark:text-gray-300">
-                    <div>
-                      <span className="font-semibold block">Full Name</span>
-                      {`${user.first_name} ${user.last_name}`}
-                    </div>
-                    <div>
-                      <span className="font-semibold block">Contact Email</span>
-                      {user.email}
-                    </div>
-                    <div>
-                      <span className="font-semibold block">Business Name</span>
-                      {user.business_name || "N/A"}
-                    </div>
-                    <div>
-                      <span className="font-semibold block">Account Type</span>
-                      {user.type}
-                    </div>
-                    <div>
-                      <span className="font-semibold block">
-                        Subscription Plan
-                      </span>
-                      {user.plan}
-                    </div>
-                    <div>
-                      <span className="font-semibold block">Plan Expiry</span>
-                      {user.plan === "FREE"
-                        ? "Unlimited"
-                        : formattedDate(user.subscription_expires_at)}
-                    </div>
-                    <div className="md:col-span-2 lg:col-span-3">
-                      <span className="font-semibold block">
-                        Services Opted ({services.length})
-                      </span>
-                      {services.length > 0 ? (
-                        <ul className="list-disc space-y-1 pl-5 mt-1">
-                          {services.map((service, index) => (
-                            <li key={index}>{service}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        "No services opted."
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <Button
+                  text="All Users"
+                  style="secondary"
+                  arrow="left"
+                  onClick={() => router.push(`/platform/${admin_id}/users`)}
+                />
               </div>
 
-              <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 sm:px-6">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-                  Recent Session History
-                </h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                    <thead className="text-xs text-gray-800 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200">
-                      <tr>
-                        <th scope="col" className="px-6 py-3">
-                          Logged In At
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Logged Out At
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Session Duration (HH:MM:SS)
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loginHistory.length > 0 ? (
-                        loginHistory.map((entry, index) => (
-                          <tr
-                            key={index}
-                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                          >
-                            <td className="px-6 py-4">
-                              {formattedDateTime(entry.logged_in_at)}
-                            </td>
-                            <td className="px-6 py-4">
-                              {entry.logged_out_at
-                                ? formattedDateTime(entry.logged_out_at)
-                                : "-"}
-                            </td>
-                            <td className="px-6 py-4">
-                              {entry.session_duration ?? "-"}
-                            </td>
-                          </tr>
-                        ))
+              {/* Main Info Card */}
+              <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden">
+                <div className="p-6 md:p-8 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="size-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-2xl font-bold">
+                      {user.first_name[0]}{user.last_name[0]}
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-dark dark:text-light">
+                        {user.first_name} {user.last_name}
+                      </h2>
+                      <p className="text-gray-500 dark:text-gray-400">{user.email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                    {/* Basic Details */}
+                    <div className="space-y-6">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">Account Details</h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-500 dark:text-gray-400">Business Name</span>
+                          <span className="font-medium text-dark dark:text-light">{user.business_name || "N/A"}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-500 dark:text-gray-400">Account Type</span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase">
+                            {user.type}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-500 dark:text-gray-400">Joined On</span>
+                          <span className="font-medium text-dark dark:text-light">{formattedDate(user.created_at)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Subscription Details */}
+                    <div className="space-y-6">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">Subscription</h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-500 dark:text-gray-400">Current Plan</span>
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
+                            user.plan === "PRO" 
+                              ? "bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                          }`}>
+                            {user.plan}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center py-1">
+                          <span className="text-gray-500 dark:text-gray-400">Expires At</span>
+                          <span className="font-medium text-dark dark:text-light">
+                            {user.plan === "FREE" ? "Unlimited" : formattedDate(user.subscription_expires_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Services Section */}
+                    <div className="md:col-span-2 pt-6 border-t border-gray-100 dark:border-gray-800">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+                        Services Opted ({services.length})
+                      </h3>
+                      {services.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {services.map((service, index) => (
+                            <span 
+                              key={index}
+                              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-dark dark:text-light shadow-sm"
+                            >
+                              {service}
+                            </span>
+                          ))}
+                        </div>
                       ) : (
-                        <tr>
-                          <td colSpan={3} className="px-6 py-4 text-center">
-                            No session history found.
-                          </td>
-                        </tr>
+                        <p className="text-gray-400 italic">No services opted by this user.</p>
                       )}
-                    </tbody>
-                  </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
-            <p className="text-center text-gray-500">No user data found.</p>
+            <div className="flex flex-col items-center justify-center h-96 text-center">
+              <div className="size-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
+                <span className="text-2xl">👤</span>
+              </div>
+              <h3 className="text-lg font-bold text-dark">User Not Found</h3>
+              <p className="text-gray-500 mt-1">We couldn't locate details for this user ID.</p>
+              <Button
+                text="Back to Dashboard"
+                style="primary"
+                className="mt-6"
+                onClick={() => router.push(`/platform/${admin_id}/users`)}
+              />
+            </div>
           )}
         </div>
       </PlatformLayout>
