@@ -465,7 +465,7 @@ const PoultryEggCard = ({
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col h-full">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
         <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
-          Egg Collection & Grading
+          Egg Collection
         </h2>
         <SegmentedControl
           defaultValue={activeView === "graphs" ? "first" : "second"}

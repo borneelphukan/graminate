@@ -1,6 +1,5 @@
 import React from "react";
 import { Icon } from "../icon/icon";
-import { cn } from "../../utils";
 
 export type SidebarItem = {
   label: string;
@@ -40,15 +39,12 @@ export const Sidebar = ({
 }: SidebarProps) => {
   return (
     <div
-      className={cn(
-        "sidebar-container fixed inset-y-0 left-0 bg-gradient-to-b from-gray-800 to-gray-900 text-gray-300 shadow-xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
-        isOpen ? "translate-x-0" : "-translate-x-full",
-        "lg:translate-x-0 lg:relative lg:shadow-none",
-        className
-      )}
+      className={`sidebar-container fixed inset-y-0 left-0 bg-gray-800 text-gray-300 shadow-xl transform transition-transform duration-300 ease-in-out z-[60] flex flex-col ${
+        isOpen ? "translate-x-0" : "max-lg:-translate-x-full"
+      } lg:translate-x-0 lg:shadow-none ${className || ""}`}
       style={{ width: isCollapsed ? 60 : 230 }}
     >
-      <nav className="flex-1 overflow-y-auto py-4 space-y-1">
+      <nav className="flex-1 overflow-hidden py-4 space-y-1 bg-gray-800">
         {items.map((item) => {
           const hasSubItems = item.subItems && item.subItems.length > 0;
           const isSectionOpen = !!item.section && expandedSection === item.section;
@@ -58,15 +54,15 @@ export const Sidebar = ({
             isSectionOpen;
 
           return (
-            <div key={item.label} className={cn("relative", isCollapsed ? "px-1" : "px-3")}>
+            <div key={item.label} className={`relative ${isCollapsed ? "px-1" : "px-3"}`}>
               <div
-                className={cn(
-                  "flex items-center rounded-lg cursor-pointer group transition-colors duration-200",
-                  isCollapsed ? "p-2 justify-center" : "p-3",
+                className={`flex items-center rounded-lg cursor-pointer group transition-colors duration-200 ${
+                  isCollapsed ? "p-2 justify-center" : "p-3"
+                } ${
                   isActive
                     ? "bg-gray-700 text-white shadow-md"
                     : "text-gray-400 hover:bg-gray-700 hover:text-gray-300"
-                )}
+                }`}
                 role="button"
                 tabIndex={0}
                 title={isCollapsed ? item.label : ""}
@@ -91,14 +87,13 @@ export const Sidebar = ({
                 {typeof item.icon === "string" ? (
                   <Icon
                     type={item.icon}
-                    className={cn("h-5 w-5 flex-shrink-0", isCollapsed ? "" : "mr-3")}
+                    className={`h-5 w-5 flex-shrink-0 ${isCollapsed ? "" : "mr-3"}`}
                   />
                 ) : (
                   <div
-                    className={cn(
-                      "h-5 w-5 flex-shrink-0 flex items-center justify-center text-current",
+                    className={`h-5 w-5 flex-shrink-0 flex items-center justify-center text-current ${
                       isCollapsed ? "" : "mr-3"
-                    )}
+                    }`}
                   >
                     {React.createElement(item.icon)}
                   </div>
@@ -112,11 +107,9 @@ export const Sidebar = ({
                     {hasSubItems && (
                       <Icon
                         type="chevron_right"
-                        className={cn(
-                          "h-4 w-4 transition-transform duration-200",
-                          isSectionOpen ? "rotate-90" : "",
-                          isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
-                        )}
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isSectionOpen ? "rotate-90" : ""
+                        } ${isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"}`}
                       />
                     )}
                   </>
@@ -130,12 +123,11 @@ export const Sidebar = ({
                     return (
                       <div
                         key={sub.label}
-                        className={cn(
-                          "text-sm py-2 px-4 rounded-md cursor-pointer transition-colors duration-150",
+                        className={`text-sm py-2 px-4 rounded-md cursor-pointer transition-colors duration-150 ${
                           isSubActive
                             ? "text-indigo-300 font-semibold"
                             : "text-gray-400 hover:text-white hover:bg-gray-700"
-                        )}
+                        }`}
                         role="button"
                         tabIndex={0}
                         onClick={() => onNavigate(sub.path)}
@@ -157,12 +149,11 @@ export const Sidebar = ({
         })}
       </nav>
 
-      <div className="mt-auto p-3 border-t border-gray-700">
+      <div className="mt-auto bg-gray-800 p-3 border-t border-gray-700">
         <button
-          className={cn(
-            "w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200",
+          className={`w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
             isCollapsed ? "justify-center" : "justify-end"
-          )}
+          }`}
           onClick={onToggleCollapse}
           title={isCollapsed ? expandTitle : collapseTitle}
         >

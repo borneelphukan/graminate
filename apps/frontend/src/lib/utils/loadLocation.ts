@@ -30,8 +30,25 @@ export async function getCurrentLocation(): Promise<{ lat: number; lon: number }
           lon: position.coords.longitude,
         });
       },
-      () => {
-        reject("Unable to get location. Please enable location services.");
+      (error) => {
+        let msg = "An unknown location error occurred.";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            msg = "Location permission denied.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            msg = "Location unavailable. Please check your GPS/network.";
+            break;
+          case error.TIMEOUT:
+            msg = "Location request timed out.";
+            break;
+        }
+        reject(msg);
+      },
+      { 
+        enableHighAccuracy: false, 
+        timeout: 10000, 
+        maximumAge: 60000 
       }
     );
   });

@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, cn } from "@graminate/ui";
 import React from "react";
 import Loader from "@/components/ui/Loader";
 
@@ -16,8 +16,14 @@ type EnvironmentCardProps = {
   gridConfig?: string;
 };
 
-const MetricItem = ({ icon, value, label, valueClassName }: Metric) => (
-  <div className="flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-shadow duration-200 hover:shadow-md dark:bg-gray-700">
+const MetricItem = ({ icon, value, label, valueClassName, onClick }: Metric & { onClick?: () => void }) => (
+  <div 
+    onClick={onClick}
+    className={cn(
+      "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-700",
+      onClick && "cursor-pointer active:scale-95"
+    )}
+  >
     <Icon
       type={icon}
       className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
@@ -39,7 +45,8 @@ const EnvironmentCard = ({
   loading,
   metrics,
   gridConfig = "grid-cols-2 gap-4",
-}: EnvironmentCardProps) => {
+  onMetricClick,
+}: EnvironmentCardProps & { onMetricClick?: (metric: Metric) => void }) => {
   return (
     <div className="relative flex h-full flex-col rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
       <div className="mb-4 flex items-start justify-between">
@@ -61,6 +68,7 @@ const EnvironmentCard = ({
               value={metric.value}
               label={metric.label}
               valueClassName={metric.valueClassName}
+              onClick={() => onMetricClick?.(metric)}
             />
           ))}
         </div>

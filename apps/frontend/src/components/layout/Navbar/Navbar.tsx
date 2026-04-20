@@ -149,7 +149,7 @@ const Navbar = ({
 
   return (
     <>
-      <header className="px-6 lg:px-12 bg-gray-800 py-2 w-full top-0 z-50">
+      <header className="sticky top-0 px-6 lg:px-12 bg-gray-800 py-2 w-full z-[60] border-b border-gray-700">
         <div className="mx-auto w-full px-2 sm:px-4 lg:divide-y lg:divide-gray-700 lg:px-8">
           <div className="relative flex h-12 py-1 justify-between">
             <div className="relative z-10 flex px-2 lg:px-0">

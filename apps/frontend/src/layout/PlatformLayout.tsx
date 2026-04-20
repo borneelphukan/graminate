@@ -100,12 +100,6 @@ const PlatformLayout = ({ children }: Props) => {
           basePath: `/${userId}/apiculture`,
         });
       }
-      items.push({
-        icon: "cloud",
-        label: t("weatherMonitor"),
-        section: "Weather Monitor",
-        path: `/${userId}/weather`,
-      });
     }
 
     items.push(
@@ -465,13 +459,11 @@ const PlatformLayout = ({ children }: Props) => {
       />
 
       <div className="flex flex-col min-h-screen bg-light dark:bg-dark text-dark dark:text-light">
-        <div className="z-50">
-          <Navbar
-            userId={userId}
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          />
-        </div>
+        <Navbar
+          userId={userId}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
 
         <div className="flex flex-1 max-h-screen relative">
           {isSidebarOpen && (
@@ -483,6 +475,7 @@ const PlatformLayout = ({ children }: Props) => {
 
           <SharedSidebar 
             items={sidebarItems}
+            className="top-16"
             activePath={activePath}
             isOpen={isSidebarOpen}
             isCollapsed={isCollapsed}
@@ -497,13 +490,9 @@ const PlatformLayout = ({ children }: Props) => {
             expandTitle={t("expandSidebar")}
           />
 
-          <div
-            className={`flex-1 p-4 overflow-y-auto ${
-              isSidebarOpen ? "overflow-hidden" : ""
-            }`}
-          >
+          <main className={`flex-1 p-6 overflow-y-auto transition-[margin] duration-300 ${isSidebarOpen ? "overflow-hidden" : ""} ${isCollapsed ? "lg:ml-[60px]" : "lg:ml-[230px]"}`}>
             {children}
-          </div>
+          </main>
         </div>
 
         <div

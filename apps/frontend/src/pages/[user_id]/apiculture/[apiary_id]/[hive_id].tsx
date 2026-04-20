@@ -186,7 +186,7 @@ const HiveDetailsPage = () => {
             console.error("Geolocation permission denied or error.");
             setWeatherLoading(false);
           },
-          { enableHighAccuracy: true }
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
         );
       } else {
         setWeatherLoading(false);

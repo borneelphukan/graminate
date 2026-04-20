@@ -41,13 +41,11 @@ const PlatformLayout = ({ children }: Props) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-light dark:bg-dark text-dark dark:text-light">
-      <div className="z-50">
-        <Navbar 
-          userId={admin_id as string} 
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
-      </div>
+      <Navbar 
+        userId={admin_id as string} 
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
 
       <div className="flex flex-1 max-h-screen relative">
         {isSidebarOpen && (
@@ -59,6 +57,7 @@ const PlatformLayout = ({ children }: Props) => {
 
         <Sidebar 
           items={navItems}
+          className="top-16"
           activePath={router.asPath.split("?")[0]}
           isOpen={isSidebarOpen}
           isCollapsed={isCollapsed}
@@ -66,7 +65,7 @@ const PlatformLayout = ({ children }: Props) => {
           onNavigate={(path) => router.push(path)}
         />
 
-        <main className={`flex-1 p-6 overflow-y-auto ${isSidebarOpen ? "overflow-hidden" : ""}`}>
+        <main className={`flex-1 p-6 overflow-y-auto transition-[margin] duration-300 ${isSidebarOpen ? "overflow-hidden" : ""} ${isCollapsed ? "lg:ml-[60px]" : "lg:ml-[230px]"}`}>
           {children}
         </main>
       </div>

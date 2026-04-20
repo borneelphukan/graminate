@@ -228,7 +228,7 @@ const ApicultureDetailPage = () => {
           (position) =>
             fetchWeather(position.coords.latitude, position.coords.longitude),
           () => console.error("Geolocation permission denied or error."),
-          { enableHighAccuracy: true }
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
         );
       }
     };

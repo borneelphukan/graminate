@@ -43,6 +43,7 @@ import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
+import WeatherModal from "@/components/modals/WeatherModal";
 
 ChartJS.register(
   CategoryScale,
@@ -193,6 +194,9 @@ const PoultryDetail = () => {
     ItemRecord[]
   >([]);
   const [loadingPoultryInventory, setLoadingPoultryInventory] = useState(true);
+
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
 
   const [sensorUrl] = useState<string | null>(null);
 
@@ -755,12 +759,14 @@ const PoultryDetail = () => {
         const newWeatherData = {
           temperature: Math.round(response.data.current.temperature2m),
           humidity: Math.round(response.data.current.relativeHumidity2m),
-          lightHours:
-            typeof response.data.daily.daylightDuration?.[0] === "number"
-              ? response.data.daily.daylightDuration[0] / 3600
-              : null,
-          timestamp: Date.now(),
-        };
+            lightHours:
+              typeof response.data.daily.daylightDuration?.[0] === "number"
+                ? response.data.daily.daylightDuration[0] / 3600
+                : null,
+            lat,
+            lon,
+            timestamp: Date.now(),
+          };
         localStorage.setItem("weatherData", JSON.stringify(newWeatherData));
         setTemperature(newWeatherData.temperature);
         setHumidity(newWeatherData.humidity);
@@ -777,10 +783,11 @@ const PoultryDetail = () => {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
+            setCoords({ lat: latitude, lon: longitude });
             fetchWeather(latitude, longitude);
           },
           () => {},
-          { enableHighAccuracy: true }
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
         );
       } else {
       }
@@ -794,6 +801,9 @@ const PoultryDetail = () => {
         setTemperature(parsed.temperature);
         setHumidity(parsed.humidity);
         setLightHours(parsed.lightHours);
+        if (parsed.lat && parsed.lon) {
+          setCoords({ lat: parsed.lat, lon: parsed.lon });
+        }
         return;
       }
     }
@@ -863,6 +873,10 @@ const PoultryDetail = () => {
     ],
     [temperature, humidity, lightHours, formatTemperature]
   );
+
+  const handleMetricClick = () => {
+    setIsWeatherModalOpen(true);
+  };
 
   return (
     <PlatformLayout>
@@ -1054,6 +1068,7 @@ const PoultryDetail = () => {
             loading={isLoadingEnvironment}
             metrics={environmentMetrics}
             gridConfig="grid-cols-3 gap-4"
+            onMetricClick={handleMetricClick}
           />
           {selectedFlockData &&
             EGG_LAYING_FLOCK_TYPES.includes(selectedFlockData.flock_type) && (
@@ -1098,6 +1113,13 @@ const PoultryDetail = () => {
           }}
         />
       )}
+
+      <WeatherModal
+        isOpen={isWeatherModalOpen}
+        onClose={() => setIsWeatherModalOpen(false)}
+        lat={coords?.lat ?? null}
+        lon={coords?.lon ?? null}
+      />
     </PlatformLayout>
   );
 };

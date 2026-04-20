@@ -4,22 +4,18 @@ import pool from "../../../config/database";
 // import path from "path";
 import { createRouter } from "next-connect";
 import cors, { runMiddleware } from "../../../lib/corsMiddleware";
-import type { Request } from "express";
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "public/uploads/");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, Date.now() + path.extname(file.originalname));
-//   },
-// });
-
-// const upload = multer({ storage });
-
 interface ExtendedNextApiRequest extends NextApiRequest {
-  file?: Express.Multer.File;
-  cookies: Request["cookies"];
+  file?: {
+    fieldname: string;
+    originalname: string;
+    encoding: string;
+    mimetype: string;
+    size: number;
+    destination: string;
+    filename: string;
+    path: string;
+    buffer: Buffer;
+  };
 }
 
 const router = createRouter<ExtendedNextApiRequest, NextApiResponse>();

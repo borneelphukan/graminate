@@ -15,6 +15,7 @@ import axios from "axios";
 import CattleForm, { CattleRearingData } from "@/components/form/CattleForm";
 import MilkCard from "@/components/cards/cattle_rearing/MilkCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
+import WeatherModal from "@/components/modals/WeatherModal";
 
 type CattleRearingDetail = {
   cattle_id: number;
@@ -94,6 +95,8 @@ const CattleDetailPage = () => {
     uvIndex: null,
   });
   const [weatherLoading, setWeatherLoading] = useState(true);
+  const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
 
   const convertToFahrenheit = useCallback((celsius: number): number => {
     return Math.round(celsius * (9 / 5) + 32);
@@ -202,10 +205,13 @@ const CattleDetailPage = () => {
     const getLocationAndFetch = () => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
-          (position) =>
-            fetchWeather(position.coords.latitude, position.coords.longitude),
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setCoords({ lat: latitude, lon: longitude });
+            fetchWeather(latitude, longitude);
+          },
           () => console.error("Geolocation permission denied or error."),
-          { enableHighAccuracy: true }
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
         );
       }
     };
@@ -401,6 +407,7 @@ const CattleDetailPage = () => {
               loading={weatherLoading}
               metrics={environmentMetrics}
               gridConfig="grid-cols-2 md:grid-cols-3 gap-4"
+              onMetricClick={() => setIsWeatherModalOpen(true)}
             />
           </div>
         </div>
@@ -416,6 +423,12 @@ const CattleDetailPage = () => {
           }}
         />
       )}
+      <WeatherModal 
+        isOpen={isWeatherModalOpen}
+        onClose={() => setIsWeatherModalOpen(false)}
+        lat={coords?.lat || null}
+        lon={coords?.lon || null}
+      />
     </PlatformLayout>
   );
 };

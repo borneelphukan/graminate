@@ -8,7 +8,6 @@ import TotalUsersWidget from "@/components/dashboard/TotalUsersWidget";
 import UserDistributionWidget from "@/components/dashboard/UserDistributionWidget";
 import SignupGraphWidget from "@/components/dashboard/SignupGraphWidget";
 import WidgetModal from "@/components/modals/WidgetModal";
-import { Icon } from "@graminate/ui";
 import { 
   format, 
   subDays, 
@@ -17,15 +16,10 @@ import {
   eachDayOfInterval, 
   startOfMonth, 
   eachMonthOfInterval, 
-  isSameMonth, 
-  startOfWeek, 
+  isSameMonth,  
   eachWeekOfInterval, 
   isSameWeek,
   subMonths,
-  subYears,
-  endOfDay,
-  endOfWeek,
-  endOfMonth,
   eachHourOfInterval,
   isSameHour,
 } from "date-fns";
