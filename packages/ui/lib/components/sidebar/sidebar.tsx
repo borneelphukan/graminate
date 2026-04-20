@@ -39,9 +39,11 @@ export const Sidebar = ({
 }: SidebarProps) => {
   return (
     <div
-      className={`sidebar-container fixed inset-y-0 left-0 bg-gray-800 text-gray-300 shadow-xl transform transition-transform duration-300 ease-in-out z-[60] flex flex-col ${
+      className={`sidebar-container fixed inset-y-0 left-0 bg-gray-800 text-gray-300 shadow-xl transform transition-transform duration-300 ease-in-out z-30 flex flex-col ${
         isOpen ? "translate-x-0" : "max-lg:-translate-x-full"
       } lg:translate-x-0 lg:shadow-none ${className || ""}`}
+
+
       style={{ width: isCollapsed ? 60 : 230 }}
     >
       <nav className="flex-1 overflow-hidden py-4 space-y-1 bg-gray-800">

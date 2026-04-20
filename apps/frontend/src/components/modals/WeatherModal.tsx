@@ -190,10 +190,10 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl relative"
+        className="bg-white dark:bg-gray-800 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl relative"
       >
         {/* FIXED HEADER */}
-        <div className="sticky top-0 z-[60] bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl px-8 lg:px-12 py-6 border-b border-gray-400 dark:border-gray-700 flex items-center justify-between shrink-0">
+        <div className="sticky top-0 z-[60] bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl px-6 lg:px-10 py-4 border-b border-gray-400 dark:border-gray-700 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             {activeView === "detailed" && (
               <Button 
@@ -231,7 +231,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
           <div className="flex-1 overflow-hidden flex flex-col relative">
             <div className={cn(
               "w-full overflow-y-auto overflow-x-hidden relative flex-1 flex flex-col transition-all duration-500 custom-scrollbar",
-              activeView === "detailed" && "min-h-[700px]"
+              activeView === "detailed" && "min-h-[550px]"
             )}>
               {/* Background Decorative Elements */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-[120px] -mr-48 -mt-48 pointer-events-none" />
@@ -246,9 +246,9 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                 {/* VIEW 1: Summary Dashboard */}
                 <div className="w-1/2 flex flex-col lg:flex-row">
                   {/* Left Section: Main Highlights */}
-                  <div className="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-gray-400 dark:border-gray-700">
-                    <div className="flex items-center gap-6 mb-8 mt-2">
-                      <h1 className="text-5xl lg:text-7xl text-dark dark:text-light font-black tracking-tighter drop-shadow-2xl">
+                  <div className="lg:w-2/5 p-6 lg:p-10 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-gray-400 dark:border-gray-700">
+                    <div className="flex items-center gap-6 mb-6 mt-1">
+                      <h1 className="text-4xl lg:text-6xl text-dark dark:text-light font-black tracking-tighter drop-shadow-2xl">
                         {formatTemp(data.current.temperature2m)}
                       </h1>
                       <div className="flex flex-col gap-2">
@@ -277,27 +277,27 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                       </div>
                     </div>
 
-                    <div className="space-y-4 mt-12">
-                      <div className="flex items-center justify-between p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
+                    <div className="space-y-3 mt-8">
+                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-blue-500/20 rounded-lg">
-                            <Icon type="water_drop" className="text-blue-400 size-5" />
+                          <div className="p-1.5 bg-blue-500/20 rounded-lg">
+                            <Icon type="water_drop" className="text-blue-400 size-4" />
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-50 leading-none mb-1">Humidity</p>
-                            <p className="text-lg font-black text-dark dark:text-light leading-none">{Math.round(data.current.relativeHumidity2m)}%</p>
+                            <p className="text-base font-black text-dark dark:text-light leading-none">{Math.round(data.current.relativeHumidity2m)}%</p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
+                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-blue-500/20 rounded-lg">
-                            <Icon type="air" className="size-5" />
+                          <div className="p-1.5 bg-blue-500/20 rounded-lg">
+                            <Icon type="air" className="size-4" />
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-50 leading-none mb-1">Wind Speed</p>
-                            <p className="text-lg font-black text-dark dark:text-light leading-none">{data.current.windSpeed10m.toFixed(1)} km/h</p>
+                            <p className="text-base font-black text-dark dark:text-light leading-none">{data.current.windSpeed10m.toFixed(1)} km/h</p>
                           </div>
                         </div>
                       </div>
@@ -305,7 +305,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                   </div>
 
                   {/* Right Section: Detailed Metrics Grid */}
-                  <div className="lg:flex-1 p-8 lg:p-12">
+                  <div className="lg:flex-1 p-6 lg:p-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
                       {/* UV Index Card */}
                       <div className="bg-white/10 p-6 rounded-3xl border border-gray-400 dark:border-gray-700 flex flex-col justify-between hover:bg-white/15 transition-colors group">
@@ -417,7 +417,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                 </div>
 
                 {/* VIEW 2: Detailed Forecast View */}
-                <div className="w-1/2 p-8 lg:p-12 flex flex-col bg-black/5 dark:bg-black/20 backdrop-blur-3xl h-full">
+                <div className="w-1/2 p-6 lg:p-10 flex flex-col bg-black/5 dark:bg-black/20 backdrop-blur-3xl h-full">
                   <div className="flex-1 space-y-8 pr-2">
                     {/* Hourly Forecast */}
                     <section className="relative overflow-hidden">
@@ -438,7 +438,8 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                       <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-4 opacity-50 text-dark dark:text-light">10-Day Forecast</h3>
                       <div className="space-y-2 pb-4">
                         {data.daily.time.slice(0, 10).map((time, i) => (
-                          <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-700 hover:bg-white/10 transition-colors">
+                          <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-700 hover:bg-white/10 transition-colors">
+
                             <div className="w-1/4">
                               <p className="font-bold text-dark dark:text-light">
                                 {i === 0 ? "Today" : new Date(time).toLocaleDateString("en-US", { weekday: "long" })}

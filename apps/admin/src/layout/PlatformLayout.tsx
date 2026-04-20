@@ -24,11 +24,6 @@ const PlatformLayout = ({ children }: Props) => {
       icon: "group",
       path: `/platform/${admin_id}/users`,
     },
-    {
-      label: "Documents",
-      icon: "description",
-      path: `/platform/${admin_id}/documents`,
-    },
   ];
 
   useEffect(() => {

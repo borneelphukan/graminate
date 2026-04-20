@@ -282,7 +282,7 @@ const AdminUsersPage = () => {
           <header className="flex flex-col md:flex-row justify-between items-end border-b border-gray-400 dark:border-gray-600 pb-6 gap-4">
             <div>
               <h1 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
-                User Management Dashboard
+                User Management
               </h1>
               <p className="text-sm text-dark dark:text-light mt-1">
                 {isLoading 

@@ -149,20 +149,12 @@ const Navbar = ({
 
   return (
     <>
-      <header className="sticky top-0 px-6 lg:px-12 bg-gray-800 py-2 w-full z-[60] border-b border-gray-700">
+      <header className="sticky top-0 px-6 lg:px-12 bg-gray-800 py-2 w-full z-30 border-b border-gray-700">
         <div className="mx-auto w-full px-2 sm:px-4 lg:divide-y lg:divide-gray-700 lg:px-8">
           <div className="relative flex h-12 py-1 justify-between">
             <div className="relative z-10 flex px-2 lg:px-0">
               <div className="flex flex-shrink-0 items-center">
                 <div className="flex flex-row items-center gap-4">
-                  <button
-                    className="lg:hidden text-gray-400 hover:text-white focus:outline-none mr-2"
-                    onClick={toggleSidebar}
-                    aria-label={t("toggleSidebar")}
-                    aria-expanded={isSidebarOpen}
-                  >
-                    <Icon type={"menu"} className="size-6" />
-                  </button>
                   <Image
                     src={imageSrc}
                     alt="Graminate Logo"
@@ -175,6 +167,7 @@ const Navbar = ({
                     {t("graminate")}
                   </span>
                 </div>
+
               </div>
             </div>
             <div className="relative z-10 ml-4 flex items-center">
@@ -232,7 +225,7 @@ const Navbar = ({
                     ref={dropdownRef}
                     className="origin-top-right absolute right-0 top-12 w-96 rounded-md shadow-lg py-4 bg-white dark:bg-gray-800"
                   >
-                    <div className="px-4 pb-3 border-b border-gray-500 dark:border-gray-300">
+                    <div className="px-4 pb-3 border-b border-gray-500 dark:border-gray-700">
                       <div className="flex items-center">
                         {user.imageUrl && (
                           <Image
@@ -280,16 +273,17 @@ const Navbar = ({
                         </a>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between px-4 py-3 text-sm text-dark dark:text-light border-t border-gray-500 dark:border-gray-300">
+                    <div className="flex items-center justify-between px-4 py-3 text-sm text-dark dark:text-light border-t border-gray-500 dark:border-gray-700">
                       <button
                         className="text-sm font-medium text-dark dark:text-light hover:underline"
                         onClick={handleLogout}
                       >
                         {t("signOut")}
                       </button>
-                      <Link href="/privacy-policy" className="hover:underline">
+                      <Link href="/privacy-policy" target="_blank" className="hover:underline">
                         {t("privacyPolicy")}
                       </Link>
+
                     </div>
                   </div>
                 )}
