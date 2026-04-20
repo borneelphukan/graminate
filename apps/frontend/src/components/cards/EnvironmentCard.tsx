@@ -43,7 +43,7 @@ const EnvironmentCard = ({
   return (
     <div className="relative flex h-full flex-col rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
       <div className="mb-4 flex items-start justify-between">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+        <h2 className="text-xl font-semibold">
           {title}
         </h2>
       </div>

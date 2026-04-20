@@ -53,7 +53,7 @@ const VeterinaryCard = ({
   return (
     <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+        <h2 className="text-xl font-semibold">
           Veterinary Status
         </h2>
       </div>

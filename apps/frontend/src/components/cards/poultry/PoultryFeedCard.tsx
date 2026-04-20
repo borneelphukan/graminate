@@ -257,12 +257,12 @@ const PoultryFeedCard = ({
         <div className="flex-grow flex flex-col items-center justify-center text-center min-h-[200px] py-4">
           <Icon
             type={"inventory"}
-            className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-3"
+            className="w-10 h-10 text-dark dark:text-light mb-3"
           />
-          <p className="text-gray-500 dark:text-gray-400 text-md font-semibold">
+          <p className="text-dark dark:text-light text-md font-semibold">
             No Poultry Feed in Stock
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          <p className="text-xs text-dark dark:text-light mt-1">
             Mark items as &quot;Feed&quot; in your inventory.
           </p>
         </div>

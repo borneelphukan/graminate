@@ -153,7 +153,7 @@ const PoultryEggCollection = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center dark:bg-dark relative mb-4">
           <div className="flex items-center gap-1">
             <div className="flex flex-col mb-3 sm:mb-0">
-              <h1 className="text-lg font-semibold dark:text-white">
+              <h1 className="text-lg font-semibold">
                 {pageTitle}
               </h1>
               <p className="text-xs text-dark dark:text-light mt-1">

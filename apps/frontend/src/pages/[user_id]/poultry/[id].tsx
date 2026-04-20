@@ -890,7 +890,7 @@ const PoultryDetail = () => {
                 </h1>
               ) : selectedFlockData ? (
                 <>
-                  <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  <h1 className="text-2xl font-bold">
                     Poultry Management
                   </h1>
                   <h2 className="text-sm font-thin text-dark dark:text-light mt-1">
