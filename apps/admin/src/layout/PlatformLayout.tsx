@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar/Navbar";
-import Sidebar from "@/components/layout/Sidebar";
+import { Sidebar } from "@graminate/ui";
 
 type Props = {
   children: React.ReactNode;
@@ -9,8 +9,27 @@ type Props = {
 
 const PlatformLayout = ({ children }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const router = useRouter();
   const { admin_id } = router.query;
+
+  const navItems = [
+    {
+      label: "Dashboard",
+      icon: "home",
+      path: `/platform/${admin_id}`,
+    },
+    {
+      label: "Users",
+      icon: "group",
+      path: `/platform/${admin_id}/users`,
+    },
+    {
+      label: "Documents",
+      icon: "description",
+      path: `/platform/${admin_id}/documents`,
+    },
+  ];
 
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -39,8 +58,12 @@ const PlatformLayout = ({ children }: Props) => {
         )}
 
         <Sidebar 
-          isOpen={isSidebarOpen} 
-          adminId={admin_id as string} 
+          items={navItems}
+          activePath={router.asPath.split("?")[0]}
+          isOpen={isSidebarOpen}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+          onNavigate={(path) => router.push(path)}
         />
 
         <main className={`flex-1 p-6 overflow-y-auto ${isSidebarOpen ? "overflow-hidden" : ""}`}>

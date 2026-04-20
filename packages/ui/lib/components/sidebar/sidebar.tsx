@@ -1,201 +1,177 @@
-import { type ComponentType, type ReactNode } from "react";
-import { Icon, type IconType } from "../icon/icon.tsx";
-import {
-  useSidebar,
-  Sidebar as RootSidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarProvider,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarMenuAction,
-  SidebarTrigger,
-} from "./_base.tsx";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../collapsible/collapsible.tsx";
-import { cn } from "../../utils.ts";
-import logo from "../../assets/images/pactos_icon.svg";
-import { useLinkComponent } from "../linkComponent/linkComponent.tsx";
+import React from "react";
+import { Icon } from "../icon/icon";
+import { cn } from "../../utils";
 
-/**
- * @interface Link
- * @description Represents a link item in the sidebar.
- * @property {string} name - The display name of the link.
- * @property {IconType} [icon] - Optional icon type for the link.
- * @property {string} [img] - Optional image URL for the link. Takes priority over the icon if both are provided.
- * @property {string} [url] - Optional URL to navigate to when the link is clicked. If not provided, the button will not be clickable.
- * @property {ComponentType} [action] - Optional React component to render as an action for the link, should be <SidebarMenuAction>
- */
-interface Link {
-  name: string;
-  description?: string;
-  icon?: IconType;
-  img?: string;
-  url?: string;
-  action?: ComponentType;
-}
+export type SidebarItem = {
+  label: string;
+  icon: string | React.ElementType;
+  path?: string;
+  section?: string; // Identifier for the section (used for expanded state)
+  basePath?: string; // Used to determine active state for sub-items
+  subItems?: { label: string; path: string }[];
+};
 
-export interface SidebarGroupProps {
-  title?: string;
-  collapsible?: boolean;
-  hasSpaceOnTop?: boolean;
-  links: Link[];
-}
+export type SidebarProps = {
+  items: SidebarItem[];
+  activePath: string;
+  isOpen: boolean;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+  onNavigate: (path: string) => void;
+  onSectionToggle?: (section: string) => void;
+  expandedSection?: string | null;
+  className?: string;
+  collapseTitle?: string;
+  expandTitle?: string;
+};
 
-export interface SidebarProps {
-  linkGroups: SidebarGroupProps[];
-  header?: ComponentType;
-  footer?: ComponentType;
-  isActive?: (url: string) => boolean;
-}
-
-function ExtendedSidebarGroup({
-  title,
-  collapsible = false,
-  hasSpaceOnTop = false,
-  children,
-}: SidebarGroupProps & { children: ReactNode }) {
-  if (collapsible) {
-    return (
-      <Collapsible
-        defaultOpen
-        className={cn("group/collapsible", hasSpaceOnTop && "mt-auto")}
-      >
-        <SidebarGroup className="transition-[colors,opacity] rounded-2xl has-[.trigger:hover]:bg-neutral-nearly-white bg-clip-content group-data-[state=closed]/collapsible:group-data-[collapsible=icon]:p-0 ">
-          {title && (
-            <SidebarGroupLabel
-              className="group-data-[collapsible=open]:mb-2"
-              asChild
-            >
-              <CollapsibleTrigger className="trigger truncate transition-[opacity,margin] group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:-ml-4">
-                {title}
-                <Icon
-                  type="chevron_right"
-                  className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"
-                />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
-          )}
-          <CollapsibleContent>
-            <SidebarGroupContent>{children}</SidebarGroupContent>
-          </CollapsibleContent>
-        </SidebarGroup>
-      </Collapsible>
-    );
-  } else {
-    return (
-      <SidebarGroup className={hasSpaceOnTop ? "mt-auto" : ""}>
-        {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
-        <SidebarGroupContent>{children}</SidebarGroupContent>
-      </SidebarGroup>
-    );
-  }
-}
-
-function Sidebar({
-  header: Header,
-  footer: Footer,
-  linkGroups,
-  isActive,
-}: SidebarProps) {
-  const LinkComponent = useLinkComponent();
-
+export const Sidebar = ({
+  items,
+  activePath,
+  isOpen,
+  isCollapsed,
+  onToggleCollapse,
+  onNavigate,
+  onSectionToggle,
+  expandedSection,
+  className,
+  collapseTitle = "Collapse Sidebar",
+  expandTitle = "Expand Sidebar",
+}: SidebarProps) => {
   return (
-    <RootSidebar collapsible="icon">
-      <SidebarHeader className="flex flex-row justify-between group-data-[collapsible=icon]:relative group/header">
-        <img
-          src={logo}
-          alt="Menu Icon"
-          className="h-8 w-8 group-data-[collapsible=icon]:transition-opacity group-data-[collapsible=icon]:group-hover/header:opacity-0"
-        />
-        <SidebarTrigger className="text-neutral-black group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:inset-0 group-data-[collapsible=icon]:m-auto group-data-[collapsible=icon]:invisible group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:transition-opacity group-data-[collapsible=icon]:group-hover/header:visible group-data-[collapsible=icon]:group-hover/header:opacity-100 group-data-[collapsible=icon]:z-2" />
-      </SidebarHeader>
-      <SidebarContent>
-        {Header && <div className="m-2">{Header && <Header />}</div>}
-        {linkGroups.map(({ title, collapsible, hasSpaceOnTop, links }, idx) => (
-          <ExtendedSidebarGroup
-            key={`link-group-${idx}`}
-            title={title}
-            hasSpaceOnTop={hasSpaceOnTop}
-            collapsible={collapsible}
-            links={links}
-          >
-            <SidebarMenu>
-              {links.map(
-                ({
-                  name,
-                  icon,
-                  img,
-                  url,
-                  action: Action,
-                  description,
-                }: Link) => (
-                  <SidebarMenuItem key={name}>
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        url ? "" : "pointer-events-none",
-                        description ? "flex items-start h-full" : ""
-                      )}
-                      isActive={isActive && url ? isActive(url) : false}
-                    >
-                      <LinkComponent href={url ?? undefined}>
-                        {img ? (
-                          <img
-                            src={img}
-                            alt={`${name} image icon`}
-                            height="18"
-                            width="18"
-                            className="rounded-sm object-cover"
-                          />
-                        ) : icon ? (
-                          <Icon type={icon} />
-                        ) : null}
-                        <span className="transition-[opacity,margin] group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:-mt-4">
-                          {name}
-                          {description && (
-                            <span className="text-xs text-neutral-gray block">
-                              {description}
-                            </span>
-                          )}
-                        </span>
-                      </LinkComponent>
-                    </SidebarMenuButton>
-                    {Action && <Action />}
-                  </SidebarMenuItem>
-                )
-              )}
-            </SidebarMenu>
-          </ExtendedSidebarGroup>
-        ))}
-      </SidebarContent>
-      {Footer && (
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <Footer />
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+    <div
+      className={cn(
+        "sidebar-container fixed inset-y-0 left-0 bg-gradient-to-b from-gray-800 to-gray-900 text-gray-300 shadow-xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
+        isOpen ? "translate-x-0" : "-translate-x-full",
+        "lg:translate-x-0 lg:relative lg:shadow-none",
+        className
       )}
-    </RootSidebar>
-  );
-}
+      style={{ width: isCollapsed ? 60 : 230 }}
+    >
+      <nav className="flex-1 overflow-y-auto py-4 space-y-1">
+        {items.map((item) => {
+          const hasSubItems = item.subItems && item.subItems.length > 0;
+          const isSectionOpen = !!item.section && expandedSection === item.section;
+          const isActive =
+            (!hasSubItems && activePath === item.path) ||
+            (hasSubItems && item.basePath && activePath.startsWith(item.basePath)) ||
+            isSectionOpen;
 
-export {
-  Sidebar,
-  SidebarProvider,
-  SidebarMenuButton,
-  SidebarMenuAction,
-  SidebarMenu,
-  SidebarMenuItem,
-  useSidebar,
+          return (
+            <div key={item.label} className={cn("relative", isCollapsed ? "px-1" : "px-3")}>
+              <div
+                className={cn(
+                  "flex items-center rounded-lg cursor-pointer group transition-colors duration-200",
+                  isCollapsed ? "p-2 justify-center" : "p-3",
+                  isActive
+                    ? "bg-gray-700 text-white shadow-md"
+                    : "text-gray-400 hover:bg-gray-700 hover:text-gray-300"
+                )}
+                role="button"
+                tabIndex={0}
+                title={isCollapsed ? item.label : ""}
+                onClick={() => {
+                  if (item.path) {
+                    onNavigate(item.path);
+                  }
+                  if (hasSubItems && onSectionToggle && item.section) {
+                    onSectionToggle(item.section);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    if (item.path) onNavigate(item.path);
+                    if (hasSubItems && onSectionToggle && item.section) {
+                      onSectionToggle(item.section);
+                    }
+                  }
+                }}
+              >
+                {typeof item.icon === "string" ? (
+                  <Icon
+                    type={item.icon}
+                    className={cn("h-5 w-5 flex-shrink-0", isCollapsed ? "" : "mr-3")}
+                  />
+                ) : (
+                  <div
+                    className={cn(
+                      "h-5 w-5 flex-shrink-0 flex items-center justify-center text-current",
+                      isCollapsed ? "" : "mr-3"
+                    )}
+                  >
+                    {React.createElement(item.icon)}
+                  </div>
+                )}
+
+                {!isCollapsed && (
+                  <>
+                    <span className="flex-grow font-medium text-sm truncate">
+                      {item.label}
+                    </span>
+                    {hasSubItems && (
+                      <Icon
+                        type="chevron_right"
+                        className={cn(
+                          "h-4 w-4 transition-transform duration-200",
+                          isSectionOpen ? "rotate-90" : "",
+                          isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
+                        )}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+
+              {!isCollapsed && isSectionOpen && hasSubItems && (
+                <div className="mt-1 ml-5 pl-3 border-l border-gray-600 space-y-1">
+                  {item.subItems?.map((sub) => {
+                    const isSubActive = activePath === sub.path;
+                    return (
+                      <div
+                        key={sub.label}
+                        className={cn(
+                          "text-sm py-2 px-4 rounded-md cursor-pointer transition-colors duration-150",
+                          isSubActive
+                            ? "text-indigo-300 font-semibold"
+                            : "text-gray-400 hover:text-white hover:bg-gray-700"
+                        )}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => onNavigate(sub.path)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onNavigate(sub.path);
+                          }
+                        }}
+                      >
+                        {sub.label}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      <div className="mt-auto p-3 border-t border-gray-700">
+        <button
+          className={cn(
+            "w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200",
+            isCollapsed ? "justify-center" : "justify-end"
+          )}
+          onClick={onToggleCollapse}
+          title={isCollapsed ? expandTitle : collapseTitle}
+        >
+          <Icon
+            type={isCollapsed ? "chevron_right" : "chevron_left"}
+            className="h-5 w-5"
+          />
+        </button>
+      </div>
+    </div>
+  );
 };

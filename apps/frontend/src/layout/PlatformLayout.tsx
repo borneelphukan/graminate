@@ -1,8 +1,8 @@
-import { Icon, Button } from "@graminate/ui";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { Icon, Button, Sidebar as SharedSidebar, type SidebarItem } from "@graminate/ui";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar/Navbar";
-import Sidebar from "@/components/layout/Sidebar";
 import axios, { AxiosError } from "axios";
 import ChatWindow from "@/layout/ChatWindow";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -10,6 +10,10 @@ import InfoModal from "@/components/modals/InfoModal";
 import CookieDisclaimer from "@/components/ui/CookieDisclaimer";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import FirstLoginModal from "@/components/modals/FirstLoginModal";
+import { getTranslator } from "@/translations";
+import BeeIcon from "@/icons/BeeIcon";
+import PoultryIcon from "@/icons/PoultryIcon";
+import CattleIcon from "@/icons/CattleIcon";
 
 type Props = {
   children: React.ReactNode;
@@ -21,6 +25,8 @@ const PlatformLayout = ({ children }: Props) => {
   const [userId, setUserId] = useState<string>("");
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [modalState, setModalState] = useState({
     isOpen: false,
     title: "",
@@ -29,9 +35,146 @@ const PlatformLayout = ({ children }: Props) => {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user_id } = router.query;
 
-  const { isFirstLogin, fetchUserSubTypes } = useUserPreferences();
+  const { isFirstLogin, fetchUserSubTypes, language, userType, subTypes } = useUserPreferences();
+
+  const t = useMemo(() => getTranslator(language), [language]);
+
+  const sidebarItems = useMemo<SidebarItem[]>(() => {
+    const items: SidebarItem[] = [
+      {
+        icon: "home",
+        label: t("dashboard"),
+        section: "Dashboard",
+        path: `/${userId}`,
+      },
+      {
+        icon: "contacts",
+        label: t("crm"),
+        section: "CRM",
+        basePath: `/${userId}/crm`,
+        subItems: [
+          {
+            label: t("contacts"),
+            path: `/${userId}/crm?view=contacts`,
+          },
+          {
+            label: t("companies"),
+            path: `/${userId}/crm?view=companies`,
+          },
+          {
+            label: t("contracts"),
+            path: `/${userId}/crm?view=contracts`,
+          },
+        ],
+      },
+    ];
+
+    if (userType === "Producer") {
+      if (subTypes.includes("Poultry")) {
+        items.push({
+          icon: PoultryIcon,
+          label: t("poultryFarm"),
+          section: "Poultry Farm",
+          path: `/${userId}/poultry`,
+          basePath: `/${userId}/poultry`,
+        });
+      }
+      if (subTypes.includes("Cattle Rearing")) {
+        items.push({
+          icon: CattleIcon,
+          label: t("cattleRearing"),
+          section: "Cattle Rearing",
+          path: `/${userId}/cattle_rearing`,
+          basePath: `/${userId}/cattle_rearing`,
+        });
+      }
+      if (subTypes.includes("Apiculture")) {
+        items.push({
+          icon: BeeIcon,
+          label: t("apiculture"),
+          section: "Apiculture",
+          path: `/${userId}/apiculture`,
+          basePath: `/${userId}/apiculture`,
+        });
+      }
+      items.push({
+        icon: "cloud",
+        label: t("weatherMonitor"),
+        section: "Weather Monitor",
+        path: `/${userId}/weather`,
+      });
+    }
+
+    items.push(
+      {
+        icon: "group",
+        label: t("employees"),
+        section: "Labour",
+        basePath: `/${userId}/labour`,
+        subItems: [
+          {
+            label: t("database"),
+            path: `/${userId}/labour_database`,
+          },
+          {
+            label: t("salaryManager"),
+            path: `/${userId}/labour_payment`,
+          },
+        ],
+      },
+      {
+        icon: "attach_money",
+        label: t("finance"),
+        section: "Finance",
+        path: `/${userId}/finance_dashboard`,
+        subItems: [
+          {
+            label: t("dashboard"),
+            path: `/${userId}/finance_dashboard`,
+          },
+          {
+            label: t("sales"),
+            path: `/${userId}/finance_sales`,
+          },
+          {
+            label: t("expenses"),
+            path: `/${userId}/finance_expenses`,
+          },
+          {
+            label: t("receipts"),
+            path: `/${userId}/crm?view=receipts`,
+          },
+        ],
+      },
+      {
+        icon: "warehouse",
+        label: t("storage"),
+        section: "storage",
+        path: `/${userId}/storage`,
+      },
+      {
+        icon: "add",
+        label: t("addService"),
+        section: "Add Service",
+        path: `/${userId}/add_service`,
+      }
+    );
+
+    return items;
+  }, [userId, userType, subTypes, t]);
+
+  const activePath = useMemo(() => {
+    const params = searchParams.toString();
+    const base = router.asPath.split("?")[0];
+    return params ? `${base}?${params}` : base;
+  }, [router.asPath, searchParams]);
+
+  const handleSectionToggle = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
   // Floating Chat Button Position and Dragging
   const [chatPos, setChatPos] = useState({ x: -1, y: -1 });
@@ -338,7 +481,21 @@ const PlatformLayout = ({ children }: Props) => {
             />
           )}
 
-          <Sidebar isOpen={isSidebarOpen} userId={userId} />
+          <SharedSidebar 
+            items={sidebarItems}
+            activePath={activePath}
+            isOpen={isSidebarOpen}
+            isCollapsed={isCollapsed}
+            expandedSection={expandedSection}
+            onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+            onNavigate={(path) => {
+              router.push(path);
+              setExpandedSection(null);
+            }}
+            onSectionToggle={handleSectionToggle}
+            collapseTitle={t("collapseSidebar")}
+            expandTitle={t("expandSidebar")}
+          />
 
           <div
             className={`flex-1 p-4 overflow-y-auto ${

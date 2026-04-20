@@ -1,4 +1,4 @@
-import { Icon, Button, Table, SegmentedControl } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -228,11 +228,6 @@ const CattleRearing = () => {
               <h1 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
                 Cattle Management
               </h1>
-              <p className="text-sm text-dark dark:text-light mt-1">
-                {loadingCattle
-                  ? "Loading herd data..."
-                  : `Monitoring ${filteredCattleRecords.length} registered cattle entries`}
-              </p>
             </div>
             <div className="flex flex-row gap-4 items-center">
               <button
