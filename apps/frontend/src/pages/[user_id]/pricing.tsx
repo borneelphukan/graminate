@@ -89,7 +89,7 @@ const Pricing = () => {
                       <span className="text-3xl font-semibold text-dark">
                         {plan.price}
                       </span>
-                      <span>{plan.period}</span>
+                      <span className="text-dark">{plan.period}</span>
                     </div>
                     <p className="text-gray-600 text-center mb-4">
                       {plan.description}
@@ -114,10 +114,8 @@ const Pricing = () => {
                       className="w-full"
                       variant={
                         plan.buttonDisabled
-                          ? "ghost"
-                          : selectedPlan === plan.name
-                          ? "primary"
-                          : "secondary"
+                          ? "secondary"
+                          : "primary"
                       }
                       disabled={plan.buttonDisabled}
                       onClick={() => {
@@ -131,7 +129,7 @@ const Pricing = () => {
             </div>
 
             <div className="mt-16 text-center">
-              <p className="text-sm font-medium uppercase tracking-widest mb-4">
+              <p className="text-sm text-dark dark:text-light font-medium uppercase tracking-widest mb-4">
                 Trusted by 5,000+ agricultural businesses worldwide
               </p>
               <div className="flex flex-wrap justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">

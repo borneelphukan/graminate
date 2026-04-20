@@ -1,7 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button } from "@graminate/ui";
 import React from "react";
 import { DisplayTask } from "./Calendar";
-import Button from "../Button";
+
 import Loader from "../Loader";
 
 type TaskListViewProps = {
@@ -128,12 +128,13 @@ const TaskListView = ({
                 <div className="ml-4 flex-shrink-0 w-16 text-right">
                   {task.status === "Completed" ? (
                     <Button
-                      text="Delete"
-                      style="delete"
+                      label="Delete"
+                      variant="destructive"
                       type="button"
-                      isDisabled={isSelectedDatePast}
+                      disabled={isSelectedDatePast}
                       onClick={() => removeTask(task.task_id)}
                     />
+
                   ) : (
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${getPriorityClass(

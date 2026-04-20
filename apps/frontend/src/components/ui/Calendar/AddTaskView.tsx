@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import TextField from "../TextField";
-import { Dropdown } from "@graminate/ui";
+import { Dropdown, Button } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../Loader";
-import Button from "../Button";
+
 
 type AddTaskViewProps = {
   selectedDate: Date;
@@ -162,18 +162,19 @@ const AddTaskView = ({
 
         <div className="flex justify-end space-x-3 pt-4 border-t border-gray-400 dark:border-gray-200">
           <Button
-            text="Add Task"
-            style="primary"
+            label="Add Task"
+            variant="primary"
             type="submit"
             onClick={handleAddTask}
-            isDisabled={!newTask.trim() || !projectInput.trim() || isLoading}
+            disabled={!newTask.trim() || !projectInput.trim() || isLoading}
           />
 
           <Button
-            text="Cancel"
-            style="secondary"
+            label="Cancel"
+            variant="secondary"
             onClick={() => setShowAddTask(false)}
           />
+
         </div>
       </div>
     </div>

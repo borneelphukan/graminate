@@ -1,5 +1,4 @@
-import { Icon } from "@graminate/ui";
-import Button from "./Button";
+import { Button, Icon } from "@graminate/ui";
 import React from "react";
 
 type TaskListViewProps = {
@@ -29,9 +28,9 @@ const TaskListView = ({
 
     <div className="mt-4 flex justify-between space-x-4 mb-4">
       <Button
-        text=""
-        style="ghost"
-        arrow="left"
+        label=""
+        variant="ghost"
+        icon={{ left: "chevron_left" }}
         onClick={() => setShowTasks(false)}
       />
 

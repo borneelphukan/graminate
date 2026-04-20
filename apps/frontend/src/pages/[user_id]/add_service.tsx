@@ -286,7 +286,7 @@ const AddServicePage = () => {
             />
             <Button
               type="submit"
-              variant="delete"
+              variant="destructive"
               label={isVerifyingPassword ? "Verifying..." : "Remove Service"}
               disabled={isVerifyingPassword || !password}
             />
@@ -473,7 +473,7 @@ const AddServicePage = () => {
               <div className="mt-8 flex justify-end">
                 <Button
                   type="submit"
-                  variant="delete"
+                  variant="destructive"
                   disabled={isRemoving || servicesToRemove.size === 0}
                   label={isRemoving ? "Removing..." : "Remove Selected Services"}
                 />
