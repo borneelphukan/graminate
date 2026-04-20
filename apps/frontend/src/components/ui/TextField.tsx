@@ -68,7 +68,7 @@ const TextField = ({
       case "disabled":
         return "border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
       default:
-        return "border border-gray-400 dark:border-gray-200 text-gray-100 placeholder-gray-300 text-sm dark:bg-gray-700 dark:text-light rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200";
+        return "border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200";
     }
   };
 
@@ -101,7 +101,7 @@ const TextField = ({
       {label && (
         <label
           htmlFor={calendar ? "calendar" : password ? "password" : "text"}
-          className="block mb-1 text-sm font-medium text-dark dark:text-light"
+          className="block mb-1 text-sm font-medium text-dark"
         >
           {label}
         </label>
@@ -160,16 +160,16 @@ const TextField = ({
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
           {isLoading ? (
-            <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
+            <div className="px-4 py-2 text-gray-500">
               <Loader/>
             </div>
           ) : (
             suggestions.map((suggestion, index) => (
               <div
                 key={index}
-                className="px-4 py-2 hover:bg-gray-400 dark:hover:bg-gray-600 cursor-pointer"
+                className="px-4 py-2 hover:bg-gray-400 cursor-pointer"
                 onClick={() => {
                   onChange(suggestion);
                   setShowSuggestions(false);

@@ -7,7 +7,7 @@ type PlatformLayoutProps = {
 
 const LoginLayout = ({ children }: PlatformLayoutProps) => {
   return (
-    <div className="flex flex-col min-h-screen bg-light dark:bg-dark text-dark dark:text-light">
+    <div className="flex flex-col min-h-screen bg-light">
       <HomeNavbar />
       <div className="flex ">
         <div className="flex-1">{children}</div>

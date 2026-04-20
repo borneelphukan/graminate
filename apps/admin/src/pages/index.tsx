@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import TextField from "@/components/ui/TextField";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import DefaultLayout from "@/layout/LoginLayout";
 import Head from "next/head";
 
@@ -218,11 +218,11 @@ const AuthPage = () => {
                 </div>
                 <div>
                   <Button
-                    text="Admin Login"
-                    width="large"
-                    style="primary"
+                    label="Admin Login"
+                    className="w-full"
+                    variant="primary"
                     type="submit"
-                    isDisabled={isLoading}
+                    isLoading={isLoading}
                   />
                 </div>
               </form>
@@ -285,11 +285,11 @@ const AuthPage = () => {
                 </div>
                 <div>
                   <Button
-                    text="Register Admin"
-                    width="large"
-                    style="primary"
+                    label="Register Admin"
+                    className="w-full"
+                    variant="primary"
                     type="submit"
-                    isDisabled={isLoading}
+                    isLoading={isLoading}
                   />
                 </div>
               </form>

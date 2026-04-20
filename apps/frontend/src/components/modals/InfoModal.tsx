@@ -131,13 +131,13 @@ const InfoModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
         <div className="text-center">
           {displayIcon && <div className="mb-4">{displayIcon}</div>}
-          <h3 className="text-lg font-medium text-dark dark:text-light mb-2">
+          <h3 className="text-lg font-medium text-dark mb-2">
             {title}
           </h3>
-          <p className=" text-dark dark:text-light">{text}</p>
+          <p className=" text-dark">{text}</p>
         </div>
         <div className="mt-4 flex justify-center">
           <button

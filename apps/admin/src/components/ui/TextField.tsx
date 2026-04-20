@@ -38,7 +38,7 @@ const TextField = ({
       case "disabled":
         return "border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
       default:
-        return "border border-gray-400 dark:border-gray-200 text-gray-100 placeholder-gray-300 text-sm dark:bg-gray-700 dark:text-light rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200";
+        return "border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200";
     }
   };
 
@@ -64,7 +64,7 @@ const TextField = ({
       {label && (
         <label
           htmlFor={calendar ? "calendar" : password ? "password" : "text"}
-          className="block mb-1 text-sm font-medium text-gray-200 dark:text-gray-300"
+          className="block mb-1 text-sm font-medium text-gray-200"
         >
           {label}
         </label>

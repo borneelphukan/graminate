@@ -366,12 +366,32 @@ const SignIn = () => {
           className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
           style={{ backgroundImage: "url('/images/cover.png')" }}
         >
-          <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg px-8 py-6 w-full max-w-md">
+          <div className="bg-white shadow-xl rounded-lg px-8 py-6 w-full max-w-md">
+            <div className="flex border-b border-gray-300 mb-6">
+              <button
+                className={`flex-1 py-2 text-center font-medium transition-all ${
+                  isLogin
+                    ? "border-b-2 border-brand-mute-green text-brand-green"
+                    : "text-gray-300 hover:text-brand-green"
+                }`}
+                onClick={() => setIsLogin(true)}
+              >
+                Login
+              </button>
+              <button
+                className={`flex-1 py-2 text-center font-medium transition-all ${
+                  !isLogin
+                    ? "border-b-2 border-brand-mute-green text-brand-green"
+                    : "text-gray-300 hover:text-brand-green"
+                }`}
+                onClick={() => setIsLogin(false)}
+              >
+                Sign Up
+              </button>
+            </div>
+
             {isLogin ? (
               <>
-                <h2 className="text-2xl font-semibold mb-6 text-center dark:text-light">
-                  Login
-                </h2>
                 <form onSubmit={handleLogin}>
                   <div className="mb-4">
                     <TextField
@@ -404,14 +424,13 @@ const SignIn = () => {
                       {loginErrorMessage}
                     </p>
                   )}
-                  <div className="mx-auto flex flex-row justify-center">
-                    <Button
-                      label="Login"
-                      variant="primary"
-                      type="submit"
-                    />
-                  </div>
-                  <p className="text-center mt-4 text-sm text-dark dark:text-gray-300">
+                  <Button
+                    label="Login"
+                    variant="primary"
+                    type="submit"
+                    className="w-full"
+                  />
+                  <p className="text-center mt-4 text-sm text-dark">
                     <button
                       className="text-blue-200 hover:underline focus:outline-none"
                       type="button"
@@ -421,22 +440,9 @@ const SignIn = () => {
                     </button>
                   </p>
                 </form>
-                <p className="text-center mt-4 text-sm text-dark dark:text-gray-300">
-                  Don&apos;t have an account?{" "}
-                  <button
-                    className="text-blue-200 hover:underline focus:outline-none"
-                    type="button"
-                    onClick={toggleForm}
-                  >
-                    Sign Up
-                  </button>
-                </p>
               </>
             ) : (
               <>
-                <h2 className="text-2xl font-semibold mb-6 text-center">
-                  Sign Up
-                </h2>
                 <form onSubmit={handleRegister}>
                   <div className="flex flex-row gap-2">
                     <div className="mb-4">
@@ -518,7 +524,7 @@ const SignIn = () => {
                       calendar
                     />
                   </div>
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <TextField
                       label="Password"
                       placeholder="Enter your password"
@@ -535,24 +541,13 @@ const SignIn = () => {
                       width="large"
                     />
                   </div>
-                  <div className="mx-auto flex flex-row justify-center">
-                    <Button
-                      label="Sign Up"
-                      variant="primary"
-                      type="submit"
-                    />
-                  </div>
+                  <Button
+                    label="Sign Up"
+                    variant="primary"
+                    type="submit"
+                    className="w-full"
+                  />
                 </form>
-                <p className="text-center mt-4 text-sm text-dark dark:text-gray-400 ">
-                  Already have an account?{" "}
-                  <button
-                    className="text-blue-500 hover:underline focus:outline-none"
-                    type="button"
-                    onClick={toggleForm}
-                  >
-                    Login
-                  </button>
-                </p>
               </>
             )}
           </div>
