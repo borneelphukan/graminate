@@ -516,13 +516,14 @@ const PlatformLayout = ({ children }: Props) => {
         >
           <Button
             onClick={handleChatToggle}
-            variant={isDocked ? "ghost" : "outline"}
+            variant={isDocked ? "ghost" : "secondary"}
             shape={isDocked ? "default" : "circle"}
-            className={`h-14 w-14 shadow-lg active:scale-95 transition-all relative ${
+            size="icon"
+            className={`h-14 w-14 p-0 shadow-lg active:scale-95 transition-all relative ${
               dragInfo.current.isDragging ? "cursor-grabbing" : "cursor-grab"
             } ${
               isDocked
-                ? `opacity-50 hover:opacity-100 ${
+                ? `border border-gray-300 opacity-50 hover:bg-gray-300 ${
                     dockSide === "left"
                       ? "rounded-l-none rounded-r-lg"
                       : "rounded-r-none rounded-l-lg"
@@ -533,12 +534,12 @@ const PlatformLayout = ({ children }: Props) => {
             {isDocked ? (
               <Icon
                 type={dockSide === "left" ? "chevron_right" : "chevron_left"}
-                className={`text-2xl! ${
+                className={`text-2xl! text-gray-200 ${
                   dockSide === "left" ? "translate-x-4" : "-translate-x-4"
                 } animate-pulse`}
               />
             ) : (
-              <Icon type={"smart_toy"} size="lg" />
+              <Icon type="smart_toy" size="lg" />
             )}
           </Button>
         </div>

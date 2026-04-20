@@ -177,7 +177,7 @@ const Navbar = ({
                   className="text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"
                   onClick={toUserPreferences}
                 >
-                  <Icon type={"settings"} className="size-6" />
+                  <Icon type="settings" />
                 </button>
                 <button
                   className="relative text-gray-400 hover:bg-blue-100 p-2 rounded-md focus:outline-none"

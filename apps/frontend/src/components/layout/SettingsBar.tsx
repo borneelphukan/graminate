@@ -131,7 +131,7 @@ const SettingsBar = () => {
         <Button
           label={t("settingsBarBack" as GeneralTranslationKeys)}
           variant="ghost"
-          icon={{ left: "arrow_back" }}
+          icon={{ left: "chevron_left" }}
           onClick={() => router.back()}
         />
       </div>

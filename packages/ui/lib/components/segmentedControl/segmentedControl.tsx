@@ -9,7 +9,7 @@ const segmentedControlItemVariants = cva(
   {
     variants: {
       selected: {
-        true: "border dark:border-gray-600 rounded-sm shadow-xs",
+        true: "border border-gray-400 dark:border-gray-600 rounded-sm",
         false:
           "text-neutral-gray opacity-70 hover:opacity-100  hover:text-neutral-black",
       },

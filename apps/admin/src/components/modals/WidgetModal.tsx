@@ -81,9 +81,9 @@ const WidgetModal = ({ isOpen, onClose, onSave, initialSelectedWidgets }: Props)
         className="bg-white dark:bg-gray-800 w-full max-w-4xl p-6 rounded-lg shadow-xl"
       >
         <div className="flex items-center justify-between mb-4">
-          <p className="text-dark dark:text-light">
+       <h3 className="text-xl text-dark dark:text-light font-semibold">
             Manage Dashboard Widgets
-          </p>
+          </h3>
           <button
             type="button"
             className="text-gray-400 bg-transparent hover:bg-gray-400 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"

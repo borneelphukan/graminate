@@ -158,7 +158,7 @@ const WidgetModal = ({
         className="bg-white dark:bg-gray-800 w-full max-w-4xl p-6 rounded-lg shadow-xl"
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl text-dark dark:text-light font-semibold">
             Manage Dashboard Widgets
           </h3>
           <button
