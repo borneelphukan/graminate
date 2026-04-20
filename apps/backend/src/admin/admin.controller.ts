@@ -7,6 +7,7 @@ import {
   Request,
   UnauthorizedException,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminService } from './admin.service';
@@ -67,5 +68,12 @@ export class AdminController {
   async getUserLoginHistory(@Param('id') userId: string, @Request() req) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getUserLoginHistory(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('users/:id')
+  async deleteUser(@Param('id') userId: string, @Request() req) {
+    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+    return this.adminService.deleteUser(userId);
   }
 }

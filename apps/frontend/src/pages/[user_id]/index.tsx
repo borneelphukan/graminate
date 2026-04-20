@@ -43,6 +43,7 @@ type User = {
   city?: string;
   state?: string;
   postal_code?: string;
+  country?: string;
   widgets?: string[];
 };
 
@@ -454,7 +455,9 @@ const Dashboard = () => {
     addressLine2?: string,
     city?: string,
     state?: string,
-    postalCode?: string
+    postalCode?: string,
+    country?: string,
+    darkMode?: boolean
   ) => {
     try {
       await axiosInstance.put(`/user/${userId}`, {
@@ -466,6 +469,8 @@ const Dashboard = () => {
         city,
         state,
         postal_code: postalCode,
+        country: country,
+        darkMode: darkMode,
       });
       setSuccessModal({
         isOpen: true,
@@ -484,6 +489,8 @@ const Dashboard = () => {
               city,
               state,
               postal_code: postalCode,
+              country: country,
+              darkMode: darkMode || false,
             }
           : prev
       );
@@ -538,16 +545,16 @@ const Dashboard = () => {
           <header className="mb-4">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
               <div>
-                <h1 className="text-lg font-semibold text-dark dark:text-light">
+                <h1 className="text-xl font-bold text-dark dark:text-light tracking-tight">
                   {isUserDataLoading
                     ? "Loading..."
                     : `Hello ${userData?.first_name || "User"},`}
                 </h1>
-                <p className="text-dark dark:text-light">
+                <p className="text-sm text-dark dark:text-light mt-1">
                   Welcome to your dashboard.
                 </p>
               </div>
-              <div className="flex flex-col items-start sm:items-end gap-1 mt-3 sm:mt-0 bg-gray-50 dark:bg-gray-800/50">
+              <div className="flex flex-col items-start sm:items-end gap-1 mt-3 sm:mt-0">
                 <div className="text-sm text-dark dark:text-light sm:text-right">
                   <p className="font-semibold">{formatDate(currentDateTime)}</p>
                   <p className="font-mono">{formatTime(currentDateTime)}</p>

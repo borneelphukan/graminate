@@ -1,9 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Button, RadioGroup, RadioGroupItem } from "@graminate/ui";
 import React, { useState, useCallback, useEffect, JSX } from "react";
 import { triggerToast } from "@/stores/toast";
-import Button from "../ui/Button";
 import TextField from "../ui/TextField";
-import RadioButton from "../ui/Radio";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
@@ -21,7 +19,9 @@ type FirstLoginModalProps = {
     addressLine2?: string,
     city?: string,
     state?: string,
-    postalCode?: string
+    postalCode?: string,
+    country?: string,
+    darkMode?: boolean
   ) => Promise<void>;
   onClose: () => void;
 };
@@ -32,6 +32,7 @@ const AGRICULTURE_TYPES = ["Poultry", "Cattle Rearing", "Apiculture"];
 const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState(BUSINESS_TYPES[0]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [step, setStep] = useState<Step>("businessName");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSubTypes, setSelectedSubTypes] = useState<string[]>([]);
@@ -40,6 +41,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
 
   const [isStepMounted, setIsStepMounted] = useState(false);
 
@@ -54,13 +56,6 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
   const handleBusinessNameChange = useCallback((value: string) => {
     setBusinessName(value);
   }, []);
-
-  const handleBusinessTypeChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setBusinessType(event.target.value);
-    },
-    []
-  );
 
   const goToNextStep = useCallback(() => {
     if (!businessName.trim()) {
@@ -90,7 +85,9 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
         addressLine2.trim(),
         city.trim(),
         state.trim(),
-        postalCode.trim()
+        postalCode.trim(),
+        country.trim(),
+        isDarkMode
       );
       window.location.reload();
     } catch (error: unknown) {
@@ -108,6 +105,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
     city,
     state,
     postalCode,
+    country,
   ]);
 
   const handleBusinessTypeSubmit = useCallback(
@@ -137,14 +135,15 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
         !addressLine1.trim() ||
         !city.trim() ||
         !state.trim() ||
-        !postalCode.trim()
+        !postalCode.trim() ||
+        !country.trim()
       ) {
         triggerToast("Please fill in all required address fields", "error");
         return;
       }
       setStep("businessType");
     },
-    [addressLine1, city, state, postalCode]
+    [addressLine1, city, state, postalCode, country]
   );
 
   const handleSubTypeChange = useCallback(
@@ -211,6 +210,58 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
               value={businessName}
               onChange={handleBusinessNameChange}
             />
+
+            <div className="mt-8">
+              <label className="block text-sm font-medium text-foreground mb-3 font-semibold">
+                Select Your Theme Preference
+              </label>
+              <RadioGroup
+                value={isDarkMode ? "dark" : "light"}
+                onValueChange={(val) => setIsDarkMode(val === "dark")}
+                className="grid grid-cols-2 gap-4"
+              >
+                {[
+                  { id: "light", label: "Light Mode", icon: "sunny" },
+                  { id: "dark", label: "Dark Mode", icon: "bedtime" },
+                ].map((theme) => {
+                  const isSelected = (isDarkMode ? "dark" : "light") === theme.id;
+                  return (
+                    <label
+                      key={theme.id}
+                      className={`relative flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer transition-all duration-200
+                                ${
+                                  isSelected
+                                    ? "bg-brand-mute-green/10 border-brand-mute-green shadow-sm"
+                                    : "border-gray-300 dark:border-gray-400 hover:bg-gray-50/5 dark:hover:bg-gray-500/5 hover:border-green-200 dark:hover:border-green-100"
+                                }`}
+                    >
+                      <RadioGroupItem
+                        value={theme.id}
+                        id={`theme-${theme.id}`}
+                        className="sr-only"
+                      />
+                      <Icon
+                        type={theme.icon as any}
+                        className={`size-6 mb-2 ${
+                          isSelected
+                            ? "text-brand-mute-green"
+                            : "text-gray-400"
+                        }`}
+                      />
+                      <span
+                        className={`text-sm font-medium ${
+                          isSelected
+                            ? "text-brand-mute-green font-bold"
+                            : "text-dark dark:text-light"
+                        }`}
+                      >
+                        {theme.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </RadioGroup>
+            </div>
           </div>
           <div
             className={`flex justify-end mt-10 
@@ -222,10 +273,10 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                         }`}
           >
             <Button
-              text="Next"
-              style="primary"
+              label="Next"
+              variant="primary"
               type="submit"
-              isDisabled={!businessName.trim()}
+              disabled={!businessName.trim()}
             />
           </div>
         </form>
@@ -292,12 +343,20 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                 onChange={(value) => setState(value)}
               />
             </div>
-            <TextField
-              label="Postal Code*"
-              placeholder="Postal code"
-              value={postalCode}
-              onChange={(value) => setPostalCode(value)}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TextField
+                label="Postal Code*"
+                placeholder="Postal code"
+                value={postalCode}
+                onChange={(value) => setPostalCode(value)}
+              />
+              <TextField
+                label="Country*"
+                placeholder="e.g. United States, United Kingdom"
+                value={country}
+                onChange={(value) => setCountry(value)}
+              />
+            </div>
           </div>
           <div
             className={`flex justify-between items-center mt-10
@@ -309,22 +368,23 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                         }`}
           >
             <Button
-              text="Back"
-              style="secondary"
+              label="Back"
+              variant="secondary"
               onClick={goToPreviousStep}
               type="button"
-              isDisabled={isLoading}
+              disabled={isLoading}
             />
             <Button
-              text="Next"
-              style="primary"
+              label="Next"
+              variant="primary"
               type="submit"
-              isDisabled={
+              disabled={
                 isLoading ||
                 !addressLine1.trim() ||
                 !city.trim() ||
                 !state.trim() ||
-                !postalCode.trim()
+                !postalCode.trim() ||
+                !country.trim()
               }
             />
           </div>
@@ -357,7 +417,7 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
           >
             Step 3 of {businessType === "Producer" ? 4 : 3}
           </p>
-          <fieldset
+          <div
             className={`mb-6
                         transition-all transform duration-500 ease-out delay-200
                         ${
@@ -366,30 +426,35 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                             : "opacity-0 -translate-y-4"
                         }`}
           >
-            <legend className="block text-lg font-medium text-foreground mb-3">
+            <h3 className="block text-lg font-medium text-foreground mb-3">
               Choose Business Type
-            </legend>
+            </h3>
             <p className="text-sm text-red-100 dark:text-red-300 mb-4 p-3 bg-red-400/20 dark:bg-red-200/10 rounded-lg border border-red-200/50 dark:border-red-200/30">
               This choice is permanent for this account. To select a different
               business type, a new account will be required.
             </p>
-            <div className="space-y-3 mt-4">
+            <RadioGroup
+              value={businessType}
+              onValueChange={setBusinessType}
+              className="space-y-3 mt-4"
+            >
               {BUSINESS_TYPES.map((type, index) => {
                 const isDisabled = type === "Wholesaler";
+                const isSelected = businessType === type;
                 return (
                   <label
                     key={type}
-                    className={`relative group flex items-center space-x-3 p-4 border-1 rounded-xl
+                    className={`relative group flex items-center space-x-3 p-4 border rounded-xl
                                 transition-all duration-200 ease-in-out 
                                 ${
                                   isDisabled
                                     ? "opacity-60 cursor-not-allowed bg-gray-400/50 dark:bg-gray-300/30 border-gray-400 dark:border-gray-600"
                                     : `cursor-pointer hover:border-green-200 dark:hover:border-green-100
-                                       focus-within:ring-1 focus-within:ring-green-200 focus-within:ring-offset-1 focus-within:ring-offset-background
+                                       focus-within:ring-1 focus-within:ring-brand-mute-green focus-within:ring-offset-1 focus-within:ring-offset-background
                                        ${
-                                         businessType === type
-                                           ? "bg-green-400 dark:bg-green-100/20 border-green-200 dark:border-green-100 shadow-lg"
-                                           : " border-gray-300 dark:border-gray-400 hover:bg-gray-400/10 dark:hover:bg-gray-500/10"
+                                         isSelected
+                                           ? "bg-brand-mute-green/10 dark:bg-brand-green/20 shadow-sm"
+                                           : "hover:bg-gray-50/5 dark:hover:bg-gray-500/5"
                                        }`
                                 }
                                 transition-opacity transform duration-300 ease-out
@@ -404,21 +469,21 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                         : "0ms",
                     }}
                   >
-                    <RadioButton
+                    <RadioGroupItem
                       id={`business-type-${type}`}
-                      name="businessType"
-                      label={type}
                       value={type}
-                      checked={!isDisabled && businessType === type}
-                      onChange={handleBusinessTypeChange}
                       disabled={isDisabled}
-                      className={`h-5 w-5 
-                                  ${
-                                    isDisabled
-                                      ? "text-gray-300 dark:text-gray-500 border-gray-300 dark:border-gray-500"
-                                      : "text-green-200 focus:ring-green-100 border-gray-300 dark:border-gray-400 focus:ring-2 focus:ring-offset-1 focus:ring-offset-background"
-                                  }`}
+                      className="sr-only"
                     />
+                    <span
+                      className={`text-sm font-medium transition-colors duration-200 ${
+                        isSelected
+                          ? "text-brand-mute-green dark:text-brand-green font-bold"
+                          : "text-dark dark:text-light"
+                      }`}
+                    >
+                      {type}
+                    </span>
                     {isDisabled && (
                       <span
                         className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-10
@@ -443,8 +508,8 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
                   </label>
                 );
               })}
-            </div>
-          </fieldset>
+            </RadioGroup>
+          </div>
           <div
             className={`flex justify-between items-center mt-10
                         transition-all transform duration-500 ease-out 
@@ -460,23 +525,22 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
             }}
           >
             <Button
-              text="Back"
-              style="secondary"
+              label="Back"
+              variant="secondary"
               onClick={goToPreviousStep}
               type="button"
-              isDisabled={isLoading}
+              disabled={isLoading}
             />
             <Button
-              text={
+              label={
                 businessType === "Producer"
                   ? "Next"
-                  : isLoading
-                  ? "Saving..."
                   : "Get Started"
               }
-              style="primary"
+              variant="primary"
               type="submit"
-              isDisabled={isLoading || businessType === "Wholesaler"}
+              isLoading={isLoading}
+              disabled={isLoading || businessType === "Wholesaler"}
             />
           </div>
         </form>
@@ -599,17 +663,18 @@ const FirstLoginModal = ({ isOpen, onSubmit }: FirstLoginModalProps) => {
             }}
           >
             <Button
-              text="Back"
-              style="secondary"
+              label="Back"
+              variant="secondary"
               onClick={goToPreviousStep}
               type="button"
-              isDisabled={isLoading}
+              disabled={isLoading}
             />
             <Button
-              text={isLoading ? "Saving..." : "Get Started"}
-              style="primary"
+              label="Get Started"
+              variant="primary"
               type="submit"
-              isDisabled={isLoading || selectedSubTypes.length === 0}
+              isLoading={isLoading}
+              disabled={isLoading || selectedSubTypes.length === 0}
             />
           </div>
         </form>

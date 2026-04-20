@@ -65,9 +65,7 @@ export const Checkbox = ({
         {label && (
           <span
             className={`
-            text-dark dark:text-light text-sm
-            ${checked ? "text-green-200 font-medium" : ""}
-            transition-colors duration-200
+            text-dark dark:text-light text-sm transition-colors duration-200
           `}
           >
             {label}

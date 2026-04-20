@@ -37,7 +37,11 @@ export class UserRepository {
           type: true,
           sub_type: true,
           plan: true,
+          phone_number: true,
+          // @ts-ignore - Prisma client out of sync in IDE
+          country: true,
           subscription_expires_at: true,
+          created_at: true,
         },
       });
 
@@ -153,6 +157,7 @@ export class UserRepository {
       city,
       state,
       postal_code,
+      country,
       darkMode,
       widgets,
     } = body;
@@ -180,6 +185,7 @@ export class UserRepository {
       if (city !== undefined) updateData.city = city;
       if (state !== undefined) updateData.state = state;
       if (postal_code !== undefined) updateData.postal_code = postal_code;
+      if (country !== undefined) updateData.country = country;
       if (darkMode !== undefined) updateData.darkMode = darkMode;
       if (widgets !== undefined) updateData.widgets = widgets;
 
@@ -261,6 +267,7 @@ export class UserRepository {
       city,
       state,
       postal_code,
+      country,
       darkMode,
     } = body;
 
@@ -303,7 +310,7 @@ export class UserRepository {
           email,
           phone_number,
           business_name: business_name || null,
-          date_of_birth: date_of_birth || null,
+          date_of_birth: date_of_birth ? new Date(date_of_birth) : null,
           password: hashedPassword,
           type: type || null,
           address_line_1: address_line_1 || null,
@@ -311,6 +318,8 @@ export class UserRepository {
           city: city || null,
           state: state || null,
           postal_code: postal_code || null,
+          // @ts-ignore - Prisma client out of sync in IDE
+          country: country || null,
           darkMode: darkMode || false,
           widgets: ['Task Calendar'],
           plan: 'FREE',
@@ -323,6 +332,14 @@ export class UserRepository {
           email: true,
           phone_number: true,
           business_name: true,
+          type: true,
+          address_line_1: true,
+          address_line_2: true,
+          city: true,
+          state: true,
+          postal_code: true,
+          // @ts-ignore - Prisma client out of sync in IDE
+          country: true,
           darkMode: true,
           widgets: true,
           plan: true,

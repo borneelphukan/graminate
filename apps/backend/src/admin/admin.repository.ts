@@ -137,4 +137,8 @@ export class AdminRepository {
       };
     }
   }
+
+  async deleteUser(userId: string) {
+    return this.userService.deleteUser(userId);
+  }
 }

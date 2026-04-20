@@ -2,7 +2,8 @@ import { Icon, Button } from "@graminate/ui";
 import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
 import InfoModal from "./InfoModal";
-import axiosInstance from "@/lib/utils/axiosInstance";
+import axios from "axios";
+import { API_BASE_URL } from "@/constants/constants";
 
 type Props = {
   isOpen: boolean;
@@ -33,14 +34,26 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
       return;
     }
 
-    await axiosInstance.post(`/password/forgot`, { email });
-    setInfoModalState({
-      isOpen: true,
-      title: "Email Sent",
-      text: "Please check your email for the reset password link.",
-      variant: "success",
-      onClose: closeModal,
-    });
+    try {
+      await axios.post(`${API_BASE_URL}/password/forgot`, { email });
+      setInfoModalState({
+        isOpen: true,
+        title: "Email Sent",
+        text: "Please check your email for the reset password link.",
+        variant: "success",
+        onClose: closeModal,
+      });
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      const errorMessage = error.response?.data?.error || "Failed to send reset link. Please try again later.";
+      setInfoModalState({
+        isOpen: true,
+        title: "Error",
+        text: errorMessage,
+        variant: "error",
+        onClose: () => {},
+      });
+    }
   };
 
   if (!isOpen) return null;

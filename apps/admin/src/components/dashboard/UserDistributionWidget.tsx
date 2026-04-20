@@ -20,7 +20,7 @@ type Props = {
 
 const UserDistributionWidget = ({ data, isLoading }: Props) => {
   const chartData = {
-    labels: ["Free Users", "Paid Users"],
+    labels: ["Free Users", "Pro Users"],
     datasets: [
       {
         data: [data.free, data.paid],
@@ -52,9 +52,6 @@ const UserDistributionWidget = ({ data, isLoading }: Props) => {
             Ratio of free vs premium subscriptions
           </p>
         </div>
-        <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <Icon type="pie_chart" className="size-5 text-green-600 dark:text-green-400" />
-        </div>
       </div>
 
       <div className="flex flex-col md:flex-row items-center gap-8">
@@ -83,14 +80,14 @@ const UserDistributionWidget = ({ data, isLoading }: Props) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="size-3 rounded-full bg-[#2b7860]" />
-              <span className="text-sm font-medium text-dark dark:text-light">Paid Users</span>
+              <span className="text-sm font-medium text-dark dark:text-light">Pro Users</span>
             </div>
             <span className="text-sm font-bold text-dark dark:text-light">{data.paid}</span>
           </div>
           
-          <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="pt-4 border-t border-gray-400 dark:border-gray-700">
              <div className="flex justify-between items-center text-xs">
-                <span className="text-dark dark:text-light">Paid Conversion Rate</span>
+                <span className="text-dark dark:text-light">Conversion Rate</span>
                 <span className="font-bold text-green-600">
                   {data.free + data.paid > 0 ? ((data.paid / (data.free + data.paid)) * 100).toFixed(1) : 0}%
                 </span>

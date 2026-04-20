@@ -13,9 +13,6 @@ const TotalUsersWidget = ({ count, isLoading }: Props) => {
         <h3 className="text-sm font-bold text-dark dark:text-light uppercase tracking-wider">
           Total Platform Users
         </h3>
-        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <Icon type="group" className="size-5 text-blue-600 dark:text-blue-400" />
-        </div>
       </div>
       
       {isLoading ? (
@@ -25,15 +22,8 @@ const TotalUsersWidget = ({ count, isLoading }: Props) => {
           <p className="text-3xl font-bold font-mono text-dark dark:text-light tracking-tighter">
             {count.toLocaleString()}
           </p>
-          <span className="text-xs text-green-600 dark:text-green-400 font-bold border border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-900/10 px-1.5 py-0.5 rounded">
-            Live
-          </span>
         </div>
       )}
-      
-      <p className="text-xs text-dark dark:text-light mt-4">
-        Total registered accounts across all services
-      </p>
     </div>
   );
 };

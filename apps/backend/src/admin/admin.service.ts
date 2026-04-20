@@ -42,4 +42,8 @@ export class AdminService {
   async getUserLoginHistory(userId: string) {
     return this.adminRepository.getUserLoginHistory(userId);
   }
+
+  async deleteUser(userId: string) {
+    return this.adminRepository.deleteUser(userId);
+  }
 }

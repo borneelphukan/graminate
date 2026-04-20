@@ -481,6 +481,7 @@ model users {
   city                    String?          @db.VarChar(100)
   state                   String?          @db.VarChar(100)
   postal_code             String?          @db.VarChar(20)
+  country                 String?          @db.VarChar(100)
   darkMode                Boolean          @default(false)
   widgets                 String[]         @default([])
   plan                    user_plan_type   @default(FREE)

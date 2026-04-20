@@ -221,24 +221,54 @@ const AdminUsersPage = () => {
     return filteredUsers.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredUsers, currentPage, itemsPerPage]);
 
+  const handleDeleteUser = async (e: React.MouseEvent, userId: string, email: string) => {
+    e.stopPropagation();
+    
+    if (!window.confirm(`Are you sure you want to delete user ${email}? This action cannot be undone.`)) {
+      return;
+    }
+
+    const token = localStorage.getItem("admin_token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) throw new Error("Failed to delete user");
+
+      // Refresh data
+      setUsers(prev => prev.filter(u => u.user_id !== userId));
+      if (userCount !== null) setUserCount(userCount - 1);
+      
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user. Please try again.");
+    }
+  };
+
   const tableData = useMemo(
     () => ({
       columns: [
         "User Name",
         "Contact Email",
+        "Phone",
         "Business",
-        "Type",
         "Plan",
+        "Actions",
       ],
-      rows: filteredUsers.map((user) => [
+      rows: paginatedUsers.map((user) => [
         `${user.first_name} ${user.last_name}`,
         user.email,
+        user.phone_number || "N/A",
         user.business_name || "N/A",
-        user.type,
         user.plan,
+        "actions", // placeholder for cell logic
       ]),
     }),
-    [filteredUsers]
+    [paginatedUsers]
   );
 
   return (
@@ -368,7 +398,7 @@ const AdminUsersPage = () => {
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                      <tbody className="divide-y divide-gray-100 divide-gray-400 dark:divide-gray-700">
                         {isLoading ? (
                           [...Array(5)].map((_, i) => (
                             <tr key={i} className="animate-pulse">
@@ -408,6 +438,13 @@ const AdminUsersPage = () => {
                                 }`}>
                                   {user.plan}
                                 </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <Button
+                                  label="Delete"
+                                  variant="destructive"
+                                  onClick={(e) => handleDeleteUser(e, user.user_id, user.email)}
+                                />
                               </td>
                             </tr>
                           ))
