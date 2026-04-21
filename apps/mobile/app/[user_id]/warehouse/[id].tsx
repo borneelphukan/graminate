@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import InventoryForm, {
   InventoryFormData,
 } from "@/components/form/warehouse/InventoryForm";
@@ -277,7 +277,7 @@ const WarehouseDetailScreen = () => {
             mode="contained"
             icon={() => (
               <Icon
-                type={"add" as any}
+                type={"plus" as any}
                 size={16}
                 color={theme.colors.onPrimary}
               />
@@ -334,7 +334,7 @@ const WarehouseDetailScreen = () => {
                       {...props}
                       icon={() => (
                         <Icon
-                          type={"manage_accounts" as any}
+                          type={"account-cog" as any}
                           size={22}
                           color={props.color}
                         />

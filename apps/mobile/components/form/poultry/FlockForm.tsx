@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "@/components/modals/FormModal";
 import { HOUSING_TYPES, POULTRY_TYPES } from "@/constants/options";
 import React, { useEffect, useState } from "react";
@@ -128,7 +128,7 @@ const PaperFormDropdown = ({
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"expand_more" as any}
+                        type={"chevron-down" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />

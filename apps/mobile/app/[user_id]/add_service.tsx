@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";

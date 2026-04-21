@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
@@ -35,8 +35,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const api = axios.create({ baseURL: API_URL });
+// Using axiosInstance for all API calls
 
 type Contact = {
   contact_id: string;
@@ -159,20 +158,18 @@ const ContactDetails = () => {
       const payload = {
         id: contact.contact_id,
         first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone_number: formData.phoneNumber,
-        type: formData.type,
+        last_name: formData.lastName || null,
+        email: formData.email || null,
+        phone_number: formData.phoneNumber || null,
+        type: formData.type || null,
         address_line_1: formData.addressLine1,
-        address_line_2: formData.addressLine2,
+        address_line_2: formData.addressLine2 || null,
         city: formData.city,
         state: formData.state,
         postal_code: formData.postalCode,
-        profile_image_url: finalProfileImageUrl,
+        profile_image_url: finalProfileImageUrl || null,
       };
-      await api.put("/contacts/update", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.put("/contacts/update", payload);
       Alert.alert("Success", "Contact updated.");
       router.replace(
         `/${user_id}/crm?view=contacts&refresh=${new Date().getTime()}`
@@ -409,7 +406,7 @@ Email: ${formData.email || "N/A"}
             <Button
               icon={() => (
                 <Icon
-                  type={"mail" as any}
+                  type={"email" as any}
                   size={18}
                   color={
                     formData.email
@@ -468,7 +465,7 @@ Email: ${formData.email || "N/A"}
                           <TextInput.Icon
                             icon={() => (
                               <Icon
-                                type={"expand_more" as any}
+                                type={"chevron-down" as any}
                                 size={16}
                                 color={theme.colors.onSurfaceVariant}
                               />

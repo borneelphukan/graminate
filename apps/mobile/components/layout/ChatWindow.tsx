@@ -1,8 +1,8 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import Sparkles from "@/assets/icon/Sparkles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -202,6 +202,17 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
     sendButton: { marginLeft: 8 },
   });
 
+  const memoizedCloseIcon = useCallback(
+    () => (
+      <Icon
+        type={"close" as any}
+        size={24}
+        color={theme.colors.onSurfaceVariant}
+      />
+    ),
+    [theme.colors.onSurfaceVariant]
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -220,7 +231,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
               textColor={theme.colors.error}
               icon={() => (
                 <Icon
-                  type={"delete" as any}
+                  type={"trash-can" as any}
                   size={18}
                   color={theme.colors.error}
                 />
@@ -230,13 +241,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
             </Button>
           )}
           <Appbar.Action
-            icon={() => (
-              <Icon
-                type={"cancel" as any}
-                size={24}
-                color={theme.colors.onSurfaceVariant}
-              />
-            )}
+            icon={memoizedCloseIcon}
             onPress={onClose}
           />
         </Appbar.Header>
@@ -294,7 +299,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
                   {msg.sender === "user" && (
                     <View style={styles.avatarContainer}>
                       <Icon
-                        type={"person" as any}
+                        type={"account" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -337,7 +342,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           <IconButton
             icon={() => (
               <Icon
-                type={"arrow_circle_up" as any}
+                type={"arrow-up-circle" as any}
                 size={38}
                 color={
                   isLoading || input.trim() === ""

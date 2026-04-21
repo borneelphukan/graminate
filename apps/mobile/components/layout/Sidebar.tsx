@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import CattleIcon from "@/assets/icon/CattleIcon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -87,10 +87,6 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
             route: `/${currentUserId}/crm?view=contracts`,
           },
           {
-            label: "Receipts",
-            route: `/${currentUserId}/crm?view=receipts`,
-          },
-          {
             label: "Projects",
             route: `/${currentUserId}/crm?view=tasks`,
           },
@@ -127,7 +123,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
 
     base.push(
       {
-        icon: "group",
+        icon: "account-group",
         label: "Employees",
         section: "Employees",
         basePath: `/${currentUserId}/labour`,
@@ -143,7 +139,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         ],
       },
       {
-        icon: "attach_money",
+        icon: "currency-usd",
         label: "Finance Manager",
         section: "Finance",
         basePath: `/${currentUserId}/finance`,
@@ -157,6 +153,10 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
             label: "Expenses",
             route: `/${currentUserId}/finance_expenses`,
           },
+          {
+            label: "Receipts",
+            route: `/${currentUserId}/crm?view=receipts`,
+          },
         ],
       },
       {
@@ -167,7 +167,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
         subItems: [],
       },
       {
-        icon: "add",
+        icon: "plus",
         label: "Manage Services",
         section: "Manage Services",
         route: `/${currentUserId}/add_service`,
@@ -205,13 +205,16 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
     closeSidebar();
   };
 
-  const iconColor = darkMode
-    ? theme.colors.onSurface
-    : theme.colors.onSurfaceVariant;
+  // Colors from packages/ui/lib/main.css to match web sidebar
+  const sidebarBg = "#111827"; // gray-800
+  const sidebarActive = "#1f2937"; // gray-700
+  const sidebarText = "#bbbbbc"; // gray-300
+  const sidebarActiveText = "#ffffff"; // white
+  const sidebarItemText = "#e8e8e9"; // gray-400
 
   return (
     <SafeAreaView
-      style={[styles.flex, { backgroundColor: theme.colors.surface }]}
+      style={[styles.flex, { backgroundColor: sidebarBg }]}
     >
       <View style={styles.header}>
         <Image
@@ -220,7 +223,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           resizeMode="contain"
         />
         <TouchableOpacity onPress={closeSidebar} style={styles.closeButton}>
-          <Icon type={"close" as any} size={24} color={iconColor} />
+          <Icon type={"close"} size={24} color={sidebarText} />
         </TouchableOpacity>
       </View>
 
@@ -242,7 +245,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                       style={[
                         styles.itemContainer,
                         isActive && {
-                          backgroundColor: theme.colors.surfaceVariant,
+                          backgroundColor: sidebarActive,
                         },
                       ]}
                       onPress={() => handleSectionToggle(section.section)}
@@ -250,7 +253,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                       <View style={styles.iconWrapper}>
                         {typeof section.icon === "function" ? (
                           <section.icon
-                            color={iconColor}
+                            color={isActive ? sidebarActiveText : sidebarText}
                             width={22}
                             height={22}
                           />
@@ -258,22 +261,22 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                           <Icon
                             type={(section.icon) as any}
                             size={20}
-                            color={iconColor}
+                            color={isActive ? sidebarActiveText : sidebarText}
                           />
                         )}
                       </View>
                       <Text
                         style={[
                           styles.itemText,
-                          { color: theme.colors.onSurface },
+                          { color: isActive ? sidebarActiveText : sidebarText },
                         ]}
                       >
                         {section.label}
                       </Text>
                       <Icon
-                        type={(isExpanded ? "expand_more" : "chevron_right") as any}
+                        type={isExpanded ? "chevron-down" : "chevron-right"}
                         size={14}
-                        color={iconColor}
+                        color={isActive ? sidebarActiveText : sidebarText}
                       />
                     </TouchableOpacity>
                     {isExpanded && (
@@ -285,7 +288,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                               styles.itemContainer,
                               styles.subItem,
                               pathname === sub.route && {
-                                backgroundColor: theme.colors.surfaceVariant,
+                                backgroundColor: sidebarActive,
                               },
                             ]}
                             onPress={() => handleNavigation(sub.route)}
@@ -294,7 +297,12 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                               style={[
                                 styles.itemText,
                                 styles.subItemText,
-                                { color: theme.colors.onSurface },
+                                {
+                                  color:
+                                    pathname === sub.route
+                                      ? "#c3dafe" // indigo-300 for active sub-item like web
+                                      : sidebarText,
+                                },
                               ]}
                             >
                               {sub.label}
@@ -313,24 +321,31 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                   style={[
                     styles.itemContainer,
                     isActive && {
-                      backgroundColor: theme.colors.surfaceVariant,
+                      backgroundColor: sidebarActive,
                     },
                   ]}
                   onPress={() => handleNavigation(section.route!)}
                 >
                   <View style={styles.iconWrapper}>
                     {typeof section.icon === "function" ? (
-                      <section.icon color={iconColor} width={22} height={22} />
+                      <section.icon
+                        color={isActive ? sidebarActiveText : sidebarText}
+                        width={22}
+                        height={22}
+                      />
                     ) : (
                       <Icon
                         type={(section.icon) as any}
                         size={20}
-                        color={iconColor}
+                        color={isActive ? sidebarActiveText : sidebarText}
                       />
                     )}
                   </View>
                   <Text
-                    style={[styles.itemText, { color: theme.colors.onSurface }]}
+                    style={[
+                      styles.itemText,
+                      { color: isActive ? sidebarActiveText : sidebarText },
+                    ]}
                   >
                     {section.label}
                   </Text>
@@ -339,53 +354,42 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
             })}
           </View>
         )}
-        <Divider style={styles.divider} />
-        <View>
-          <View
-            style={[styles.itemContainer, { justifyContent: "space-between" }]}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={styles.iconWrapper}>
-                <Icon type={"dark_mode" as any} size={20} color={iconColor} />
-              </View>
-              <Text
-                style={[
-                  styles.itemText,
-                  { color: theme.colors.onSurface, flex: 0 },
-                ]}
-              >
-                Dark Mode
-              </Text>
-            </View>
-            <Switch value={darkMode} onValueChange={setDarkMode} />
-          </View>
-          <TouchableOpacity
-            style={styles.itemContainer}
-            onPress={navigateToSettings}
-          >
-            <View style={styles.iconWrapper}>
-              <Icon type={"settings" as any} size={20} color={iconColor} />
-            </View>
-            <Text style={[styles.itemText, { color: theme.colors.onSurface }]}>
-              Settings
-            </Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
 
       <View
-        style={[styles.footer, { borderTopColor: theme.colors.outlineVariant }]}
+        style={[styles.footer, { borderTopColor: sidebarActive }]}
       >
+        <View
+          style={[styles.itemContainer, { justifyContent: "space-between" }]}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.iconWrapper}>
+              <Icon type={"weather-night"} size={20} color={sidebarText} />
+            </View>
+            <Text
+              style={[styles.itemText, { color: sidebarText, flex: 0 }]}
+            >
+              Dark Mode
+            </Text>
+          </View>
+          <Switch value={darkMode} onValueChange={setDarkMode} />
+        </View>
+        <TouchableOpacity
+          style={styles.itemContainer}
+          onPress={navigateToSettings}
+        >
+          <View style={styles.iconWrapper}>
+            <Icon type={"cog"} size={20} color={sidebarText} />
+          </View>
+          <Text style={[styles.itemText, { color: sidebarText }]}>Settings</Text>
+        </TouchableOpacity>
+        <Divider style={[styles.divider, { marginHorizontal: 0, marginBottom: 16, backgroundColor: sidebarActive }]} />
         <Button
           mode="contained-tonal"
           onPress={handleLogout}
           style={styles.logoutButton}
           icon={() => (
-            <Icon
-              type={"logout" as any}
-              size={18}
-              color={theme.colors.primary}
-            />
+            <Icon type={"logout"} size={18} color={theme.colors.primary} />
           )}
         >
           Logout

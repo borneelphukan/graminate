@@ -13,9 +13,9 @@
     ".": {
       "import": "./dist/ui.js",
       "development": "./lib/index.ts",
-      "types": "./dist/index.d.ts"
+      "types": "./lib/index.ts"
     },
-    "./lib/main.css": "./dist/ui.css"
+    "./lib/main.css": "./lib/main.css"
   },
   "scripts": {
     "build": "vite build",

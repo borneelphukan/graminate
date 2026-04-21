@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -190,9 +190,9 @@ const AccountSettingsScreen = () => {
             <Dialog.Icon
               icon={() => (
                 <Icon
-                  type={(infoModalContent.type === "success"
-                      ? "check_circle"
-                      : "error") as any}
+                  type={infoModalContent.type === "success"
+                      ? "check-circle"
+                      : "alert-circle"}
                   size={48}
                   color={
                     infoModalContent.type === "success"
@@ -222,7 +222,7 @@ const AccountSettingsScreen = () => {
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"arrow-left"}
               size={22}
               color={theme.colors.onSurface}
             />

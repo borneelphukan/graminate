@@ -1,53 +1,64 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
+import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 
-import { Platform } from 'react-native';
+// Brand colors from packages/ui/lib/main.css
+const brandColors = {
+  green100: "#2b7860", // Brand primary
+  green200: "#04ad79", // Brand secondary
+  green300: "#d8fdf2", // Light tint
+  green400: "#f5fffc", // Very light tint
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+  red100: "#9b2c2c",
+  red200: "#e53e3e",
 
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+  gray50: "#f8f9fa",
+  gray100: "#131317",
+  gray200: "#49494d",
+  gray300: "#bbbbbc",
+  gray400: "#e8e8e9",
+  gray500: "#eceff1",
+  gray600: "#374151",
+  gray700: "#1f2937",
+  gray800: "#111827",
+  gray900: "#030712",
+
+  backgroundLight: "#ffffff",
+  backgroundDark: "#0a0a0a",
+  foregroundLight: "#171717",
+  foregroundDark: "#ededed",
+};
+
+export const AppLightTheme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: brandColors.green100,
+    primaryContainer: brandColors.green300,
+    secondary: brandColors.green200,
+    secondaryContainer: brandColors.green400,
+    background: brandColors.backgroundLight,
+    surface: brandColors.gray50,
+    surfaceVariant: brandColors.gray400,
+    onSurface: brandColors.foregroundLight,
+    onSurfaceVariant: brandColors.gray200,
+    error: brandColors.red200,
+    outline: brandColors.gray300,
   },
 };
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+export const AppDarkTheme = {
+  ...MD3DarkTheme,
+  colors: {
+    ...MD3DarkTheme.colors,
+    primary: brandColors.green200, // Brighter green for dark mode
+    primaryContainer: brandColors.green100,
+    secondary: brandColors.green300,
+    secondaryContainer: brandColors.green200,
+    background: brandColors.backgroundDark,
+    surface: brandColors.gray900,
+    surfaceVariant: brandColors.gray800,
+    onSurface: brandColors.foregroundDark,
+    onSurfaceVariant: brandColors.gray300,
+    error: brandColors.red200,
+    outline: brandColors.gray700,
   },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
+};

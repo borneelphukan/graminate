@@ -1,6 +1,14 @@
-import { Icon } from "@graminate/ui";
-import React from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Icon } from "@/components/ui/Icon";
+import React, { useEffect, useRef } from "react";
+import {
+  Animated,
+  Dimensions,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import {
   Appbar,
   Button,
@@ -22,6 +30,8 @@ type FormModalProps = {
   onScrollBeginDrag?: () => void;
 };
 
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
 export const FormModal = ({
   isVisible,
   onClose,
@@ -34,73 +44,155 @@ export const FormModal = ({
   onScrollBeginDrag,
 }: FormModalProps) => {
   const theme = useTheme();
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      // Slide in
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // Slide out
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: SCREEN_HEIGHT,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isVisible, slideAnim, fadeAnim]);
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_HEIGHT,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
+  };
 
   return (
     <Portal>
       <Modal
         visible={isVisible}
-        onDismiss={onClose}
+        onDismiss={handleClose}
         contentContainerStyle={styles.modalContainer}
       >
-        <Pressable
-          style={styles.backdrop}
-          onPress={onBackgroundPress || onClose}
-        />
-        <Surface
+        <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onBackgroundPress || handleClose}
+          />
+        </Animated.View>
+        
+        <Animated.View
           style={[
-            styles.contentSurface,
-            { backgroundColor: theme.colors.elevation.level2 },
+            styles.animatedContent,
+            {
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
-          elevation={4}
         >
-          <Appbar.Header elevated style={styles.header}>
-            <Appbar.Content title={title} titleStyle={styles.title} />
-            <Appbar.Action
-              icon={() => (
-                <Icon
-                  type={"close" as any}
-                  size={22}
-                  color={theme.colors.onSurface}
-                />
-              )}
-              onPress={onClose}
-            />
-          </Appbar.Header>
-
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            onScrollBeginDrag={onScrollBeginDrag}
+          <Surface
+            style={[
+              styles.contentSurface,
+              { 
+                backgroundColor: theme.dark ? "#111827" : "#ffffff",
+                borderColor: theme.dark ? "#1f2937" : "#e5e7eb"
+              },
+            ]}
+            elevation={5}
           >
-            {children}
-          </ScrollView>
-
-          <View style={styles.footer}>
-            <Button
-              mode="contained"
-              onPress={onSubmit}
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              style={styles.submitButton}
-              labelStyle={styles.submitButtonLabel}
-              icon={() => (
-                <Icon
-                  type={"check" as any}
-                  size={18}
-                  color={
-                    isSubmitting
-                      ? theme.colors.onSurfaceDisabled
-                      : theme.colors.onPrimary
-                  }
-                />
-              )}
+            <Appbar.Header 
+              elevated={false} 
+              style={[
+                styles.header, 
+                { 
+                  backgroundColor: theme.dark ? "#111827" : "#ffffff",
+                  borderBottomWidth: 1,
+                  borderBottomColor: theme.dark ? "#1f2937" : "#e5e7eb"
+                }
+              ]}
             >
-              {submitButtonText}
-            </Button>
-          </View>
-        </Surface>
+              <Appbar.Content 
+                title={title} 
+                titleStyle={[styles.title, { color: theme.colors.onSurface }]} 
+              />
+              <Appbar.Action
+                icon={() => (
+                  <Icon
+                    type={"close" as any}
+                    size={22}
+                    color={theme.colors.onSurface}
+                  />
+                )}
+                onPress={handleClose}
+              />
+            </Appbar.Header>
+
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              onScrollBeginDrag={onScrollBeginDrag}
+            >
+              {children}
+            </ScrollView>
+
+            <View style={[
+              styles.footer, 
+              { 
+                borderTopWidth: 1,
+                borderTopColor: theme.dark ? "#1f2937" : "#e5e7eb",
+                backgroundColor: theme.dark ? "#111827" : "#ffffff",
+              }
+            ]}>
+              <Button
+                mode="contained"
+                onPress={onSubmit}
+                loading={isSubmitting}
+                disabled={isSubmitting}
+                style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
+                labelStyle={styles.submitButtonLabel}
+                icon={() => (
+                  <Icon
+                    type={"check" as any}
+                    size={18}
+                    color={"white"}
+                  />
+                )}
+              >
+                {submitButtonText}
+              </Button>
+            </View>
+          </Surface>
+        </Animated.View>
       </Modal>
     </Portal>
   );
@@ -113,37 +205,46 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  animatedContent: {
+    width: "100%",
   },
   contentSurface: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    maxHeight: "90%",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: SCREEN_HEIGHT * 0.85,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    overflow: 'hidden',
   },
   header: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    height: 64,
+    paddingHorizontal: 8,
   },
   title: {
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "700",
   },
   scrollView: {
-    padding: 20,
+    backgroundColor: 'transparent',
   },
   scrollContent: {
-    paddingBottom: 20,
+    padding: 24,
+    paddingBottom: 40,
   },
   footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
+    padding: 24,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
   },
   submitButton: {
-    paddingVertical: 8,
-    borderRadius: 50,
+    paddingVertical: 6,
+    borderRadius: 12,
+    elevation: 0,
   },
   submitButtonLabel: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+    color: 'white',
   },
 });

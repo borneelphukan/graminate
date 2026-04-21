@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import React, { useEffect, useRef } from "react";
 import {
@@ -161,7 +161,7 @@ const NotificationBar = ({
                     <IconButton
                       icon={() => (
                         <Icon
-                          type={"settings" as any}
+                          type={"cog" as any}
                           size={20}
                           color={theme.colors.onSurfaceVariant}
                         />

@@ -19,6 +19,7 @@ import {
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../../modals/FormModal";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -242,6 +243,17 @@ const ReceiptForm = ({
             value={formData.title}
             onChangeText={(text) => handleInputChange("title", text)}
             error={!!errors.title}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"file-document" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
           />
           <HelperText type="error" visible={!!errors.title}>
             {errors.title}
@@ -255,6 +267,17 @@ const ReceiptForm = ({
                 value={formData.billTo}
                 onChangeText={(text) => handleInputChange("billTo", text)}
                 error={!!errors.billTo}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"account" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
               <HelperText type="error" visible={!!errors.billTo}>
                 {errors.billTo}
@@ -288,6 +311,17 @@ const ReceiptForm = ({
               label="Link to Sale (Optional)"
               value={selectedSaleDisplay}
               editable={false}
+              left={
+                <TextInput.Icon
+                  icon={() => (
+                    <Icon
+                      type={"link" as any}
+                      size={18}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                  )}
+                />
+              }
               right={
                 isLoadingSales ? (
                   <TextInput.Icon icon={() => <ActivityIndicator />} />

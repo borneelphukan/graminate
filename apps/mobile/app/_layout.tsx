@@ -17,16 +17,39 @@ import {
   UserPreferencesProvider,
   useUserPreferences,
 } from "@/contexts/UserPreferencesContext";
+import { AppDarkTheme, AppLightTheme } from "@/constants/theme";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "index",
 };
 
 function ThemedApp() {
   const { darkMode } = useUserPreferences();
 
-  const paperTheme = darkMode ? MD3DarkTheme : MD3LightTheme;
-  const navigationTheme = darkMode ? DarkTheme : DefaultTheme;
+  const paperTheme = darkMode ? AppDarkTheme : AppLightTheme;
+  const navigationTheme = darkMode
+    ? {
+        ...DarkTheme,
+        colors: {
+          ...DarkTheme.colors,
+          primary: AppDarkTheme.colors.primary,
+          background: AppDarkTheme.colors.background,
+          card: AppDarkTheme.colors.surface,
+          text: AppDarkTheme.colors.onSurface,
+          border: AppDarkTheme.colors.outline,
+        },
+      }
+    : {
+        ...DefaultTheme,
+        colors: {
+          ...DefaultTheme.colors,
+          primary: AppLightTheme.colors.primary,
+          background: AppLightTheme.colors.background,
+          card: AppLightTheme.colors.surface,
+          text: AppLightTheme.colors.onSurface,
+          border: AppLightTheme.colors.outline,
+        },
+      };
 
   return (
     <PaperProvider theme={paperTheme}>

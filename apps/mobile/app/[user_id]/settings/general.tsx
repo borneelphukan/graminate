@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
@@ -52,7 +52,7 @@ const PaperFormDropdown = ({
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"expand_more" as any}
+                    type={"chevron-down" as any}
                     size={16}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -166,7 +166,7 @@ const GeneralSettingsScreen = () => {
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"arrow-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -188,7 +188,7 @@ const GeneralSettingsScreen = () => {
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"arrow-left" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -320,7 +320,7 @@ const GeneralSettingsScreen = () => {
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"location_on" as any}
+                      type={"map-marker" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -351,7 +351,7 @@ const GeneralSettingsScreen = () => {
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"location_city" as any}
+                        type={"city" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -412,7 +412,7 @@ const GeneralSettingsScreen = () => {
             disabled={isSavingProfile}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
                 color={theme.colors.onPrimary}
               />

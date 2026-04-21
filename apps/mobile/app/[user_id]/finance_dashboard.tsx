@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import CompareGraph from "@/components/cards/CompareGraph";
 import TrendGraph from "@/components/cards/TrendGraph";

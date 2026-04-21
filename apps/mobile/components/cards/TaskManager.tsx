@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import axiosInstance from "@/lib/axiosInstance";
 import React, { useCallback, useEffect, useState } from "react";
 import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
@@ -201,7 +201,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       return (
         <View style={styles.centeredContainer}>
           <Icon
-            type={"checklist" as any}
+            type={"clipboard-text-outline" as any}
             size={48}
             color={theme.colors.onSurfaceDisabled}
           />
@@ -363,7 +363,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
               Priority
             </Text>
             <Icon
-              type={(prioritySortAsc ? "expand_less" : "expand_more") as any}
+              type={(prioritySortAsc ? "chevron-up" : "chevron-down") as any}
               size={12}
               color={theme.colors.onSurface}
             />
@@ -415,7 +415,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           style={styles.addButton}
           icon={() => (
             <Icon
-              type={"add" as any}
+              type={"plus" as any}
               size={16}
               color={
                 !newTaskText.trim()

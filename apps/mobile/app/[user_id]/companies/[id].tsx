@@ -1,6 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { COMPANY_TYPES } from "@/constants/options";
+import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as Linking from "expo-linking";
@@ -27,8 +28,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const api = axios.create({ baseURL: API_URL });
+// Using axiosInstance for all API calls
 
 type Company = {
   company_id: string;
@@ -136,20 +136,18 @@ const CompanyDetails = () => {
         id: company.company_id,
         company_name: formData.companyName,
         contact_person: formData.contactPerson,
-        email: formData.email,
-        phone_number: formData.phoneNumber,
-        type: formData.type,
+        email: formData.email || null,
+        phone_number: formData.phoneNumber || null,
+        type: formData.type || null,
         address_line_1: formData.addressLine1,
-        address_line_2: formData.addressLine2,
+        address_line_2: formData.addressLine2 || null,
         city: formData.city,
         state: formData.state,
         postal_code: formData.postalCode,
-        website: formData.website,
-        industry: formData.industry,
+        website: formData.website || null,
+        industry: formData.industry || null,
       };
-      await api.put("/companies/update", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.put("/companies/update", payload);
       Alert.alert("Success", "Company updated.");
       router.replace(
         `/${user_id}/crm?view=companies&refresh=${new Date().getTime()}`
@@ -175,9 +173,7 @@ const CompanyDetails = () => {
             setDeleting(true);
             try {
               const token = await AsyncStorage.getItem("accessToken");
-              await api.delete(`/companies/delete/${company.company_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              await axiosInstance.delete(`/companies/delete/${company.company_id}`);
               Alert.alert("Success", "Company deleted.");
               router.replace(
                 `/${user_id}/crm?view=companies&refresh=${new Date().getTime()}`
@@ -362,7 +358,7 @@ Email: ${formData.email || "N/A"}
             <Button
               icon={() => (
                 <Icon
-                  type={"mail" as any}
+                  type={"email" as any}
                   size={18}
                   color={
                     formData.email
@@ -441,7 +437,7 @@ Email: ${formData.email || "N/A"}
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"mail" as any}
+                        type={"email" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -516,7 +512,7 @@ Email: ${formData.email || "N/A"}
                           <TextInput.Icon
                             icon={() => (
                               <Icon
-                                type={"expand_more" as any}
+                                type={"chevron-down" as any}
                                 size={16}
                                 color={theme.colors.onSurfaceVariant}
                               />

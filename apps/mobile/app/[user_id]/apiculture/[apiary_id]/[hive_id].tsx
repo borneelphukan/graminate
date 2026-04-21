@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 
 import BeeHiveIcon from "@/assets/icon/BeeHiveIcon";
 import BeeIcon from "@/assets/icon/BeeIcon";
@@ -197,7 +197,7 @@ const HiveDetailsPage = () => {
       {
         label: "Population Strength",
         value: latestInspection.population_strength || "N/A",
-        icon: "group",
+        icon: "account-group",
       },
       {
         label: "Brood Frames",

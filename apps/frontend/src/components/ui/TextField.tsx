@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import Loader from "./Loader";
 
 type Props = {
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   errorMessage?: string;
   isDisabled?: boolean;

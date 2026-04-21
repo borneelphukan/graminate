@@ -5,7 +5,7 @@ import hi from "../translations/hi.json";
 import as from "../translations/as.json";
 import de from "../translations/de.json";
 
-const translations: any = { en, hi, as, de };
+const translations: Record<string, any> = { en, hi, as, de };
 
 type Region = "India" | "Germany" | "Global";
 

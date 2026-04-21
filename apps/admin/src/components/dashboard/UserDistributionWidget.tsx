@@ -6,7 +6,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Icon } from "@graminate/ui";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

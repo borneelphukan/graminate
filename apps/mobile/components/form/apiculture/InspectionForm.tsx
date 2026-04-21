@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "@/components/modals/FormModal";
 import { format } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
@@ -45,7 +45,7 @@ const PaperFormDropdown = ({
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"expand_more" as any}
+                      type={"chevron-down" as any}
                       size={16}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -312,7 +312,7 @@ const InspectionForm = ({
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"calendar_month" as any}
+                    type={"calendar-month" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -338,7 +338,7 @@ const InspectionForm = ({
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"calendar_month" as any}
+                      type={"calendar-month" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />

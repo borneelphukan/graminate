@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import React, { useEffect, useMemo, useState } from "react";
 import CattleIcon from "@/assets/icon/CattleIcon";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -115,11 +115,11 @@ const WidgetModal = ({
   }, [availableWidgets]);
 
   const categoryIcons: Record<string, string | React.ComponentType<any>> = {
-    General: "drag_handle",
-    Financial: "show_chart",
+    General: "apps",
+    Financial: "chart-line",
     Poultry: "egg",
     "Cattle Rearing": CattleIcon,
-    Apiculture: "bug_report",
+    Apiculture: "bee",
   };
 
   const handleToggleWidget = (widgetId: string) => {
@@ -225,7 +225,7 @@ const WidgetModal = ({
             onPress={handleSave}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
                 color={theme.colors.onPrimary}
               />

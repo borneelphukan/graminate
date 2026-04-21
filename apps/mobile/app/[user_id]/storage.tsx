@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import WarehouseForm, {
   WarehouseFormData,
 } from "@/components/form/warehouse/WarehouseForm";
@@ -68,7 +68,7 @@ const WarehouseCard = ({
         {!!addressString && (
           <View style={styles.infoRow}>
             <Icon
-              type={"location_on" as any}
+              type={"map-marker" as any}
               size={16}
               color={theme.colors.onSurfaceVariant}
             />
@@ -81,7 +81,7 @@ const WarehouseCard = ({
           {item.contact_person && (
             <View style={styles.infoRow}>
               <Icon
-                type={"person" as any}
+                type={"account" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -105,7 +105,7 @@ const WarehouseCard = ({
           {item.storage_capacity != null && (
             <View style={styles.infoRow}>
               <Icon
-                type={"box" as any}
+                type={"package-variant-closed" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
@@ -287,7 +287,7 @@ const StoragePage = () => {
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"arrow-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -311,7 +311,7 @@ const StoragePage = () => {
         <FAB
           icon={() => (
             <Icon
-              type={"add" as any}
+              type={"plus" as any}
               size={22}
               color={theme.colors.onPrimaryContainer}
             />

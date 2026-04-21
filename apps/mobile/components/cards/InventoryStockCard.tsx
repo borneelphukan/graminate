@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -185,7 +185,7 @@ const InventoryStockCard = ({
               Quantity
             </Text>
             <Icon
-              type={(quantitySortAsc ? "expand_less" : "expand_more") as any}
+              type={(quantitySortAsc ? "expand_less" : "chevron-down") as any}
               size={12}
               color={theme.colors.onSurface}
             />

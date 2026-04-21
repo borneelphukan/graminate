@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Services from "@/components/cards/company/PunchCard";
 import { Button } from "@graminate/ui";
-import FeatureBannerImage from "../../public/images/banners/main.png";
 import {
   faChevronCircleLeft,
   faChevronCircleRight,

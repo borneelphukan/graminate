@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
@@ -159,6 +159,10 @@ const PoultryScreen = () => {
   const theme = useTheme();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
+  const navbarBg = "#1f2937"; // gray-800 (slightly lighter than navbar gray-900)
+  const navbarIconColor = "#bbbbbc"; // gray-300
+  const navbarBorder = "#374151"; // gray-700
+
   const [flockRecords, setFlockRecords] = useState<FlockApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -168,6 +172,28 @@ const PoultryScreen = () => {
   >([]);
   const [isLoadingFinancials, setIsLoadingFinancials] = useState(true);
   const [showFinancials, setShowFinancials] = useState(true);
+
+  const memoizedBackIcon = useCallback(
+    () => (
+      <Icon
+        type={"arrow-left" as any}
+        size={22}
+        color={navbarIconColor}
+      />
+    ),
+    [navbarIconColor]
+  );
+
+  const memoizedAddIcon = useCallback(
+    () => (
+      <Icon
+        type={"plus" as any}
+        size={22}
+        color={navbarIconColor}
+      />
+    ),
+    [navbarIconColor]
+  );
 
   const processSalesData = useCallback(
     (sales: SaleRecord[]): Map<string, MetricBreakdown> => {
@@ -282,35 +308,35 @@ const PoultryScreen = () => {
       {
         title: "Poultry Revenue",
         value: totals.revenue,
-        icon: "payments",
+        icon: "currency-inr",
         bgColor: isDark ? "#14532d" : "#dcfce7",
         iconValueColor: isDark ? "#86efac" : "#16a34a",
       },
       {
         title: "Poultry COGS",
         value: totals.cogs,
-        icon: "shopping_cart",
+        icon: "shopping-outline",
         bgColor: isDark ? "#713f12" : "#fef3c7",
         iconValueColor: isDark ? "#fcd34d" : "#b45309",
       },
       {
         title: "Poultry Gross Profit",
         value: grossProfit,
-        icon: "pie_chart",
+        icon: "chart-pie",
         bgColor: isDark ? "#164e63" : "#cffafe",
         iconValueColor: isDark ? "#67e8f9" : "#0891b2",
       },
       {
         title: "Poultry Expenses",
         value: totals.expenses,
-        icon: "credit_card",
+        icon: "credit-card-outline",
         bgColor: isDark ? "#7f1d1d" : "#fee2e2",
         iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
       },
       {
         title: "Poultry Net Profit",
         value: netProfit,
-        icon: "savings",
+        icon: "bank-outline",
         bgColor: isDark ? "#1e3a8a" : "#dbeafe",
         iconValueColor: isDark ? "#93c5fd" : "#2563eb",
       },
@@ -328,33 +354,29 @@ const PoultryScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header
+        style={{
+          backgroundColor: navbarBg,
+          borderBottomWidth: 1,
+          borderBottomColor: navbarBorder,
+        }}
+      >
         <Appbar.Action
-          icon={() => (
-            <Icon
-              type={"arrow_back" as any}
-              size={22}
-              color={theme.colors.onSurface}
-            />
-          )}
+          icon={memoizedBackIcon}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title="Poultry Flocks"
+          titleStyle={{ color: "white", fontWeight: "bold" }}
           subtitle={
             loadingFlocks
               ? "Loading..."
               : `${filteredFlockRecords.length} Record(s)`
           }
+          subtitleStyle={{ color: navbarIconColor }}
         />
         <Appbar.Action
-          icon={() => (
-            <Icon
-              type={"add" as any}
-              size={22}
-              color={theme.colors.onSurface}
-            />
-          )}
+          icon={memoizedAddIcon}
           onPress={() => setIsFormVisible(true)}
         />
       </Appbar.Header>
@@ -363,7 +385,7 @@ const PoultryScreen = () => {
           <Button
             icon={() => (
               <Icon
-                type={(showFinancials ? "expand_less" : "expand_more") as any}
+                type={(showFinancials ? "chevron-up" : "chevron-down") as any}
                 size={16}
                 color={theme.colors.primary}
               />

@@ -1,4 +1,4 @@
-import { Dropdown, Button } from "@graminate/ui";
+import { Dropdown, Button, Icon } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import TextField from "@/components/ui/TextField";
 import { CONTRACT_STATUS } from "@/constants/options";
@@ -222,7 +222,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
       onSubmit={handleSubmitContracts}
     >
       <TextField
-        label="Contract Title"
+        label={
+          <div className="flex items-center gap-2">
+            <Icon type="description" size="sm" />
+            <span>Contract Title</span>
+          </div>
+        }
         placeholder="Name of your Contract"
         value={contractsValues.dealName}
         onChange={(val: string) =>
@@ -231,7 +236,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
       />
       <div className="relative">
         <TextField
-          label="Contract Occupation Category"
+          label={
+            <div className="flex items-center gap-2">
+              <Icon type="category" size="sm" />
+              <span>Contract Occupation Category</span>
+            </div>
+          }
           placeholder="Contract category"
           value={contractsValues.category}
           onChange={handleCategoryInputChange}
@@ -256,7 +266,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
         )}
       </div>
       <Dropdown
-        label="Contract Stage"
+        label={
+          <div className="flex items-center gap-2">
+            <Icon type="step" size="sm" />
+            <span>Contract Stage</span>
+          </div>
+        }
         items={CONTRACT_STATUS}
         selectedItem={contractsValues.status}
         onSelect={(val: string) =>
@@ -265,7 +280,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
         placeholder="Select Stage"
       />
       <TextField
-        label="Amount (₹)"
+        label={
+          <div className="flex items-center gap-2">
+            <Icon type="payments" size="sm" />
+            <span>Amount (₹)</span>
+          </div>
+        }
         placeholder="Budget involved"
         value={contractsValues.amountPaid}
         onChange={(val: string) =>
@@ -274,7 +294,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
       />
       <div className="flex flex-col sm:flex-row gap-4">
         <TextField
-          label="Start Date"
+          label={
+            <div className="flex items-center gap-2">
+              <Icon type="calendar_today" size="sm" />
+              <span>Start Date</span>
+            </div>
+          }
           placeholder="YYYY-MM-DD"
           value={contractsValues.contractStartDate}
           onChange={(val: string) =>
@@ -286,7 +311,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
           calendar
         />
         <TextField
-          label="End Date"
+          label={
+            <div className="flex items-center gap-2">
+              <Icon type="event_busy" size="sm" />
+              <span>End Date</span>
+            </div>
+          }
           placeholder="YYYY-MM-DD"
           value={contractsValues.contractEndDate}
           onChange={(val: string) =>
@@ -300,7 +330,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
       </div>
       <div className="relative">
         <TextField
-          label="Contract With"
+          label={
+            <div className="flex items-center gap-2">
+              <Icon type="business" size="sm" />
+              <span>Contract With</span>
+            </div>
+          }
           placeholder="Company, Business owner"
           value={contractsValues.dealPartner}
           onChange={handleDealPartnerInputChange}
@@ -325,7 +360,12 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
         )}
       </div>
       <Dropdown
-        label="Priority"
+        label={
+          <div className="flex items-center gap-2">
+            <Icon type="priority_high" size="sm" />
+            <span>Priority</span>
+          </div>
+        }
         items={["Low", "Medium", "High"]}
         selectedItem={contractsValues.priority}
         onSelect={(val: string) =>

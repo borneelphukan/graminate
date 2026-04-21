@@ -395,19 +395,19 @@ const Navbar = ({
 
               {signIn && (
                 <Link
-                  href="/localhost:3000/"
+                  href="http://localhost:3000/login"
                   className="text-sm whitespace-nowrap text-white hover:text-gray-300"
                   onClick={closeBannersAndMenu}
                 >
-                  Sign In
+                  {t("nav.login")}
                 </Link>
               )}
               {!signIn && contact && (
                 <button
                   className="bg-emerald-500 text-sm text-white py-1.5 px-6 rounded-full hover:bg-emerald-600 cursor-pointer font-bold shadow-lg transition-all hover:scale-105"
-                  onClick={() => navigateTo("/industries")}
+                  onClick={() => window.location.assign("http://localhost:3000/login")}
                 >
-                  {t("nav.getPro")}
+                  {t("nav.login")}
                 </button>
               )}
             </div>
@@ -426,11 +426,11 @@ const Navbar = ({
             <div className="mt-2 space-y-2 py-4 text-center text-white md:hidden">
               {signIn && (
                 <Link
-                  href="/sign_in"
+                  href="http://localhost:3000/login"
                   className="block border-b border-gray-300 p-2 hover:text-gray-300"
                   onClick={closeBannersAndMenu}
                 >
-                  Sign In
+                  {t("nav.login")}
                 </Link>
               )}
 
@@ -470,9 +470,9 @@ const Navbar = ({
               {!signIn && contact && (
                 <button
                   className="mt-4 bg-emerald-500 font-bold text-sm text-white py-2 px-6 rounded-full hover:bg-emerald-600 cursor-pointer w-auto inline-block shadow-lg"
-                  onClick={() => navigateTo("/industries")}
+                  onClick={() => window.location.assign("http://localhost:3000/login")}
                 >
-                  Get Pro
+                  {t("nav.login")}
                 </button>
               )}
             </div>

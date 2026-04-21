@@ -12,13 +12,12 @@ import InfoModal from "@/components/modals/InfoModal";
 
 const SignIn = () => {
   const router = useRouter();
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    let userId = localStorage.getItem("user_id");
-
-    if (token) {
-      if (!userId) {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
         try {
           const base64Url = token.split(".")[1];
           const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -26,73 +25,30 @@ const SignIn = () => {
             window
               .atob(base64)
               .split("")
-              .map(function (c) {
-                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-              })
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
               .join("")
           );
           const decoded = JSON.parse(jsonPayload);
 
-          // Check expiration
           const currentTime = Date.now() / 1000;
-          if (decoded.exp && decoded.exp < currentTime) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user_id");
-            return;
-          }
-
-          userId = decoded.user_id || decoded.id || decoded.sub;
-          if (userId) {
-            localStorage.setItem("user_id", userId);
+          if (decoded.exp && decoded.exp > currentTime) {
+            const userId = decoded.user_id || decoded.id || decoded.sub;
+            if (userId) {
+              localStorage.setItem("user_id", userId);
+              await router.replace(`/${userId}`);
+              return;
+            }
           }
         } catch (error) {
-          console.error("Failed to decode token", error);
-          localStorage.removeItem("token");
-          localStorage.removeItem("user_id");
-          return;
+          console.error("Auth check failed", error);
         }
-      }
-
-      // Re-verify expiration if userId was already present (optional but safer to decode again, 
-      // but for now let's assume if we had userId we blindly trusted it in the old code. 
-      // Better to always decode and check expiration if we want to be sure).
-      // However, the block above only runs if !userId. 
-
-      // The logic is a bit split. Let's unify it.
-      // We should always decode to check expiration regardless of whether userId is in localstorage.
-      try {
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          window
-            .atob(base64)
-            .split("")
-            .map(function (c) {
-              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join("")
-        );
-        const decoded = JSON.parse(jsonPayload);
-
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp && decoded.exp < currentTime) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user_id");
-          return;
-        }
-
-        userId = decoded.user_id || decoded.id || decoded.sub;
-      } catch {
-        // Invalid token
         localStorage.removeItem("token");
         localStorage.removeItem("user_id");
-        return;
       }
+      setAuthLoading(false);
+    };
 
-      if (userId) {
-        router.replace(`/${userId}`);
-      }
-    }
+    checkAuth();
   }, [router]);
 
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
@@ -356,6 +312,10 @@ const SignIn = () => {
       console.error("Error during OTP validation and registration:", error);
     }
   };
+  if (authLoading) {
+    return null;
+  }
+
   return (
     <>
       <Head>

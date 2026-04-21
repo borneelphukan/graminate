@@ -1,10 +1,10 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
@@ -45,7 +45,7 @@ const SettingsScreen = () => {
         label: "General",
         type: "navigate",
         routeName: `/${user_id}/settings/general`,
-        icon: "settings",
+        icon: "cog",
       },
     ];
     if (!isLoading) {
@@ -54,7 +54,7 @@ const SettingsScreen = () => {
           label: "Weather",
           type: "navigate",
           routeName: `/${user_id}/settings/weather`,
-          icon: "partly_cloudy_day",
+          icon: "weather-partly-cloudy",
         });
         if (subTypes.includes("Poultry"))
           preferenceItems.push({
@@ -83,7 +83,7 @@ const SettingsScreen = () => {
       label: "Notifications",
       type: "navigate",
       routeName: `/${user_id}/settings/notifications`,
-      icon: "notifications",
+      icon: "bell",
     });
     return [
       { label: "Your Preferences", items: preferenceItems },
@@ -94,30 +94,49 @@ const SettingsScreen = () => {
             label: "Account Settings",
             type: "navigate",
             routeName: `/${user_id}/settings/account`,
-            icon: "manage_accounts",
+            icon: "account-cog",
           },
         ],
       },
     ];
   }, [user_id, userType, subTypes, isLoading]);
 
+  // Colors from Navbar to match theme
+  const navbarBg = "#1f2937"; // gray-800 (slightly lighter than navbar gray-900)
+  const navbarIconColor = "#bbbbbc"; // gray-300
+  const navbarBorder = "#374151"; // gray-700
+
+  const memoizedBackIcon = useCallback(
+    () => (
+      <Icon
+        type={"arrow-left" as any}
+        size={22}
+        color={navbarIconColor}
+      />
+    ),
+    [navbarIconColor]
+  );
+
   return (
     <PlatformLayout>
       <SafeAreaView
         style={[styles.flex, { backgroundColor: theme.colors.background }]}
       >
-        <Appbar.Header>
+        <Appbar.Header
+          style={{
+            backgroundColor: navbarBg,
+            borderBottomWidth: 1,
+            borderBottomColor: navbarBorder,
+          }}
+        >
           <Appbar.Action
-            icon={() => (
-              <Icon
-                type={"arrow_back" as any}
-                size={22}
-                color={theme.colors.onSurface}
-              />
-            )}
+            icon={memoizedBackIcon}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Settings" />
+          <Appbar.Content
+            title="Settings"
+            titleStyle={{ color: "white", fontWeight: "bold" }}
+          />
         </Appbar.Header>
         <View style={styles.flex}>
           {isLoading ? (
@@ -161,7 +180,7 @@ const SettingsScreen = () => {
                           {...props}
                           icon={() => (
                             <Icon
-                              type={"chevron_right" as any}
+                              type={"chevron-right" as any}
                               size={16}
                               color={props.color}
                             />

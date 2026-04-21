@@ -1,4 +1,3 @@
-import { Icon } from "@graminate/ui";
 import React from "react";
 
 type Props = {

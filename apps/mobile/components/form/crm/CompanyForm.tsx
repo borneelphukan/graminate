@@ -5,7 +5,9 @@ import {
   Menu,
   TextInput,
   TouchableRipple,
+  useTheme,
 } from "react-native-paper";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../../modals/FormModal";
 
 const COMPANY_TYPES = ["Supplier", "Distributor", "Factory", "Buyer", "Other"];
@@ -37,6 +39,7 @@ const PaperFormDropdown = ({
   selectedValue,
   onSelect,
   error,
+  theme,
 }: any) => {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
@@ -49,15 +52,27 @@ const PaperFormDropdown = ({
         onDismiss={closeMenu}
         anchor={
           <TouchableRipple onPress={openMenu}>
-            <TextInput
-              mode="outlined"
-              label={label}
-              value={selectedValue}
-              editable={false}
-              pointerEvents="none"
-              right={<TextInput.Icon icon="menu-down" />}
-              error={!!error}
-            />
+            <View pointerEvents="none">
+              <TextInput
+                mode="outlined"
+                label={label}
+                value={selectedValue}
+                editable={false}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"factory" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
+                right={<TextInput.Icon icon="menu-down" />}
+                error={!!error}
+              />
+            </View>
           </TouchableRipple>
         }
       >
@@ -80,6 +95,7 @@ const PaperFormDropdown = ({
 };
 
 const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
+  const theme = useTheme();
   const [formData, setFormData] = useState<CompanyFormData>({
     company_name: "",
     contact_person: "",
@@ -144,7 +160,7 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
     try {
       await onSubmit(formData);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
     } finally {
       setIsSubmitting(false);
     }
@@ -171,6 +187,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
             value={formData.company_name}
             onChangeText={(text) => handleInputChange("company_name", text)}
             error={!!errors.company_name}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"domain" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
           />
           <HelperText type="error" visible={!!errors.company_name}>
             {errors.company_name}
@@ -183,6 +210,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
             value={formData.contact_person}
             onChangeText={(text) => handleInputChange("contact_person", text)}
             error={!!errors.contact_person}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"account" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
           />
           <HelperText type="error" visible={!!errors.contact_person}>
             {errors.contact_person}
@@ -197,6 +235,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 value={formData.email}
                 onChangeText={(text) => handleInputChange("email", text)}
                 error={!!errors.email}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"email" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
               <HelperText type="error" visible={!!errors.email}>
                 {errors.email}
@@ -210,6 +259,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 value={formData.phone_number}
                 onChangeText={(text) => handleInputChange("phone_number", text)}
                 error={!!errors.phone_number}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"phone" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
               <HelperText type="error" visible={!!errors.phone_number}>
                 {errors.phone_number}
@@ -223,6 +283,7 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
             selectedValue={formData.type}
             onSelect={(type: string) => handleInputChange("type", type)}
             error={errors.type}
+            theme={theme}
           />
 
           <TextInput
@@ -232,6 +293,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
             value={formData.address_line_1}
             onChangeText={(text) => handleInputChange("address_line_1", text)}
             error={!!errors.address_line_1}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"pin" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
           />
           <HelperText type="error" visible={!!errors.address_line_1}>
             {errors.address_line_1}
@@ -254,6 +326,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 value={formData.city}
                 onChangeText={(text) => handleInputChange("city", text)}
                 error={!!errors.city}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"city" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
               <HelperText type="error" visible={!!errors.city}>
                 {errors.city}
@@ -267,6 +350,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 value={formData.state}
                 onChangeText={(text) => handleInputChange("state", text)}
                 error={!!errors.state}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"map" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
               <HelperText type="error" visible={!!errors.state}>
                 {errors.state}
@@ -281,6 +375,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
             value={formData.postal_code}
             onChangeText={(text) => handleInputChange("postal_code", text)}
             error={!!errors.postal_code}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"tag" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
           />
           <HelperText type="error" visible={!!errors.postal_code}>
             {errors.postal_code}
@@ -294,6 +399,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 placeholder="www.acme.com"
                 value={formData.website}
                 onChangeText={(text) => handleInputChange("website", text)}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"web" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
             </View>
             <View style={styles.halfWidth}>
@@ -303,6 +419,17 @@ const CompanyForm = ({ isVisible, onClose, onSubmit }: CompanyFormProps) => {
                 placeholder="e.g. Manufacturing"
                 value={formData.industry}
                 onChangeText={(text) => handleInputChange("industry", text)}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"factory" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
               />
             </View>
           </View>

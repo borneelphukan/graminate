@@ -35,9 +35,8 @@ export * from "./components/stepper/stepper";
 export * from "./components/checkbox/checkbox";
 export * from "./components/dropdown/dropdown";
 export * from "./components/segmentedControl/segmentedControl";
-export * from "./components/spinner/spinner";
 export * from "./components/table/table";
-export * from "./components/table/table-skeleton";
+export * from "./components/spinner/spinner";
 export * from "./components/searchbar/searchbar";
 
 export * from "./utils";

@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import CompanyForm, {
   CompanyFormData,
 } from "@/components/form/crm/CompanyForm";
@@ -14,6 +14,7 @@ import ReceiptForm, {
 import TaskForm, { TaskFormData } from "@/components/form/crm/TaskForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axiosInstance from "@/lib/axiosInstance";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -32,8 +33,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const api = axios.create({ baseURL: API_URL });
+// No need for a custom 'api' instance here anymore, we'll use axiosInstance
 
 // --- Type Definitions (No Changes) ---
 type Contact = {
@@ -117,7 +117,7 @@ const ContactCard = ({
         <View style={styles.cardRow}>
           {item.email && (
             <View style={styles.infoItem}>
-              <Icon type={"mail" as any} size={16} />
+              <Icon type={"email" as any} size={16} />
               <Text style={styles.infoText}>{item.email}</Text>
             </View>
           )}
@@ -225,7 +225,7 @@ const ReceiptCard = ({
         <View style={styles.cardRow}>
           <View style={styles.infoItem}>
             <Icon
-              type={"calendar_month" as any}
+              type={"calendar-month" as any}
               size={16}
               color={theme.colors.error}
             />
@@ -294,7 +294,7 @@ const CRM = () => {
         title: "Contacts",
         endpoint: `/contacts/${user_id}`,
         dataKey: "contacts",
-        icon: "manage_accounts",
+        icon: "account-cog",
         addText: "Contact",
       },
       companies: {
@@ -388,9 +388,7 @@ const CRM = () => {
       try {
         const token = await AsyncStorage.getItem("accessToken");
         if (!token) throw new Error("Authentication token not found.");
-        const response = await api.get(config.endpoint, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axiosInstance.get(config.endpoint);
         setData(
           Array.isArray(response.data?.[config.dataKey])
             ? response.data[config.dataKey]
@@ -425,9 +423,7 @@ const CRM = () => {
         phone_number: formData.phone_number || null,
         address_line_2: formData.address_line_2 || null,
       };
-      await api.post("/contacts/add", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.post("/contacts/add", payload);
       Alert.alert("Success", "Contact created successfully.");
       await fetchData("contacts");
     } catch (err) {
@@ -458,9 +454,7 @@ const CRM = () => {
         website: formData.website || null,
         industry: formData.industry || null,
       };
-      await api.post("/companies/add", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.post("/companies/add", payload);
       Alert.alert("Success", "Company created successfully.");
       await fetchData("companies");
     } catch (err) {
@@ -487,9 +481,7 @@ const CRM = () => {
         end_date: formData.end_date || null,
         category: formData.category || null,
       };
-      await api.post("/contracts/add", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.post("/contracts/add", payload);
       Alert.alert("Success", "Contract created successfully.");
       await fetchData("contracts");
     } catch (err) {
@@ -527,9 +519,7 @@ const CRM = () => {
           ),
         linked_sale_id: formData.linked_sale_id,
       };
-      await api.post("/receipts/add", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.post("/receipts/add", payload);
       Alert.alert("Success", "Receipt created successfully.");
       await fetchData("receipts");
     } catch (err) {
@@ -546,9 +536,7 @@ const CRM = () => {
       const token = await AsyncStorage.getItem("accessToken");
       if (!token || !user_id) throw new Error("Authentication error.");
       const payload = { user_id: Number(user_id), project: formData.project };
-      await api.post("/tasks/add", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.post("/tasks/add", payload);
       Alert.alert("Success", "Project created successfully.");
       await fetchData("tasks");
     } catch (err) {
@@ -809,7 +797,7 @@ const CRM = () => {
                   <Text variant="headlineMedium">
                     {VIEW_CONFIG[view].title}
                   </Text>
-                  <Icon type={"expand_more" as any} size={28} />
+                  <Icon type={"chevron-down" as any} size={28} />
                 </>
               </TouchableRipple>
             }
@@ -835,7 +823,7 @@ const CRM = () => {
                   onPress={() => setSortMenuVisible(true)}
                   icon={({ size, color }) => (
                     <Icon
-                      type={(sortOrder === "desc" ? "arrow_downward" : "arrow_upward") as any}
+                      type={(sortOrder === "desc" ? "arrow-down" : "arrow-up") as any}
                       size={size}
                       color={color}
                     />
@@ -881,7 +869,7 @@ const CRM = () => {
         {renderContent()}
         <FAB
           icon={({ size, color }) => (
-            <Icon type={"add" as any} size={size} color={color} />
+            <Icon type={"plus" as any} size={size} color={color} />
           )}
           label={VIEW_CONFIG[view].addText}
           style={styles.fab}

@@ -1,6 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
+import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
@@ -27,8 +28,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const api = axios.create({ baseURL: API_URL });
+// Using axiosInstance for all API calls
 
 type Contract = {
   deal_id: number;
@@ -162,9 +162,7 @@ const ContractDetails = () => {
         category: formData.category || null,
         priority: formData.priority,
       };
-      await api.put("/contracts/update", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.put("/contracts/update", payload);
       Alert.alert("Success", "Contract updated successfully.");
       router.replace(
         `/${user_id}/crm?view=contracts&refresh=${new Date().getTime()}`
@@ -193,9 +191,7 @@ const ContractDetails = () => {
             setDeleting(true);
             try {
               const token = await AsyncStorage.getItem("accessToken");
-              await api.delete(`/contracts/delete/${contract.deal_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              await axiosInstance.delete(`/contracts/delete/${contract.deal_id}`);
               Alert.alert("Success", "Contract deleted successfully.");
               router.replace(
                 `/${user_id}/crm?view=contracts&refresh=${new Date().getTime()}`
@@ -347,7 +343,7 @@ Stage: ${formData.stage || "N/A"}
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"manage_accounts" as any}
+                    type={"account-cog" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -405,7 +401,7 @@ Stage: ${formData.stage || "N/A"}
                     <TextInput.Icon
                       icon={() => (
                         <Icon
-                          type={"calendar_month" as any}
+                          type={"calendar-month" as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -429,7 +425,7 @@ Stage: ${formData.stage || "N/A"}
                     <TextInput.Icon
                       icon={() => (
                         <Icon
-                          type={"calendar_month" as any}
+                          type={"calendar-month" as any}
                           size={18}
                           color={theme.colors.onSurfaceVariant}
                         />
@@ -466,7 +462,7 @@ Stage: ${formData.stage || "N/A"}
                       <TextInput.Icon
                         icon={() => (
                           <Icon
-                            type={"expand_more" as any}
+                            type={"chevron-down" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />
@@ -515,7 +511,7 @@ Stage: ${formData.stage || "N/A"}
                       <TextInput.Icon
                         icon={() => (
                           <Icon
-                            type={"expand_more" as any}
+                            type={"chevron-down" as any}
                             size={16}
                             color={theme.colors.onSurfaceVariant}
                           />

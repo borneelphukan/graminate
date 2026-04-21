@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -86,7 +86,7 @@ const PaperFormDropdown = ({
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"expand_more" as any}
+                        type={"chevron-down" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -212,7 +212,7 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"person" as any}
+                        type={"account" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -246,7 +246,7 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"mail" as any}
+                    type={"email" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -302,7 +302,7 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"push_pin" as any}
+                    type={"pin" as any}
                     size={18}
                     color={theme.colors.onSurfaceVariant}
                   />
@@ -335,7 +335,7 @@ const ContactForm = ({ isVisible, onClose, onSubmit }: ContactFormProps) => {
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"location_city" as any}
+                        type={"city" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />

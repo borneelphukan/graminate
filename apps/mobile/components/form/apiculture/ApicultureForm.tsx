@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "@/components/modals/FormModal";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
@@ -114,7 +114,7 @@ const PaperFormDropdown = ({
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"expand_more" as any}
+                        type={"chevron-down" as any}
                         size={16}
                         color={theme.colors.onSurfaceVariant}
                       />

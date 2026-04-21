@@ -5,6 +5,12 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@graminate/ui": [
+        "../../packages/ui/lib/index.ts"
+      ],
+      "@graminate/ui/*": [
+        "../../packages/ui/lib/*"
       ]
     }
   },

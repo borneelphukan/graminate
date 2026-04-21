@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import Sparkles from "@/assets/icon/Sparkles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -95,29 +95,45 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
       .toUpperCase();
   };
 
-  const iconColor = theme.colors.onSurface;
+  // Colors from packages/ui/lib/main.css to match web navbar
+  const navbarBg = "#111827"; // gray-800
+  const navbarIconColor = "#bbbbbc"; // gray-300
+  const navbarBorder = "#1f2937"; // gray-700
+  const badgeColor = "#e53e3e"; // red-200 from main.css (close to red-600)
 
   const memoizedBarsIcon = useCallback(
-    () => <Icon type={"menu" as any} size={22} color={iconColor} />,
-    [iconColor]
+    () => <Icon type={"menu"} size={22} color={navbarIconColor} />,
+    [navbarIconColor]
   );
 
   const memoizedSparklesIcon = useCallback(
-    () => <Sparkles size={38} color={iconColor} />,
-    [iconColor]
+    () => <Sparkles size={38} color={navbarIconColor} />,
+    [navbarIconColor]
   );
 
   const memoizedBellIcon = useCallback(
-    () => <Icon type={"notifications" as any} size={22} color={iconColor} />,
-    [iconColor]
+    () => <Icon type={"bell"} size={22} color={navbarIconColor} />,
+    [navbarIconColor]
   );
 
   return (
     <>
-      <Appbar.Header elevated>
-        <Appbar.Action icon={memoizedBarsIcon} onPress={toggleSidebar} />
+      <Appbar.Header
+        style={{
+          backgroundColor: navbarBg,
+          borderBottomWidth: 1,
+          borderBottomColor: navbarBorder,
+        }}
+      >
+        <Appbar.Action
+          icon={memoizedBarsIcon}
+          onPress={toggleSidebar}
+        />
         <View style={styles.spacer} />
-        <Appbar.Action icon={memoizedSparklesIcon} onPress={toggleChat} />
+        <Appbar.Action
+          icon={memoizedSparklesIcon}
+          onPress={toggleChat}
+        />
         <View>
           <Appbar.Action
             icon={memoizedBellIcon}
@@ -125,7 +141,7 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
           />
           <Badge
             visible={notifications.length > 0}
-            style={styles.badge}
+            style={[styles.badge, { backgroundColor: badgeColor }]}
             size={16}
           >
             {notifications.length}
@@ -137,9 +153,19 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
           borderless
         >
           {user.name ? (
-            <Avatar.Text size={32} label={getInitials(user.name)} />
+            <Avatar.Text
+              size={32}
+              label={getInitials(user.name)}
+              style={{ backgroundColor: theme.colors.primary }}
+              labelStyle={{ color: "white" }}
+            />
           ) : (
-            <Avatar.Icon size={32} icon="account" />
+            <Avatar.Icon
+              size={32}
+              icon="account"
+              style={{ backgroundColor: theme.colors.primary }}
+              color="white"
+            />
           )}
         </TouchableRipple>
       </Appbar.Header>

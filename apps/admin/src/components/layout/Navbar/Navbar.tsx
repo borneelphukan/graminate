@@ -1,5 +1,5 @@
 import { Icon } from "@graminate/ui";
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import axiosInstance from "@/lib/utils/axiosInstance";

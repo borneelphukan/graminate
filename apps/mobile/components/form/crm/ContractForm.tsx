@@ -15,6 +15,7 @@ import {
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../../modals/FormModal";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -57,6 +58,7 @@ const PaperFormDropdown = ({
   error,
 }: any) => {
   const [visible, setVisible] = useState(false);
+  const theme = useTheme();
   return (
     <View style={styles.inputContainer}>
       <Menu
@@ -70,6 +72,17 @@ const PaperFormDropdown = ({
               value={selectedValue}
               editable={false}
               pointerEvents="none"
+              left={
+                <TextInput.Icon
+                  icon={() => (
+                    <Icon
+                      type={"stairs" as any}
+                      size={18}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                  )}
+                />
+              }
               right={<TextInput.Icon icon="menu-down" />}
               error={!!error}
             />
@@ -244,6 +257,17 @@ const ContractForm = ({
               value={formData.deal_name}
               onChangeText={(text) => handleInputChange("deal_name", text)}
               error={!!errors.deal_name}
+              left={
+                <TextInput.Icon
+                  icon={() => (
+                    <Icon
+                      type={"file-document" as any}
+                      size={18}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                  )}
+                />
+              }
             />
             <HelperText type="error" visible={!!errors.deal_name}>
               {errors.deal_name}
@@ -259,6 +283,17 @@ const ContractForm = ({
                 onFocus={() => {
                   if (formData.partner) setShowPartnerSuggestions(true);
                 }}
+                left={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"handshake" as any}
+                        size={18}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
                 right={
                   isLoadingCompanies ? (
                     <TextInput.Icon icon={() => <ActivityIndicator />} />
@@ -305,6 +340,17 @@ const ContractForm = ({
               value={formData.amount}
               onChangeText={(text) => handleInputChange("amount", text)}
               error={!!errors.amount}
+              left={
+                <TextInput.Icon
+                  icon={() => (
+                    <Icon
+                      type={"currency-inr" as any}
+                      size={18}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                  )}
+                />
+              }
             />
             <HelperText type="error" visible={!!errors.amount}>
               {errors.amount}

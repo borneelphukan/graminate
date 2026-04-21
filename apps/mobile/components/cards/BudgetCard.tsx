@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Card, Text, useTheme } from "react-native-paper";

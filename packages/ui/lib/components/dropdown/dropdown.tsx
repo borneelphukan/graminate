@@ -6,7 +6,7 @@ type DropdownProps = {
   selectedItem: string;
   onSelect: (item: string) => void;
   direction?: "up" | "down";
-  label?: string | null;
+  label?: React.ReactNode | null;
   placeholder?: string;
   disabledItems?: string[];
   isDisabled?: boolean;

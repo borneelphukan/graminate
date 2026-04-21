@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import ApicultureForm, {
   ApiaryFormData,
 } from "@/components/form/apiculture/ApicultureForm";
@@ -171,7 +171,7 @@ const ApicultureDetailPage = () => {
       {
         label: "Created On",
         value: new Date(apiaryData.created_at).toLocaleDateString(),
-        icon: "calendar_month",
+        icon: "calendar-month",
       },
     ];
   }, [apiaryData]);
@@ -207,7 +207,7 @@ const ApicultureDetailPage = () => {
           textColor={theme.colors.primary}
           icon={() => (
             <Icon
-              type={"add" as any}
+              type={"plus" as any}
               size={18}
               color={theme.colors.primary}
             />

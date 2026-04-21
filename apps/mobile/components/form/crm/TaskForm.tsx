@@ -9,6 +9,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../../modals/FormModal";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -146,6 +147,17 @@ const TaskForm = ({ isVisible, onClose, onSubmit, user_id }: TaskFormProps) => {
                 setShowSuggestions(true);
               }
             }}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icon
+                    type={"briefcase" as any}
+                    size={18}
+                    color={theme.colors.onSurfaceVariant}
+                  />
+                )}
+              />
+            }
             right={
               isLoadingSubTypes ? (
                 <TextInput.Icon icon={() => <ActivityIndicator />} />

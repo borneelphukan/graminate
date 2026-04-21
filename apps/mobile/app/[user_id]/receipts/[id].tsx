@@ -1,5 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
+import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
@@ -30,8 +31,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const api = axios.create({ baseURL: API_URL });
+// Using axiosInstance for all API calls
 
 type ApiItem = { description: string; quantity: number; rate: number };
 type Receipt = {
@@ -215,9 +215,7 @@ const ReceiptDetails = () => {
             (item) => item.description.trim() !== "" && item.quantity > 0
           ),
       };
-      await api.put("/receipts/update", payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.put("/receipts/update", payload);
       Alert.alert("Success", "Receipt updated successfully.");
       router.replace(
         `/${user_id}/crm?view=receipts&refresh=${new Date().getTime()}`
@@ -246,9 +244,7 @@ const ReceiptDetails = () => {
             setDeleting(true);
             try {
               const token = await AsyncStorage.getItem("accessToken");
-              await api.delete(`/receipts/delete/${receipt.invoice_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+               await axiosInstance.delete(`/receipts/delete/${receipt.invoice_id}`);
               Alert.alert("Success", "Receipt deleted.");
               router.replace(
                 `/${user_id}/crm?view=receipts&refresh=${new Date().getTime()}`
@@ -429,7 +425,7 @@ Total Amount: ₹${total.toFixed(2)}
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"calendar_month" as any}
+                        type={"calendar-month" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -565,7 +561,7 @@ Total Amount: ₹${total.toFixed(2)}
           <Button
             icon={() => (
               <Icon
-                type={"add" as any}
+                type={"plus" as any}
                 size={18}
                 color={theme.colors.primary}
               />
