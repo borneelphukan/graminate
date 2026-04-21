@@ -47,13 +47,12 @@ export class UserRepository {
 
       const users = usersList.map((user) => {
         const isSubscriptionActive =
-          user.plan !== 'FREE' &&
-          user.subscription_expires_at &&
-          new Date(user.subscription_expires_at) > new Date();
+          (user.plan !== 'FREE' || 
+           (user.subscription_expires_at && new Date(user.subscription_expires_at) > new Date()));
 
         return {
           ...user,
-          is_subscription_active: isSubscriptionActive,
+          is_subscription_active: !!isSubscriptionActive,
         };
       });
 
@@ -98,10 +97,10 @@ export class UserRepository {
         return { status: 404, data: { error: 'User not found' } };
       }
 
+      const now = new Date();
       const isSubscriptionActive =
-        user.plan !== 'FREE' &&
-        user.subscription_expires_at &&
-        new Date(user.subscription_expires_at) > new Date();
+        user.plan !== 'FREE' ||
+        (user.subscription_expires_at && new Date(user.subscription_expires_at) > now);
 
       return {
         status: 200,
@@ -399,6 +398,27 @@ export class UserRepository {
     } catch (err) {
       console.error('Error verifying password:', err);
       return { status: 500, data: { error: 'Failed to verify password' } };
+    }
+  }
+
+  async downgradePlanToFree(userId: string) {
+    try {
+      const now = new Date();
+      // Set expiry to the last day of the current month at 23:59:59
+      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+      await this.prisma.users.update({
+        where: { user_id: Number(userId) },
+        data: {
+          plan: 'FREE',
+          subscription_expires_at: lastDayOfMonth,
+        },
+      });
+
+      return { status: 200, data: { message: 'Plan has been changed to Free. Your Pro access will continue until the end of this month.' } };
+    } catch (err) {
+      console.error('Error downgrading plan:', err);
+      return { status: 500, data: { error: 'Failed to downgrade plan' } };
     }
   }
 

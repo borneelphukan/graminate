@@ -76,4 +76,11 @@ export class UserController {
     const result = await this.userService.verifyPassword(userId, password);
     return result.data;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/downgrade-to-free')
+  async downgradePlan(@Param('id') userId: string, @Request() req) {
+    if (String(req.user.userId) !== userId) throw new UnauthorizedException();
+    return this.userService.downgradePlanToFree(userId);
+  }
 }

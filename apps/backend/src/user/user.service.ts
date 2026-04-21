@@ -45,6 +45,10 @@ export class UserService {
     return this.userRepository.verifyPassword(userId, password);
   }
 
+  async downgradePlanToFree(userId: string) {
+    return this.userRepository.downgradePlanToFree(userId);
+  }
+
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
   }
