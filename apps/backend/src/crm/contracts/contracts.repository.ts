@@ -59,8 +59,8 @@ export class ContractsRepository {
           partner,
           amount,
           stage,
-          start_date,
-          end_date: end_date ? new Date(end_date) : (null as any), // Cast to any to bypass TS if null is passed but required. Or let it fail runtime if really required.
+          start_date: new Date(start_date),
+          end_date: end_date ? new Date(end_date) : new Date(start_date),
           category: category || null,
           priority: priority || 'Medium',
         },

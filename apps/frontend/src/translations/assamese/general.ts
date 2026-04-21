@@ -29,6 +29,8 @@ const assameseGeneralSettings = {
   enterState: "আপোনাৰ ৰাজ্যটো লিখক",
   postalCode: "পোষ্টেল কোড",
   enterPostalCode: "যেনে: ১২৩৪৫৬",
+  country: "দেশ",
+  enterCountry: "আপোনাৰ দেশ লিখক",
   saveChanges: "সলনিসমূহ সাঁচক",
   profileUpdateSuccess: "প্ৰফাইল সফলতাৰে আপডেট কৰা হ'ল!",
   profileUpdateError: "প্ৰফাইল আপডেট কৰোঁতে ত্ৰুটি:",

@@ -40,7 +40,13 @@ export class ContractsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   async addContract(
     @Body() createContractDto: CreateContractDto,
     @Res() res: Response,
@@ -61,7 +67,13 @@ export class ContractsController {
 
   @UseGuards(JwtAuthGuard)
   @Put('update')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   async updateContract(
     @Body() updateContractDto: UpdateContractDto,
     @Res() res: Response,

@@ -73,7 +73,7 @@ const CompanyForm = ({ userId, onClose }: CompanyFormProps) => {
       return;
     }
     const payload = {
-      user_id: userId,
+      user_id: Number(userId),
       company_name: companyValues.companyName,
       contact_person: companyValues.contactPerson,
       email: companyValues.email || null,

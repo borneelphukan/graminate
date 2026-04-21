@@ -1,0 +1,97 @@
+{
+  "nav": {
+    "features": "Funktionen",
+    "solutions": "Lösungen",
+    "aboutus": "Über uns",
+    "careers": "Karriere",
+    "getPro": "Pro werden",
+    "brand": "Graminate"
+  },
+  "hero": {
+    "badge": "Farm-Management der nächsten Generation",
+    "title": "Skalieren Sie Ihre landwirtschaftliche Vision",
+    "subtitle": "Das erste All-in-One-ERP für den modernen Landwirt. Kombiniert spezialisierte KI-Modelle mit robuster Bestandsaufnahme, CRM und Tools für das Viehmanagement.",
+    "cta": "Kostenlose Testversion starten",
+    "explore": "Funktionen erkunden"
+  },
+  "features": {
+    "title": "Farm-Betriebssystem der nächsten Generation",
+    "subtitle": "Graminate ist für die Komplexität der modernen Landwirtschaft konzipiert. Unsere modularen Tools bieten ein durchgängiges Management für Viehbestand, intelligente Lagerhäuser und Business Intelligence.",
+    "cta": "Kostenlos starten",
+    "headline": "Bereit, Ihren Bauernhof zu modernisieren?",
+    "desc": "Schließen Sie sich Tausenden von Landwirten an, die Graminate nutzen, um ihre Produktion zu optimieren und ihre landwirtschaftliche Vision zu skalieren."
+  },
+  "solutions": {
+    "title": "Lösungen für jede landwirtschaftliche Größe",
+    "subtitle": "Egal, ob Sie einen Familienbetrieb oder ein landesweites Vertriebsnetz verwalten, Graminate bietet die modularen Tools, die Sie benötigen, um Ihre Abläufe zu rationalisieren und die Erträge durch intelligente Daten zu maximieren."
+  },
+  "home": {
+    "erp": {
+      "title": "Integriertes Farm-ERP",
+      "content": "Ein zentraler Knotenpunkt für Ihre Geflügel-, Vieh- und Bienenzuchtbetriebe. Echtzeit-Datensynchronisierung über alle Ihre Farm-Assets hinweg."
+    },
+    "ai": {
+      "title": "KI-Assistent",
+      "content": "Nutzen Sie spezialisierte LLMs, die auf landwirtschaftlichen Daten trainiert wurden, für sofortige Ratschläge zu Tiergesundheit, Aufgabenplanung und Berichterstattung."
+    },
+    "supply": {
+      "title": "Sichere Lieferkette",
+      "content": "Integriertes CRM und intelligentes Lagermanagement mit automatisierten Benachrichtigungen bei niedrigem Lagerbestand und umfassender Lieferantenverfolgung."
+    },
+    "transform": {
+      "badge": "Digitale Transformation in der Landwirtschaft",
+      "title": "Innovative Tools zur Zukunftssicherung Ihres Betriebs",
+      "desc1": "Bei {brand} schließen wir die Lücke zwischen traditioneller Landwirtschaft und moderner Technologie. Unsere Plattform bietet Landwirten datengesteuerte Erkenntnisse, die bisher großen Industriebetrieben vorbehalten waren.",
+      "desc2": "Durch die Kombination von fundiertem Fachwissen in der Agrarwissenschaft mit modernster Softwareentwicklung bieten wir eine nahtlose Erfahrung bei der Überwachung der Tiergesundheit, der Verwaltung großer Bestände und der Optimierung von Arbeitsabläufen.",
+      "desc3": "Egal, ob Sie ein Einzelbaur sind oder eine Genossenschaft leiten, {brand} bietet die strategischen Tools, die für die Entwicklung einer modernen, nachhaltigen Landwirtschaft erforderlich sind.",
+      "cta": "Alle Funktionen ansehen"
+    },
+    "onboarding": {
+      "title": "Erste Schritte mit {brand}",
+      "subtitle": "Ein vereinfachter Onboarding-Prozess, der darauf ausgelegt ist, Ihren Betrieb mit minimalen Unterbrechungen auf unserer Plattform zum Laufen zu bringen."
+    },
+    "mission": {
+      "badge": "Unsere Mission",
+      "title": "Wir fördern Ihre landwirtschaftliche Exzellenz",
+      "desc1": "Bei {brand} glauben wir, dass das Rückgrat unserer Gesellschaft die fortschrittlichsten Werkzeuge verdient. Wir verwandeln komplexe landwirtschaftliche Arbeitsabläufe in intuitive, leistungsstarke digitale Erlebnisse.",
+      "desc2": "Vom unabhängigen Geflügelzüchter bis hin zu großen Molkereigenossenschaften liefern wir den Code, der Ihre Vision ermöglicht. Lassen Sie uns gemeinsam die landwirtschaftliche Revolution anführen.",
+      "cta": "Unsere Pläne erkunden"
+    }
+  },
+  "footer": {
+    "tagline": "Stärkung des Rückgrats der Gesellschaft mit landwirtschaftlichem ERP der nächsten Generation und spezialisierter KI. Die Zukunft der Landwirtschaft bauen, Byte für Byte.",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzrichtlinie",
+    "terms": "Nutzungsbedingungen",
+    "links": {
+      "erp": "Farm-Management-ERP",
+      "ai": "KI-Assistent",
+      "supply": "Intelligente Lieferkette",
+      "enterprise": "Unternehmens-Dashboard",
+      "farmers": "Unabhängige Landwirte",
+      "cooperatives": "Landwirtschaftliche Genossenschaften",
+      "distributors": "Nationale Distributoren"
+    }
+  },
+  "industries": {
+    "title": "Entdecken Sie unsere Branchenexpertise",
+    "subtitle": "Erfahren Sie, wie wir Unternehmen wie Ihrem zum Erfolg verhelfen.",
+    "learn_more": "Mehr erfahren",
+    "independent": {
+      "title": "Unabhängige Landwirte",
+      "desc": "Vereinfachtes ERP und KI-Unterstützung für Einzelbauern bei der Verwaltung von Vieh, Ernte und persönlichen Lagern."
+    },
+    "coop": {
+      "title": "Landwirtschaftliche Genossenschaften",
+      "desc": "Benutzerverwaltung für mehrere Anwender, kollektive Bestandsverfolgung und groß angelegte Datenanalyse für landwirtschaftliche Genossenschaften und Gruppen."
+    },
+    "distrib": {
+      "title": "Nationale Distributoren",
+      "desc": "Supply-Chain-Management auf Unternehmensniveau, regionale Bestandsverfolgung in Lagern und Lieferantenbeziehungsmanagement für nationale Netzwerke."
+    },
+    "research": {
+      "title": "Forschung & Institutionen",
+      "desc": "Datengesteuerte Erkenntnisse für landwirtschaftliche Universitäten und Forschungsstellen, die Rassenproduktivität und Ernteerträge untersuchen."
+    }
+  }
+}

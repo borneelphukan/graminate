@@ -129,6 +129,7 @@ export class UserRepository {
             darkMode: user.darkMode,
             widgets: user.widgets || [],
             plan: user.plan,
+            country: user.country || '',
             subscription_expires_at: user.subscription_expires_at,
             is_subscription_active: isSubscriptionActive,
           },

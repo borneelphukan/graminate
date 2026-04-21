@@ -29,6 +29,8 @@ const hindiGeneralSettings = {
   enterState: "अपना राज्य दर्ज करें",
   postalCode: "पिन कोड",
   enterPostalCode: "जैसे: 123456",
+  country: "देश",
+  enterCountry: "अपना देश दर्ज करें",
   saveChanges: "बदलाव सहेजें",
   profileUpdateSuccess: "प्रोफ़ाइल सफलतापूर्वक अपडेट की गई!",
   profileUpdateError: "प्रोफ़ाइल अपडेट करने में त्रुटि:",

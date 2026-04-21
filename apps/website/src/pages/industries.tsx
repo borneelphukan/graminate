@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "@/contexts/I18nContext";
 
 type Industry = {
   id: number;
@@ -14,15 +15,12 @@ type Industry = {
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
 const scrollFadeInUp = {
   initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.7, ease: "easeOut" },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
 };
 
 const scrollStaggerContainer = {
@@ -33,7 +31,6 @@ const scrollStaggerContainer = {
       delayChildren: 0.1,
     },
   },
-  viewport: { once: true, amount: 0.1 },
 };
 
 const scrollStaggerItem = {
@@ -41,9 +38,8 @@ const scrollStaggerItem = {
   whileInView: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
-  viewport: { once: true, amount: 0.1 },
 };
 
 const cardHover = {
@@ -51,45 +47,35 @@ const cardHover = {
   scale: 1.03,
   boxShadow:
     "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-  transition: { type: "spring", stiffness: 300, damping: 15 },
+  transition: { type: "spring" as const, stiffness: 300, damping: 15 },
 };
 
 export default function Industries() {
+  const { t } = useTranslation();
   const industries: Industry[] = [
     {
       id: 1,
-      title: "Enterprise Solutions",
-      description:
-        "Scalable, secure, and high-performance software tailored for businesses, including ERP, CRM, web, mobile, SaaS, and cloud applications.",
-      link: "/industries/enterprise",
+      title: t("industries.independent.title"),
+      description: t("industries.independent.desc"),
+      link: "/industries#independent",
     },
     {
       id: 2,
-      title: "Healthcare Tech",
-      description:
-        "Developing innovative digital health solutions, EHR integrations, telehealth platforms, and patient management systems compliant with industry standards.",
-      link: "/industries/healthcare",
+      title: t("industries.coop.title"),
+      description: t("industries.coop.desc"),
+      link: "/industries#cooperatives",
     },
     {
       id: 3,
-      title: "FinTech & Finance",
-      description:
-        "Building secure financial applications, trading platforms, payment gateways, and compliance software for the modern financial landscape.",
-      link: "/industries/finance",
+      title: t("industries.distrib.title"),
+      description: t("industries.distrib.desc"),
+      link: "/industries#distributors",
     },
     {
       id: 4,
-      title: "EdTech & Education",
-      description:
-        "Creating engaging e-learning platforms, student information systems, and digital tools to enhance learning experiences and administrative efficiency.",
-      link: "/industries/education",
-    },
-    {
-      id: 5,
-      title: "Public Sector Services",
-      description:
-        "Delivering robust and accessible digital services, data management systems, and citizen engagement platforms for government and public organizations.",
-      link: "/industries/public_sector",
+      title: t("industries.research.title"),
+      description: t("industries.research.desc"),
+      link: "/industries#research",
     },
   ];
 
@@ -104,18 +90,14 @@ export default function Industries() {
       </Head>
 
       <DefaultLayout>
-        <div className="relative bg-gradient-to-b from-green-50 to-white isolate overflow-hidden">
+        <div className="relative bg-gradient-to-b from-emerald-50 to-white isolate overflow-hidden">
           <div className="mx-auto max-w-5xl py-24 sm:py-32 lg:py-36 px-6 lg:px-8 text-center">
             <motion.div initial="initial" animate="animate" variants={fadeInUp}>
               <h1 className="text-4xl font-bold tracking-tight text-gray-800 sm:text-5xl md:text-6xl">
-                Software Tailored for Your{" "}
-                <span className="text-green-200">Industry</span>
+                {t("solutions.title")}
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 max-w-3xl mx-auto">
-                Our expertise spans diverse sectors, transforming complex
-                business needs into streamlined, scalable, and future-ready
-                digital solutions. We partner with you from concept to
-                deployment and beyond.
+                {t("solutions.subtitle")}
               </p>
             </motion.div>
           </div>
@@ -149,14 +131,14 @@ export default function Industries() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={{ once: true, amount: 0.2 }}
               className="text-center mb-16 lg:mb-20"
             >
               <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Explore Our Industry Expertise
+                {t("industries.title")}
               </h2>
               <p className="mt-4 text-lg leading-8 text-gray-600">
-                Find out how we help businesses like yours thrive.
+                {t("industries.subtitle")}
               </p>
             </motion.div>
 
@@ -164,7 +146,7 @@ export default function Industries() {
               variants={scrollStaggerContainer}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollStaggerContainer.viewport}
+              viewport={{ once: true, amount: 0.1 }}
               className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2"
             >
               {industries.map((industry) => (
@@ -187,7 +169,7 @@ export default function Industries() {
                         whileTap={{ scale: 0.95 }}
                         className="inline-flex items-center text-green-200 font-semibold hover:text-green-100 transition-colors group"
                       >
-                        Learn More
+                        {t("industries.learn_more")}
                         <FontAwesomeIcon
                           icon={faArrowRight}
                           className="ml-2 h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1"

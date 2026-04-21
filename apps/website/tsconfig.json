@@ -14,7 +14,9 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@graminate/ui": ["../../packages/ui/lib/index.ts"],
+      "@graminate/ui/*": ["../../packages/ui/lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

@@ -29,6 +29,8 @@ const englishGeneralSettings = {
   enterState: "Enter your state",
   postalCode: "Postal Code",
   enterPostalCode: "e.g. 123456",
+  country: "Country",
+  enterCountry: "Enter your country",
   saveChanges: "Save Changes",
   profileUpdateSuccess: "Profile updated successfully!",
   profileUpdateError: "Error updating profile:",

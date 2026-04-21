@@ -173,7 +173,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
     }
     setIsLoading(true);
     const payload = {
-      user_id: userId,
+      user_id: Number(userId),
       title: receiptsValues.title,
       bill_to: receiptsValues.billTo,
       due_date: receiptsValues.dueDate,

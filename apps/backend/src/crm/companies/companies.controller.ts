@@ -47,7 +47,7 @@ export class CompaniesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async addCompany(@Body() body: CreateCompanyDto, @Res() res: Response) {
     const result = await this.companiesService.addCompany(body);
     return res.status(result.status).json(result.data);

@@ -14,6 +14,7 @@ type DropdownProps = {
   width?: "full" | "half" | "auto";
   isDatePicker?: boolean;
   className?: string;
+  errorMessage?: string;
 };
 
 const Dropdown = ({
@@ -29,6 +30,7 @@ const Dropdown = ({
   width = "auto",
   isDatePicker = false,
   className = "",
+  errorMessage,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -165,6 +167,8 @@ const Dropdown = ({
         } rounded-md ${
           isDisabled
             ? "bg-white dark:bg-gray-200 border-gray-400 dark:border-gray-700 cursor-not-allowed"
+            : errorMessage
+            ? "dark:bg-gray-700 border-red-500 focus:outline-none focus:ring-1 focus:ring-red-200"
             : "dark:bg-gray-700 border-gray-400 dark:border-gray-200 hover:border-gray-500 dark:hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-green-200"
         }`}
         onClick={toggleDropdown}
@@ -197,6 +201,9 @@ const Dropdown = ({
         >
           {renderItems()}
         </ul>
+      )}
+      {errorMessage && (
+        <p className="mt-1 text-xs text-red-500">{errorMessage}</p>
       )}
     </div>
   );

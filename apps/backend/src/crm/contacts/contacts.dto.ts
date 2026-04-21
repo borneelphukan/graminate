@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   Matches,
   MaxLength,
@@ -8,6 +9,7 @@ import {
 
 export class CreateContactDto {
   @IsNotEmpty()
+  @IsNumber()
   user_id: number;
 
   @IsNotEmpty()
@@ -24,8 +26,8 @@ export class CreateContactDto {
   email?: string;
 
   @IsNotEmpty()
-  @Matches(/^\+?[1-9][0-9]{1,14}$/, {
-    message: 'Phone number must be in E.164 format',
+  @Matches(/^\+?[0-9]{10,15}$/, {
+    message: 'Phone number must be between 10 and 15 digits',
   })
   phone_number: string;
 

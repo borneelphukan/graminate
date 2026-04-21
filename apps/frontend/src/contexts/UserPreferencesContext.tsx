@@ -25,6 +25,7 @@ type UserPreferencesContextType = {
   setIsFirstLogin: (isFirst: boolean) => void;
   userType: string | null;
   plan: string | null;
+  country: string | null;
   subTypes: string[];
   isSubTypesLoading: boolean;
   fetchUserSubTypes: (userId: string | number) => Promise<void>;
@@ -99,6 +100,7 @@ export const UserPreferencesProvider = ({
   const [isFirstLogin, setIsFirstLoginState] = useState(true);
   const [userType, setUserType] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
+  const [country, setCountry] = useState<string | null>(null);
   const [subTypes, setSubTypesState] = useState<string[]>([]);
   const [widgets, setWidgetsState] = useState<string[]>([]);
   const [isSubTypesLoading, setIsSubTypesLoading] = useState(true);
@@ -169,6 +171,7 @@ export const UserPreferencesProvider = ({
       setIsFirstLoginState(!user.business_name);
       setUserType(user.type || "Producer");
       setPlan(user.plan || null);
+      setCountry(user.country || null);
       setSubTypesState(Array.isArray(user.sub_type) ? user.sub_type : []);
       setWidgetsState(Array.isArray(user.widgets) ? user.widgets : []);
     } catch (error) {
@@ -176,6 +179,7 @@ export const UserPreferencesProvider = ({
       setIsFirstLoginState(true);
       setUserType("Producer");
       setPlan(null);
+      setCountry(null);
       setSubTypesState([]);
       setWidgetsState([]);
     } finally {
@@ -208,6 +212,7 @@ export const UserPreferencesProvider = ({
         setIsFirstLogin,
         userType,
         plan,
+        country,
         subTypes,
         isSubTypesLoading,
         fetchUserSubTypes,

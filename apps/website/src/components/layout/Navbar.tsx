@@ -3,7 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Banner from "./Banner";
-import { Transition } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "@/contexts/I18nContext";
 
 type NavLink = {
   label: string;
@@ -18,72 +21,72 @@ type NavSection = {
 
 const SERVICES_NAV_DATA: NavSection[] = [
   {
-    title: "Software Development",
-    path: "/services/software_development",
+    title: "Farm Modules",
+    path: "/services#modules",
     links: [
       {
-        label: "Web Applications",
-        href: "/services/software_development#web-application",
+        label: "Cattle & Dairy",
+        href: "/services#cattle",
       },
       {
-        label: "Enterprise Softwares",
-        href: "/services/software_development#enterprise-application",
+        label: "Poultry Management",
+        href: "/services#poultry",
       },
       {
-        label: "Mobile Applications",
-        href: "/services/software_development#mobile-application",
+        label: "Apiculture (Beekeeping)",
+        href: "/services#apiculture",
       },
       {
-        label: "Cloud Applications",
-        href: "/services/software_development#cloud-application",
+        label: "Crop Tracking",
+        href: "/services#crops",
       },
     ],
   },
   {
-    title: "Product Design",
-    path: "/services/product_design",
+    title: "Management Tools",
+    path: "/services#tools",
     links: [
-      { label: "UI/UX Design", href: "/services/product_design#uiux_design" },
-      { label: "Web Design", href: "/services/product_design#web_design" },
+      { label: "Integrated Farm CRM", href: "/services#crm" },
+      { label: "Smart Warehouse", href: "/services#warehouse" },
       {
-        label: "Computer-Aided Design (CAD)",
-        href: "/services/product_design#cad",
+        label: "Task & Labor Tracking",
+        href: "/services#tasks",
       },
     ],
   },
   {
-    title: "IT Operations",
-    path: "/services/it_operations",
+    title: "Intelligence",
+    path: "/services#intelligence",
     links: [
       {
-        label: "Integration & Automations",
-        href: "/services/it_operations#integration_automation",
+        label: "Graminate AI Assistant",
+        href: "/services#ai_assistant",
       },
       {
-        label: "Monitor & Logging",
-        href: "/services/it_operations#monitoring_logging",
+        label: "Market Insights",
+        href: "/services#market",
       },
       {
-        label: "Cloud & Infrastructure Management",
-        href: "/services/it_operations#cloud",
+        label: "Weather Forecasting",
+        href: "/services#weather",
       },
     ],
   },
   {
-    title: "Technology Enablement",
-    path: "/services/tech_consulting",
+    title: "Pricing & Plans",
+    path: "/industries",
     links: [
       {
-        label: "Project Managmenent",
-        href: "/services/tech_consulting#project_management",
+        label: "Free Plan",
+        href: "/industries#free",
       },
       {
-        label: "Technical Debt Remediation",
-        href: "/services/tech_consulting#technical_debt",
+        label: "Pro Plan",
+        href: "/industries#pro",
       },
       {
-        label: "Software Modernization",
-        href: "/services/tech_consulting#application_modernization",
+        label: "Enterprise Solutions",
+        href: "/industries#enterprise",
       },
     ],
   },
@@ -91,88 +94,22 @@ const SERVICES_NAV_DATA: NavSection[] = [
 
 const INDUSTRIES_NAV_DATA: NavSection[] = [
   {
-    title: "Enterprise",
-    path: "/industries/enterprise",
+    title: "Scale Solutions",
+    path: "/industries#scale",
     links: [
       {
-        label: "Enterprise Resource Planning (ERP)",
-        href: "/industries/enterprise#erp",
+        label: "Independent Farmers",
+        href: "/industries#independent",
       },
       {
-        label: "Customer Relationship Management (CRM)",
-        href: "/industries/enterprise#crm",
+        label: "Agricultural Cooperatives",
+        href: "/industries#cooperatives",
       },
       {
-        label: "E-Commerce Platforms",
-        href: "/industries/enterprise#e-commerce",
+        label: "National Distributors",
+        href: "/industries#distributors",
       },
-      { label: "Other SaaS Platforms", href: "/industries/enterprise#saas" },
-    ],
-  },
-  {
-    title: "Health Care",
-    path: "/industries/healthcare",
-    links: [
-      {
-        label: "Fitness & Nutrition",
-        href: "/industries/healthcare#fitness_nutrition",
-      },
-      {
-        label: "Clinical, e-Pharma & Hospital IT Systems",
-        href: "/industries/healthcare#clinical-systems",
-      },
-      {
-        label: "Softwares for Doctors",
-        href: "/industries/healthcare#doctor_softwares",
-      },
-    ],
-  },
-  {
-    title: "Finance",
-    path: "/industries/finance",
-    links: [
-      {
-        label: "Investment & Trading Platforms",
-        href: "/industries/finance#investment_trading",
-      },
-      { label: "Insurance Platforms", href: "/industries/finance#insurance" },
-      {
-        label: "Personal Finance & Budgeting",
-        href: "/industries/finance#personal_finance",
-      },
-    ],
-  },
-  {
-    title: "Education",
-    path: "/industries/education",
-    links: [
-      {
-        label: "Institutional Management Systems",
-        href: "/industries/education#institution-management",
-      },
-      {
-        label: "Learning & Teaching Platforms",
-        href: "/industries/education#learning_teaching",
-      },
-      {
-        label: "Exam Preparation Platforms",
-        href: "/industries/education#exam-platforms",
-      },
-    ],
-  },
-  {
-    title: "Public Sector",
-    path: "/industries/public_sector",
-    links: [
-      { label: "e-Governance", href: "/industries/public_sector#e-governance" },
-      {
-        label: "Mobility Platforms",
-        href: "/industries/public_sector#mobility",
-      },
-      {
-        label: "Infrastructure & Urban Development",
-        href: "/industries/public_sector#urban",
-      },
+      { label: "Government Agencies", href: "/industries#government" },
     ],
   },
 ];
@@ -184,13 +121,13 @@ const MAIN_NAV_ITEMS: {
   data?: NavSection[];
 }[] = [
   {
-    label: "Services",
+    label: "Features",
     path: "/services",
     bannerKey: "services",
     data: SERVICES_NAV_DATA,
   },
   {
-    label: "Industries",
+    label: "Solutions",
     path: "/industries",
     bannerKey: "industries",
     data: INDUSTRIES_NAV_DATA,
@@ -213,6 +150,7 @@ const Navbar = ({
   contact = false,
 }: Props) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const navbarRef = useRef<HTMLElement>(null);
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -317,8 +255,11 @@ const Navbar = ({
             <div className="flex items-center">
               <Link
                 href="/"
-                className="flex flex-row items-center gap-4"
-                onClick={closeBannersAndMenu}
+                className="flex flex-row items-center gap-4 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo("/");
+                }}
               >
                 <Image
                   src={imageSrc}
@@ -327,7 +268,7 @@ const Navbar = ({
                   height={40}
                 />
                 <span className="hidden text-3xl text-white sm:inline font-bold">
-                  Graminate
+                  {t("nav.brand")}
                 </span>
               </Link>
             </div>
@@ -347,16 +288,16 @@ const Navbar = ({
                   }
                 >
                   {item.bannerKey ? (
-                    <button className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none">
-                      {item.label}
+                    <button className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none capitalize">
+                      {t(`nav.${item.bannerKey === "services" ? "features" : "solutions"}`)}
                     </button>
                   ) : (
                     <Link
                       href={item.path}
-                      className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none"
+                      className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none capitalize"
                       onClick={closeBannersAndMenu}
                     >
-                      {item.label}
+                      {t(`nav.${item.label.toLowerCase().replace(" ", "")}`)}
                     </Link>
                   )}
                 </div>
@@ -403,7 +344,55 @@ const Navbar = ({
               </button>
             </div>
 
-            <div className="hidden items-center gap-4 md:flex">
+            <div className="hidden items-center gap-6 md:flex">
+              {/* Language Dropdown */}
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <MenuButton className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none bg-gray-700/50 px-3 py-1.5 rounded-full border border-gray-600">
+                    <FontAwesomeIcon icon={faGlobe} className="h-4 w-4" />
+                    <span className="uppercase font-bold tracking-wider text-[10px]">
+                      {router.locale}
+                    </span>
+                  </MenuButton>
+                </div>
+
+                <Transition
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-xl bg-gray-800 border border-gray-700 shadow-2xl focus:outline-none overflow-hidden">
+                    <div className="py-1">
+                      {[
+                        { code: "en", label: "English", flag: "🇺🇸" },
+                        { code: "de", label: "Deutsch", flag: "🇩🇪" },
+                        { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+                        { code: "as", label: "অসমীয়া", flag: "🇮🇳" },
+                      ].map((lang) => (
+                        <MenuItem key={lang.code}>
+                          {({ focus }) => (
+                            <button
+                              onClick={() => router.push(router.pathname, router.asPath, { locale: lang.code })}
+                              className={`${
+                                focus ? "bg-gray-700 text-white" : "text-gray-300"
+                              } ${
+                                router.locale === lang.code ? "text-emerald-400 font-bold" : ""
+                              } group flex w-full items-center px-4 py-2 text-sm transition-colors`}
+                            >
+                              <span className="mr-3">{lang.flag}</span>
+                              {lang.label}
+                            </button>
+                          )}
+                        </MenuItem>
+                      ))}
+                    </div>
+                  </MenuItems>
+                </Transition>
+              </Menu>
+
               {signIn && (
                 <Link
                   href="/localhost:3000/"
@@ -415,10 +404,10 @@ const Navbar = ({
               )}
               {!signIn && contact && (
                 <button
-                  className="bg-green-200 text-sm text-white my-10 py-1.5 px-6 rounded-md hover:bg-green-100 cursor-pointer" // Added button tag for semantics
-                  onClick={() => navigateTo("/company/contact_us")}
+                  className="bg-emerald-500 text-sm text-white py-1.5 px-6 rounded-full hover:bg-emerald-600 cursor-pointer font-bold shadow-lg transition-all hover:scale-105"
+                  onClick={() => navigateTo("/industries")}
                 >
-                  Request Service
+                  {t("nav.getPro")}
                 </button>
               )}
             </div>
@@ -480,10 +469,10 @@ const Navbar = ({
 
               {!signIn && contact && (
                 <button
-                  className="mt-4 bg-green-200 font-semibold text-sm text-white py-2 px-6 rounded-md hover:bg-green-100 cursor-pointer w-auto inline-block" // Use w-auto inline-block for centering
-                  onClick={() => navigateTo("/company/contact_us")}
+                  className="mt-4 bg-emerald-500 font-bold text-sm text-white py-2 px-6 rounded-full hover:bg-emerald-600 cursor-pointer w-auto inline-block shadow-lg"
+                  onClick={() => navigateTo("/industries")}
                 >
-                  Request Service
+                  Get Pro
                 </button>
               )}
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 
 interface JobCardProps {
   position: string;
@@ -42,7 +42,7 @@ const JobCard: React.FC<JobCardProps> = ({
     <div className="flex flex-col rounded-lg bg-white p-6 shadow-md">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-semibold text-gray-900">{position}</h3>
-        <Button text="Apply" style="primary" onClick={applyForJob} />
+        <Button label="Apply" variant="primary" onClick={applyForJob} />
       </div>
       <p className="text-sm text-gray-600">
         {type} ⋅ {mode}

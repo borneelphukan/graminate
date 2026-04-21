@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsUrl,
   Matches,
@@ -9,6 +10,7 @@ import {
 
 export class CreateCompanyDto {
   @IsNotEmpty()
+  @IsNumber()
   user_id: number;
 
   @IsNotEmpty()
@@ -25,8 +27,8 @@ export class CreateCompanyDto {
   email?: string;
 
   @IsOptional()
-  @Matches(/^\+?[1-9][0-9]{1,14}$/, {
-    message: 'Phone number must be in E.164 format',
+  @Matches(/^\+?[0-9]{10,15}$/, {
+    message: 'Phone number must be between 10 and 15 digits',
   })
   phone_number?: string;
 

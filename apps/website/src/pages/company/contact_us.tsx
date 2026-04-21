@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Head from "next/head";
 import TextField from "@/components/ui/TextField";
 import TextArea from "@/components/ui/TextArea";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import emailjs from "@emailjs/browser";
 import Toast from "@/components/ui/Toast";
 import { triggerToast } from "@/stores/toast";
@@ -215,8 +215,8 @@ export default function ContactUs() {
 
                 <div className="flex justify-center lg:justify-start">
                   <Button
-                    text="Send"
-                    style="secondary"
+                    label="Send"
+                    variant="secondary"
                     onClick={handleSubmit}
                   />
                 </div>

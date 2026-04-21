@@ -46,6 +46,7 @@ const General = () => {
     city: "",
     state: "",
     postalCode: "",
+    country: "",
   });
 
   const [storageSettings, setStorageSettings] = useState({
@@ -96,6 +97,7 @@ const General = () => {
           city: userData.city || "",
           state: userData.state || "",
           postalCode: userData.postal_code || "",
+          country: userData.country || "",
         });
         setContextTimeFormat(fetchedTimeFormat);
         setContextLanguage(fetchedLanguage);
@@ -117,6 +119,7 @@ const General = () => {
           city: "",
           state: "",
           postalCode: "",
+          country: "",
         });
         setContextTimeFormat(defaultTimeFormat);
         setContextLanguage(defaultLanguage);
@@ -175,6 +178,7 @@ const General = () => {
         city: user.city,
         state: user.state,
         postal_code: user.postalCode,
+        country: user.country,
       });
       setContextTimeFormat(user.timeFormat);
       setContextLanguage(user.language as SupportedLanguage);
@@ -400,6 +404,22 @@ const General = () => {
                               setUser((prev) => ({ ...prev, postalCode: val }))
                             }
                             width="medium"
+                          />
+                          <TextField
+                            label={
+                              t("country" as NavPanelTranslationKey) ||
+                              "Country"
+                            }
+                            placeholder={
+                              t("enterCountry" as NavPanelTranslationKey) ||
+                              "Enter Country"
+                            }
+                            value={user.country}
+                            onChange={(val) =>
+                              setUser((prev) => ({ ...prev, country: val }))
+                            }
+                            width="medium"
+                            isDisabled={true}
                           />
                         </div>
                       </div>

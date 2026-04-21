@@ -36,7 +36,7 @@ export class ContactsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async addContact(@Body() body: CreateContactDto, @Res() res: Response) {
     const result = await this.contactsService.addContact(body);
     return res.status(result.status).json(result.data);

@@ -33,6 +33,7 @@ export class ItemDto {
 export class CreateReceiptDto {
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   user_id: number;
 
   @IsString()
@@ -87,16 +88,19 @@ export class CreateReceiptDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   tax?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   discount?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   shipping?: number;
 
   @IsOptional()
@@ -111,6 +115,7 @@ export class CreateReceiptDto {
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   linked_sale_id?: number;
 
   @IsOptional()
@@ -124,11 +129,13 @@ export class CreateReceiptDto {
 export class UpdateReceiptDto {
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   invoice_id: number;
 
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   user_id?: number;
 
   @IsString()
@@ -183,16 +190,19 @@ export class UpdateReceiptDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   tax?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   discount?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @Type(() => Number)
   shipping?: number;
 
   @IsOptional()
@@ -207,6 +217,7 @@ export class UpdateReceiptDto {
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   linked_sale_id?: number;
 
   @IsOptional()

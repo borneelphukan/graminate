@@ -11,7 +11,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 const Pricing = () => {
   const router = useRouter();
   const { user_id } = router.query;
-  const { plan: currentPlanFromDb, fetchUserSubTypes } = useUserPreferences();
+  const { plan: currentPlanFromDb, country, fetchUserSubTypes } = useUserPreferences();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   React.useEffect(() => {
@@ -20,6 +20,20 @@ const Pricing = () => {
     }
   }, [user_id, fetchUserSubTypes]);
 
+  // Regional Pricing Configuration
+  const REGIONAL_PRICING = useMemo(() => {
+    const euroCountries = ["Germany", "France", "Spain", "Italy", "Netherlands", "Belgium", "Austria", "Portugal", "Finland", "Ireland", "Greece"];
+    
+    if (country === "India") {
+      return { currency: "INR", symbol: "₹", proPrice: 50 };
+    } else if (euroCountries.includes(country || "") || country === "Europe") {
+      return { currency: "EUR", symbol: "€", proPrice: 10 };
+    } else {
+      // Default pricing (USD)
+      return { currency: "USD", symbol: "$", proPrice: 5.99 };
+    }
+  }, [country]);
+
   const handleGetPro = async () => {
     if (!user_id) {
       Swal.fire("Error", "User identification missing. Please log in again.", "error");
@@ -27,11 +41,10 @@ const Pricing = () => {
     }
 
     try {
-      // 1. Create order on the backend
-      // Using 50 as defined in the plan static data
+      // 1. Create order on the backend with regional pricing
       const orderResponse = await axiosInstance.post("/payment/create-order", {
-        amount: 50,
-        currency: "INR",
+        amount: REGIONAL_PRICING.proPrice,
+        currency: REGIONAL_PRICING.currency,
         userId: Number(user_id)
       });
       
@@ -64,7 +77,7 @@ const Pricing = () => {
             
             Swal.fire({
               title: "Payment Successful!",
-              text: "Welcome to Graminate Pro! Your features are now unlocked.",
+              text: `Welcome to Graminate Pro! You are now subscribed at ${REGIONAL_PRICING.symbol}${REGIONAL_PRICING.proPrice}/${REGIONAL_PRICING.currency === "INR" ? "month" : "mo"}.`,
               icon: "success",
               confirmButtonColor: "#10b981",
             });
@@ -147,8 +160,8 @@ const Pricing = () => {
     {
       name: "Free",
       id: "FREE",
-      price: "₹0",
-      period: "/month",
+      price: REGIONAL_PRICING.currency === "INR" ? "₹0" : REGIONAL_PRICING.currency === "EUR" ? "€0" : "$0",
+      period: REGIONAL_PRICING.currency === "INR" ? "/month" : "/mo",
       description: "Explore the basic tools of Graminate",
       features: [
         "Basic access to CRM and Task Management tools",
@@ -161,8 +174,8 @@ const Pricing = () => {
     {
       name: "Pro",
       id: "PRO",
-      price: "₹50",
-      period: "/month",
+      price: `${REGIONAL_PRICING.symbol}${REGIONAL_PRICING.proPrice}`,
+      period: REGIONAL_PRICING.currency === "INR" ? "/month" : "/mo",
       description: "Unlock the full power of Graminate with advanced AI assistance",
       features: [
         "Everything in Free",
@@ -174,7 +187,7 @@ const Pricing = () => {
       ],
       popular: true,
     },
-  ], []);
+  ], [REGIONAL_PRICING]);
 
   const getPlanStatus = (planId: string) => {
     const isCurrent = currentPlanFromDb === planId;

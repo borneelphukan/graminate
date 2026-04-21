@@ -26,6 +26,8 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
     postal_code: "",
   });
   const [contactErrors, setContactErrors] = useState({
+    firstName: "",
+    type: "",
     phoneNumber: "",
     address_line_1: "",
     city: "",
@@ -33,9 +35,26 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
     postal_code: "",
   });
 
-  const validateContactAddress = () => {
-    const errors = { address_line_1: "", city: "", state: "", postal_code: "" };
+  const validateContact = () => {
+    const errors = {
+      firstName: "",
+      type: "",
+      address_line_1: "",
+      city: "",
+      state: "",
+      postal_code: "",
+      phoneNumber: "",
+    };
     let isValid = true;
+
+    if (!contactValues.firstName.trim()) {
+      errors.firstName = "First Name is required.";
+      isValid = false;
+    }
+    if (!contactValues.type) {
+      errors.type = "Type is required.";
+      isValid = false;
+    }
     if (!contactValues.address_line_1.trim()) {
       errors.address_line_1 = "Address Line 1 is required.";
       isValid = false;
@@ -52,33 +71,39 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
       errors.postal_code = "Postal Code is required.";
       isValid = false;
     }
+
+    const phoneValid =
+      isValidE164(contactValues.phoneNumber) || !contactValues.phoneNumber;
+    if (!phoneValid) {
+      errors.phoneNumber = "Phone number is not valid";
+      isValid = false;
+    }
+
     return { errors, isValid };
   };
 
   const handleSubmitContacts = async (e: React.FormEvent) => {
     e.preventDefault();
-    const addressValidation = validateContactAddress();
-    const phoneValid =
-      isValidE164(contactValues.phoneNumber) || !contactValues.phoneNumber;
-    const phoneErrorMsg = !phoneValid ? "Phone number is not valid" : "";
+    const validation = validateContact();
+
     setContactErrors({
       ...contactErrors,
-      ...addressValidation.errors,
-      phoneNumber: phoneErrorMsg,
+      ...validation.errors,
     });
-    if (!addressValidation.isValid || !phoneValid) {
+
+    if (!validation.isValid) {
       triggerToast("Please correct the errors in the form.", "error");
       return;
     }
     const payload = {
-      user_id: userId,
+      user_id: Number(userId),
       first_name: contactValues.firstName,
-      last_name: contactValues.lastName,
-      email: contactValues.email,
+      last_name: contactValues.lastName || null,
+      email: contactValues.email || null,
       phone_number: contactValues.phoneNumber,
       type: contactValues.type,
       address_line_1: contactValues.address_line_1,
-      address_line_2: contactValues.address_line_2,
+      address_line_2: contactValues.address_line_2 || null,
       city: contactValues.city,
       state: contactValues.state,
       postal_code: contactValues.postal_code,
@@ -98,6 +123,8 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
         postal_code: "",
       });
       setContactErrors({
+        firstName: "",
+        type: "",
         phoneNumber: "",
         address_line_1: "",
         city: "",
@@ -132,6 +159,8 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
           onChange={(val: string) =>
             setContactValues({ ...contactValues, firstName: val })
           }
+          type={contactErrors.firstName ? "error" : ""}
+          errorMessage={contactErrors.firstName}
         />
         <TextField
           label="Last Name"
@@ -174,7 +203,7 @@ const ContactForm = ({ userId, onClose }: ContactFormProps) => {
         onSelect={(value: string) =>
           setContactValues({ ...contactValues, type: value })
         }
-        
+        errorMessage={contactErrors.type}
         label="Type"
         width="full"
       />

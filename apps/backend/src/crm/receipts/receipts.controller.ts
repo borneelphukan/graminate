@@ -33,7 +33,13 @@ export class ReceiptsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   async addReceipt(
     @Body() createReceiptDto: CreateReceiptDto,
     @Res() res: Response,
@@ -54,7 +60,13 @@ export class ReceiptsController {
 
   @UseGuards(JwtAuthGuard)
   @Put('update')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   async updateReceipt(
     @Body() updateReceiptDto: UpdateReceiptDto,
     @Res() res: Response,

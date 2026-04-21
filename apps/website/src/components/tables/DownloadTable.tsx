@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import Button from "../ui/Button";
+import { Button } from "@graminate/ui";
 import Image from "next/image";
 
 type Props = {
@@ -54,11 +54,11 @@ const DownloadTable = ({
                   </td>
                   {!mobile && (
                     <td className="px-6 py-4 text-center">
-                      <Button style="primary" text="Download" />
+                      <Button variant="primary" label="Download" />
                     </td>
                   )}
                   <td className="px-6 py-4 text-center">
-                    <Button style="secondary" text="Download" />
+                    <Button variant="secondary" label="Download" />
                   </td>
                 </tr>
               ))}

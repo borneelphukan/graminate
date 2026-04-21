@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "@/contexts/I18nContext";
 
 type Service = {
   id: number;
@@ -14,15 +15,12 @@ type Service = {
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
 const scrollFadeInUp = {
   initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.7, ease: "easeOut" },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
 };
 
 const scrollStaggerContainer = {
@@ -33,7 +31,6 @@ const scrollStaggerContainer = {
       delayChildren: 0.1,
     },
   },
-  viewport: { once: true, amount: 0.1 },
 };
 
 const scrollStaggerItem = {
@@ -41,9 +38,8 @@ const scrollStaggerItem = {
   whileInView: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
-  viewport: { once: true, amount: 0.1 },
 };
 
 const cardHover = {
@@ -51,38 +47,39 @@ const cardHover = {
   scale: 1.03,
   boxShadow:
     "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-  transition: { type: "spring", stiffness: 300, damping: 15 },
+  transition: { type: "spring" as const, stiffness: 300, damping: 15 },
 };
 
 export default function Services() {
+  const { t } = useTranslation();
   const services: Service[] = [
     {
       id: 1,
-      title: "Software Development",
+      title: "Farm Management ERP",
       description:
-        "Turn your ideas into high-quality, secured cross-platform software applications explicitly tailored to digitalize your business and contribute to your long-term profits.",
-      link: "/services/software_development",
+        "The core of Graminate. A robust ERP system tailored for livestock (Cattle, Poultry) and apiculture, synchronizing every aspect of your production line.",
+      link: "/services#modules",
     },
     {
       id: 2,
-      title: "Product Design",
+      title: "Graminate AI Assistant",
       description:
-        "Experience the full potential of your ideas with our product designing team. Our team specializes in turning concepts into functional, user-centric digital products that are intuitive and scalable.",
-      link: "/services/product_design",
+        "Specialized AI agents that use machine learning to provide real-time advice on animal health, task prioritization, and operational efficiency.",
+      link: "/services#intelligence",
     },
     {
       id: 3,
-      title: "IT Operations",
+      title: "Smart Supply Chain",
       description:
-        "From integrating and managing critical business IT infrastructure, monitoring system performances, and migrating your business to the cloud and more, we ensure that your IT systems never fail.",
-      link: "/services/it_operations",
+        "Automate your procurement and sales. Integrated CRM and Warehouse management with localized currency support and predictive stock alerts.",
+      link: "/services#tools",
     },
     {
       id: 4,
-      title: "Technology Enablement",
+      title: "Enterprise Dashboard",
       description:
-        "Wondering how to organize and get started with your IT project or lay the foundations of your business’s digital systems? Our experts in project management and IT strategies have covered you.",
-      link: "/services/tech_consulting", // Renamed from tech_enablement based on original href
+        "High-level reporting and analytics for cooperatives and distributors. Manage multiple users, roles, and regional branches from a single interface.",
+      link: "/services#enterprise",
     },
   ];
 
@@ -102,13 +99,10 @@ export default function Services() {
           <div className="mx-auto max-w-5xl py-24 sm:py-32 lg:py-36 px-6 lg:px-8 text-center">
             <motion.div initial="initial" animate="animate" variants={fadeInUp}>
               <h1 className="text-4xl font-bold tracking-tight text-gray-800 sm:text-5xl md:text-6xl">
-                Affordable & Quality{" "}
-                <span className="text-emerald-600">IT Solutions</span>
+                {t("features.title")}
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 max-w-3xl mx-auto">
-                Our teams provide end-to-end IT solutions in Software
-                Development, Product Design, IT Operations and Technology
-                Enablement at a price tailored to your business.
+                {t("features.subtitle")}
               </p>
             </motion.div>
           </div>
@@ -143,7 +137,7 @@ export default function Services() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={{ once: true, amount: 0.2 }}
               className="text-center mb-16 lg:mb-20"
             >
               <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -158,7 +152,7 @@ export default function Services() {
               variants={scrollStaggerContainer}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollStaggerContainer.viewport}
+              viewport={{ once: true, amount: 0.1 }}
               className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2"
             >
               {services.map((service) => (
@@ -197,22 +191,21 @@ export default function Services() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
-              className="mt-24 text-center bg-green-50 p-12 rounded-2xl"
+              viewport={{ once: true, amount: 0.2 }}
+              className="mt-24 text-center bg-gray-900 border border-gray-800 shadow-2xl p-12 rounded-3xl"
             >
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Ready to Accelerate Your Growth?
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                {t("features.headline")}
               </h2>
-              <p className="mt-4 text-lg text-gray-600 max-w-xl mx-auto">
-                Let&apos;s build your competitive advantage together. Schedule a
-                free consultation to discuss your project.
+              <p className="mt-4 text-lg text-gray-400 max-w-xl mx-auto">
+                {t("features.desc")}
               </p>
               <div className="mt-8">
                 <Link
-                  href="/company/contact_us"
-                  className="inline-flex items-center px-6 py-2 border border-transparent text-lg font-medium rounded-md text-white bg-green-200 hover:bg-green-100 transition-colors"
+                  href="http://localhost:3000/"
+                  className="inline-flex items-center px-8 py-3 border border-transparent text-lg font-bold rounded-full text-white bg-emerald-500 hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/20"
                 >
-                  Schedule Free Consultation
+                  {t("features.cta")}
                 </Link>
               </div>
             </motion.div>

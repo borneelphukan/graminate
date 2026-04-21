@@ -1,0 +1,97 @@
+{
+  "nav": {
+    "features": "Features",
+    "solutions": "Solutions",
+    "aboutus": "About Us",
+    "careers": "Careers",
+    "getPro": "Get Pro",
+    "brand": "Graminate"
+  },
+  "hero": {
+    "badge": "Next-Gen Farm Management",
+    "title": "Scale Your Agricultural Vision",
+    "subtitle": "The first all-in-one ERP designed for the modern farmer. Combining specialized AI models with robust inventory, CRM, and livestock management tools.",
+    "cta": "Start Your Free Trial",
+    "explore": "Explore Features"
+  },
+  "features": {
+    "title": "Next-Gen Farm Operating System",
+    "subtitle": "Graminate is built for the complexity of modern agriculture. Our modular tools provide end-to-end management for livestock, smart warehouses, and business intelligence.",
+    "cta": "Get Started for Free",
+    "headline": "Ready to Modernize Your Farm?",
+    "desc": "Join thousands of farmers using Graminate to optimize their production and scale their agricultural vision."
+  },
+  "solutions": {
+    "title": "Solutions for Every Agricultural Scale",
+    "subtitle": "Whether you are managing a family farm or a nationwide distribution network, Graminate provides the modular tools needed to streamline your operations and maximize yields through smart data."
+  },
+  "home": {
+    "erp": {
+      "title": "Integrated Farm ERP",
+      "content": "A centralized hub for your poultry, cattle, and apiculture operations. Real-time data sync across all your farm assets."
+    },
+    "ai": {
+      "title": "AI Assistant",
+      "content": "Leverage specialized LLMs trained on agricultural data for instant advice on animal health, task planning, and reporting."
+    },
+    "supply": {
+      "title": "Secure Supply Chain",
+      "content": "Integrated CRM and Smart Warehouse management with automated low-stock alerts and comprehensive vendor tracking."
+    },
+    "transform": {
+      "badge": "Digital Transformation in Agriculture",
+      "title": "Innovative Tools to Future-Proof Your Farm",
+      "desc1": "At {brand}, we bridge the gap between traditional agriculture and modern technology. Our platform empowers farmers with data-driven insights that were previously reserved for giant industrial operations.",
+      "desc2": "By blending deep expertise in agricultural science with cutting-edge software engineering, we provide a seamless experience for tracking livestock health, managing large inventories, and optimizing workflows.",
+      "desc3": "Whether you are an individual farmer or managing a cooperative, {brand} provides the strategic tools needed for the evolution of modern, sustainable agriculture.",
+      "cta": "See All Features"
+    },
+    "onboarding": {
+      "title": "Getting Started with {brand}",
+      "subtitle": "A simplified onboarding process designed to get your farm running on our platform with minimal disruption."
+    },
+    "mission": {
+      "badge": "Our Mission",
+      "title": "We Grow Your Agricultural Excellence",
+      "desc1": "At {brand}, we believe that the backbone of our society deserves the most advanced tools. We transform complex agricultural workflows into intuitive, high-performance digital experiences.",
+      "desc2": "From independent poultry farmers to large-scale dairy cooperatives, we provide the code that enables your vision. Let’s lead the agricultural revolution together.",
+      "cta": "Explore Our Plans"
+    }
+  },
+  "footer": {
+    "tagline": "Empowering the backbone of society with next-generation agricultural ERP and specialized AI. Building the future of farming, one byte at a time.",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "links": {
+      "erp": "Farm Management ERP",
+      "ai": "AI Assistant",
+      "supply": "Smart Supply Chain",
+      "enterprise": "Enterprise Dashboard",
+      "farmers": "Independent Farmers",
+      "cooperatives": "Agricultural Cooperatives",
+      "distributors": "National Distributors"
+    }
+  },
+  "industries": {
+    "title": "Explore Our Industry Expertise",
+    "subtitle": "Find out how we help businesses like yours thrive.",
+    "learn_more": "Learn More",
+    "independent": {
+      "title": "Independent Farmers",
+      "desc": "Simplified ERP and AI assistance for individual farmers managing livestock, crops, and personal warehouses."
+    },
+    "coop": {
+      "title": "Agricultural Cooperatives",
+      "desc": "Multi-user management, collective inventory tracking, and large-scale data analysis for farming cooperatives and groups."
+    },
+    "distrib": {
+      "title": "National Distributors",
+      "desc": "Enterprise-grade supply chain management, regional warehouse tracking, and vendor relationship management for national networks."
+    },
+    "research": {
+      "title": "Research & Institutions",
+      "desc": "Data-driven insights for agricultural universities and research bodies studying breed productivity and crop yields."
+    }
+  }
+}

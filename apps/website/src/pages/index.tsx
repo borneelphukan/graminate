@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Services from "@/components/cards/company/PunchCard";
-import Button from "@/components/ui/Button";
+import { Button } from "@graminate/ui";
 import FeatureBannerImage from "../../public/images/banners/main.png";
 import {
   faChevronCircleLeft,
@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import DefaultLayout from "@/layout/DefaultLayout";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "@/contexts/I18nContext";
 
 type ProcessStep = {
   step: string;
@@ -30,8 +31,7 @@ type ProcessStep = {
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
 const staggerContainer = {
@@ -44,29 +44,27 @@ const staggerContainer = {
 
 const staggerItem = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
 };
 
 const scaleIn = {
   initial: { opacity: 0, scale: 0.9 },
-  animate: { opacity: 1, scale: 1 },
-  transition: { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] as const } },
 };
 
 const slideInLeft = {
   initial: { opacity: 0, x: -50 },
-  animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.7, ease: "easeOut" },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
 };
 
 const slideInRight = {
   initial: { opacity: 0, x: 50 },
-  animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.7, ease: "easeOut" },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
 };
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useTranslation();
   const backgroundRef = useRef<HTMLDivElement>(null);
 
   const navigateTo = (url: string) => {
@@ -104,29 +102,29 @@ export default function Home() {
     {
       step: "1",
       icon: faList,
-      title: "Requirement Gathering",
+      title: "Account Setup",
       description:
-        "First we capture and refine your product requirements with precision.",
+        "Create your secure farm profile and set your regional currency and units.",
     },
     {
       step: "2",
       icon: faCompassDrafting,
-      title: "Planning & Design",
-      description: "Collaborate on a transparent, end-to-end project plan.",
+      title: "Module Configuration",
+      description: "Select specialized modules for Livestock, Apiculture, or Poultry management.",
     },
     {
       step: "3",
       icon: faRecycle,
-      title: "Implement & Optimize",
+      title: "Inventory Sync",
       description:
-        "We build and refine your product through iterative feedback-driven development.",
+        "Seamlessly import your existing warehouse and livestock data into our smart database.",
     },
     {
       step: "4",
       icon: faCheck,
-      title: "Review & Approval",
+      title: "AI Integration",
       description:
-        "We finalize your product with collaborative review and seamless adjustments.",
+        "Initialize your AI assistant with your farm's historical data for personalized insights.",
     },
   ];
 
@@ -175,65 +173,73 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Graminate Global IT Solutions | Welcome</title>
+        <title>{t("nav.brand")} | Smart Agricultural ERP & AI Assistance</title>
         <meta
           name="description"
-          content="Pioneering scalable, cloud-based software solutions for small and medium-sized businesses. Driving digital transformation with affordable, high-quality services."
+          content="The complete operating system for modern farmers. Manage livestock, inventory, CRM, and leverage specialized AI to grow your agricultural business."
         />
       </Head>
 
       <DefaultLayout>
         <main className="flex flex-col flex-grow bg-white">
-          <div className="relative bg-gray-800 text-white overflow-hidden">
+          <div className="relative bg-gray-900 text-white overflow-hidden">
             <div
               ref={backgroundRef}
-              className="absolute inset-0 home-container bg-cover bg-center opacity-40"
-              style={{ willChange: "transform" }}
+              className="absolute inset-0 home-container bg-cover bg-center opacity-30 scale-105"
+              style={{ 
+                willChange: "transform",
+                backgroundImage: 'url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop")'
+              }}
             ></div>
-            <div className="absolute inset-0"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/40 to-gray-900"></div>
+            
             <motion.div
               initial="initial"
               animate="animate"
               variants={staggerContainer}
-              className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-40 md:py-48 lg:py-56 z-10" // Increased padding
+              className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-40 md:py-48 lg:py-56 z-10"
             >
               <div className="max-w-4xl mx-auto text-center">
-                <motion.h1
-                  variants={fadeInUp}
-                  className="text-base sm:text-lg md:text-xl font-semibold text-green-300 uppercase tracking-wide"
-                >
-                  Welcome to Graminate
-                </motion.h1>
-                <motion.h2
-                  variants={fadeInUp}
-                  className="mt-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white"
-                >
-                  Pioneering{" "}
-                  <span className="text-emerald-400">Cloud-Based</span>
-                </motion.h2>
-                <motion.h3
-                  variants={fadeInUp}
-                  className="mt-1 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white"
-                >
-                  Software Solutions
-                </motion.h3>
-                <motion.p
-                  variants={fadeInUp}
-                  className="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto"
-                >
-                  Driving digital transformation for SMBs with affordable,
-                  high-quality, scalable cloud solutions tailored to
-                  future-proof your business through close collaboration.
-                </motion.p>
                 <motion.div
                   variants={fadeInUp}
-                  className="mt-12 flex justify-center"
+                  className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full mb-8"
+                >
+                  <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-sm font-semibold text-emerald-400 uppercase tracking-widest">
+                    {t("hero.badge")}
+                  </span>
+                </motion.div>
+                
+                <motion.h2
+                  variants={fadeInUp}
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-6"
+                >
+                  {t("hero.title")}
+                </motion.h2>
+                
+                <motion.p
+                  variants={fadeInUp}
+                  className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light"
+                >
+                  {t("hero.subtitle")}
+                </motion.p>
+                
+                <motion.div
+                  variants={fadeInUp}
+                  className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-6"
                 >
                   <Button
-                    style="home"
-                    text="Get in Touch"
-                    onClick={() => navigateTo("/company/contact_us")}
+                    variant="primary"
+                    label={t("hero.cta")}
+                    onClick={() => navigateTo("http://localhost:3000/")}
                   />
+                  <button 
+                    onClick={() => navigateTo("/services")}
+                    className="group flex items-center space-x-3 text-white font-semibold hover:text-emerald-400 transition-colors"
+                  >
+                    <span>{t("hero.explore")}</span>
+                    <FontAwesomeIcon icon={faChevronCircleRight} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </motion.div>
               </div>
             </motion.div>
@@ -251,22 +257,24 @@ export default function Home() {
                 <motion.div variants={staggerItem}>
                   <Services
                     icon={faBuilding}
-                    title="Solutions for All Businesses"
-                    content="Robust software solutions across modern industries, fully customised, safe, and secured under your control."
+                    title={t("home.erp.title")}
+                    content={t("home.erp.content")}
                   />
                 </motion.div>
+
                 <motion.div variants={staggerItem}>
                   <Services
                     icon={faCode}
-                    title="Robust Planning & Development"
-                    content="A dedicated team efficiently builds your fault-proof, high-performance software solutions based on your interests."
+                    title={`${t("nav.brand")} ${t("home.ai.title")}`}
+                    content={t("home.ai.content")}
                   />
                 </motion.div>
+
                 <motion.div variants={staggerItem}>
                   <Services
                     icon={faCloud}
-                    title="Powered by the Cloud"
-                    content="Engineered and deployed in a secure, industrial-grade cloud database with high-speed accessibility."
+                    title={t("home.supply.title")}
+                    content={t("home.supply.content")}
                   />
                 </motion.div>
               </motion.div>
@@ -282,32 +290,28 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.3 }}
                   className="lg:w-1/2 text-center lg:text-left"
                 >
+                <div className="flex flex-col justify-center">
                   <h4 className="text-base font-semibold text-emerald-600 uppercase tracking-wide">
-                    Scale with Control
+                    {t("home.transform.badge")}
                   </h4>
                   <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                    Innovative Software to Future-Proof Your Business
+                    {t("home.transform.title")}
                   </h2>
                   <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-                    At Graminate, we craft high-quality, scalable software
-                    solutions tailored to your unique business
-                    challenges—empowering growth through innovative technology.
+                    {t("home.transform.desc1").replace("{brand}", t("nav.brand"))}
                   </p>
                   <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-                    Our team blends deep technical expertise in software
-                    engineering, DevOps, and UX/UI design to accelerate your
-                    digital transformation and ensure seamless product delivery.
+                    {t("home.transform.desc2")}
                   </p>
                   <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-                    Whether you&apos;re building from the ground up or
-                    modernizing existing systems, Graminate enables your tech
-                    evolution with future-ready tools and strategic guidance.
+                    {t("home.transform.desc3").replace("{brand}", t("nav.brand"))}
                   </p>
                   <Button
-                    style="home"
-                    text="Learn More"
-                    onClick={() => navigateTo("/industries")}
+                    variant="secondary"
+                    label={t("home.transform.cta")}
+                    onClick={() => navigateTo("/services")}
                   />
+                  </div>
                 </motion.div>
                 <motion.div
                   initial="initial"
@@ -317,11 +321,11 @@ export default function Home() {
                   className="lg:w-1/2 flex justify-center items-center mt-10 lg:mt-0"
                 >
                   <Image
-                    src={FeatureBannerImage}
-                    alt="Feature Banner showcasing software development process"
-                    className="w-full max-w-sm md:max-w-lg object-contain rounded-lg"
-                    width={200}
-                    height={200}
+                    src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop"
+                    alt="Farmer using a tablet in a wheat field"
+                    className="w-full max-w-sm md:max-w-lg object-cover rounded-3xl shadow-2xl"
+                    width={500}
+                    height={500}
                     priority
                   />
                 </motion.div>
@@ -339,11 +343,10 @@ export default function Home() {
                 className="max-w-4xl mx-auto text-center mb-16 lg:mb-20"
               >
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                  How We Approach Projects
+                  {t("home.onboarding.title").replace("{brand}", t("nav.brand"))}
                 </h2>
                 <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                  We ensure complete transparency and adherence to deadlines
-                  while developing your product through a structured process.
+                  {t("home.onboarding.subtitle")}
                 </p>
               </motion.div>
 
@@ -472,9 +475,9 @@ export default function Home() {
                   className="w-full lg:w-1/2"
                 >
                   <Image
-                    className="w-full h-auto max-h-[450px] object-cover rounded-lg shadow-lg"
-                    src={"/images/home-page.png"}
-                    alt="Modern software development workstation"
+                    className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
+                    src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop"
+                    alt="Lush green vegetable farm"
                     width={800}
                     height={600}
                     loading="lazy"
@@ -487,26 +490,27 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.3 }}
                   className="w-full lg:w-1/2"
                 >
-                  <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
-                    <p className="text-green-200 text-sm font-semibold uppercase tracking-wide text-center lg:text-left">
-                      What We Do
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-12 border border-gray-400">
+                    <p className="text-emerald-600 text-sm font-bold uppercase tracking-widest mb-4">
+                      {t("home.mission.badge")}
                     </p>
-                    <h5 className="text-gray-900 text-2xl sm:text-3xl font-bold my-4 text-center lg:text-left">
-                      We bring your ideas to Life
+                    <h5 className="text-gray-900 text-3xl sm:text-4xl font-black mb-6 leading-tight">
+                      {t("home.mission.title")}
                     </h5>
-                    <p className="text-gray-600 text-base sm:text-lg mt-4 leading-relaxed text-center lg:text-left">
-                      At Graminate, we transform ideas into innovative software
-                      solutions driving growth and efficiency. From sleek mobile
-                      apps to robust enterprise systems, we craft code that
-                      powers your vision. Let’s build the future, one line at a
-                      time.
-                    </p>
+                    <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
+                      <p>
+                        {t("home.mission.desc1").replace("{brand}", t("nav.brand"))}
+                      </p>
+                      <p>
+                        {t("home.mission.desc2")}
+                      </p>
+                    </div>
 
-                    <div className="flex justify-center lg:justify-start mt-8">
+                    <div className="mt-10">
                       <Button
-                        style="home"
-                        text="Explore Services"
-                        onClick={() => navigateTo("/services")}
+                        variant="home"
+                        label={t("home.mission.cta")}
+                        onClick={() => navigateTo("/industries")}
                       />
                     </div>
                   </div>
