@@ -289,7 +289,7 @@ const FlockForm = ({
             <TextInput.Icon
               icon={() => (
                 <Icon
-                  type={"sell" as any}
+                  type={"tag-outline" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />
@@ -310,7 +310,7 @@ const FlockForm = ({
             handleInputChange("breed", "");
           }}
           error={errors.flock_type}
-          leftIcon={"flutter_dash"}
+          leftIcon={"bird"}
         />
         <PaperFormDropdown
           label="Breed (Optional)"
@@ -321,7 +321,7 @@ const FlockForm = ({
           placeholder={
             !formData.flock_type ? "Select Flock Type First" : "Select Breed"
           }
-          leftIcon={"science"}
+          leftIcon={"dna"}
         />
         <View style={styles.row}>
           <View style={styles.halfWidth}>
@@ -339,7 +339,7 @@ const FlockForm = ({
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"tag" as any}
+                      type={"numeric" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -362,7 +362,7 @@ const FlockForm = ({
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"local_shipping" as any}
+                      type={"truck-delivery-outline" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -378,7 +378,7 @@ const FlockForm = ({
           items={HOUSING_TYPES.map((h) => h.name)}
           selectedValue={formData.housing_type}
           onSelect={(value: string) => handleInputChange("housing_type", value)}
-          leftIcon={"home"}
+          leftIcon={"home-outline"}
         />
         <TextInput
           mode="outlined"
@@ -392,7 +392,7 @@ const FlockForm = ({
             <TextInput.Icon
               icon={() => (
                 <Icon
-                  type={"content_paste" as any}
+                  type={"note-text-outline" as any}
                   size={18}
                   color={theme.colors.onSurfaceVariant}
                 />
