@@ -34,53 +34,60 @@ const PaperFormDropdown = ({
   const theme = useTheme();
 
   return (
-    <Menu
-      visible={visible}
-      onDismiss={() => setVisible(false)}
-      anchor={
-        <TouchableRipple
-          onPress={() => !disabled && setVisible(true)}
-          disabled={disabled}
-          style={style}
-        >
-          <TextInput
-            mode="outlined"
-            label={label}
-            value={selectedValue}
-            editable={false}
-            right={
-              <TextInput.Icon
-                icon={() => (
-                  <Icon
-                    type={"chevron-down" as any}
-                    size={16}
-                    color={theme.colors.onSurfaceVariant}
-                  />
-                )}
-              />
-            }
+    <View style={style}>
+      <Menu
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+        anchor={
+          <TouchableRipple
+            onPress={() => !disabled && setVisible(true)}
             disabled={disabled}
+          >
+            <View pointerEvents="none">
+              <TextInput
+                mode="outlined"
+                label={label}
+                value={selectedValue}
+                editable={false}
+                right={
+                  <TextInput.Icon
+                    icon={() => (
+                      <Icon
+                        type={"chevron-down" as any}
+                        size={16}
+                        color={theme.colors.onSurfaceVariant}
+                      />
+                    )}
+                  />
+                }
+                disabled={disabled}
+              />
+            </View>
+          </TouchableRipple>
+        }
+      >
+        {items.map((item: string) => (
+          <Menu.Item
+            key={item}
+            title={item}
+            onPress={() => {
+              onSelect(item);
+              setVisible(false);
+            }}
           />
-        </TouchableRipple>
-      }
-    >
-      {items.map((item: string) => (
-        <Menu.Item
-          key={item}
-          title={item}
-          onPress={() => {
-            onSelect(item);
-            setVisible(false);
-          }}
-        />
-      ))}
-    </Menu>
+        ))}
+      </Menu>
+    </View>
   );
 };
 
 const GeneralSettingsScreen = () => {
   const theme = useTheme();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
+
+  const navbarBg = "#1f2937"; // gray-800
+  const navbarIconColor = "#bbbbbc"; // gray-300
+  const navbarBorder = "#374151"; // gray-700
 
   const [isLoadingPageData, setIsLoadingPageData] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -98,6 +105,7 @@ const GeneralSettingsScreen = () => {
     city: "",
     state: "",
     postalCode: "",
+    country: "",
   });
 
   useEffect(() => {
@@ -123,6 +131,7 @@ const GeneralSettingsScreen = () => {
           city: userData.city || "",
           state: userData.state || "",
           postalCode: userData.postal_code || "",
+          country: userData.country || "",
         });
       } catch (error) {
         console.error("Error fetching user data for General page:", error);
@@ -150,6 +159,7 @@ const GeneralSettingsScreen = () => {
         city: user.city,
         state: user.state,
         postal_code: user.postalCode,
+        country: user.country,
       });
       setProfileSuccessMessage("Profile updated successfully!");
     } catch (error) {
@@ -162,19 +172,28 @@ const GeneralSettingsScreen = () => {
   if (isLoadingPageData) {
     return (
       <PlatformLayout>
-        <Appbar.Header>
-          <Appbar.Action
-            icon={() => (
-              <Icon
-                type={"arrow-left" as any}
-                size={22}
-                color={theme.colors.onSurface}
-              />
-            )}
-            onPress={() => router.back()}
-          />
-          <Appbar.Content title="Profile Settings" />
-        </Appbar.Header>
+      <Appbar.Header
+        style={{
+          backgroundColor: navbarBg,
+          borderBottomWidth: 1,
+          borderBottomColor: navbarBorder,
+        }}
+      >
+        <Appbar.Action
+          icon={() => (
+            <Icon
+              type={"arrow-left" as any}
+              size={22}
+              color={navbarIconColor}
+            />
+          )}
+          onPress={() => router.back()}
+        />
+        <Appbar.Content
+          title="Profile Settings"
+          titleStyle={{ color: "white", fontWeight: "bold" }}
+        />
+      </Appbar.Header>
         <View style={styles.centeredContainer}>
           <ActivityIndicator size="large" />
         </View>
@@ -184,72 +203,34 @@ const GeneralSettingsScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header
+        style={{
+          backgroundColor: navbarBg,
+          borderBottomWidth: 1,
+          borderBottomColor: navbarBorder,
+        }}
+      >
         <Appbar.Action
           icon={() => (
             <Icon
               type={"arrow-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              color={navbarIconColor}
             />
           )}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title="Profile Settings"
+          titleStyle={{ color: "white", fontWeight: "bold" }}
           subtitle="Update your personal details"
+          subtitleStyle={{ color: navbarIconColor }}
         />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.container}>
         <Card>
           <Card.Title title="Profile Details" />
           <Card.Content style={styles.cardContent}>
-            <View style={styles.avatarSection}>
-              <Avatar.Image
-                size={96}
-                source={{
-                  uri:
-                    user.profilePicture ||
-                    `https://eu.ui-avatars.com/api/?name=${encodeURIComponent(
-                      user.firstName
-                    )}+${encodeURIComponent(user.lastName)}&size=250`,
-                }}
-              />
-              <View style={styles.avatarActions}>
-                <Button
-                  icon={() => (
-                    <Icon
-                      type={"upload" as any}
-                      size={16}
-                      color={theme.colors.primary}
-                    />
-                  )}
-                  mode="contained-tonal"
-                >
-                  Choose File
-                </Button>
-                {user.profilePicture && (
-                  <Button
-                    icon={() => (
-                      <Icon
-                        type={"delete" as any}
-                        size={16}
-                        color={theme.colors.error}
-                      />
-                    )}
-                    mode="text"
-                    textColor={theme.colors.error}
-                    onPress={() =>
-                      setUser((prev) => ({ ...prev, profilePicture: "" }))
-                    }
-                  >
-                    Remove
-                  </Button>
-                )}
-                <Text variant="labelSmall">Max 2MB</Text>
-              </View>
-            </View>
-
             <TextInput
               label="First Name"
               value={user.firstName}
@@ -274,7 +255,7 @@ const GeneralSettingsScreen = () => {
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"phone" as any}
+                      type={"phone-outline" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -320,7 +301,7 @@ const GeneralSettingsScreen = () => {
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"map-marker" as any}
+                      type={"map-marker-outline" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />
@@ -351,7 +332,7 @@ const GeneralSettingsScreen = () => {
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"city" as any}
+                        type={"city-variant-outline" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -372,7 +353,7 @@ const GeneralSettingsScreen = () => {
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"map" as any}
+                        type={"map-outline" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -393,7 +374,24 @@ const GeneralSettingsScreen = () => {
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"signpost" as any}
+                      type={"mailbox-outline" as any}
+                      size={18}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                  )}
+                />
+              }
+            />
+            <TextInput
+              label="Country"
+              value={user.country}
+              disabled
+              mode="outlined"
+              left={
+                <TextInput.Icon
+                  icon={() => (
+                    <Icon
+                      type={"earth" as any}
                       size={18}
                       color={theme.colors.onSurfaceVariant}
                     />

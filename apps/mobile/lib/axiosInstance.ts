@@ -16,4 +16,15 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      await AsyncStorage.multiRemove(["accessToken", "user"]);
+      // Optional: You could use a global event to trigger a redirect if needed
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;

@@ -42,6 +42,14 @@ export const AppLightTheme = {
     onSurfaceVariant: brandColors.gray200,
     error: brandColors.red200,
     outline: brandColors.gray300,
+    elevation: {
+      level0: "transparent",
+      level1: "#f8f9fa",
+      level2: "#f1f3f5",
+      level3: "#e9ecef",
+      level4: "#dee2e6",
+      level5: "#ced4da",
+    },
   },
 };
 
@@ -60,5 +68,13 @@ export const AppDarkTheme = {
     onSurfaceVariant: brandColors.gray300,
     error: brandColors.red200,
     outline: brandColors.gray700,
+    elevation: {
+      level0: "transparent",
+      level1: "#111827",
+      level2: "#1f2937",
+      level3: "#2d3748",
+      level4: "#374151",
+      level5: "#4a5568",
+    },
   },
 };

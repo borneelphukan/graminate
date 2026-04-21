@@ -185,7 +185,7 @@ const InventoryStockCard = ({
               Quantity
             </Text>
             <Icon
-              type={(quantitySortAsc ? "expand_less" : "chevron-down") as any}
+              type={(quantitySortAsc ? "chevron-up" : "chevron-down") as any}
               size={12}
               color={theme.colors.onSurface}
             />

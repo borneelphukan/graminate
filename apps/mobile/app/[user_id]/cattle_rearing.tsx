@@ -2,17 +2,20 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
-import ApicultureForm, { ApiaryFormData, ExistingApiaryData } from "@/components/form/apiculture/ApicultureForm";
+import CattleForm, { CattleFormData } from "@/components/form/cattle/CattleForm";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
+  addDays as addDaysDateFns,
   endOfMonth,
+  format as formatDateFns,
   isWithinInterval,
   startOfMonth,
+  subDays as subDaysDateFns,
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -34,23 +37,45 @@ export type DailyFinancialEntry = {
   netProfit: MetricBreakdown;
 };
 
-type ApiaryApiData = {
-  apiary_id: number;
-  user_id: number;
-  apiary_name: string;
-  number_of_hives: number;
-  area: number | null;
+type CattleApiData = {
+  cattle_id: number;
+  cattle_name: string;
+  cattle_type: string | null;
+  number_of_animals: number;
+  purpose: string | null;
   created_at: string;
-  bee_species?: string;
-  hive_type?: string;
 };
 
+const TOTAL_DAYS_FOR_HISTORICAL_DATA = 180;
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const TARGET_APICULTURE_SUB_TYPE = "Apiculture";
+const TARGET_CATTLE_SUB_TYPE = "Cattle Rearing";
 
-const ApicultureScreen = () => {
+const generateDailyFinancialData = (
+  count: number,
+  baseSubTypes: string[]
+): DailyFinancialEntry[] => {
+  const data: DailyFinancialEntry[] = [];
+  let loopDate = subDaysDateFns(today, count - 1);
+  const finalOccupationsList = baseSubTypes;
+
+  for (let i = 0; i < count; i++) {
+    const dailyEntry: DailyFinancialEntry = {
+      date: new Date(loopDate),
+      revenue: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
+      cogs: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
+      grossProfit: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
+      expenses: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
+      netProfit: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
+    };
+    data.push(dailyEntry);
+    loopDate = addDaysDateFns(loopDate, 1);
+  }
+  return data;
+};
+
+const CattleRearingScreen = () => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const theme = useTheme();
@@ -60,14 +85,14 @@ const ApicultureScreen = () => {
   const navbarIconColor = "#bbbbbc"; // gray-300
   const navbarBorder = "#374151"; // gray-700
 
-  const [apicultureRecords, setApicultureRecords] = useState<ApiaryApiData[]>([]);
+  const [cattleRecords, setCattleRecords] = useState<CattleApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loadingApiculture, setLoadingApiculture] = useState(true);
+  const [loadingCattle, setLoadingCattle] = useState(true);
   const [fullHistoricalData, setFullHistoricalData] = useState<DailyFinancialEntry[]>([]);
   const [isLoadingFinancials, setIsLoadingFinancials] = useState(true);
   const [showFinancials, setShowFinancials] = useState(true);
-  const [editingApiary, setEditingApiary] = useState<ExistingApiaryData | null>(null);
+  const [editingCattle, setEditingCattle] = useState<CattleApiData | null>(null);
 
   const memoizedBackIcon = useCallback(
     () => (
@@ -102,18 +127,19 @@ const ApicultureScreen = () => {
         axiosInstance.get(`/sales/user/${user_id}`),
         axiosInstance.get(`/expenses/user/${user_id}`),
       ]);
-      const apicultureSales = (salesRes.data.sales || []).filter(
-        (s: any) => s.occupation === TARGET_APICULTURE_SUB_TYPE
+      const cattleSales = (salesRes.data.sales || []).filter(
+        (s: any) => s.occupation === TARGET_CATTLE_SUB_TYPE
       );
-      const apicultureExpensesList = (expensesRes.data.expenses || []).filter(
-        (e: any) => e.occupation === TARGET_APICULTURE_SUB_TYPE
+      const cattleExpensesList = (expensesRes.data.expenses || []).filter(
+        (e: any) => e.occupation === TARGET_CATTLE_SUB_TYPE
       );
 
+      // Simple monthly aggregation just for the BudgetCards
       const currentMonthStart = startOfMonth(today);
       const currentMonthEnd = endOfMonth(today);
 
       let revenueTotal = 0;
-      apicultureSales.forEach((s: any) => {
+      cattleSales.forEach((s: any) => {
         const saleDate = new Date(s.sales_date);
         if (isWithinInterval(saleDate, { start: currentMonthStart, end: currentMonthEnd })) {
           const itemsCount = s.quantities_sold?.length || 0;
@@ -125,11 +151,10 @@ const ApicultureScreen = () => {
 
       let expensesTotal = 0;
       let cogsTotal = 0;
-      apicultureExpensesList.forEach((e: any) => {
+      cattleExpensesList.forEach((e: any) => {
         const expenseDate = new Date(e.date_created);
         if (isWithinInterval(expenseDate, { start: currentMonthStart, end: currentMonthEnd })) {
-          const cogsCategories = ["Beehives", "Queen Bees", "Sugar Feed"];
-          if (cogsCategories.includes(e.category)) {
+          if (e.category === "Agricultural Feeds" || e.category === "Livestock") {
             cogsTotal += e.expense || 0;
           } else {
             expensesTotal += e.expense || 0;
@@ -137,6 +162,7 @@ const ApicultureScreen = () => {
         }
       });
 
+      // For BudgetCards display
       setFullHistoricalData([{
         date: today,
         revenue: { total: revenueTotal, breakdown: [] },
@@ -145,6 +171,7 @@ const ApicultureScreen = () => {
         expenses: { total: expensesTotal, breakdown: [] },
         netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
       } as any]);
+
     } catch (error) {
       setFullHistoricalData([]);
     } finally {
@@ -152,50 +179,49 @@ const ApicultureScreen = () => {
     }
   }, [user_id]);
 
-  const fetchApiculture = useCallback(async () => {
+  const fetchCattle = useCallback(async () => {
     if (!user_id) {
-      setLoadingApiculture(false);
+      setLoadingCattle(false);
       return;
     }
-    setLoadingApiculture(true);
+    setLoadingCattle(true);
     try {
-      const response = await axiosInstance.get(`/apiculture/user/${user_id}`);
-      setApicultureRecords(response.data.apiaries || []);
+      const response = await axiosInstance.get(`/cattle-rearing/user/${user_id}`);
+      setCattleRecords(response.data.cattleRearings || []);
     } catch (error) {
-      setApicultureRecords([]);
+      setCattleRecords([]);
     } finally {
-      setLoadingApiculture(false);
+      setLoadingCattle(false);
     }
   }, [user_id]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchApiculture();
+      fetchCattle();
       fetchFinancialData();
-    }, [fetchApiculture, fetchFinancialData])
+    }, [fetchCattle, fetchFinancialData])
   );
 
-  const handleAddOrUpdateApiary = async (formData: ApiaryFormData) => {
+  const handleAddOrUpdateCattle = async (formData: CattleFormData) => {
     if (!numericUserId) return;
     try {
       const payload = {
         ...formData,
         user_id: numericUserId,
-        number_of_hives: Number(formData.number_of_hives),
-        area: formData.area ? Number(formData.area) : null,
+        number_of_animals: Number(formData.number_of_animals),
       };
-      if (editingApiary && editingApiary.apiary_id) {
-        await axiosInstance.put(`/apiculture/update/${editingApiary.apiary_id}`, payload);
+      if (editingCattle) {
+        await axiosInstance.put(`/cattle-rearing/update/${editingCattle.cattle_id}`, payload);
       } else {
-        await axiosInstance.post("/apiculture/add", payload);
+        await axiosInstance.post("/cattle-rearing/add", payload);
       }
-      await fetchApiculture();
+      await fetchCattle();
     } catch (error) {
       throw error;
     }
   };
 
-  const apicultureFinancialCardData = useMemo(() => {
+  const cattleFinancialCardData = useMemo(() => {
     const currentMonthStart = startOfMonth(today);
     const currentMonthEnd = endOfMonth(today);
     let totals = { revenue: 0, cogs: 0, expenses: 0 };
@@ -214,14 +240,14 @@ const ApicultureScreen = () => {
 
     return [
       {
-        title: "Apiary Revenue",
+        title: "Cattle Revenue",
         value: totals.revenue,
         icon: "currency-inr",
         bgColor: isDark ? "#14532d" : "#dcfce7",
         iconValueColor: isDark ? "#86efac" : "#16a34a",
       },
       {
-        title: "Apiary COGS",
+        title: "Cattle COGS",
         value: totals.cogs,
         icon: "shopping-outline",
         bgColor: isDark ? "#713f12" : "#fef3c7",
@@ -251,14 +277,14 @@ const ApicultureScreen = () => {
     ];
   }, [fullHistoricalData, theme.dark]);
 
-  const filteredApicultureRecords = useMemo(() => {
-    if (!searchQuery) return apicultureRecords;
-    return apicultureRecords.filter((item) =>
+  const filteredCattleRecords = useMemo(() => {
+    if (!searchQuery) return cattleRecords;
+    return cattleRecords.filter((item) =>
       Object.values(item).some((val) =>
         String(val).toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-  }, [apicultureRecords, searchQuery]);
+  }, [cattleRecords, searchQuery]);
 
   return (
     <PlatformLayout>
@@ -271,15 +297,15 @@ const ApicultureScreen = () => {
       >
         <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
-          title="Apiculture"
+          title="Cattle Rearing"
           titleStyle={{ color: "white", fontWeight: "bold" }}
-          subtitle={loadingApiculture ? "Loading..." : `${filteredApicultureRecords.length} Bee Yard(s)`}
+          subtitle={loadingCattle ? "Loading..." : `${filteredCattleRecords.length} Herd(s)`}
           subtitleStyle={{ color: navbarIconColor }}
         />
         <Appbar.Action
           icon={memoizedAddIcon}
           onPress={() => {
-            setEditingApiary(null);
+            setEditingCattle(null);
             setIsFormVisible(true);
           }}
         />
@@ -310,7 +336,7 @@ const ApicultureScreen = () => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.cardScroller}
             >
-              {apicultureFinancialCardData.map((card, index) => (
+              {cattleFinancialCardData.map((card, index) => (
                 <BudgetCard key={index} {...card} date={today} />
               ))}
             </ScrollView>
@@ -318,64 +344,64 @@ const ApicultureScreen = () => {
         )}
 
         <Searchbar
-          placeholder="Search Bee Yards..."
+          placeholder="Search Herds..."
           value={searchQuery}
           onChangeText={setSearchQuery}
           style={styles.searchbar}
         />
 
         <View style={styles.listContainer}>
-          {loadingApiculture ? (
+          {loadingCattle ? (
             <ActivityIndicator style={styles.loader} />
-          ) : filteredApicultureRecords.length > 0 ? (
-            filteredApicultureRecords.map((item) => (
+          ) : filteredCattleRecords.length > 0 ? (
+            filteredCattleRecords.map((item) => (
               <Card
-                key={item.apiary_id}
+                key={item.cattle_id}
                 onPress={() => {
-                  setEditingApiary(item);
+                  setEditingCattle(item);
                   setIsFormVisible(true);
                 }}
-                style={styles.apiaryCard}
+                style={styles.cattleCard}
               >
-                <Card.Title title={item.apiary_name} titleVariant="titleLarge" />
+                <Card.Title title={item.cattle_name} titleVariant="titleLarge" />
                 <Card.Content>
                   <View style={styles.cardDetails}>
-                    <Text variant="bodyMedium">Hives: {item.number_of_hives}</Text>
-                    <Text variant="bodyMedium">Area: {item.area != null ? `${item.area}m²` : "N/A"}</Text>
+                    <Text variant="bodyMedium">Type: {item.cattle_type || "N/A"}</Text>
+                    <Text variant="bodyMedium">Count: {item.number_of_animals}</Text>
                   </View>
                   <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
-                    Species: {item.bee_species || "N/A"}
+                    Purpose: {item.purpose || "N/A"}
                   </Text>
                 </Card.Content>
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No bee yards found. Tap '+' to add your first yard.</Text>
+            <Text style={styles.emptyText}>No records found. Tap '+' to add your first herd.</Text>
           )}
         </View>
 
         <View style={styles.widgetContainer}>
           {numericUserId > 0 && (
-            <TaskManager userId={numericUserId} projectType="Apiculture" />
+            <TaskManager userId={numericUserId} projectType="Cattle Rearing" />
           )}
           {user_id && (
             <InventoryStockCard
               userId={user_id}
-              title="Apiculture Inventory"
-              category="Apiculture"
+              title="Cattle Inventory"
+              category="Cattle Rearing"
             />
           )}
         </View>
       </ScrollView>
 
-      <ApicultureForm
+      <CattleForm
         isVisible={isFormVisible}
         onClose={() => {
           setIsFormVisible(false);
-          setEditingApiary(null);
+          setEditingCattle(null);
         }}
-        onSubmit={handleAddOrUpdateApiary}
-        apiaryToEdit={editingApiary}
+        onSubmit={handleAddOrUpdateCattle}
+        cattleToEdit={editingCattle}
       />
     </PlatformLayout>
   );
@@ -391,7 +417,7 @@ const styles = StyleSheet.create({
   cardScroller: { gap: 16, paddingHorizontal: 16, paddingBottom: 16 },
   searchbar: { marginHorizontal: 16, marginBottom: 16 },
   listContainer: { paddingHorizontal: 16 },
-  apiaryCard: { marginBottom: 12 },
+  cattleCard: { marginBottom: 12 },
   cardDetails: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -401,4 +427,4 @@ const styles = StyleSheet.create({
   widgetContainer: { gap: 16, paddingBottom: 32 },
 });
 
-export default ApicultureScreen;
+export default CattleRearingScreen;
