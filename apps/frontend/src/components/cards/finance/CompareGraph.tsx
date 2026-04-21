@@ -513,7 +513,7 @@ const CompareGraph = ({
           <div className="w-full sm:col-span-1 xl:col-span-1">
             <Dropdown
               label="First Financial Metric"
-              items={FINANCIAL_METRICS.slice()}
+              items={FINANCIAL_METRICS.filter((m) => m !== selectedMetric2)}
               selectedItem={selectedMetric1}
               onSelect={(i) => setSelectedMetric1(i as FinancialMetric)}
             />
@@ -521,7 +521,7 @@ const CompareGraph = ({
           <div className="w-full sm:col-span-1 xl:col-span-1">
             <Dropdown
               label="Second Financial Metric"
-              items={FINANCIAL_METRICS.slice()}
+              items={FINANCIAL_METRICS.filter((m) => m !== selectedMetric1)}
               selectedItem={selectedMetric2}
               onSelect={(i) => setSelectedMetric2(i as FinancialMetric)}
             />

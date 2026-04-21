@@ -213,14 +213,13 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
             );
 
             let columnId: Id;
-            if (column) {
+            if (task.status?.toLowerCase() === "unknown") {
+              columnId = "orphaned";
+            } else if (column) {
               columnId = column.id;
             } else {
-              // Fallback to initial column mapping logic
-              const fallbackId = mapStatusToColumnId(task.status);
-              // Verify fallback actually exists in mappedColumns
-              const exists = mappedColumns.some((c) => c.id === fallbackId);
-              columnId = exists ? fallbackId : (mappedColumns[0]?.id || "todo");
+              // If status doesn't match any column, mark as orphaned to hide from board
+              columnId = "orphaned";
             }
 
             return {
@@ -321,7 +320,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
   const deleteColumn = async (id: Id) => {
     const result = await Swal.fire({
       title: "Delete Column?",
-      text: "This will delete the column. Tasks in it might be orphaned.",
+      text: "This will delete the column. Tasks in it will be marked as 'unknown' and hidden from the board.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -334,11 +333,26 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         if (!isNaN(Number(id))) {
           await axiosInstance.delete(`/tasks/column/delete/${id}`);
         }
+        
+        // Find tasks in this column
+        const tasksToUpdate = tasks.filter(t => t.columnId === id);
+        
+        // Update tasks status to "unknown" in the backend
+        await Promise.all(
+          tasksToUpdate.map(t => 
+            axiosInstance.put(`/tasks/update/${t.id}`, { status: "unknown" })
+          )
+        );
+
+        // Update local state
+        setTasks(prev => prev.map(t => 
+          t.columnId === id ? { ...t, status: "unknown", columnId: "orphaned" } : t
+        ));
+
         setColumns((prev) => prev.filter((col) => col.id !== id));
-        // optionally update tasks that were in this column
       } catch (error) {
-        console.error("Failed to delete column:", error);
-        Swal.fire("Error", "Failed to delete column", "error");
+        console.error("Failed to delete column and update tasks:", error);
+        Swal.fire("Error", "Failed to delete column or update task statuses.", "error");
       }
     }
   };

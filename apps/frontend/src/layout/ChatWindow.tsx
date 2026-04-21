@@ -35,7 +35,7 @@ const suggestions = [
 ];
 
 const ChatWindow = ({ userId }: ChatWindowProps) => {
-  const { plan } = useUserPreferences();
+  const { plan, isSubTypesLoading } = useUserPreferences();
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -127,7 +127,22 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
     }
   };
 
-  if (plan === "FREE") {
+  if (isSubTypesLoading) {
+    return (
+      <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col items-center justify-center relative">
+        <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
+          <h1 className="text-lg text-dark font-bold dark:text-light">
+            Graminate AI
+          </h1>
+        </header>
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (plan !== "PRO") {
     return (
       <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col overflow-hidden items-center justify-center relative">
         <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">

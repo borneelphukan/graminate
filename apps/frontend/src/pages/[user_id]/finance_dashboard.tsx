@@ -555,7 +555,10 @@ const Finance = () => {
           </div>
 
           <div className="mt-8">
-            <WorkingCapital />
+            <WorkingCapital
+              initialFullHistoricalData={fullHistoricalData}
+              isLoadingData={isLoadingData}
+            />
           </div>
         </main>
       </PlatformLayout>

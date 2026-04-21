@@ -305,15 +305,20 @@ const ApicultureScreen = () => {
           isLoadingFinancials ? (
             <ActivityIndicator style={styles.loader} />
           ) : (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.cardScroller}
-            >
+            <View style={styles.cardGrid}>
               {apicultureFinancialCardData.map((card, index) => (
-                <BudgetCard key={index} {...card} date={today} />
+                <View
+                  key={index}
+                  style={
+                    index === apicultureFinancialCardData.length - 1
+                      ? styles.fullWidthCard
+                      : styles.halfWidthCard
+                  }
+                >
+                  <BudgetCard {...card} date={today} />
+                </View>
               ))}
-            </ScrollView>
+            </View>
           )
         )}
 
@@ -388,7 +393,20 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   loader: { marginVertical: 16 },
-  cardScroller: { gap: 16, paddingHorizontal: 16, paddingBottom: 16 },
+  cardGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    gap: 12,
+  },
+  halfWidthCard: {
+    width: "48%",
+  },
+  fullWidthCard: {
+    width: "100%",
+  },
   searchbar: { marginHorizontal: 16, marginBottom: 16 },
   listContainer: { paddingHorizontal: 16 },
   apiaryCard: { marginBottom: 12 },

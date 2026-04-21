@@ -455,7 +455,7 @@ const CRM = () => {
         return {
           columns: [
             "#",
-            "Project / Task Category",
+            "Category",
             "Number of Tasks",
             "Created On",
           ],

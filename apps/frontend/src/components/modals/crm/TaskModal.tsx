@@ -1,6 +1,5 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
-import React, { useState, useEffect, KeyboardEvent } from "react";
-import CustomTextArea from "@/components/ui/CustomTextArea";
+import { Dropdown, Icon, Button, TextArea } from "@graminate/ui";
+import React, { useState, useEffect, KeyboardEvent, useMemo } from "react";
 
 import Swal from "sweetalert2";
 import TextField from "@/components/ui/TextField";
@@ -44,7 +43,6 @@ const TaskModal = ({
 }: TaskModalProps) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editedTitle, setEditedTitle] = useState(taskDetails.title);
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState(
     taskDetails.description ?? ""
   );
@@ -56,59 +54,59 @@ const TaskModal = ({
     ? columns.map(c => c.title)
     : ["To Do", "In Progress", "Checks", "Completed"];
 
+  const initialStatus = useMemo(() => {
+    if (columns.length > 0) {
+      const matchingColumn = columns.find(c => c.id === taskDetails.columnId);
+      if (matchingColumn) return matchingColumn.title;
+    }
+    return taskDetails.status;
+  }, [columns, taskDetails.columnId, taskDetails.status]);
+
   const [taskData, setTaskData] = useState({
     ...taskDetails,
+    status: initialStatus,
     priority: taskDetails.priority || "Medium",
     description: taskDetails.description ?? "",
     deadline: taskDetails.deadline ?? "",
   });
 
-  const updateTaskField = async (
-    field: keyof typeof taskData,
-    value: string
-  ) => {
-    const originalValue = taskData[field];
-    const updatedTaskData = { ...taskData, [field]: value };
-    setTaskData(updatedTaskData);
+  const [isSaving, setIsSaving] = useState(false);
 
+  const hasChanges = useMemo(() => {
+    return (
+      editedTitle !== taskDetails.title ||
+      editedDescription !== (taskDetails.description ?? "") ||
+      taskData.status !== taskDetails.status ||
+      taskData.priority !== (taskDetails.priority || "Medium") ||
+      taskData.deadline !== (taskDetails.deadline ?? "")
+    );
+  }, [editedTitle, editedDescription, taskData, taskDetails]);
+
+  const handleSaveAll = async () => {
+    if (!hasChanges) return;
+    setIsSaving(true);
     try {
-      await updateTask(updatedTaskData);
+      const finalTaskData = {
+        ...taskData,
+        title: editedTitle.trim() || taskDetails.title,
+        description: editedDescription,
+      };
+      await updateTask(finalTaskData);
+      onClose();
     } catch (error) {
-      console.error(`Failed to update ${field}:`, error);
-      setTaskData((prev) => ({
-        ...prev,
-        [field]: originalValue,
-      }));
-      Swal.fire({
-        title: "Update Failed",
-        text: `Could not update ${field}`,
-        icon: "error",
-      });
+      console.error("Failed to save all changes:", error);
+      Swal.fire("Error", "Failed to save changes. Please try again.", "error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDeadlineChange = async (newDeadline: string) => {
-    const updatedTask = {
-      ...taskData,
-      deadline: newDeadline,
-    };
+  const updateTaskFieldLocal = (field: keyof typeof taskData, value: string) => {
+    setTaskData((prev) => ({ ...prev, [field]: value }));
+  };
 
-    setTaskData(updatedTask);
-
-    try {
-      await updateTask(updatedTask);
-    } catch (error) {
-      console.error("Failed to update deadline:", error);
-      setTaskData((prev) => ({
-        ...prev,
-        deadline: taskDetails.deadline ?? "",
-      }));
-      Swal.fire({
-        title: "Update Failed",
-        text: `Could not update deadline`,
-        icon: "error",
-      });
-    }
+  const handleDeadlineChange = (newDeadline: string) => {
+    updateTaskFieldLocal("deadline", newDeadline);
   };
 
   const handleDelete = async () => {
@@ -122,54 +120,24 @@ const TaskModal = ({
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    const updatedTask = {
-      ...taskData,
+  const handleStatusChange = (newStatus: string) => {
+    setTaskData((prev) => ({
+      ...prev,
       status: newStatus,
       columnId: mapStatusToColumnId(newStatus),
-    };
-    setTaskData(updatedTask);
-
-    try {
-      await updateTask(updatedTask);
-    } catch (error) {
-      console.error("Failed to update status:", error);
-      setTaskData(taskData);
-      Swal.fire({
-        title: "Update Failed",
-        text: `Could not update status`,
-        icon: "error",
-      });
-    }
+    }));
   };
 
-  const handlePriorityChange = async (newPriority: string) => {
-    const updatedTask = {
-      ...taskData,
-      priority: newPriority,
-    };
-
-    setTaskData(updatedTask);
-
-    try {
-      await updateTask(updatedTask);
-    } catch (error) {
-      console.error("Failed to update priority:", error);
-      setTaskData(taskData);
-      Swal.fire({
-        title: "Update Failed",
-        text: `Could not update priority`,
-        icon: "error",
-      });
-    }
+  const handlePriorityChange = (newPriority: string) => {
+    updateTaskFieldLocal("priority", newPriority);
   };
 
   const mapStatusToColumnId = (status: string): string => {
     if (columns.length > 0) {
-      const col = columns.find(c => c.title === status);
+      const col = columns.find((c) => c.title === status);
       if (col) return col.id;
     }
-    
+
     switch (status) {
       case "To Do":
         return "todo";
@@ -186,18 +154,28 @@ const TaskModal = ({
 
   useEffect(() => {
     const currentDescription = taskDetails.description ?? "";
+    
+    // Resolve the display status from the columnId if columns are available
+    let displayStatus = taskDetails.status;
+    if (columns.length > 0) {
+      const matchingColumn = columns.find(c => c.id === taskDetails.columnId);
+      if (matchingColumn) {
+        displayStatus = matchingColumn.title;
+      }
+    }
+
     setEditedTitle(taskDetails.title);
     setEditedDescription(currentDescription);
     setTaskData({
       ...taskDetails,
+      status: displayStatus,
       priority: taskDetails.priority || "Medium",
       description: currentDescription,
       deadline: taskDetails.deadline ?? "",
     });
     setIsEditingTitle(false);
-    setIsEditingDescription(false);
     setShowDropdown(false);
-  }, [taskDetails]);
+  }, [taskDetails, isOpen, columns]);
 
   const closeModal = () => {
     if (onClose) onClose();
@@ -207,10 +185,8 @@ const TaskModal = ({
     setIsEditingTitle(true);
   };
 
-  const saveTitle = () => {
-    if (editedTitle.trim() && editedTitle !== taskData.title) {
-      updateTaskField("title", editedTitle.trim());
-    } else if (!editedTitle.trim()) {
+  const saveTitleLocal = () => {
+    if (!editedTitle.trim()) {
       setEditedTitle(taskData.title);
     }
     setIsEditingTitle(false);
@@ -218,155 +194,137 @@ const TaskModal = ({
 
   const handleTitleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      saveTitle();
+      saveTitleLocal();
     } else if (e.key === "Escape") {
       setEditedTitle(taskData.title);
       setIsEditingTitle(false);
     }
   };
 
-  const startEditingDescription = () => {
-    setIsEditingDescription(true);
-  };
-
-  const handleSaveDescription = () => {
-    if (editedDescription !== taskData.description) {
-      updateTaskField("description", editedDescription);
-    }
-    setIsEditingDescription(false);
-  };
-
-  const handleCancelDescription = () => {
-    setEditedDescription(taskData.description);
-    setIsEditingDescription(false);
-  };
-
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 md:p-8 max-h-[90vh] w-full h-[80%] max-w-5xl shadow-xl relative flex flex-col overflow-hidden ">
-        <div className="flex justify-between items-start mb-4 border-b border-gray-400">
-          <p className="text-dark dark:text-light text-sm uppercase tracking-wide">
-            {projectName} / TASK-{taskDetails.id}
-          </p>
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn"
+      onClick={closeModal}
+    >
+      <div
+        className="bg-white dark:bg-gray-900 rounded-2xl p-0 max-h-[90vh] w-full max-w-4xl shadow-2xl relative flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-400 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+          <div className="flex items-center space-x-3">
+            <Icon type="assignment" className="text-primary h-5 w-5" />
+            <p className="text-dark dark:text-light text-xs font-bold uppercase tracking-widest">
+              {projectName} <span className="mx-1 text-gray-300">/</span> TASK-
+              {taskDetails.id}
+            </p>
+          </div>
 
           <div className="flex items-center space-x-2">
             <div className="relative">
               <button
-                className="p-2 rounded-md text-dark dark:text-light hover:bg-gray-500 dark:hover:bg-gray-700"
+                className="p-1 rounded-md text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-700 transition-all"
                 aria-label="Options"
                 onClick={toggleDropdown}
               >
-                <Icon type={"more_horiz"} className="h-5 w-5" />
+                <Icon type={"more_horiz"} className="h-6 w-6" />
               </button>
               {showDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 shadow-lg rounded-md py-1 z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-2xl rounded-xl py-2 z-10 border border-gray-400 dark:border-gray-700 animate-slideIn">
                   <button
-                    className="block w-full text-left px-4 py-2 text-sm text-dark dark:text-light hover:bg-gray-500 dark:hover:bg-gray-600"
+                    className="flex items-center space-x-2 w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     onClick={handleDelete}
                   >
-                    Delete
+                    <Icon type="delete" size="sm" />
+                    <span>Delete Task</span>
                   </button>
                 </div>
               )}
             </div>
 
             <button
-              className="p-2 rounded-md text-dark dark:text-light hover:bg-gray-500 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
+              className="p-1 rounded-md text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-700 transition-all"
               aria-label="Close"
               onClick={closeModal}
             >
-              <Icon type={"close"} className="h-5 w-5" />
+              <Icon type={"close"} className="h-6 w-6" />
             </button>
           </div>
         </div>
 
-        <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto pr-2 -mr-2">
-          {/* Left Column */}
-          <div className="md:col-span-2 space-y-6">
+        <div className="flex-grow flex flex-col md:flex-row overflow-hidden">
+          {/* Main Content Area */}
+          <div className="flex-grow overflow-y-auto p-6 md:p-8 space-y-8 scrollbar-hide">
+            {/* Title Section */}
             <div>
               {isEditingTitle ? (
-                <TextField
-                  value={editedTitle}
-                  onChange={setEditedTitle}
-                  onBlur={saveTitle}
-                  onKeyDown={handleTitleKeyDown}
-                />
+                <div className="animate-slideIn">
+                  <TextField
+                    value={editedTitle}
+                    onChange={setEditedTitle}
+                    onBlur={saveTitleLocal}
+                    onKeyDown={handleTitleKeyDown}
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1 ml-1 uppercase font-bold tracking-tighter">
+                    Press Enter to save • Esc to cancel
+                  </p>
+                </div>
               ) : (
-                <button
-                  className="w-full text-left text-dark dark:text-light text-xl font-semibold hover:bg-gray-500 dark:hover:bg-gray-700 rounded px-2 py-1"
+                <h1
+                  className="text-dark dark:text-light text-3xl font-bold hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg -ml-2 px-2 py-1 cursor-text transition-colors leading-tight"
                   onClick={startEditingTitle}
-                  aria-label="Edit task title"
                 >
-                  {taskData.title}
-                </button>
+                  {editedTitle}
+                </h1>
               )}
             </div>
 
-            <div className="mt-4">
-              <label
-                htmlFor="task-description"
-                className="block text-dark dark:text-light font-medium text-base mb-2"
-              >
-                Description
-              </label>
-              {isEditingDescription ? (
-                <>
-                  <CustomTextArea
-                    placeholder="Add a more detailed description..."
-                    value={editedDescription}
-                    onInput={setEditedDescription}
-                  />
-                  <div className="flex space-x-2 mt-2">
-                    <Button
-                      label="Save"
-                      onClick={handleSaveDescription}
-                      variant="primary"
-                    />
+            {/* Description Section */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
+                <Icon type="notes" size="sm" />
+                <h2 className="font-bold text-lg">Description</h2>
+              </div>
 
-                    <Button
-                      label="Cancel"
-                      onClick={handleCancelDescription}
-                      variant="secondary"
-                    />
-                  </div>
-                </>
-              ) : (
-                <div
-                  className="w-full min-h-[80px] p-3 text-sm rounded border border-transparent hover:border-gray-300 dark:hover:border-gray-600 cursor-text whitespace-pre-wrap dark:text-light"
-                  onClick={startEditingDescription}
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" || e.key === " ")
-                      startEditingDescription();
-                  }}
-                  aria-label="Edit description"
-                >
-                  {taskData.description ? (
-                    taskData.description
-                  ) : (
-                    <span className="text-gray-300">
-                      Add a more detailed description...
-                    </span>
-                  )}
-                </div>
-              )}
+              <div className="animate-fadeIn">
+                <TextArea
+                  id="task-description"
+                  label="Task Description"
+                  hideLabel
+                  placeholder="Add a more detailed description..."
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                  className="bg-gray-50/30 dark:bg-gray-800/20 border-gray-400 dark:border-gray-700"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="border border-gray-300 dark:border-gray-600 md:col-span-1 space-y-6 rounded-md h-fit">
-            <div className="p-4">
-              <h3 className="text-dark dark:text-light font-semibold mb-8">
-                Details
-              </h3>
-              <div className="space-y-5">
+          {/* Sidebar / Details Panel */}
+          <div className="w-full md:w-80 bg-gray-50 dark:bg-gray-900/50 border-l border-gray-400 dark:border-gray-700 p-6 md:p-8 space-y-8 overflow-y-auto">
+            <h3 className="text-dark dark:text-light text-sm font-bold uppercase mb-6">
+              Task Properties
+            </h3>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
                 <Dropdown
                   key={`status-${taskData.id}`}
                   items={statusOptions}
@@ -375,7 +333,9 @@ const TaskModal = ({
                   label="Status"
                   width="full"
                 />
+              </div>
 
+              <div className="space-y-2">
                 <Dropdown
                   key={`priority-${taskData.id}`}
                   items={priorityOptions}
@@ -384,7 +344,9 @@ const TaskModal = ({
                   label="Priority"
                   width="full"
                 />
+              </div>
 
+              <div className="space-y-2">
                 <Dropdown
                   key={`deadline-${taskData.id}`}
                   items={[]}
@@ -397,6 +359,21 @@ const TaskModal = ({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-400 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/80 flex justify-end space-x-3">
+          <Button
+            label="Cancel"
+            onClick={closeModal}
+            variant="secondary"
+          />
+          <Button
+            label={isSaving ? "Saving..." : "Save Changes"}
+            onClick={handleSaveAll}
+            variant="primary"
+            disabled={!hasChanges || isSaving}
+          />
         </div>
       </div>
     </div>

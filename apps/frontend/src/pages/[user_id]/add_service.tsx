@@ -451,7 +451,7 @@ const AddServicePage = () => {
                                        ${
                                          servicesToRemove.has(subType)
                                            ? "text-red-100 dark:text-red-300"
-                                           : "text-gray-400 dark:text-gray-300 group-hover:text-red-500 dark:group-hover:text-red-400 peer-focus:text-red-500 dark:peer-focus:text-red-400"
+                                           : "text-gray-300 dark:text-gray-300 group-hover:text-red-200 dark:group-hover:text-red-400 peer-focus:text-red-200 dark:peer-focus:text-red-400"
                                        }`}
                       >
                         {AgricultureIcons[subType]}
@@ -460,7 +460,7 @@ const AddServicePage = () => {
                         className={`text-sm font-medium transition-colors duration-200 ${
                           servicesToRemove.has(subType)
                             ? "text-red-100 dark:text-red-300"
-                            : "text-gray-800 dark:text-gray-200 group-hover:text-red-500 dark:group-hover:text-red-400 peer-focus:text-red-100 dark:peer-focus:text-red-400"
+                            : "text-gray-800 dark:text-gray-300 group-hover:text-red-500 dark:group-hover:text-red-400 peer-focus:text-red-100 dark:peer-focus:text-red-400"
                         }`}
                       >
                         {subType}

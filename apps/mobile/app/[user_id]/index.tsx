@@ -22,7 +22,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { Calendar } from "react-native-calendars";
+import Calendar from "@/components/calendar";
 import {
   ActivityIndicator,
   Button,
@@ -33,6 +33,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 const axiosInstance = axios.create({ baseURL: API_URL });
@@ -256,6 +257,7 @@ const DashboardScreen = () => {
   const navigation = useNavigation();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const theme = useTheme();
+  const { fetchUserSubTypes } = useUserPreferences();
 
   const [userData, setUserData] = useState<User | null>(null);
   const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(true);
@@ -304,6 +306,9 @@ const DashboardScreen = () => {
     setIsUserDataLoading(true);
     const fetchUserData = async () => {
       try {
+        // Fetch user types and plan globally
+        await fetchUserSubTypes(user_id);
+
         const response = await axiosInstance.get(`/user/${user_id}`);
         const fetchedUser = response.data?.data?.user as User | undefined;
         if (fetchedUser && isMounted) {
@@ -334,7 +339,7 @@ const DashboardScreen = () => {
     return () => {
       isMounted = false;
     };
-  }, [user_id, navigation]);
+  }, [user_id, navigation, fetchUserSubTypes]);
 
   const processSalesData = useCallback(
     (
@@ -615,7 +620,7 @@ const DashboardScreen = () => {
             ) : (
               widgets.map((widgetName) => {
                 if (widgetName === "Task Calendar")
-                  return <Calendar key={widgetName} />;
+                  return <Calendar key={widgetName} userId={user_id} />;
                 if (widgetName === "Trend Graph")
                   return (
                     <TrendGraph

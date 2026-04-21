@@ -116,7 +116,7 @@ const TaskListView = ({
                     <p
                       className={`text-sm font-medium text-dark dark:text-light truncate ${
                         task.status === "Completed"
-                          ? "line-through text-gray-500 dark:text-gray-400"
+                          ? "line-through text-dark dark:text-light"
                           : ""
                       }`}
                     >
@@ -131,6 +131,7 @@ const TaskListView = ({
                       label="Delete"
                       variant="destructive"
                       type="button"
+                      size="sm"
                       disabled={isSelectedDatePast}
                       onClick={() => removeTask(task.task_id)}
                     />

@@ -27,51 +27,7 @@ import {
 const TIME_RANGE_OPTIONS = ["Weekly", "Monthly", "3 Months"] as const;
 type TimeRange = (typeof TIME_RANGE_OPTIONS)[number];
 
-const TOTAL_DAYS_FOR_HISTORICAL_DATA = 180;
 const ITEMS_PER_PAGE = 7;
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-type DailyWorkingCapitalEntry = {
-  date: Date;
-  currentAssets: number;
-  currentLiabilities: number;
-  netWorkingCapital: number;
-};
-
-const generateDailyWorkingCapitalData = (
-  count: number
-): DailyWorkingCapitalEntry[] => {
-  const data: DailyWorkingCapitalEntry[] = [];
-  let loopDate = subDaysDateFns(today, count - 1);
-  for (let i = 0; i < count; i++) {
-    const rawCurrentAssets = Math.max(
-      20000,
-      100000 + (Math.random() - 0.5) * 150000
-    );
-    let rawCurrentLiabilities = Math.max(
-      10000,
-      80000 + (Math.random() - 0.6) * 120000
-    );
-    if (rawCurrentLiabilities > rawCurrentAssets) {
-      rawCurrentLiabilities = rawCurrentAssets;
-    }
-    data.push({
-      date: new Date(loopDate),
-      currentAssets: parseFloat(rawCurrentAssets.toFixed(2)),
-      currentLiabilities: parseFloat(rawCurrentLiabilities.toFixed(2)),
-      netWorkingCapital: parseFloat(
-        (rawCurrentAssets - rawCurrentLiabilities).toFixed(2)
-      ),
-    });
-    loopDate = addDaysDateFns(loopDate, 1);
-  }
-  return data;
-};
-
-const fullHistoricalWorkingCapitalData = generateDailyWorkingCapitalData(
-  TOTAL_DAYS_FOR_HISTORICAL_DATA
-);
 
 const PaperMenuDropdown = ({ label, items, selectedValue, onSelect }: any) => {
   const [visible, setVisible] = useState(false);
@@ -104,18 +60,51 @@ const PaperMenuDropdown = ({ label, items, selectedValue, onSelect }: any) => {
   );
 };
 
-const WorkingCapital = () => {
+export type DailyFinancialEntry = {
+  date: Date;
+  revenue: { total: number };
+  cogs: { total: number };
+  grossProfit: { total: number };
+  expenses: { total: number };
+  netProfit: { total: number };
+};
+
+type WorkingCapitalProps = {
+  initialFullHistoricalData: DailyFinancialEntry[];
+  isLoadingData: boolean;
+};
+
+const WorkingCapital = ({
+  initialFullHistoricalData,
+  isLoadingData,
+}: WorkingCapitalProps) => {
   const theme = useTheme();
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<TimeRange>("Monthly");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
 
-  useEffect(() => {
-    setIsLoading(false);
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
   }, []);
+
+  const fullHistoricalWorkingCapitalData = useMemo(() => {
+    return initialFullHistoricalData.map((entry: DailyFinancialEntry) => {
+      const currentAssets = entry.revenue.total;
+      const currentLiabilities = entry.cogs.total + entry.expenses.total;
+      const netWorkingCapital = currentAssets - currentLiabilities;
+      return {
+        date: entry.date,
+        currentAssets,
+        currentLiabilities,
+        netWorkingCapital,
+      };
+    });
+  }, [initialFullHistoricalData]);
+
   useEffect(() => {
     setCurrentPage(0);
   }, [selectedTimeRange, startDate, endDate]);
@@ -152,7 +141,15 @@ const WorkingCapital = () => {
       }
     }
     return eachDayOfInterval({ start: vS, end: vE });
-  }, [isCustomDateRangeActive, startDate, endDate, selectedTimeRange]);
+  }, [isCustomDateRangeActive, startDate, endDate, selectedTimeRange, today, fullHistoricalWorkingCapitalData]);
+
+  if (isLoadingData) {
+    return (
+      <Card style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </Card>
+    );
+  }
 
   const totalPages = Math.ceil(currentIntervalDates.length / ITEMS_PER_PAGE);
 
@@ -165,7 +162,7 @@ const WorkingCapital = () => {
     const labels: string[] = [];
     const dataPoints: number[] = [];
     paginatedDates.forEach((day) => {
-      const dataPoint = fullHistoricalWorkingCapitalData.find((d) =>
+      const dataPoint = fullHistoricalWorkingCapitalData.find((d: any) =>
         isSameDay(d.date, day)
       );
       labels.push(format(day, "MMM d"));
@@ -207,14 +204,6 @@ const WorkingCapital = () => {
         setter(null);
       }
     };
-
-  if (isLoading) {
-    return (
-      <Card style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </Card>
-    );
-  }
 
   return (
     <Card>

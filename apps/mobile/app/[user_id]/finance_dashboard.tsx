@@ -262,7 +262,10 @@ const FinanceDashboardScreen = () => {
           initialFullHistoricalData={fullHistoricalData}
           isLoadingData={isLoadingData}
         />
-        <WorkingCapital />
+        <WorkingCapital
+          initialFullHistoricalData={fullHistoricalData}
+          isLoadingData={isLoadingData}
+        />
       </View>
     );
   };

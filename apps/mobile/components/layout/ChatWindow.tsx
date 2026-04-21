@@ -22,6 +22,7 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 const axiosInstance = axios.create({ baseURL: API_URL });
@@ -51,6 +52,7 @@ const suggestions = [
 ];
 
 const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
+  const { plan, isSubTypesLoading } = useUserPreferences();
   const theme = useTheme();
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -200,6 +202,34 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
     textInput: { flex: 1 },
     textInputOutline: { borderRadius: 24 },
     sendButton: { marginLeft: 8 },
+    lockedContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 24,
+      backgroundColor: theme.colors.background,
+    },
+    lockedTitle: {
+      marginTop: 20,
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    lockedSubtitle: {
+      marginTop: 12,
+      textAlign: "center",
+      opacity: 0.7,
+      lineHeight: 22,
+    },
+    upgradeButton: {
+      marginTop: 32,
+      paddingHorizontal: 16,
+    },
+    loaderContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: theme.colors.background,
+    },
   });
 
   const memoizedCloseIcon = useCallback(
@@ -212,6 +242,54 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
     ),
     [theme.colors.onSurfaceVariant]
   );
+
+  if (isSubTypesLoading) {
+    return (
+      <Surface style={styles.chatContainer}>
+        <Appbar.Header elevated style={styles.header}>
+          <Appbar.Content
+            title="Graminate AI"
+            titleStyle={styles.headerTitle}
+          />
+          <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
+        </Appbar.Header>
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      </Surface>
+    );
+  }
+
+  if (plan !== "PRO") {
+    return (
+      <Surface style={styles.chatContainer}>
+        <Appbar.Header elevated style={styles.header}>
+          <Appbar.Content
+            title="Graminate AI"
+            titleStyle={styles.headerTitle}
+          />
+          <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
+        </Appbar.Header>
+        <View style={styles.lockedContainer}>
+          <Sparkles size={64} color={theme.colors.primary} />
+          <Text variant="headlineSmall" style={styles.lockedTitle}>
+            Feature Locked
+          </Text>
+          <Text variant="bodyLarge" style={styles.lockedSubtitle}>
+            Graminate AI is only available for Paid Users. Please upgrade your
+            plan on the web dashboard to access this feature.
+          </Text>
+          <Button
+            mode="contained"
+            onPress={onClose}
+            style={styles.upgradeButton}
+          >
+            Got it
+          </Button>
+        </View>
+      </Surface>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -240,10 +318,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
               Clear
             </Button>
           )}
-          <Appbar.Action
-            icon={memoizedCloseIcon}
-            onPress={onClose}
-          />
+          <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
         </Appbar.Header>
 
         <View style={styles.contentArea}>
