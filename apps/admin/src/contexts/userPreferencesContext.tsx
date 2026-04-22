@@ -55,7 +55,7 @@ export const UserPreferencesProvider = ({
       if (storedWidgets) {
         try {
           return JSON.parse(storedWidgets);
-        } catch (e) {
+        } catch {
           return ["Total Users", "Plan Distribution"];
         }
       }

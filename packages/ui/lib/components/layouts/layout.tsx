@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "../../utils.ts";
+import { cn } from "../../utils";
 import React, { forwardRef } from "react";
 
 const layoutVariants = cva("flex self-stretch", {

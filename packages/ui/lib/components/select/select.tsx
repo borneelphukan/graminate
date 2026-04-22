@@ -7,9 +7,9 @@ import React, {
   useState,
   type ReactNode,
 } from "react";
-import { cn } from "../../utils.ts";
-import { Icon, type IconType } from "../icon/icon.tsx";
-import { Layout } from "../layouts/layout.tsx";
+import { cn } from "../../utils";
+import { Icon, type IconType } from "../icon/icon";
+import { Layout } from "../layouts/layout";
 
 type InnerValue = { label: string; value: string; icon?: IconType };
 type SwitchValue = {

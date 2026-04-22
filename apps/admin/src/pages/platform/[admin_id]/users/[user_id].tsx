@@ -88,7 +88,7 @@ const AdminUserDetailsPage = () => {
         month: "long",
         day: "numeric",
       });
-    } catch (e) {
+    } catch {
       return "Invalid Date";
     }
   };
@@ -232,7 +232,7 @@ const AdminUserDetailsPage = () => {
                 <span className="text-2xl">👤</span>
               </div>
               <h3 className="text-lg font-bold text-dark">User Not Found</h3>
-              <p className="text-gray-500 mt-1">We couldn't locate details for this user ID.</p>
+              <p className="text-gray-500 mt-1">We couldn&apos;t locate details for this user ID.</p>
               <Button
                 label="Back to Dashboard"
                 variant="primary"

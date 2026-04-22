@@ -5,7 +5,11 @@ import hi from "../translations/hi.json";
 import as from "../translations/as.json";
 import de from "../translations/de.json";
 
-const translations: Record<string, any> = { en, hi, as, de };
+interface Translation {
+  [key: string]: string | Translation;
+}
+
+const translations: Record<string, Translation> = { en, hi, as, de };
 
 type Region = "India" | "Germany" | "Global";
 
@@ -68,14 +72,14 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     detectRegion();
   }, []);
 
-  const t = (path: string) => {
+  const t = (path: string): string => {
     const keys = path.split(".");
-    let current = translations[locale || defaultLocale || "en"];
+    let current: string | Translation = translations[locale || defaultLocale || "en"];
     for (const key of keys) {
-      if (current[key] === undefined) return path;
+      if (typeof current === "string" || !current[key]) return path;
       current = current[key];
     }
-    return current;
+    return typeof current === "string" ? current : path;
   };
 
   const updateRegion = (newRegion: Region) => {

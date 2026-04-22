@@ -79,7 +79,7 @@ const Navbar = ({
       await axiosInstance.put(`/admin/${userId}`, {
         darkMode: newDarkModeState,
       });
-    } catch (error) {
+    } catch {
        console.warn("Could not sync dark mode preference with server.");
     }
   };

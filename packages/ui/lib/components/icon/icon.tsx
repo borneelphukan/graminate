@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import type { MaterialSymbol } from "material-symbols";
 import { forwardRef } from "react";
-import { cn } from "../../utils.ts";
+import { cn } from "../../utils";
 
 export type IconType = MaterialSymbol;
 

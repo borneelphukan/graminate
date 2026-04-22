@@ -24,12 +24,28 @@ import {
   isSameHour,
 } from "date-fns";
 
+type AdminUser = {
+  first_name: string;
+  last_name: string;
+  email: string;
+};
+
+type UserRecord = {
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  plan: string;
+  created_at: string;
+};
+
+
 const AdminDashboardPage = () => {
   const router = useRouter();
   const { admin_id } = router.query;
   const { timeFormat, widgets, updateUserWidgets } = useUserPreferences();
 
-  const [adminUser, setAdminUser] = useState<any>(null);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const [isAdminLoading, setIsAdminLoading] = useState(true);
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -40,7 +56,7 @@ const AdminDashboardPage = () => {
     paidUsers: 0,
   });
   const [isStatsLoading, setIsStatsLoading] = useState(true);
-  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<UserRecord[]>([]);
 
   const [growthData, setGrowthData] = useState({
     labels: [] as string[],
@@ -48,7 +64,6 @@ const AdminDashboardPage = () => {
     conversionRates: [] as number[],
   });
   const [isGrowthLoading, setIsGrowthLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState("Weekly");
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -76,16 +91,14 @@ const AdminDashboardPage = () => {
       setIsStatsLoading(true);
       setIsGrowthLoading(true);
       try {
-        const [countRes, usersRes] = await Promise.all([
-          axiosInstance.get("/admin/user-count"),
+        const [usersRes] = await Promise.all([
           axiosInstance.get("/admin/all-users"),
         ]);
 
-        const total = countRes.data?.data?.count || 0;
         const fetchedUsers = usersRes.data?.data?.users || [];
         setAllUsers(fetchedUsers);
         
-        const pro = fetchedUsers.filter((u: any) => u.plan === "PRO" || u.plan === "BASIC").length;
+        const pro = fetchedUsers.filter((u: UserRecord) => u.plan === "PRO" || u.plan === "BASIC").length;
         const totalFetched = fetchedUsers.length;
         const free = totalFetched - pro;
 
@@ -110,7 +123,7 @@ const AdminDashboardPage = () => {
     fetchPlatformStats();
   }, [admin_id]);
 
-  const processGrowthData = (users: any[], period: string) => {
+  const processGrowthData = (users: UserRecord[], period: string) => {
     const now = new Date();
     let labels: string[] = [];
     let signupCounts: number[] = [];
@@ -279,7 +292,6 @@ const AdminDashboardPage = () => {
                 data={growthData} 
                 isLoading={isGrowthLoading} 
                 onPeriodChange={(period) => {
-                  setSelectedPeriod(period);
                   processGrowthData(allUsers, period);
                 }}
               />

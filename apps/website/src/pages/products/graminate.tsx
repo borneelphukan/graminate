@@ -18,29 +18,31 @@ import {
   faWheatAwn,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import Link from "next/link";
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
 };
 
-const scaleIn = {
+const fadeInUpTransition = { duration: 0.6, ease: "easeOut" as const };
+
+const scaleIn: Variants = {
   initial: { opacity: 0, scale: 0.9 },
   animate: { opacity: 1, scale: 1 },
-  transition: { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] },
 };
 
-const scrollFadeInUp = {
+const scaleInTransition = { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] as const };
+
+const scrollFadeInUp: Variants = {
   initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.15 },
-  transition: { duration: 0.7, ease: "easeOut" },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
-const scrollStaggerContainer = {
+const scrollFadeInUpViewport = { once: true, amount: 0.15 };
+
+const scrollStaggerContainer: Variants = {
   initial: {},
   whileInView: {
     transition: {
@@ -48,22 +50,24 @@ const scrollStaggerContainer = {
       delayChildren: 0.1,
     },
   },
-  viewport: { once: true, amount: 0.1 },
 };
 
-const scrollStaggerItem = {
+const scrollStaggerContainerViewport = { once: true, amount: 0.1 };
+
+const scrollStaggerItem: Variants = {
   initial: { opacity: 0, y: 30 },
   whileInView: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: "easeOut" },
   },
-  viewport: { once: true, amount: 0.1 },
 };
+
+const scrollStaggerItemViewport = { once: true, amount: 0.1 };
 
 const featureIconHover = {
   scale: 1.1,
-  transition: { type: "spring", stiffness: 400, damping: 10 },
+  transition: { type: "spring" as const, stiffness: 400, damping: 10 },
 };
 
 const faqContent = {
@@ -384,6 +388,7 @@ export default function GraminateERP() {
                 initial="initial"
                 animate="animate"
                 variants={fadeInUp}
+                transition={fadeInUpTransition}
                 className="mx-auto max-w-4xl text-center"
               >
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
@@ -410,7 +415,7 @@ export default function GraminateERP() {
                 initial="initial"
                 animate="animate"
                 variants={scaleIn}
-                transition={{ delay: 0.3, ...scaleIn.transition }}
+                transition={{ delay: 0.3, ...scaleInTransition }}
                 className="mt-16 sm:mt-20 flow-root"
               >
                 <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
@@ -448,7 +453,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="mx-auto max-w-3xl lg:text-center"
             >
               <h2 className="text-base font-semibold leading-7 text-green-200">
@@ -466,7 +471,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="relative mx-auto mt-16 max-w-6xl sm:mt-20 lg:mt-24"
               onMouseEnter={() => setIsHoveringCarousel(true)}
               onMouseLeave={() => setIsHoveringCarousel(false)}
@@ -543,7 +548,7 @@ export default function GraminateERP() {
             variants={scrollFadeInUp}
             initial="initial"
             whileInView="whileInView"
-            viewport={scrollFadeInUp.viewport}
+            viewport={scrollFadeInUpViewport}
             className="relative overflow-hidden bg-gray-900 px-6 py-20 shadow-xl sm:rounded-3xl sm:px-10 sm:py-24 md:px-12 lg:px-20"
           >
             <div className="absolute inset-0 bg-gray-900/80 mix-blend-multiply"></div>
@@ -602,7 +607,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="mx-auto max-w-4xl text-center"
             >
               <h2 className="text-base font-semibold leading-7 text-emerald-600">
@@ -616,7 +621,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-600"
             >
               {content["Price Subheader"]}
@@ -626,7 +631,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="mt-16 flex justify-center"
             >
               <fieldset
@@ -660,7 +665,7 @@ export default function GraminateERP() {
               variants={scrollStaggerContainer}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollStaggerContainer.viewport}
+              viewport={scrollStaggerContainerViewport}
               className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3"
             >
               {pricing.tiers.map((tier) => (
@@ -692,7 +697,7 @@ export default function GraminateERP() {
               variants={scrollFadeInUp}
               initial="initial"
               whileInView="whileInView"
-              viewport={scrollFadeInUp.viewport}
+              viewport={scrollFadeInUpViewport}
               className="mx-auto max-w-4xl divide-y divide-gray-900/10"
             >
               <h2 className="text-3xl font-bold leading-10 tracking-tight text-gray-900 text-center mb-10 sm:text-4xl">
@@ -705,7 +710,7 @@ export default function GraminateERP() {
                     variants={scrollStaggerItem}
                     initial="initial"
                     whileInView="whileInView"
-                    viewport={scrollStaggerItem.viewport}
+                    viewport={scrollStaggerItemViewport}
                     className="pt-6 first:pt-0"
                   >
                     <dt>

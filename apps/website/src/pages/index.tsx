@@ -18,7 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import DefaultLayout from "@/layout/DefaultLayout";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useTranslation } from "@/contexts/I18nContext";
 
 type ProcessStep = {
@@ -28,10 +28,12 @@ type ProcessStep = {
   description: string;
 };
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
+
+const fadeInUpTransition = { duration: 0.6, ease: "easeOut" as const };
 
 const staggerContainer = {
   animate: {
@@ -41,24 +43,26 @@ const staggerContainer = {
   },
 };
 
-const staggerItem = {
+const staggerItem: Variants = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-const scaleIn = {
+const scaleIn: Variants = {
   initial: { opacity: 0, scale: 0.9 },
-  animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] as const } },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] } },
 };
 
-const slideInLeft = {
+const scaleInTransition = { duration: 0.5, ease: [0.6, -0.05, 0.01, 0.99] as const };
+
+const slideInLeft: Variants = {
   initial: { opacity: 0, x: -50 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
-const slideInRight = {
+const slideInRight: Variants = {
   initial: { opacity: 0, x: 50 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
 export default function Home() {
@@ -201,6 +205,7 @@ export default function Home() {
               <div className="max-w-4xl mx-auto text-center">
                 <motion.div
                   variants={fadeInUp}
+                  transition={fadeInUpTransition}
                   className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full mb-8"
                 >
                   <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -316,6 +321,7 @@ export default function Home() {
                   initial="initial"
                   whileInView="animate"
                   variants={scaleIn}
+                  transition={scaleInTransition}
                   viewport={{ once: true, amount: 0.3 }}
                   className="lg:w-1/2 flex justify-center items-center mt-10 lg:mt-0"
                 >

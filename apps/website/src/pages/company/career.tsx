@@ -5,7 +5,7 @@ import JobCard from "@/components/cards/company/JobCard";
 import { reasonsForJoining, companyFeatures } from "@/lib/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 import { Jobs } from "@/lib/types";
 import DefaultLayout from "@/layout/DefaultLayout";
@@ -37,11 +37,12 @@ const jobs: Jobs[] = [
 ];
 
 // Animation Variants
-const fadeInUp = {
+const fadeInUp: Variants = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: "easeOut" },
 };
+
+const fadeInUpTransition = { duration: 0.5, ease: "easeOut" as const };
 
 const staggerContainer = {
   animate: {
@@ -51,7 +52,7 @@ const staggerContainer = {
   },
 };
 
-const staggerItem = {
+const staggerItem: Variants = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
@@ -84,7 +85,7 @@ const Careers = () => {
             </motion.h1>
             <motion.p
               variants={fadeInUp}
-              transition={{ delay: 0.2, ...fadeInUp.transition }}
+              transition={{ delay: 0.2, ...fadeInUpTransition }}
               className="mt-6 text-lg leading-8 text-gray-600"
             >
               We are constantly looking for passionate individuals to join our

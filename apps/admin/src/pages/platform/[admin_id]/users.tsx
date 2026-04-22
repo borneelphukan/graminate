@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Button, Icon, SearchBar } from "@graminate/ui";
+import { Button, Icon } from "@graminate/ui";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -46,7 +46,7 @@ const AdminUsersPage = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [itemsPerPage] = useState(25);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,10 +116,6 @@ const AdminUsersPage = () => {
     fetchData();
   }, [router, admin_id]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    router.push("/");
-  };
 
   const typeChartData = useMemo(() => {
     if (!users.length) return { labels: [], datasets: [] };
@@ -410,7 +406,7 @@ const AdminUsersPage = () => {
                             </tr>
                           ))
                         ) : paginatedUsers.length > 0 ? (
-                          paginatedUsers.map((user: User, idx: number) => (
+                          paginatedUsers.map((user: User) => (
                             <tr
                               key={user.user_id}
                               onClick={() => router.push(`/platform/${admin_id}/users/${user.user_id}`)}
