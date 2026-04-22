@@ -1,17 +1,16 @@
 import { Icon } from "@/components/ui/Icon";
-import CompanyForm, {
+import BottomDrawer from "@/components/form/BottomDrawer";
+import {
+  COMPANY_FIELDS,
+  CONTACT_FIELDS,
+  CONTRACT_FIELDS,
+  TASK_FIELDS,
+  RECEIPT_FIELDS_WITH_ITEMS,
   CompanyFormData,
-} from "@/components/form/crm/CompanyForm";
-import ContactForm, {
   ContactFormData,
-} from "@/components/form/crm/ContactForm";
-import ContractForm, {
   ContractFormData,
-} from "@/components/form/crm/ContractForm";
-import ReceiptForm, {
-  ReceiptFormData,
-} from "@/components/form/crm/ReceiptForm";
-import TaskForm, { TaskFormData } from "@/components/form/crm/TaskForm";
+  TaskFormData,
+} from "@/constants/formConfigs";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "@/lib/axiosInstance";
@@ -74,7 +73,7 @@ type Receipt = {
 };
 type Task = { task_id: number; project: string; created_at: string };
 type DataItem = Contact | Company | Contract | Receipt | Task;
-type ViewType = "contacts" | "companies" | "contracts" | "tasks";
+type ViewType = "contacts" | "companies" | "contracts" | "tasks" | "receipts";
 type ProjectGroup = { title: string; count: number; data: Task[] };
 
 // --- Helper Functions (No Changes) ---
@@ -210,6 +209,41 @@ const ContractCard = ({
   );
 };
 
+const ReceiptCard = ({
+  item,
+  onPress,
+}: {
+  item: Receipt;
+  onPress: () => void;
+}) => {
+  const theme = useTheme();
+  return (
+    <Card onPress={onPress} style={styles.card}>
+      <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
+      <Card.Content>
+        <View style={styles.cardRow}>
+          <View style={styles.infoItem}>
+            <Icon
+              type={"calendar-month" as any}
+              size={16}
+              color={theme.colors.error}
+            />
+            <Text style={[styles.infoText, { color: theme.colors.error }]}>
+              Due: {formatDate(item.due_date)}
+            </Text>
+          </View>
+          <Text
+            variant="labelSmall"
+            style={{ color: theme.colors.onSurfaceVariant }}
+          >
+            Issued: {formatDate(item.receipt_date || item.created_at)}
+          </Text>
+        </View>
+      </Card.Content>
+    </Card>
+  );
+};
+
 const ProjectGroupCard = ({ group }: { group: ProjectGroup }) => (
   <Card style={styles.card}>
     <Card.Title
@@ -247,6 +281,30 @@ const CRM = () => {
   const [isCompanyFormVisible, setCompanyFormVisible] = useState(false);
   const [isContractFormVisible, setContractFormVisible] = useState(false);
   const [isTaskFormVisible, setTaskFormVisible] = useState(false);
+  const [isReceiptFormVisible, setReceiptFormVisible] = useState(false);
+  const [userProjects, setUserProjects] = useState<string[]>([]);
+  const [allSales, setAllSales] = useState<any[]>([]);
+
+  const fetchAllSales = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/sales/user/${user_id}`);
+      setAllSales(response.data.sales || []);
+    } catch (err) {
+      console.error("Error fetching sales:", err);
+    }
+  }, [user_id]);
+
+  const fetchUserProjects = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/user/${user_id}`);
+      const user = response.data?.data?.user ?? response.data?.user;
+      setUserProjects(Array.isArray(user?.sub_type) ? user.sub_type : []);
+    } catch (err) {
+      console.error("Error fetching user projects:", err);
+    }
+  }, [user_id]);
   const [sortCriterion, setSortCriterion] = useState<string>("created_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSortMenuVisible, setSortMenuVisible] = useState(false);
@@ -282,6 +340,13 @@ const CRM = () => {
         icon: "list_alt",
         addText: "Project",
       },
+      receipts: {
+        title: "Receipts",
+        endpoint: `/receipts/${user_id}`,
+        dataKey: "receipts",
+        icon: "file-document",
+        addText: "Receipt",
+      },
     }),
     [user_id]
   );
@@ -310,6 +375,11 @@ const CRM = () => {
       tasks: [
         { value: "title", label: "Project Name" },
         { value: "count", label: "Task Count" },
+      ],
+      receipts: [
+        { value: "created_at", label: "Date Created" },
+        { value: "title", label: "Title" },
+        { value: "bill_to", label: "Bill To" },
       ],
     }),
     []
@@ -462,6 +532,46 @@ const CRM = () => {
     }
   };
 
+  const handleCreateReceipt = async (formData: any) => {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      if (!token || !user_id) throw new Error("Authentication error.");
+      const items = formData.items || [];
+      const payload = {
+        user_id: Number(user_id),
+        title: formData.title,
+        receiptNumber: formData.receiptNumber,
+        billTo: formData.billTo,
+        dueDate: formData.dueDate,
+        notes: formData.notes,
+        tax: String(formData.tax || "0"),
+        discount: String(formData.discount || "0"),
+        shipping: String(formData.shipping || "0"),
+        items: items.map((i: any) => ({
+          description: i.description || "",
+          quantity: String(i.quantity || "1"),
+          rate: String(i.price || "0"),
+        })),
+        linked_sale_id: formData.linked_sale_id
+          ? allSales.find(
+              (s) =>
+                (s.sales_name || `Sale #${s.sales_id}`) ===
+                formData.linked_sale_id
+            )?.sales_id
+          : null,
+      };
+      await axiosInstance.post("/receipts/add", payload);
+      Alert.alert("Success", "Receipt created successfully.");
+      setReceiptFormVisible(false);
+      await fetchData("receipts");
+    } catch (err) {
+      const errorMessage = axios.isAxiosError(err)
+        ? err.response?.data?.message || "An API error occurred."
+        : "An unexpected error occurred.";
+      Alert.alert("Creation Failed", errorMessage);
+    }
+  };
+
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
     return data.filter((item) =>
@@ -530,11 +640,42 @@ const CRM = () => {
   const resultCount =
     view === "tasks" ? groupedTasksData.length : sortedData.length;
 
+  useEffect(() => {
+    fetchData(view);
+    if (view === "tasks") {
+      fetchUserProjects();
+    } else if (view === "receipts") {
+      fetchAllSales();
+    }
+  }, [view, fetchData, fetchUserProjects, fetchAllSales]);
+
+  const receiptFields = useMemo(() => {
+    return RECEIPT_FIELDS_WITH_ITEMS.map((f) => {
+      if (f.name === "linked_sale_id") {
+        return {
+          ...f,
+          items: allSales.map((s) => s.sales_name || `Sale #${s.sales_id}`),
+        };
+      }
+      return f;
+    });
+  }, [allSales]);
+
+  const taskFields = useMemo(() => {
+    return TASK_FIELDS.map((f) => {
+      if (f.name === "project") {
+        return { ...f, items: userProjects };
+      }
+      return f;
+    });
+  }, [userProjects]);
+
   const handleAddButtonPress = () => {
     if (view === "contacts") setContactFormVisible(true);
     else if (view === "companies") setCompanyFormVisible(true);
     else if (view === "contracts") setContractFormVisible(true);
     else if (view === "tasks") setTaskFormVisible(true);
+    else if (view === "receipts") setReceiptFormVisible(true);
   };
 
   const renderItem = ({ item }: { item: DataItem }) => {
@@ -581,6 +722,20 @@ const CRM = () => {
             }
           />
         );
+      case "receipts":
+        const receipt = item as Receipt;
+        return (
+          <ReceiptCard
+            item={receipt}
+            onPress={() =>
+              router.push(
+                `/${user_id}/receipts/${
+                  receipt.invoice_id
+                }?data=${encodeURIComponent(JSON.stringify(receipt))}`
+              )
+            }
+          />
+        );
       default:
         return null;
     }
@@ -593,6 +748,8 @@ const CRM = () => {
       return `company-${(item as Company).company_id}`;
     if ((item as Contract).deal_id)
       return `contract-${(item as Contract).deal_id}`;
+    if ((item as Receipt).invoice_id)
+      return `receipt-${(item as Receipt).invoice_id}`;
     if ((item as Task).task_id) return `task-${(item as Task).task_id}`;
     return `item-${Math.random()}`;
   };
@@ -745,27 +902,45 @@ const CRM = () => {
           style={styles.fab}
           onPress={handleAddButtonPress}
         />
-        <ContactForm
+        <BottomDrawer
           isVisible={isContactFormVisible}
           onClose={() => setContactFormVisible(false)}
+          title="Add New Contact"
+          fields={CONTACT_FIELDS}
           onSubmit={handleCreateContact}
+          submitButtonText="Save Contact"
         />
-        <CompanyForm
+
+        <BottomDrawer
           isVisible={isCompanyFormVisible}
           onClose={() => setCompanyFormVisible(false)}
+          title="Add New Company"
+          fields={COMPANY_FIELDS}
           onSubmit={handleCreateCompany}
+          submitButtonText="Save Company"
         />
-        <ContractForm
+
+        <BottomDrawer
           isVisible={isContractFormVisible}
           onClose={() => setContractFormVisible(false)}
+          title="Add New Contract"
+          fields={CONTRACT_FIELDS}
           onSubmit={handleCreateContract}
-          user_id={user_id}
+          submitButtonText="Save Contract"
         />
-        <TaskForm
+        <BottomDrawer
           isVisible={isTaskFormVisible}
           onClose={() => setTaskFormVisible(false)}
           onSubmit={handleCreateTask}
-          user_id={user_id}
+          title="Add New Task"
+          fields={taskFields}
+        />
+        <BottomDrawer
+          isVisible={isReceiptFormVisible}
+          onClose={() => setReceiptFormVisible(false)}
+          onSubmit={handleCreateReceipt}
+          title="Add New Receipt"
+          fields={receiptFields}
         />
       </SafeAreaView>
     </PlatformLayout>

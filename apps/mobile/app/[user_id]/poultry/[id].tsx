@@ -1,7 +1,8 @@
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import PoultryFeedCard from "@/components/cards/poultry/PoultryFeedCard";
 import VeterinaryCard from "@/components/cards/poultry/VeterinaryCard";
-import FlockForm, { FlockFormData } from "@/components/form/poultry/FlockForm";
+import { FLOCK_FIELDS, FlockFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -511,11 +512,13 @@ const PoultryDetailScreen = () => {
         </View>
       </ScrollView>
       {selectedFlockData && (
-        <FlockForm
+        <BottomDrawer
           isVisible={showFlockForm}
           onClose={() => setShowFlockForm(false)}
           onSubmit={handleUpdateFlock}
-          flockToEdit={selectedFlockData}
+          initialValues={selectedFlockData}
+          title="Edit Flock"
+          fields={FLOCK_FIELDS}
         />
       )}
     </PlatformLayout>

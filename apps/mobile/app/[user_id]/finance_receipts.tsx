@@ -1,12 +1,11 @@
 import { Icon } from "@/components/ui/Icon";
-import ReceiptForm, {
-  ReceiptFormData,
-} from "@/components/form/crm/ReceiptForm";
+import { RECEIPT_FIELDS_WITH_ITEMS, ReceiptFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
@@ -85,6 +84,17 @@ const FinanceReceipts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormVisible, setFormVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [allSales, setAllSales] = useState<any[]>([]);
+
+  const fetchAllSales = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/sales/user/${user_id}`);
+      setAllSales(response.data.sales || []);
+    } catch (err) {
+      console.error("Error fetching sales:", err);
+    }
+  }, [user_id]);
 
   const fetchData = useCallback(async () => {
     if (!user_id) return;
@@ -102,11 +112,25 @@ const FinanceReceipts = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchAllSales();
+  }, [fetchData, fetchAllSales]);
 
-  const handleCreateReceipt = async (formData: ReceiptFormData) => {
+  const receiptFields = useMemo(() => {
+    return RECEIPT_FIELDS_WITH_ITEMS.map((f) => {
+      if (f.name === "linked_sale_id") {
+        return {
+          ...f,
+          items: allSales.map((s) => s.sales_name || `Sale #${s.sales_id}`),
+        };
+      }
+      return f;
+    });
+  }, [allSales]);
+
+  const handleCreateReceipt = async (formData: any) => {
     setSubmitting(true);
     try {
+      const items = formData.items || [];
       const payload = {
         user_id: Number(user_id),
         title: formData.title,
@@ -118,16 +142,22 @@ const FinanceReceipts = () => {
         tax: parseFloat(formData.tax) || 0,
         discount: parseFloat(formData.discount) || 0,
         shipping: parseFloat(formData.shipping) || 0,
-        items: formData.items
-          .map(({ description, quantity, rate }) => ({
-            description,
-            quantity: Number(quantity) || 0,
-            rate: Number(rate) || 0,
+        items: items
+          .map((i: any) => ({
+            description: i.description || "",
+            quantity: Number(i.quantity) || 0,
+            rate: Number(i.price) || 0,
           }))
           .filter(
-            (item) => item.description.trim() !== "" && item.quantity > 0
+            (item: any) => item.description.trim() !== "" && item.quantity > 0
           ),
-        linked_sale_id: formData.linked_sale_id,
+        linked_sale_id: formData.linked_sale_id
+          ? allSales.find(
+              (s) =>
+                (s.sales_name || `Sale #${s.sales_id}`) ===
+                formData.linked_sale_id
+            )?.sales_id
+          : null,
       };
       await axiosInstance.post("/receipts/add", payload);
       Alert.alert("Success", "Receipt created successfully.");
@@ -206,11 +236,14 @@ const FinanceReceipts = () => {
           onPress={() => setFormVisible(true)}
         />
 
-        <ReceiptForm
+        <BottomDrawer
           isVisible={isFormVisible}
-          onSubmit={handleCreateReceipt}
           onClose={() => setFormVisible(false)}
-          user_id={user_id}
+          title="Add New Receipt"
+          onSubmit={handleCreateReceipt}
+          isSubmitting={submitting}
+          submitButtonText="Save Receipt"
+          fields={receiptFields}
         />
       </SafeAreaView>
     </PlatformLayout>

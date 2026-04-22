@@ -3,10 +3,8 @@ import { Icon } from "@/components/ui/Icon";
 import BeeHiveIcon from "@/assets/icon/BeeHiveIcon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import HoneyProductionCard from "@/components/cards/apiculture/HoneyProductionCard";
-import HiveForm, { HiveFormData } from "@/components/form/apiculture/HiveForm";
-import InspectionForm, {
-  InspectionData,
-} from "@/components/form/apiculture/InspectionForm";
+import { HIVE_FIELDS, HiveFormData, INSPECTION_FIELDS, InspectionFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -42,11 +40,11 @@ const HiveDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [showHiveForm, setShowHiveForm] = useState(false);
   const [showInspectionModal, setShowInspectionModal] = useState(false);
-  const [inspections, setInspections] = useState<InspectionData[]>([]);
+  const [inspections, setInspections] = useState<InspectionFormData[]>([]);
   const [loadingInspections, setLoadingInspections] = useState(true);
   const [activeView, setActiveView] = useState<HiveView>("status");
   const [inspectionToEdit, setInspectionToEdit] =
-    useState<InspectionData | null>(null);
+    useState<InspectionFormData | null>(null);
   const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
 
   const fetchHiveDetails = useCallback(async () => {
@@ -121,7 +119,7 @@ const HiveDetailsPage = () => {
     setInspectionToEdit(null);
     setShowInspectionModal(true);
   };
-  const handleEditInspection = (inspection: InspectionData) => {
+  const handleEditInspection = (inspection: InspectionFormData) => {
     setInspectionToEdit(inspection);
     setShowInspectionModal(true);
   };
@@ -416,28 +414,26 @@ const HiveDetailsPage = () => {
       </ScrollView>
 
       {showHiveForm && hiveData && (
-        <HiveForm
+        <BottomDrawer
           isVisible={showHiveForm}
           onClose={() => setShowHiveForm(false)}
           onSubmit={handleHiveFormSuccess}
-          formTitle="Edit Hive Details"
-          hiveToEdit={hiveData}
-          apiaryId={numericApiaryId}
+          title="Edit Hive Details"
+          initialValues={hiveData}
+          fields={HIVE_FIELDS}
         />
       )}
-      {showInspectionModal && numericHiveId > 0 && (
-        <InspectionForm
+      {showInspectionModal && (
+        <BottomDrawer
           isVisible={showInspectionModal}
           onClose={() => {
             setShowInspectionModal(false);
             setInspectionToEdit(null);
           }}
-          formTitle={
-            inspectionToEdit ? "Edit Inspection" : "Add New Inspection"
-          }
+          title={inspectionToEdit ? "Edit Inspection" : "Add New Inspection"}
           onSubmit={handleInspectionSaved}
-          hiveId={numericHiveId}
-          inspectionToEdit={inspectionToEdit}
+          initialValues={inspectionToEdit || undefined}
+          fields={INSPECTION_FIELDS}
         />
       )}
     </PlatformLayout>

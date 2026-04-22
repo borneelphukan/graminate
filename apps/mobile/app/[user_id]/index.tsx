@@ -2,9 +2,10 @@ import CompareGraph from "@/components/cards/CompareGraph";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
 import TrendGraph from "@/components/cards/TrendGraph";
+import { ALL_AVAILABLE_WIDGETS } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
+import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-
-import WidgetModal from "@/components/modals/WidgetModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import {
@@ -14,7 +15,7 @@ import {
   subDays as subDaysDateFns,
 } from "date-fns";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -26,13 +27,18 @@ import Calendar from "@/components/calendar";
 import {
   ActivityIndicator,
   Button,
+  Card,
+  Checkbox,
   Divider,
+  FAB,
   Modal,
   Portal,
   Text,
   TextInput,
+  TouchableRipple,
   useTheme,
 } from "react-native-paper";
+import { Icon } from "@/components/ui/Icon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -263,6 +269,7 @@ const DashboardScreen = () => {
   const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(true);
   const [isSetupModalOpen, setIsSetupModalOpen] = useState<boolean>(false);
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<boolean>(false);
+  const [tempSelectedWidgets, setTempSelectedWidgets] = useState<string[]>([]);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   const [successModal, setSuccessModal] = useState({
@@ -440,6 +447,61 @@ const DashboardScreen = () => {
     []
   );
 
+  const availableWidgets = useMemo(() => {
+    return ALL_AVAILABLE_WIDGETS.filter(
+      (widget) =>
+        !widget.requiredSubType ||
+        (userData?.sub_type || []).includes(widget.requiredSubType)
+    );
+  }, [userData?.sub_type]);
+
+  const categorizedWidgets = useMemo(() => {
+    const groups: Record<string, typeof availableWidgets> = {};
+    const financialWidgetIds = [
+      "Trend Graph",
+      "Compare Graph",
+      "Working Capital",
+      "Loans & Debt",
+    ];
+    for (const widget of availableWidgets) {
+      const category = financialWidgetIds.includes(widget.id)
+        ? "Financial"
+        : widget.requiredSubType || "General";
+      if (!groups[category]) groups[category] = [];
+      groups[category].push(widget);
+    }
+    const categoryOrder = [
+      "General",
+      "Financial",
+      "Poultry",
+      "Cattle Rearing",
+      "Apiculture",
+    ];
+    const orderedGroups: Record<string, typeof availableWidgets> = {};
+    for (const categoryName of categoryOrder) {
+      if (groups[categoryName]) {
+        orderedGroups[categoryName] = groups[categoryName];
+      }
+    }
+    return orderedGroups;
+  }, [availableWidgets]);
+
+  const categoryIcons: Record<string, string | React.ComponentType<any>> = {
+    General: "apps",
+    Financial: "chart-line",
+    Poultry: "egg",
+    "Cattle Rearing": CattleIcon,
+    Apiculture: "bee",
+  };
+
+  const handleToggleWidget = (widgetId: string) => {
+    setTempSelectedWidgets((prev) =>
+      prev.includes(widgetId)
+        ? prev.filter((id) => id !== widgetId)
+        : [...prev, widgetId]
+    );
+  };
+
   useEffect(() => {
     if (!user_id) {
       setIsFinanceLoading(false);
@@ -609,7 +671,10 @@ const DashboardScreen = () => {
           <Divider style={styles.divider} />
           <Button
             mode="text"
-            onPress={() => setIsWidgetModalOpen(true)}
+            onPress={() => {
+              setTempSelectedWidgets(widgets);
+              setIsWidgetModalOpen(true);
+            }}
             style={styles.manageButton}
           >
             Manage Widgets
@@ -674,13 +739,79 @@ const DashboardScreen = () => {
             onClose={() => setIsSetupModalOpen(false)}
           />
         )}
-        <WidgetModal
-          isOpen={isWidgetModalOpen}
+        <BottomDrawer
+          isVisible={isWidgetModalOpen}
           onClose={() => setIsWidgetModalOpen(false)}
-          onSave={handleSaveWidgets}
-          initialSelectedWidgets={widgets}
-          userSubTypes={userData?.sub_type || []}
-        />
+          title="Manage Dashboard Widgets"
+          onSubmit={async () => handleSaveWidgets(tempSelectedWidgets)}
+          submitButtonText="Save Changes"
+        >
+          <View style={{ gap: 16 }}>
+            {Object.entries(categorizedWidgets).map(
+              ([category, widgetsInCategory]) => (
+                <Card
+                  key={category}
+                  style={{ backgroundColor: "transparent" }}
+                >
+                  <Card.Title
+                    title={category}
+                    left={() => {
+                      const IconComp = categoryIcons[category];
+                      return typeof IconComp === "function" ? (
+                        <IconComp
+                          color={theme.colors.onSurfaceVariant}
+                          width={22}
+                          height={22}
+                        />
+                      ) : (
+                        <Icon
+                          type={IconComp as any}
+                          size={22}
+                          color={theme.colors.onSurfaceVariant}
+                        />
+                      );
+                    }}
+                  />
+                  <Card.Content>
+                    {widgetsInCategory.map((widget) => (
+                      <TouchableRipple
+                        key={widget.id}
+                        onPress={() => handleToggleWidget(widget.id)}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            paddingVertical: 8,
+                          }}
+                        >
+                          <Checkbox.Android
+                            status={
+                              tempSelectedWidgets.includes(widget.id)
+                                ? "checked"
+                                : "unchecked"
+                            }
+                            color={theme.colors.primary}
+                          />
+                          <Text
+                            style={{
+                              marginLeft: 12,
+                              fontSize: 16,
+                              flex: 1,
+                              color: theme.colors.onSurface,
+                            }}
+                          >
+                            {widget.name}
+                          </Text>
+                        </View>
+                      </TouchableRipple>
+                    ))}
+                  </Card.Content>
+                </Card>
+              )
+            )}
+          </View>
+        </BottomDrawer>
       </SafeAreaView>
     </PlatformLayout>
   );

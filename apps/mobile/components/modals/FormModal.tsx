@@ -144,14 +144,9 @@ export const FormModal = ({
                 titleStyle={[styles.title, { color: theme.colors.onSurface }]} 
               />
               <Appbar.Action
-                icon={() => (
-                  <Icon
-                    type={"close" as any}
-                    size={22}
-                    color={theme.colors.onSurface}
-                  />
-                )}
+                icon="close"
                 onPress={handleClose}
+                color={theme.colors.onSurface}
               />
             </Appbar.Header>
 

@@ -11,8 +11,7 @@ import SalesTable, {
 } from "@/components/tables/SalesTable";
 import LoanModal from "@/components/modals/LoanModal";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
-import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { useSubTypeFinancialData } from "@/hooks/finance";
 import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import Swal from "sweetalert2";
 
@@ -57,7 +56,6 @@ const LoansPage = () => {
   const [loansCurrentPage, setLoansCurrentPage] = useState(1);
   const [loansItemsPerPage, setLoansItemsPerPage] = useState(25);
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
-  const [showFinancials, setShowFinancials] = useState(true);
 
   const fetchLoansData = useCallback(async () => {
     if (!currentUserId) {
@@ -98,12 +96,6 @@ const LoansPage = () => {
     fetchUserDetails();
     fetchLoansData();
   }, [currentUserId, fetchLoansData]);
-
-  const { fullHistoricalData } = useSubTypeFinancialData({
-    userId: currentUserId,
-    targetSubType: "All",
-    expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
-  });
 
   const currentDate = useMemo(() => new Date(), []);
 

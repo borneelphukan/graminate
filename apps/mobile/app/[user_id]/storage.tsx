@@ -1,7 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
-import WarehouseForm, {
-  WarehouseFormData,
-} from "@/components/form/warehouse/WarehouseForm";
+import { WAREHOUSE_FIELDS, WarehouseFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -319,10 +318,12 @@ const StoragePage = () => {
           style={styles.fab}
           onPress={() => setIsFormVisible(true)}
         />
-        <WarehouseForm
+        <BottomDrawer
           isVisible={isFormVisible}
           onClose={() => setIsFormVisible(false)}
           onSubmit={handleCreateWarehouse}
+          title="Add New Warehouse"
+          fields={WAREHOUSE_FIELDS}
         />
       </SafeAreaView>
     </PlatformLayout>

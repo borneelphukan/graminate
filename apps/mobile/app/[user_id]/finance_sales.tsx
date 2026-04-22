@@ -1,10 +1,10 @@
 import { Icon } from "@/components/ui/Icon";
-import SalesForm, { SalesFormData } from "@/components/form/finance/SalesForm";
+import { SALES_FIELDS_WITH_ITEMS } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
@@ -86,6 +86,18 @@ const FinanceSales = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormVisible, setFormVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [userSubTypes, setUserSubTypes] = useState<string[]>([]);
+
+  const fetchUserSubTypes = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/user/${user_id}`);
+      const user = response.data?.data?.user ?? response.data?.user;
+      setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
+    } catch (err) {
+      console.error("Error fetching user sub_types:", err);
+    }
+  }, [user_id]);
 
   useEffect(() => {
     navigation.setOptions({ title: "Sales Ledger" });
@@ -107,12 +119,34 @@ const FinanceSales = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchUserSubTypes();
+  }, [fetchData, fetchUserSubTypes]);
 
-  const handleCreateSale = async (formData: SalesFormData) => {
+  const salesFields = useMemo(() => {
+    return SALES_FIELDS_WITH_ITEMS.map((f) => {
+      if (f.name === "occupation") {
+        return { ...f, items: userSubTypes };
+      }
+      return f;
+    });
+  }, [userSubTypes]);
+
+  const handleCreateSale = async (formData: any) => {
     setSubmitting(true);
     try {
-      await axiosInstance.post("/sales/add", formData);
+      // Transform BottomDrawer data to match backend schema
+      const items = formData.items || [];
+      const payload = {
+        sales_name: formData.sales_name,
+        sales_date: formData.sales_date,
+        occupation: formData.occupation,
+        items_sold: items.map((i: any) => i.name || ""),
+        quantities_sold: items.map((i: any) => Number(i.quantity || 0)),
+        prices_per_unit: items.map((i: any) => Number(i.price_per_unit || 0)),
+        quantity_unit: items[0]?.unit || undefined,
+        user_id: Number(user_id),
+      };
+      await axiosInstance.post("/sales/add", payload);
       Alert.alert("Success", "Sale logged successfully.");
       setFormVisible(false);
       fetchData();
@@ -176,19 +210,15 @@ const FinanceSales = () => {
           onPress={() => setFormVisible(true)}
         />
 
-        <FormModal
+        <BottomDrawer
           isVisible={isFormVisible}
           onClose={() => setFormVisible(false)}
           title="Log New Sale"
-          onSubmit={() => {}} // Handled by SalesForm internal logic if we wanted, but we'll use a ref or state
+          onSubmit={handleCreateSale}
           isSubmitting={submitting}
           submitButtonText="Save Sale"
-        >
-          <SalesForm
-            userId={user_id!}
-            onSubmit={handleCreateSale}
-          />
-        </FormModal>
+          fields={salesFields}
+        />
       </SafeAreaView>
     </PlatformLayout>
   );

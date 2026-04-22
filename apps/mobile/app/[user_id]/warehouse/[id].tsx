@@ -1,10 +1,11 @@
 import { Icon } from "@/components/ui/Icon";
-import InventoryForm, {
+import {
+  INVENTORY_FIELDS,
   InventoryFormData,
-} from "@/components/form/warehouse/InventoryForm";
-import WarehouseForm, {
+  WAREHOUSE_FIELDS,
   WarehouseFormData,
-} from "@/components/form/warehouse/WarehouseForm";
+} from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -82,6 +83,18 @@ const WarehouseDetailScreen = () => {
   const [isInventoryFormOpen, setIsInventoryFormOpen] = useState(false);
   const [isWarehouseFormOpen, setIsWarehouseFormOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userSubTypes, setUserSubTypes] = useState<string[]>([]);
+
+  const fetchUserSubTypes = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/user/${user_id}`);
+      const user = response.data?.data?.user ?? response.data?.user;
+      setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
+    } catch (err) {
+      console.error("Error fetching user sub_types:", err);
+    }
+  }, [user_id]);
 
   const fetchWarehouseData = useCallback(async () => {
     if (!user_id || !id) {
@@ -111,7 +124,17 @@ const WarehouseDetailScreen = () => {
 
   useEffect(() => {
     fetchWarehouseData();
-  }, [fetchWarehouseData]);
+    fetchUserSubTypes();
+  }, [fetchWarehouseData, fetchUserSubTypes]);
+
+  const inventoryFields = useMemo(() => {
+    return INVENTORY_FIELDS.map((f) => {
+      if (f.name === "itemGroup") {
+        return { ...f, items: userSubTypes };
+      }
+      return f;
+    });
+  }, [userSubTypes]);
 
   const handleUpdateWarehouse = async (data: WarehouseFormData) => {
     if (!id) {
@@ -527,19 +550,20 @@ const WarehouseDetailScreen = () => {
         </View>
       </ScrollView>
 
-      <InventoryForm
+      <BottomDrawer
         isVisible={isInventoryFormOpen}
         onClose={() => setIsInventoryFormOpen(false)}
         onSubmit={handleAddItem}
-        formTitle={`Add Item to ${warehouseName}`}
-        userId={user_id}
+        title={`Add Item to ${warehouseName}`}
+        fields={inventoryFields}
       />
-      <WarehouseForm
+      <BottomDrawer
         isVisible={isWarehouseFormOpen}
         onClose={() => setIsWarehouseFormOpen(false)}
         onSubmit={handleUpdateWarehouse}
-        initialData={warehouseDetails}
-        formTitle={`Edit ${warehouseName}`}
+        initialValues={warehouseDetails || undefined}
+        title={`Edit ${warehouseName}`}
+        fields={WAREHOUSE_FIELDS}
       />
     </PlatformLayout>
   );

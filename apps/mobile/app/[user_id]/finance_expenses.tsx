@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
-import ExpenseForm, { ExpenseFormData } from "@/components/form/finance/ExpenseForm";
+import { EXPENSE_FIELDS, ExpenseFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -80,6 +80,18 @@ const FinanceExpenses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormVisible, setFormVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [userSubTypes, setUserSubTypes] = useState<string[]>([]);
+
+  const fetchUserSubTypes = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/user/${user_id}`);
+      const user = response.data?.data?.user ?? response.data?.user;
+      setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
+    } catch (err) {
+      console.error("Error fetching user sub_types:", err);
+    }
+  }, [user_id]);
 
   useEffect(() => {
     navigation.setOptions({ title: "Expense Ledger" });
@@ -101,7 +113,17 @@ const FinanceExpenses = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchUserSubTypes();
+  }, [fetchData, fetchUserSubTypes]);
+
+  const expenseFields = useMemo(() => {
+    return EXPENSE_FIELDS.map((f) => {
+      if (f.name === "occupation") {
+        return { ...f, items: userSubTypes };
+      }
+      return f;
+    });
+  }, [userSubTypes]);
 
   const handleCreateExpense = async (formData: ExpenseFormData) => {
     setSubmitting(true);
@@ -173,19 +195,15 @@ const FinanceExpenses = () => {
           onPress={() => setFormVisible(true)}
         />
 
-        <FormModal
+        <BottomDrawer
           isVisible={isFormVisible}
           onClose={() => setFormVisible(false)}
           title="Log New Expense"
-          onSubmit={() => {}}
+          onSubmit={handleCreateExpense}
           isSubmitting={submitting}
           submitButtonText="Save Expense"
-        >
-          <ExpenseForm
-            userId={user_id!}
-            onSubmit={handleCreateExpense}
-          />
-        </FormModal>
+          fields={expenseFields}
+        />
       </SafeAreaView>
     </PlatformLayout>
   );

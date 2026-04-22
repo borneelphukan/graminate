@@ -269,7 +269,7 @@ Email: ${formData.email || "N/A"}
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"arrow-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -290,7 +290,7 @@ Email: ${formData.email || "N/A"}
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"arrow-left" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -305,7 +305,7 @@ Email: ${formData.email || "N/A"}
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"more_vert" as any}
+                  type={"dots-vertical" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -374,7 +374,7 @@ Email: ${formData.email || "N/A"}
                   ]}
                 >
                   <Icon
-                    type={"edit" as any}
+                    type={"pencil" as any}
                     size={18}
                     color={theme.colors.onPrimary}
                   />
@@ -550,7 +550,7 @@ Email: ${formData.email || "N/A"}
             loading={saving}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
                 color={
                   !hasChanges || saving

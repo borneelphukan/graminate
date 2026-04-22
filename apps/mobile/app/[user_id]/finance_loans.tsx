@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
-import LoanForm, { LoanFormData } from "@/components/form/finance/LoanForm";
+import { LOAN_FIELDS, LoanFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -175,19 +175,15 @@ const FinanceLoans = () => {
           onPress={() => setFormVisible(true)}
         />
 
-        <FormModal
+        <BottomDrawer
           isVisible={isFormVisible}
           onClose={() => setFormVisible(false)}
           title="Log New Loan"
-          onSubmit={() => {}}
+          onSubmit={handleCreateLoan}
           isSubmitting={submitting}
           submitButtonText="Save Loan"
-        >
-          <LoanForm
-            userId={user_id!}
-            onSubmit={handleCreateLoan}
-          />
-        </FormModal>
+          fields={LOAN_FIELDS}
+        />
       </SafeAreaView>
     </PlatformLayout>
   );

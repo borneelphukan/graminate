@@ -2,7 +2,8 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
-import ApicultureForm, { ApiaryFormData, ExistingApiaryData } from "@/components/form/apiculture/ApicultureForm";
+import { APICULTURE_FIELDS, ApicultureFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -34,15 +35,17 @@ export type DailyFinancialEntry = {
   netProfit: MetricBreakdown;
 };
 
-type ApiaryApiData = {
-  apiary_id: number;
+export type ExistingApiaryData = {
+  apiary_id?: number;
   user_id: number;
   apiary_name: string;
   number_of_hives: number;
-  area: number | null;
-  created_at: string;
+  created_at?: string;
+  area?: number | null;
   bee_species?: string;
   hive_type?: string;
+  queen_source?: string;
+  notes?: string;
 };
 
 const today = new Date();
@@ -60,7 +63,7 @@ const ApicultureScreen = () => {
   const navbarIconColor = "#bbbbbc"; // gray-300
   const navbarBorder = "#374151"; // gray-700
 
-  const [apicultureRecords, setApicultureRecords] = useState<ApiaryApiData[]>([]);
+  const [apicultureRecords, setApicultureRecords] = useState<ExistingApiaryData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingApiculture, setLoadingApiculture] = useState(true);
@@ -175,7 +178,7 @@ const ApicultureScreen = () => {
     }, [fetchApiculture, fetchFinancialData])
   );
 
-  const handleAddOrUpdateApiary = async (formData: ApiaryFormData) => {
+  const handleAddOrUpdateApiary = async (formData: ApicultureFormData) => {
     if (!numericUserId) return;
     try {
       const payload = {
@@ -373,14 +376,25 @@ const ApicultureScreen = () => {
         </View>
       </ScrollView>
 
-      <ApicultureForm
+      <BottomDrawer
         isVisible={isFormVisible}
         onClose={() => {
           setIsFormVisible(false);
           setEditingApiary(null);
         }}
+        title={editingApiary ? "Edit Bee Yard" : "Add New Bee Yard"}
+        fields={APICULTURE_FIELDS}
+        initialValues={editingApiary ? {
+          apiary_name: editingApiary.apiary_name || "",
+          number_of_hives: String(editingApiary.number_of_hives || ""),
+          bee_species: editingApiary.bee_species || "",
+          hive_type: editingApiary.hive_type || "",
+          queen_source: editingApiary.queen_source || "",
+          area: editingApiary.area != null ? String(editingApiary.area) : "",
+          notes: editingApiary.notes || "",
+        } : undefined}
         onSubmit={handleAddOrUpdateApiary}
-        apiaryToEdit={editingApiary}
+        submitButtonText={editingApiary ? "Update Bee Yard" : "Save Bee Yard"}
       />
     </PlatformLayout>
   );

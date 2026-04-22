@@ -2,7 +2,8 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
-import FlockForm, { FlockFormData } from "@/components/form/poultry/FlockForm";
+import { FLOCK_FIELDS, FlockFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -464,10 +465,12 @@ const PoultryScreen = () => {
           )}
         </View>
       </ScrollView>
-      <FlockForm
+      <BottomDrawer
         isVisible={isFormVisible}
         onClose={() => setIsFormVisible(false)}
         onSubmit={handleAddFlock}
+        title="Add New Flock"
+        fields={FLOCK_FIELDS}
       />
     </PlatformLayout>
   );

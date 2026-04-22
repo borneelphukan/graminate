@@ -400,7 +400,7 @@ const SalesTable = ({
 
   return (
     <div>
-      <div className="flex py-4 justify-between items-center bg-gray-50 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 rounded-t-lg transition-colors duration-300">
+      <div className="flex py-4 justify-between items-center bg-gray-50 dark:bg-gray-800 border-b border-gray-400 dark:border-gray-700 rounded-t-lg transition-colors duration-300">
         <div className="flex gap-2">
           <SearchBar
             mode="table"
@@ -514,7 +514,7 @@ const SalesTable = ({
           hideChecks={hideChecks}
         />
       ) : sortedAndPaginatedRows.length > 0 ? (
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+        <table className="min-w-full divide-y divide-gray-400 dark:divide-gray-700 bg-white dark:bg-gray-900">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {!hideChecks && (
@@ -559,7 +559,7 @@ const SalesTable = ({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-400 dark:divide-gray-700">
             {sortedAndPaginatedRows.map((row, rowIndex) => (
               <tr
                 key={`row-${rowIndex}-${row[0]}`}

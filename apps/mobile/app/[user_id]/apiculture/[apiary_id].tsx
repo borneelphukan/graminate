@@ -1,8 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
-import ApicultureForm, {
-  ApiaryFormData,
-} from "@/components/form/apiculture/ApicultureForm";
-import HiveForm, { HiveFormData } from "@/components/form/apiculture/HiveForm";
+import { APICULTURE_FIELDS, ApicultureFormData, HIVE_FIELDS, HiveFormData } from "@/constants/formConfigs";
+import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 
@@ -105,7 +103,7 @@ const ApicultureDetailPage = () => {
     }, [fetchApiaryDetails, fetchHives])
   );
 
-  const handleApiaryFormSuccess = async (data: ApiaryFormData) => {
+  const handleApiaryFormSuccess = async (data: ApicultureFormData) => {
     if (!numericApiaryId) return;
     const payload = {
       ...data,
@@ -125,7 +123,7 @@ const ApicultureDetailPage = () => {
       honey_capacity: data.honey_capacity
         ? parseFloat(data.honey_capacity)
         : null,
-      last_inspection_date: data.last_inspection_date || null,
+      last_inspection_date: (data as any).last_inspection_date || null,
     };
     await axiosInstance.post(`/bee-hives/add`, payload);
     setShowHiveForm(false);
@@ -297,21 +295,31 @@ const ApicultureDetailPage = () => {
       </ScrollView>
 
       {showApiaryForm && apiaryData && (
-        <ApicultureForm
+        <BottomDrawer
           isVisible={showApiaryForm}
           onClose={() => setShowApiaryForm(false)}
+          title="Edit Bee Yard"
+          fields={APICULTURE_FIELDS}
+          initialValues={{
+            apiary_name: apiaryData.apiary_name || "",
+            number_of_hives: String(apiaryData.number_of_hives || ""),
+            bee_species: (apiaryData as any).bee_species || "",
+            hive_type: (apiaryData as any).hive_type || "",
+            queen_source: (apiaryData as any).queen_source || "",
+            area: apiaryData.area != null ? String(apiaryData.area) : "",
+            notes: (apiaryData as any).notes || "",
+          }}
           onSubmit={handleApiaryFormSuccess}
-          apiaryToEdit={apiaryData}
-          formTitle="Edit Bee Yard"
+          submitButtonText="Update Bee Yard"
         />
       )}
       {showHiveForm && (
-        <HiveForm
+        <BottomDrawer
           isVisible={showHiveForm}
           onClose={() => setShowHiveForm(false)}
           onSubmit={handleHiveFormSuccess}
-          apiaryId={numericApiaryId}
-          formTitle="Add New Hive"
+          title="Add New Hive"
+          fields={HIVE_FIELDS}
         />
       )}
     </PlatformLayout>

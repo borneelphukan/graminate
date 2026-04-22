@@ -2,7 +2,11 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import TaskManager from "@/components/cards/TaskManager";
-import CattleForm, { CattleFormData } from "@/components/form/cattle/CattleForm";
+import BottomDrawer from "@/components/form/BottomDrawer";
+import {
+  CATTLE_FIELDS,
+  CattleFormData,
+} from "@/constants/formConfigs";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -399,14 +403,23 @@ const CattleRearingScreen = () => {
         </View>
       </ScrollView>
 
-      <CattleForm
+      <BottomDrawer
         isVisible={isFormVisible}
-        onClose={() => {
-          setIsFormVisible(false);
-          setEditingCattle(null);
-        }}
+        onClose={() => setIsFormVisible(false)}
+        title={editingCattle ? "Edit Herd" : "Add New Herd"}
+        fields={CATTLE_FIELDS}
+        initialValues={
+          editingCattle
+            ? {
+                cattle_name: editingCattle.cattle_name || "",
+                cattle_type: editingCattle.cattle_type || "",
+                number_of_animals: String(editingCattle.number_of_animals || ""),
+                purpose: editingCattle.purpose || "",
+              }
+            : {}
+        }
         onSubmit={handleAddOrUpdateCattle}
-        cattleToEdit={editingCattle}
+        submitButtonText={editingCattle ? "Update Herd" : "Add Herd"}
       />
     </PlatformLayout>
   );
