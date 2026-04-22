@@ -18,6 +18,7 @@ const hindiSidebar = {
   finance: "वित्त प्रबंधक",
   sales: "बिक्री",
   expenses: "खर्च",
+  loans: "ऋण",
   storage: "भंडारण",
   warehouse: "गोदाम",
   inventory: "भंडार",

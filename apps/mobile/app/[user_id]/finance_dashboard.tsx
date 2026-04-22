@@ -3,6 +3,7 @@ import BudgetCard from "@/components/cards/BudgetCard";
 import CompareGraph from "@/components/cards/CompareGraph";
 import TrendGraph from "@/components/cards/TrendGraph";
 import WorkingCapital from "@/components/cards/WorkingCapital";
+import DebtAnalysis from "@/components/cards/DebtAnalysis";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -92,7 +93,88 @@ const generateDailyFinancialData = (
   actualSalesData?: Map<string, MetricBreakdown>,
   actualProcessedExpenses?: Map<string, ProcessedExpensesForDay>
 ): DailyFinancialEntry[] => {
-  /* unchanged */ return [];
+  const data: DailyFinancialEntry[] = [];
+  let loopDate = subDaysDateFns(today, count - 1);
+
+  const allOccupations = new Set<string>(baseSubTypes);
+  if (actualSalesData) {
+    actualSalesData.forEach((dayData) =>
+      dayData.breakdown.forEach((bd) => allOccupations.add(bd.name))
+    );
+  }
+  if (actualProcessedExpenses) {
+    actualProcessedExpenses.forEach((dayData) => {
+      dayData.cogs.breakdown.forEach((bd) => allOccupations.add(bd.name));
+      dayData.expenses.breakdown.forEach((bd) => allOccupations.add(bd.name));
+    });
+  }
+  if (allOccupations.size === 0 && baseSubTypes.length === 0) {
+    allOccupations.add("Uncategorized");
+  }
+  const finalOccupationsList = Array.from(allOccupations);
+
+  for (let i = 0; i < count; i++) {
+    const dateKey = formatDateFns(loopDate, "yyyy-MM-dd");
+
+    const actualRevenueForDay = actualSalesData?.get(dateKey);
+    const actualExpensesForDay = actualProcessedExpenses?.get(dateKey);
+
+    const dailyEntry: Partial<DailyFinancialEntry> = {
+      date: new Date(loopDate),
+    };
+
+    dailyEntry.revenue = actualRevenueForDay || {
+      total: 0,
+      breakdown: finalOccupationsList.map((occ) => ({ name: occ, value: 0 })),
+    };
+
+    dailyEntry.cogs = actualExpensesForDay?.cogs || {
+      total: 0,
+      breakdown: finalOccupationsList.map((occ) => ({ name: occ, value: 0 })),
+    };
+
+    dailyEntry.expenses = actualExpensesForDay?.expenses || {
+      total: 0,
+      breakdown: finalOccupationsList.map((occ) => ({ name: occ, value: 0 })),
+    };
+
+    const grossProfitTotal = dailyEntry.revenue.total - dailyEntry.cogs.total;
+    const grossProfitBreakdown: SubTypeValue[] = finalOccupationsList.map(
+      (occName) => {
+        const revVal =
+          dailyEntry.revenue!.breakdown.find((b) => b.name === occName)
+            ?.value || 0;
+        const cogsVal =
+          dailyEntry.cogs!.breakdown.find((b) => b.name === occName)?.value ||
+          0;
+        return { name: occName, value: revVal - cogsVal };
+      }
+    );
+    dailyEntry.grossProfit = {
+      total: grossProfitTotal,
+      breakdown: grossProfitBreakdown,
+    };
+
+    const netProfitTotal = grossProfitTotal - dailyEntry.expenses.total;
+    const netProfitBreakdown: SubTypeValue[] = finalOccupationsList.map(
+      (occName) => {
+        const gpVal =
+          grossProfitBreakdown.find((b) => b.name === occName)?.value || 0;
+        const expVal =
+          dailyEntry.expenses!.breakdown.find((b) => b.name === occName)
+            ?.value || 0;
+        return { name: occName, value: gpVal - expVal };
+      }
+    );
+    dailyEntry.netProfit = {
+      total: netProfitTotal,
+      breakdown: netProfitBreakdown,
+    };
+
+    data.push(dailyEntry as DailyFinancialEntry);
+    loopDate = addDaysDateFns(loopDate, 1);
+  }
+  return data;
 };
 
 const FinanceDashboardScreen = () => {
@@ -100,6 +182,7 @@ const FinanceDashboardScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
   const [subTypes, setSubTypes] = useState<string[]>([]);
+  const [loans, setLoans] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
@@ -114,16 +197,133 @@ const FinanceDashboardScreen = () => {
       sales: SaleRecord[],
       userSubTypes: string[]
     ): Map<string, MetricBreakdown> => {
-      /* unchanged */ return new Map();
+      const dailyRevenueMap = new Map<string, MetricBreakdown>();
+      const occupationsEncountered = new Set<string>(userSubTypes);
+
+      sales.forEach((sale) => {
+        const occupation = sale.occupation || "Uncategorized";
+        occupationsEncountered.add(occupation);
+      });
+      const allRelevantOccupations = Array.from(occupationsEncountered);
+
+      sales.forEach((sale) => {
+        const saleDate = parseISO(sale.sales_date);
+        const saleDateStr = formatDateFns(saleDate, "yyyy-MM-dd");
+
+        let totalSaleAmount = 0;
+        if (
+          sale.items_sold &&
+          sale.quantities_sold &&
+          sale.prices_per_unit &&
+          sale.items_sold.length === sale.quantities_sold.length &&
+          sale.items_sold.length === sale.prices_per_unit.length
+        ) {
+          for (let i = 0; i < sale.items_sold.length; i++) {
+            totalSaleAmount +=
+              (sale.quantities_sold[i] || 0) * (sale.prices_per_unit[i] || 0);
+          }
+        }
+
+        const occupation = sale.occupation || "Uncategorized";
+
+        if (!dailyRevenueMap.has(saleDateStr)) {
+          dailyRevenueMap.set(saleDateStr, {
+            total: 0,
+            breakdown: allRelevantOccupations.map((st) => ({
+              name: st,
+              value: 0,
+            })),
+          });
+        }
+
+        const dayData = dailyRevenueMap.get(saleDateStr)!;
+        dayData.total += totalSaleAmount;
+
+        const occupationEntry = dayData.breakdown.find(
+          (b) => b.name === occupation
+        );
+        if (occupationEntry) {
+          occupationEntry.value += totalSaleAmount;
+        } else {
+          const newOccEntry = { name: occupation, value: totalSaleAmount };
+          dayData.breakdown.push(newOccEntry);
+          if (!allRelevantOccupations.includes(occupation))
+            allRelevantOccupations.push(occupation);
+        }
+      });
+      return dailyRevenueMap;
     },
     []
   );
+
   const processExpensesData = useCallback(
     (
       expenses: ExpenseRecord[],
       userSubTypes: string[]
     ): Map<string, ProcessedExpensesForDay> => {
-      /* unchanged */ return new Map();
+      const dailyExpensesMap = new Map<string, ProcessedExpensesForDay>();
+      const occupationsEncountered = new Set<string>(userSubTypes);
+
+      expenses.forEach((expense) => {
+        const occupation = expense.occupation || "Uncategorized";
+        occupationsEncountered.add(occupation);
+      });
+      const allRelevantOccupations = Array.from(occupationsEncountered);
+
+      expenses.forEach((expense) => {
+        const expenseDate = parseISO(expense.date_created);
+        const expenseDateStr = formatDateFns(expenseDate, "yyyy-MM-dd");
+        const expenseAmount = Number(expense.expense) || 0;
+        const occupation = expense.occupation || "Uncategorized";
+
+        const mainCategoryGroup = categoryToMainGroup[expense.category];
+        let expenseType: "cogs" | "expenses" | null = null;
+
+        if (mainCategoryGroup === EXPENSE_TYPE_MAP.COGS) {
+          expenseType = "cogs";
+        } else if (mainCategoryGroup === EXPENSE_TYPE_MAP.OPERATING_EXPENSES) {
+          expenseType = "expenses";
+        }
+
+        if (!expenseType) return;
+
+        if (!dailyExpensesMap.has(expenseDateStr)) {
+          dailyExpensesMap.set(expenseDateStr, {
+            cogs: {
+              total: 0,
+              breakdown: allRelevantOccupations.map((st) => ({
+                name: st,
+                value: 0,
+              })),
+            },
+            expenses: {
+              total: 0,
+              breakdown: allRelevantOccupations.map((st) => ({
+                name: st,
+                value: 0,
+              })),
+            },
+          });
+        }
+
+        const dayDataContainer = dailyExpensesMap.get(expenseDateStr)!;
+        const targetMetricBreakdown = dayDataContainer[expenseType];
+
+        targetMetricBreakdown.total += expenseAmount;
+        const occupationEntry = targetMetricBreakdown.breakdown.find(
+          (b) => b.name === occupation
+        );
+
+        if (occupationEntry) {
+          occupationEntry.value += expenseAmount;
+        } else {
+          const newOccEntry = { name: occupation, value: expenseAmount };
+          targetMetricBreakdown.breakdown.push(newOccEntry);
+          if (!allRelevantOccupations.includes(occupation))
+            allRelevantOccupations.push(occupation);
+        }
+      });
+      return dailyExpensesMap;
     },
     []
   );
@@ -135,41 +335,59 @@ const FinanceDashboardScreen = () => {
     }
     const fetchInitialData = async () => {
       setIsLoadingData(true);
+      let fetchedSubTypes: string[] = [];
+      let processedSales: Map<string, MetricBreakdown> = new Map();
+      let processedExpenses: Map<string, ProcessedExpensesForDay> = new Map();
+      let finalSubTypesList: string[] = [];
+
       try {
-        const [userResponse, salesResponse, expensesResponse] =
+        const [userResponse, salesResponse, expensesResponse, loansResponse] =
           await Promise.all([
             axiosInstance.get(`/user/${user_id}`),
-            axiosInstance.get<{ sales: SaleRecord[] }>(
-              `/sales/user/${user_id}`
-            ),
-            axiosInstance.get<{ expenses: ExpenseRecord[] }>(
-              `/expenses/user/${user_id}`
-            ),
+            axiosInstance.get<{ sales: SaleRecord[] }>(`/sales/user/${user_id}`),
+            axiosInstance.get<{ expenses: ExpenseRecord[] }>(`/expenses/user/${user_id}`),
+            axiosInstance.get(`/loans/user/${user_id}`),
           ]);
-        const fetchedSubTypes = userResponse.data.data?.user?.sub_type || [];
-        const finalSubTypes = new Set<string>(fetchedSubTypes);
+
+        const userData = userResponse.data.user ?? userResponse.data.data?.user;
+        if (userData && userData.sub_type) {
+          const rawSubTypes = userData.sub_type;
+          fetchedSubTypes = Array.isArray(rawSubTypes)
+            ? rawSubTypes
+            : typeof rawSubTypes === "string"
+            ? rawSubTypes.replace(/[{}"]/g, "").split(",").filter(Boolean)
+            : [];
+        }
+        finalSubTypesList = [...fetchedSubTypes];
+
         const salesRecords = salesResponse.data.sales || [];
-        salesRecords.forEach((s) =>
-          finalSubTypes.add(s.occupation || "Uncategorized")
-        );
-        const processedSales = processSalesData(salesRecords, fetchedSubTypes);
+        setLoans(loansResponse.data || []);
+        processedSales = processSalesData(salesRecords, fetchedSubTypes);
+
+        salesRecords.forEach((s) => {
+          const occ = s.occupation || "Uncategorized";
+          if (!finalSubTypesList.includes(occ)) finalSubTypesList.push(occ);
+        });
+
         const expenseRecords = expensesResponse.data.expenses || [];
-        expenseRecords.forEach((e) =>
-          finalSubTypes.add(e.occupation || "Uncategorized")
-        );
-        const processedExpenses = processExpensesData(
-          expenseRecords,
-          fetchedSubTypes
-        );
-        setSubTypes(Array.from(finalSubTypes));
+        processedExpenses = processExpensesData(expenseRecords, fetchedSubTypes);
+
+        expenseRecords.forEach((e) => {
+          const occ = e.occupation || "Uncategorized";
+          if (!finalSubTypesList.includes(occ)) finalSubTypesList.push(occ);
+        });
+
+        setSubTypes(Array.from(new Set(finalSubTypesList)));
+
         const generatedData = generateDailyFinancialData(
           TOTAL_DAYS_FOR_HISTORICAL_DATA,
-          Array.from(finalSubTypes),
+          finalSubTypesList.length > 0 ? finalSubTypesList : ["Uncategorized"],
           processedSales,
           processedExpenses
         );
         setFullHistoricalData(generatedData);
       } catch (error) {
+        console.error("Mobile FinanceDashboard: Error fetching data:", error);
         Alert.alert("Error", "Could not load financial data.");
       } finally {
         setIsLoadingData(false);
@@ -201,40 +419,43 @@ const FinanceDashboardScreen = () => {
       {
         title: "Revenue",
         value: totals.revenue,
-        icon: "request_quote",
+        icon: "cash-multiple",
         bgColor: isDark ? "#14532d" : "#dcfce7",
         iconValueColor: isDark ? "#86efac" : "#16a34a",
+        route: `/${user_id}/finance_sales`,
       },
       {
         title: "COGS",
         value: totals.cogs,
-        icon: "add_shopping_cart",
+        icon: "cart-plus",
         bgColor: isDark ? "#713f12" : "#fef3c7",
         iconValueColor: isDark ? "#fcd34d" : "#b45309",
+        route: `/${user_id}/finance_expenses`,
       },
       {
         title: "Gross Profit",
         value: grossProfit,
-        icon: "pie_chart",
+        icon: "chart-pie",
         bgColor: isDark ? "#164e63" : "#cffafe",
         iconValueColor: isDark ? "#67e8f9" : "#0891b2",
       },
       {
         title: "Expenses",
         value: totals.expenses,
-        icon: "credit_card",
+        icon: "credit-card",
         bgColor: isDark ? "#7f1d1d" : "#fee2e2",
         iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
+        route: `/${user_id}/finance_expenses`,
       },
       {
         title: "Net Profit",
         value: netProfit,
-        icon: "savings",
+        icon: "piggy-bank",
         bgColor: isDark ? "#1e3a8a" : "#dbeafe",
         iconValueColor: isDark ? "#93c5fd" : "#2563eb",
       },
     ];
-  }, [fullHistoricalData, theme.dark]);
+  }, [fullHistoricalData, theme.dark, user_id]);
 
   const renderContent = () => {
     if (isLoadingData) {
@@ -249,7 +470,11 @@ const FinanceDashboardScreen = () => {
         <View style={styles.cardGrid}>
           {currentMonthCardData.map((card, index) => (
             <View key={index} style={styles.cardWrapper}>
-              <BudgetCard {...card} date={today} />
+              <BudgetCard
+                {...card}
+                date={today}
+                onPress={() => card.route && router.push(card.route as any)}
+              />
             </View>
           ))}
         </View>
@@ -266,6 +491,11 @@ const FinanceDashboardScreen = () => {
           initialFullHistoricalData={fullHistoricalData}
           isLoadingData={isLoadingData}
         />
+        <DebtAnalysis
+          initialFullHistoricalData={fullHistoricalData}
+          loans={loans}
+          isLoadingData={isLoadingData}
+        />
       </View>
     );
   };
@@ -279,7 +509,7 @@ const FinanceDashboardScreen = () => {
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"arrow-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />

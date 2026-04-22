@@ -18,6 +18,7 @@ const englishSidebar = {
   finance: "Finance Manager",
   sales: "Sales",
   expenses: "Expenses",
+  loans: "Loans",
   storage: "Storage",
   warehouse: "Warehouse",
   inventory: "Inventory",

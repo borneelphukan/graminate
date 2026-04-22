@@ -87,19 +87,22 @@ const WorkingCapital = ({
   }, []);
 
   const fullHistoricalWorkingCapitalData = useMemo(() => {
+    let cumulativeBalance = 0; // Starting from 0 as the 'anchor' balance for this period
+    
     return initialFullHistoricalData.map((entry) => {
-      // PROXY CALCULATION:
-      // Current Assets = Revenue (as a proxy for cash/receivables)
-      // Current Liabilities = COGS + Expenses (as a proxy for payables)
-      const currentAssets = entry.revenue.total;
-      const currentLiabilities = entry.cogs.total + entry.expenses.total;
-      const netWorkingCapital = currentAssets - currentLiabilities;
+      // Net flow for the day
+      const dailyAssets = entry.revenue.total;
+      const dailyLiabilities = entry.cogs.total + entry.expenses.total;
+      const dailyNetFlow = dailyAssets - dailyLiabilities;
+      
+      // Accumulate the balance over time
+      cumulativeBalance += dailyNetFlow;
 
       return {
         date: entry.date,
-        currentAssets,
-        currentLiabilities,
-        netWorkingCapital,
+        currentAssets: dailyAssets, // Keep daily for tooltip/ref
+        currentLiabilities: dailyLiabilities, // Keep daily for tooltip/ref
+        netWorkingCapital: parseFloat(cumulativeBalance.toFixed(2)),
       };
     });
   }, [initialFullHistoricalData]);

@@ -272,6 +272,7 @@ const SalesTable = ({
     const entityNames: Record<string, string> = {
       sales: "sales",
       expenses: "expenses",
+      loans: "loans",
     };
 
     const entityToDelete = entityNames[view] || view;
@@ -295,6 +296,7 @@ const SalesTable = ({
         const endpointMap: Record<string, string> = {
           sales: "sales",
           expenses: "expenses",
+          loans: "loans",
         };
         const endpoint = endpointMap[view] || "sales";
 
@@ -433,10 +435,11 @@ const SalesTable = ({
               disabled={filteredRows.length === 0}
               onClick={async () => {
                 if (filteredRows.length === 0) return;
-                const entityNames: Record<string, string> = {
-                  sales: "sales",
-                  expenses: "expenses",
-                };
+                  const entityNames: Record<string, string> = {
+                    sales: "sales",
+                    expenses: "expenses",
+                    loans: "loans",
+                  };
 
                 const entityToTruncate = entityNames[view] || view;
 

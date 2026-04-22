@@ -16,6 +16,7 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
+import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
@@ -200,6 +201,7 @@ const Finance = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
+  const [loans, setLoans] = useState<any[]>([]);
 
   const processSalesData = useCallback(
     (
@@ -370,13 +372,16 @@ const Finance = () => {
         const expensesPromise = axiosInstance.get<{
           expenses: ExpenseRecord[];
         }>(`/expenses/user/${userId}`);
+        const loansPromise = axiosInstance.get(`/loans/user/${userId}`);
 
-        const [salesResponse, expensesResponse] = await Promise.all([
+        const [salesResponse, expensesResponse, loansResponse] = await Promise.all([
           salesPromise,
           expensesPromise,
+          loansPromise,
         ]);
 
         const salesRecords = salesResponse.data.sales || [];
+        setLoans(loansResponse.data || []);
         processedSalesRevenueMap = processSalesData(
           salesRecords,
           fetchedSubTypes
@@ -558,6 +563,15 @@ const Finance = () => {
             <WorkingCapital
               initialFullHistoricalData={fullHistoricalData}
               isLoadingData={isLoadingData}
+            />
+          </div>
+
+          <div className="mt-8">
+            <DebtAnalysis
+              initialFullHistoricalData={fullHistoricalData}
+              loans={loans}
+              isLoadingData={isLoadingData}
+              onRefresh={() => router.reload()}
             />
           </div>
         </main>

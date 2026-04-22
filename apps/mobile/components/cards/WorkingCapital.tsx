@@ -92,15 +92,19 @@ const WorkingCapital = ({
   }, []);
 
   const fullHistoricalWorkingCapitalData = useMemo(() => {
+    let cumulativeBalance = 0;
     return initialFullHistoricalData.map((entry: DailyFinancialEntry) => {
-      const currentAssets = entry.revenue.total;
-      const currentLiabilities = entry.cogs.total + entry.expenses.total;
-      const netWorkingCapital = currentAssets - currentLiabilities;
+      const dailyAssets = entry.revenue.total;
+      const dailyLiabilities = entry.cogs.total + entry.expenses.total;
+      const dailyNetFlow = dailyAssets - dailyLiabilities;
+
+      cumulativeBalance += dailyNetFlow;
+
       return {
         date: entry.date,
-        currentAssets,
-        currentLiabilities,
-        netWorkingCapital,
+        currentAssets: dailyAssets,
+        currentLiabilities: dailyLiabilities,
+        netWorkingCapital: parseFloat(cumulativeBalance.toFixed(2)),
       };
     });
   }, [initialFullHistoricalData]);

@@ -17,7 +17,7 @@ import {
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
 
-type View = "contacts" | "companies" | "contracts" | "receipts" | "tasks";
+type View = "contacts" | "companies" | "contracts" | "tasks";
 
 type Contact = {
   contact_id: number;
@@ -95,7 +95,7 @@ type Task = {
   created_on: string;
 };
 
-type FetchedDataItem = Contact | Company | Contract | Receipt | Task;
+type FetchedDataItem = Contact | Company | Contract | Task;
 
 type AggregatedTaskProject = {
   project: string;
@@ -135,7 +135,6 @@ const CRM = () => {
   const [contactsData, setContactsData] = useState<Contact[]>([]);
   const [companiesData, setCompaniesData] = useState<Company[]>([]);
   const [contractsData, setContractsData] = useState<Contract[]>([]);
-  const [receiptsData, setReceiptsData] = useState<Receipt[]>([]);
   const [tasksData, setTasksData] = useState<Task[]>([]);
   const [fetchedData, setFetchedData] = useState<FetchedDataItem[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -180,7 +179,6 @@ const CRM = () => {
     { label: "Contacts", view: "contacts" },
     { label: "Companies", view: "companies" },
     { label: "Contracts", view: "contracts" },
-    { label: "Receipts", view: "receipts" },
     { label: "Projects", view: "tasks" },
   ];
 
@@ -198,7 +196,7 @@ const CRM = () => {
 
     const fetchData = async () => {
       try {
-        const [contactsRes, companiesRes, contractsRes, receiptsRes, tasksRes] =
+        const [contactsRes, companiesRes, contractsRes, tasksRes] =
           await Promise.all([
             axiosInstance.get<{ contacts: Contact[] }>(
               `/contacts/${userIdString}`
@@ -209,22 +207,17 @@ const CRM = () => {
             axiosInstance.get<{ contracts: Contract[] }>(
               `/contracts/${userIdString}`
             ),
-            axiosInstance.get<{ receipts: Receipt[] }>(
-              `/receipts/${userIdString}`
-            ),
             axiosInstance.get<{ tasks: Task[] }>(`/tasks/${userIdString}`),
           ]);
 
         setContactsData(contactsRes.data.contacts || []);
         setCompaniesData(companiesRes.data.companies || []);
         setContractsData(contractsRes.data.contracts || []);
-        setReceiptsData(receiptsRes.data.receipts || []);
         setTasksData(tasksRes.data.tasks || []);
       } catch {
         setContactsData([]);
         setCompaniesData([]);
         setContractsData([]);
-        setReceiptsData([]);
         setTasksData([]);
       } finally {
         setLoading(false);
@@ -245,9 +238,6 @@ const CRM = () => {
       case "contracts":
         setFetchedData(contractsData);
         break;
-      case "receipts":
-        setFetchedData(receiptsData);
-        break;
       case "tasks":
         setFetchedData(tasksData);
         break;
@@ -259,7 +249,6 @@ const CRM = () => {
     contactsData,
     companiesData,
     contractsData,
-    receiptsData,
     tasksData,
   ]);
 
@@ -375,24 +364,6 @@ const CRM = () => {
             ]),
         };
 
-      case "receipts":
-        if (fetchedData.length === 0) return { columns: [], rows: [] };
-        return {
-          columns: ["#", "Title", "Bill To", "Due Date", "Created On"],
-          rows: fetchedData
-            .filter((item): item is Receipt => "invoice_id" in item)
-            .map((item) => [
-              item.invoice_id,
-              item.title,
-              item.bill_to,
-              new Date(item.due_date).toLocaleDateString(locale, dateOptions),
-              new Date(item.receipt_date).toLocaleString(
-                locale,
-                dateTimeOptions
-              ),
-            ]),
-        };
-
       case "tasks":
         if (fetchedData.length === 0 && tasksData.length === 0)
           return { columns: [], rows: [] };
@@ -490,7 +461,7 @@ const CRM = () => {
 
   const navigateTo = (newView: string) => {
     if (
-      ["contacts", "companies", "contracts", "receipts", "tasks"].includes(
+      ["contacts", "companies", "contracts", "tasks"].includes(
         newView
       )
     ) {
@@ -535,9 +506,6 @@ const CRM = () => {
     } else if ("deal_id" in dataItem) {
       idToNavigate = dataItem.deal_id;
       path = `contracts/${idToNavigate}`;
-    } else if ("invoice_id" in dataItem) {
-      idToNavigate = dataItem.invoice_id;
-      path = `receipts/${idToNavigate}`;
     } else {
       return;
     }
@@ -560,8 +528,6 @@ const CRM = () => {
         return "Create Company";
       case "contracts":
         return "Create Contract";
-      case "receipts":
-        return "Create Receipt";
       case "tasks":
         return "Create Project";
       default:
@@ -577,8 +543,6 @@ const CRM = () => {
         return "Create Company";
       case "contracts":
         return "Create Contract";
-      case "receipts":
-        return "Create Receipt";
       case "tasks":
         return "Create Project";
       default:
@@ -598,23 +562,10 @@ const CRM = () => {
       <div className="min-h-screen container mx-auto p-4">
         <div className="flex justify-between items-center dark:bg-dark relative mb-4">
           <div className="relative">
-            <button
-              className="flex items-center text-lg font-semibold text-dark dark:text-light rounded focus:outline-none"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              aria-haspopup="true"
-              aria-expanded={dropdownOpen}
-            >
+            <h1 className="text-2xl font-bold text-dark dark:text-light">
               {dropdownItems.find((item) => item.view === view)?.label ||
                 "Select View"}
-              <Icon
-                type={dropdownOpen ? "expand_less" : "expand_more"}
-                className="ml-2 w-4 h-4"
-                aria-hidden="true"
-              />
-            </button>
-            {dropdownOpen && (
-              <SearchDropdown items={dropdownItems} navigateTo={navigateTo} />
-            )}
+            </h1>
             <p className="text-xs text-dark dark:text-light">
               {totalRecordCount} Record(s)
             </p>
@@ -659,8 +610,6 @@ const CRM = () => {
                 if ("company_id" in item && item.company_id === itemId)
                   return true;
                 if ("deal_id" in item && item.deal_id === itemId) return true;
-                if ("invoice_id" in item && item.invoice_id === itemId)
-                  return true;
                 return false;
               });
 
@@ -716,12 +665,6 @@ const CRM = () => {
                   )}
                   {view === "contracts" && (
                     <ContractForm
-                      userId={user_id}
-                      onClose={handleClosePanelAnimation}
-                    />
-                  )}
-                  {view === "receipts" && (
-                    <ReceiptForm
                       userId={user_id}
                       onClose={handleClosePanelAnimation}
                     />

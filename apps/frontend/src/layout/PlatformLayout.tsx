@@ -68,6 +68,10 @@ const PlatformLayout = ({ children }: Props) => {
             label: t("contracts"),
             path: `/${userId}/crm?view=contracts`,
           },
+          {
+            label: t("projects"),
+            path: `/${userId}/crm?view=tasks`,
+          },
         ],
       },
     ];
@@ -138,8 +142,12 @@ const PlatformLayout = ({ children }: Props) => {
             path: `/${userId}/finance_expenses`,
           },
           {
+            label: t("loans"),
+            path: `/${userId}/finance_loans`,
+          },
+          {
             label: t("receipts"),
-            path: `/${userId}/crm?view=receipts`,
+            path: `/${userId}/finance_receipts`,
           },
         ],
       },

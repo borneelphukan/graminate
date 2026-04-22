@@ -10,6 +10,7 @@ type BudgetCardProps = {
   icon: string;
   bgColor: string;
   iconValueColor: string;
+  onPress?: () => void;
 };
 
 const formatCurrency = (amount: number) => {
@@ -28,6 +29,7 @@ const BudgetCard = ({
   icon,
   bgColor,
   iconValueColor,
+  onPress,
 }: BudgetCardProps) => {
   const theme = useTheme();
   const formattedDate = date.toLocaleString("default", {
@@ -36,7 +38,7 @@ const BudgetCard = ({
   });
 
   return (
-    <Card style={[styles.card, { backgroundColor: bgColor }]}>
+    <Card style={[styles.card, { backgroundColor: bgColor }]} onPress={onPress}>
       <Card.Content style={styles.content}>
         <View style={styles.header}>
           <Icon

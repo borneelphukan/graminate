@@ -18,6 +18,7 @@ const assameseSidebar = {
   finance: "বিত্তীয় পৰিচালক",
   sales: "বিক্ৰী",
   expenses: "খৰচ",
+  loans: "ঋণ",
   storage: "সংগ্রহ",
   warehouse: "গুদাম",
   inventory: "তালিকা",

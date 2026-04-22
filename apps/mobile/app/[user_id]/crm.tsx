@@ -74,7 +74,7 @@ type Receipt = {
 };
 type Task = { task_id: number; project: string; created_at: string };
 type DataItem = Contact | Company | Contract | Receipt | Task;
-type ViewType = "contacts" | "companies" | "contracts" | "receipts" | "tasks";
+type ViewType = "contacts" | "companies" | "contracts" | "tasks";
 type ProjectGroup = { title: string; count: number; data: Task[] };
 
 // --- Helper Functions (No Changes) ---
@@ -210,41 +210,6 @@ const ContractCard = ({
   );
 };
 
-const ReceiptCard = ({
-  item,
-  onPress,
-}: {
-  item: Receipt;
-  onPress: () => void;
-}) => {
-  const theme = useTheme();
-  return (
-    <Card onPress={onPress} style={styles.card}>
-      <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
-      <Card.Content>
-        <View style={styles.cardRow}>
-          <View style={styles.infoItem}>
-            <Icon
-              type={"calendar-month" as any}
-              size={16}
-              color={theme.colors.error}
-            />
-            <Text style={[styles.infoText, { color: theme.colors.error }]}>
-              Due: {formatDate(item.due_date)}
-            </Text>
-          </View>
-          <Text
-            variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
-          >
-            Issued: {formatDate(item.receipt_date || item.created_at)}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
-};
-
 const ProjectGroupCard = ({ group }: { group: ProjectGroup }) => (
   <Card style={styles.card}>
     <Card.Title
@@ -281,7 +246,6 @@ const CRM = () => {
   const [isContactFormVisible, setContactFormVisible] = useState(false);
   const [isCompanyFormVisible, setCompanyFormVisible] = useState(false);
   const [isContractFormVisible, setContractFormVisible] = useState(false);
-  const [isReceiptFormVisible, setReceiptFormVisible] = useState(false);
   const [isTaskFormVisible, setTaskFormVisible] = useState(false);
   const [sortCriterion, setSortCriterion] = useState<string>("created_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -310,13 +274,6 @@ const CRM = () => {
         dataKey: "contracts",
         icon: "contract",
         addText: "Contract",
-      },
-      receipts: {
-        title: "Receipts",
-        endpoint: `/receipts/${user_id}`,
-        dataKey: "receipts",
-        icon: "receipt",
-        addText: "Receipt",
       },
       tasks: {
         title: "Projects",
@@ -349,11 +306,6 @@ const CRM = () => {
         { value: "deal_name", label: "Name" },
         { value: "stage", label: "Stage" },
         { value: "amount", label: "Amount" },
-      ],
-      receipts: [
-        { value: "created_at", label: "Date Created" },
-        { value: "title", label: "Title" },
-        { value: "due_date", label: "Due Date" },
       ],
       tasks: [
         { value: "title", label: "Project Name" },
@@ -493,44 +445,6 @@ const CRM = () => {
     }
   };
 
-  const handleCreateReceipt = async (formData: ReceiptFormData) => {
-    try {
-      const token = await AsyncStorage.getItem("accessToken");
-      if (!token || !user_id) throw new Error("Authentication error.");
-      const payload = {
-        user_id: Number(user_id),
-        title: formData.title,
-        bill_to: formData.billTo,
-        due_date: formData.dueDate,
-        receipt_number: formData.receiptNumber || null,
-        payment_terms: formData.paymentTerms || null,
-        notes: formData.notes || null,
-        tax: parseFloat(formData.tax) || 0,
-        discount: parseFloat(formData.discount) || 0,
-        shipping: parseFloat(formData.shipping) || 0,
-        items: formData.items
-          .map(({ description, quantity, rate }) => ({
-            description,
-            quantity: Number(quantity) || 0,
-            rate: Number(rate) || 0,
-          }))
-          .filter(
-            (item) => item.description.trim() !== "" && item.quantity > 0
-          ),
-        linked_sale_id: formData.linked_sale_id,
-      };
-      await axiosInstance.post("/receipts/add", payload);
-      Alert.alert("Success", "Receipt created successfully.");
-      await fetchData("receipts");
-    } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
-      Alert.alert("Creation Failed", errorMessage);
-      throw err;
-    }
-  };
-
   const handleCreateTask = async (formData: TaskFormData) => {
     try {
       const token = await AsyncStorage.getItem("accessToken");
@@ -620,7 +534,6 @@ const CRM = () => {
     if (view === "contacts") setContactFormVisible(true);
     else if (view === "companies") setCompanyFormVisible(true);
     else if (view === "contracts") setContractFormVisible(true);
-    else if (view === "receipts") setReceiptFormVisible(true);
     else if (view === "tasks") setTaskFormVisible(true);
   };
 
@@ -668,20 +581,6 @@ const CRM = () => {
             }
           />
         );
-      case "receipts":
-        const receipt = item as Receipt;
-        return (
-          <ReceiptCard
-            item={receipt}
-            onPress={() =>
-              router.push(
-                `/${user_id}/receipts/${
-                  receipt.invoice_id
-                }?data=${encodeURIComponent(JSON.stringify(receipt))}`
-              )
-            }
-          />
-        );
       default:
         return null;
     }
@@ -694,8 +593,6 @@ const CRM = () => {
       return `company-${(item as Company).company_id}`;
     if ((item as Contract).deal_id)
       return `contract-${(item as Contract).deal_id}`;
-    if ((item as Receipt).invoice_id)
-      return `receipt-${(item as Receipt).invoice_id}`;
     if ((item as Task).task_id) return `task-${(item as Task).task_id}`;
     return `item-${Math.random()}`;
   };
@@ -785,31 +682,9 @@ const CRM = () => {
             { borderBottomColor: theme.colors.outlineVariant },
           ]}
         >
-          <Menu
-            visible={isViewMenuVisible}
-            onDismiss={() => setViewMenuVisible(false)}
-            anchor={
-              <TouchableRipple
-                onPress={() => setViewMenuVisible(true)}
-                style={styles.titleContainer}
-              >
-                <>
-                  <Text variant="headlineMedium">
-                    {VIEW_CONFIG[view].title}
-                  </Text>
-                  <Icon type={"chevron-down" as any} size={28} />
-                </>
-              </TouchableRipple>
-            }
-          >
-            {Object.keys(VIEW_CONFIG).map((key) => (
-              <Menu.Item
-                key={key}
-                title={VIEW_CONFIG[key as ViewType].title}
-                onPress={() => handleSelectView(key as ViewType)}
-              />
-            ))}
-          </Menu>
+          <Text variant="headlineMedium" style={{ marginBottom: 8 }}>
+            {VIEW_CONFIG[view].title}
+          </Text>
 
           <View style={styles.controlsRow}>
             <Text variant="labelMedium">
@@ -860,11 +735,6 @@ const CRM = () => {
               />
             </Menu>
           </View>
-          <Searchbar
-            placeholder={`Search in ${VIEW_CONFIG[view].title}...`}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
         </View>
         {renderContent()}
         <FAB
@@ -889,12 +759,6 @@ const CRM = () => {
           isVisible={isContractFormVisible}
           onClose={() => setContractFormVisible(false)}
           onSubmit={handleCreateContract}
-          user_id={user_id}
-        />
-        <ReceiptForm
-          isVisible={isReceiptFormVisible}
-          onClose={() => setReceiptFormVisible(false)}
-          onSubmit={handleCreateReceipt}
           user_id={user_id}
         />
         <TaskForm

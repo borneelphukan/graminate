@@ -154,8 +154,12 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
             route: `/${currentUserId}/finance_expenses`,
           },
           {
+            label: "Loans",
+            route: `/${currentUserId}/finance_loans`,
+          },
+          {
             label: "Receipts",
-            route: `/${currentUserId}/crm?view=receipts`,
+            route: `/${currentUserId}/finance_receipts`,
           },
         ],
       },
