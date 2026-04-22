@@ -41,6 +41,8 @@ export class UserRepository {
           // @ts-ignore - Prisma client out of sync in IDE
           country: true,
           subscription_expires_at: true,
+          // @ts-ignore
+          opening_balance: true,
           created_at: true,
         },
       });
@@ -131,6 +133,8 @@ export class UserRepository {
             plan: user.plan,
             country: user.country || '',
             subscription_expires_at: user.subscription_expires_at,
+            // @ts-ignore
+            opening_balance: Number(user.opening_balance) || 0,
             is_subscription_active: isSubscriptionActive,
           },
         },
@@ -160,6 +164,7 @@ export class UserRepository {
       country,
       darkMode,
       widgets,
+      opening_balance,
     } = body;
 
     try {
@@ -188,6 +193,7 @@ export class UserRepository {
       if (country !== undefined) updateData.country = country;
       if (darkMode !== undefined) updateData.darkMode = darkMode;
       if (widgets !== undefined) updateData.widgets = widgets;
+      if (opening_balance !== undefined) updateData.opening_balance = Number(opening_balance);
 
       if (sub_type !== undefined) {
         const validSubTypes = [

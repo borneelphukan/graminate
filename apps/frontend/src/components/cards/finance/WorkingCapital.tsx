@@ -67,11 +67,13 @@ const formatCurrency = (amount: number) => {
 type WorkingCapitalProps = {
   initialFullHistoricalData: DailyFinancialEntry[];
   isLoadingData: boolean;
+  openingBalance: number;
 };
 
 const WorkingCapital = ({
   initialFullHistoricalData,
   isLoadingData,
+  openingBalance,
 }: WorkingCapitalProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>(
     TIME_RANGE_OPTIONS[1]
@@ -87,7 +89,7 @@ const WorkingCapital = ({
   }, []);
 
   const fullHistoricalWorkingCapitalData = useMemo(() => {
-    let cumulativeBalance = 0; // Starting from 0 as the 'anchor' balance for this period
+    let cumulativeBalance = openingBalance; // Use the opening balance as the initial anchor
     
     return initialFullHistoricalData.map((entry) => {
       // Net flow for the day

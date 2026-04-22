@@ -72,11 +72,13 @@ export type DailyFinancialEntry = {
 type WorkingCapitalProps = {
   initialFullHistoricalData: DailyFinancialEntry[];
   isLoadingData: boolean;
+  openingBalance: number;
 };
 
 const WorkingCapital = ({
   initialFullHistoricalData,
   isLoadingData,
+  openingBalance,
 }: WorkingCapitalProps) => {
   const theme = useTheme();
   const [selectedTimeRange, setSelectedTimeRange] =
@@ -92,7 +94,7 @@ const WorkingCapital = ({
   }, []);
 
   const fullHistoricalWorkingCapitalData = useMemo(() => {
-    let cumulativeBalance = 0;
+    let cumulativeBalance = openingBalance;
     return initialFullHistoricalData.map((entry: DailyFinancialEntry) => {
       const dailyAssets = entry.revenue.total;
       const dailyLiabilities = entry.cogs.total + entry.expenses.total;

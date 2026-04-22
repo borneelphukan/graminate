@@ -486,6 +486,7 @@ model users {
   widgets                 String[]         @default([])
   plan                    user_plan_type   @default(FREE)
   subscription_expires_at DateTime?        @db.Timestamp(6)
+  opening_balance         Decimal          @default(0.00) @db.Decimal(15, 2)
   apiculture              apiculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]

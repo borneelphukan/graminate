@@ -432,6 +432,7 @@ const SalesTable = ({
             <Button
               variant="secondary"
               label="Reset"
+              size="sm"
               disabled={filteredRows.length === 0}
               onClick={async () => {
                 if (filteredRows.length === 0) return;
@@ -474,6 +475,7 @@ const SalesTable = ({
             <div className="relative" ref={dropdownRef}>
               <Button
                 variant="secondary"
+                size="sm"
                 label="Download Data"
                 disabled={sortedAndPaginatedRows.length === 0}
                 onClick={() => setShowExportDropdown(!showExportDropdown)}
@@ -624,6 +626,7 @@ const SalesTable = ({
                           <Button
                             label="Add Receipt"
                             variant="secondary"
+                            size="sm"
                             onClick={() => {
                               handleAddInvoiceClick(saleId);
                             }}

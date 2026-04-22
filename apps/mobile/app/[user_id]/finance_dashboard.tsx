@@ -187,6 +187,7 @@ const FinanceDashboardScreen = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
+  const [openingBalance, setOpeningBalance] = useState<number>(0);
 
   useEffect(() => {
     navigation.setOptions({ title: "Finance Dashboard" });
@@ -357,6 +358,7 @@ const FinanceDashboardScreen = () => {
             : typeof rawSubTypes === "string"
             ? rawSubTypes.replace(/[{}"]/g, "").split(",").filter(Boolean)
             : [];
+          setOpeningBalance(Number(userData.opening_balance) || 0);
         }
         finalSubTypesList = [...fetchedSubTypes];
 
@@ -490,6 +492,7 @@ const FinanceDashboardScreen = () => {
         <WorkingCapital
           initialFullHistoricalData={fullHistoricalData}
           isLoadingData={isLoadingData}
+          openingBalance={openingBalance}
         />
         <DebtAnalysis
           initialFullHistoricalData={fullHistoricalData}
@@ -517,6 +520,12 @@ const FinanceDashboardScreen = () => {
             onPress={() => router.back()}
           />
           <Appbar.Content title="Finance Dashboard" />
+          {openingBalance === 0 && (
+            <Appbar.Action 
+              icon="plus-circle-outline" 
+              onPress={() => router.push(`/${user_id}/settings/finance_settings`)} 
+            />
+          )}
         </Appbar.Header>
         <ScrollView contentContainerStyle={styles.container}>
           {renderContent()}

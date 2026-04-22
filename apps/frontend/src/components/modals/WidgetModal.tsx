@@ -21,6 +21,16 @@ const ALL_AVAILABLE_WIDGETS = [
     requiredSubType: null,
   },
   {
+    id: "Working Capital",
+    name: "Working Capital Analysis",
+    requiredSubType: null,
+  },
+  {
+    id: "Loans & Debt",
+    name: "Loans & Debt Analysis",
+    requiredSubType: null,
+  },
+  {
     id: "Poultry Task Manager",
     name: "Poultry Task Manager",
     requiredSubType: "Poultry",
@@ -73,7 +83,12 @@ const WidgetModal = ({
 
   const categorizedWidgets = useMemo(() => {
     const groups: Record<string, typeof availableWidgets> = {};
-    const financialWidgetIds = ["Trend Graph", "Compare Graph"];
+    const financialWidgetIds = [
+      "Trend Graph",
+      "Compare Graph",
+      "Working Capital",
+      "Loans & Debt",
+    ];
     for (const widget of availableWidgets) {
       let category: string;
       if (financialWidgetIds.includes(widget.id)) {
@@ -195,7 +210,7 @@ const WidgetModal = ({
                       {category}
                     </h4>
                   </div>
-                  <div className="mt-4 h-28 grid grid-rows-3 grid-flow-col auto-cols-max gap-x-8 gap-y-3">
+                  <div className="mt-4 flex flex-col gap-3.5">
                     {widgetsInCategory.map((widget) => (
                       <div key={widget.id} className="flex items-center">
                         <Checkbox

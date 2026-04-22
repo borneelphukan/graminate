@@ -17,6 +17,8 @@ import InfoModal from "@/components/modals/InfoModal";
 import WidgetModal from "@/components/modals/WidgetModal";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
+import WorkingCapital from "@/components/cards/finance/WorkingCapital";
+import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import TaskManager from "@/components/cards/TaskManager";
 import InventoryStockCard from "@/components/cards/InventoryStock";
 
@@ -237,6 +239,8 @@ const Dashboard = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
+  const [loans, setLoans] = useState<any[]>([]);
+  const [openingBalance, setOpeningBalance] = useState<number>(0);
 
   const { timeFormat, setTimeFormat, widgets, setWidgets, updateUserWidgets } =
     useUserPreferences();
@@ -406,15 +410,19 @@ const Dashboard = () => {
     const fetchFinanceData = async () => {
       setIsFinanceLoading(true);
       try {
-        const [userResponse, salesResponse, expensesResponse] =
+        const [userResponse, salesResponse, expensesResponse, loansResponse] =
           await Promise.all([
             axiosInstance.get(`/user/${userId}`),
             axiosInstance.get<{ sales: SaleRecord[] }>(`/sales/user/${userId}`),
             axiosInstance.get<{ expenses: ExpenseRecord[] }>(
               `/expenses/user/${userId}`
             ),
+            axiosInstance.get(`/loans/user/${userId}`),
           ]);
-        const fetchedSubTypes = userResponse.data.data?.user?.sub_type || [];
+        const userDataFetched = userResponse.data.data?.user || userResponse.data.user;
+        const fetchedSubTypes = userDataFetched?.sub_type || [];
+        setOpeningBalance(Number(userDataFetched?.opening_balance) || 0);
+        setLoans(loansResponse.data || []);
         const salesRecords = salesResponse.data.sales || [];
         const expenseRecords = expensesResponse.data.expenses || [];
         const processedSales = processSalesData(salesRecords, fetchedSubTypes);
@@ -606,6 +614,21 @@ const Dashboard = () => {
               <CompareGraph
                 initialFullHistoricalData={fullHistoricalData}
                 isLoadingData={isFinanceLoading}
+              />
+            )}
+            {widgets.includes("Working Capital") && (
+              <WorkingCapital
+                initialFullHistoricalData={fullHistoricalData}
+                isLoadingData={isFinanceLoading}
+                openingBalance={openingBalance}
+              />
+            )}
+            {widgets.includes("Loans & Debt") && (
+              <DebtAnalysis
+                initialFullHistoricalData={fullHistoricalData}
+                loans={loans}
+                isLoadingData={isFinanceLoading}
+                onRefresh={() => router.reload()}
               />
             )}
           </div>

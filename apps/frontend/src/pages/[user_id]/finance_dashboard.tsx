@@ -17,7 +17,9 @@ import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
 import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
+import OpeningBalanceModal from "@/components/modals/OpeningBalanceModal";
 import Loader from "@/components/ui/Loader";
+import { Button } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 
@@ -202,6 +204,8 @@ const Finance = () => {
     DailyFinancialEntry[]
   >([]);
   const [loans, setLoans] = useState<any[]>([]);
+  const [openingBalance, setOpeningBalance] = useState<number>(0);
+  const [isOpeningBalanceModalOpen, setIsOpeningBalanceModalOpen] = useState(false);
 
   const processSalesData = useCallback(
     (
@@ -363,6 +367,8 @@ const Finance = () => {
             : typeof rawSubTypes === "string"
             ? rawSubTypes.replace(/[{}"]/g, "").split(",").filter(Boolean)
             : [];
+          setSubTypes(fetchedSubTypes);
+          setOpeningBalance(Number(userData.opening_balance) || 0);
         }
         finalSubTypesList = [...fetchedSubTypes];
 
@@ -508,10 +514,18 @@ const Finance = () => {
       <PlatformLayout>
         <main className="min-h-screen bg-light dark:bg-gray-900 p-4">
           <header className="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b border-gray-400 dark:border-gray-700">
-            <div className="flex items-center mb-3 sm:mb-0">
+            <div className="flex items-center mb-3 sm:mb-0 gap-4">
               <h1 className="text-xl font-semibold text-dark dark:text-light ml-3">
                 Finance Dashboard
               </h1>
+              {openingBalance === 0 && (
+                <Button 
+                  label="Set Opening Balance"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsOpeningBalanceModalOpen(true)}
+                />
+              )}
             </div>
           </header>
 
@@ -563,8 +577,21 @@ const Finance = () => {
             <WorkingCapital
               initialFullHistoricalData={fullHistoricalData}
               isLoadingData={isLoadingData}
+              openingBalance={openingBalance}
             />
           </div>
+
+          <OpeningBalanceModal
+            isOpen={isOpeningBalanceModalOpen}
+            onClose={() => setIsOpeningBalanceModalOpen(false)}
+            userId={userId || ""}
+            initialValue={openingBalance}
+            onSuccess={(val) => {
+              setOpeningBalance(val);
+              // Force refresh of working capital data by updating historical data reference or reloading
+              router.reload();
+            }}
+          />
 
           <div className="mt-8">
             <DebtAnalysis

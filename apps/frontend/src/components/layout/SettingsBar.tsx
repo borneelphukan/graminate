@@ -102,6 +102,11 @@ const SettingsBar = () => {
     }
 
     yourPreferenceSubItems.push({
+      label: t("finance" as GeneralTranslationKeys),
+      href: `/${userId}/settings/finance_settings`,
+    });
+
+    yourPreferenceSubItems.push({
       label: t("notifications" as GeneralTranslationKeys),
       href: `/${userId}/settings/notifications`,
     });
