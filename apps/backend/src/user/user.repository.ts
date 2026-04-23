@@ -102,7 +102,8 @@ export class UserRepository {
       const now = new Date();
       const isSubscriptionActive =
         user.plan !== 'FREE' ||
-        (user.subscription_expires_at && new Date(user.subscription_expires_at) > now);
+        (user.subscription_expires_at &&
+          new Date(user.subscription_expires_at) > now);
 
       return {
         status: 200,
@@ -121,7 +122,10 @@ export class UserRepository {
             sub_type: Array.isArray(user.sub_type)
               ? user.sub_type
               : typeof user.sub_type === 'string'
-                ? (user.sub_type as string).replace(/[{}"]/g, '').split(',').filter(Boolean)
+                ? (user.sub_type as string)
+                    .replace(/[{}"]/g, '')
+                    .split(',')
+                    .filter(Boolean)
                 : [],
             address_line_1: user.address_line_1 || '',
             address_line_2: user.address_line_2 || '',
@@ -131,9 +135,8 @@ export class UserRepository {
             darkMode: user.darkMode,
             widgets: user.widgets || [],
             plan: user.plan,
-            country: user.country || '',
+            country: (user as any).country || '',
             subscription_expires_at: user.subscription_expires_at,
-            // @ts-ignore
             opening_balance: Number(user.opening_balance) || 0,
             is_subscription_active: isSubscriptionActive,
           },
@@ -141,7 +144,7 @@ export class UserRepository {
       };
     } catch (err) {
       console.error('Error fetching user:', err);
-      return { status: 500, data: { error: 'Failed to fetch user' } };
+      throw err;
     }
   }
 

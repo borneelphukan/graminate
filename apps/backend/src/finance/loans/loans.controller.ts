@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { LoansService } from './loans.service';
 import { CreateLoanDto, UpdateLoanDto } from './loans.dto';
@@ -19,15 +20,15 @@ export class LoansController {
 
   @Post('user/:userId')
   create(
-    @Param('userId') userId: string,
+    @Param('userId', ParseIntPipe) userId: number,
     @Body() createLoanDto: CreateLoanDto,
   ) {
-    return this.loansService.create(+userId, createLoanDto);
+    return this.loansService.create(userId, createLoanDto);
   }
 
   @Get('user/:userId')
-  findAll(@Param('userId') userId: string) {
-    return this.loansService.findAll(+userId);
+  findAll(@Param('userId', ParseIntPipe) userId: number) {
+    return this.loansService.findAll(userId);
   }
 
   @Get(':id')

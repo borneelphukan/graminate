@@ -9,6 +9,7 @@ import {
   Request,
   Delete,
   UnauthorizedException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserService } from './user.service';
@@ -46,9 +47,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getUser(@Param('id') id: string, @Request() req) {
-    if (String(req.user.userId) !== id) throw new UnauthorizedException();
-    return this.userService.getUserById(id);
+  async getUser(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    if (req.user.userId !== id) throw new UnauthorizedException();
+    return this.userService.getUserById(String(id));
   }
 
   @UseGuards(JwtAuthGuard)

@@ -165,8 +165,13 @@ export const UserPreferencesProvider = ({
     setIsSubTypesLoading(true);
     try {
       const response = await axiosInstance.get(`/user/${userId}`);
+      console.log("fetchUserSubTypes response:", response.data);
       const user = response.data?.data?.user ?? response.data?.user;
-      if (!user) throw new Error("User payload missing");
+      console.log("fetchUserSubTypes extracted user:", user);
+      if (!user) {
+        console.error("fetchUserSubTypes: User missing in response data", response.data);
+        throw new Error("User payload missing");
+      }
 
       setIsFirstLoginState(!user.business_name);
       setUserType(user.type || "Producer");
@@ -182,6 +187,7 @@ export const UserPreferencesProvider = ({
       setCountry(null);
       setSubTypesState([]);
       setWidgetsState([]);
+      throw error;
     } finally {
       setIsSubTypesLoading(false);
     }
