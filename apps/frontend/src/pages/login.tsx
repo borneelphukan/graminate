@@ -331,7 +331,7 @@ const SignIn = () => {
               <button
                 className={`flex-1 py-2 text-center font-medium transition-all ${
                   isLogin
-                    ? "border-b-2 border-brand-mute-green text-brand-green"
+                    ? "border-b-2 border-brand-mute-green text-green-200"
                     : "text-gray-300 hover:text-brand-green"
                 }`}
                 onClick={() => setIsLogin(true)}
@@ -341,7 +341,7 @@ const SignIn = () => {
               <button
                 className={`flex-1 py-2 text-center font-medium transition-all ${
                   !isLogin
-                    ? "border-b-2 border-brand-mute-green text-brand-green"
+                    ? "border-b-2 border-brand-mute-green text-green-200"
                     : "text-gray-300 hover:text-brand-green"
                 }`}
                 onClick={() => setIsLogin(false)}
@@ -350,8 +350,14 @@ const SignIn = () => {
               </button>
             </div>
 
-            {isLogin ? (
-              <>
+            <div className="relative overflow-hidden transition-all duration-500 ease-in-out">
+              <div
+                className={`transition-all duration-500 ease-in-out transform ${
+                  isLogin
+                    ? "opacity-100 translate-x-0 scale-100 relative"
+                    : "opacity-0 -translate-x-full scale-95 pointer-events-none absolute w-full top-0"
+                }`}
+              >
                 <form onSubmit={handleLogin}>
                   <div className="mb-4">
                     <TextField
@@ -400,9 +406,15 @@ const SignIn = () => {
                     </button>
                   </p>
                 </form>
-              </>
-            ) : (
-              <>
+              </div>
+
+              <div
+                className={`transition-all duration-500 ease-in-out transform ${
+                  !isLogin
+                    ? "opacity-100 translate-x-0 scale-100 relative"
+                    : "opacity-0 translate-x-full scale-95 pointer-events-none absolute w-full top-0"
+                }`}
+              >
                 <form onSubmit={handleRegister}>
                   <div className="flex flex-row gap-2">
                     <div className="mb-4">
@@ -508,8 +520,8 @@ const SignIn = () => {
                     className="w-full"
                   />
                 </form>
-              </>
-            )}
+              </div>
+            </div>
           </div>
         </div>
       </LoginLayout>

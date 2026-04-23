@@ -38,7 +38,7 @@ export class PaymentRepository {
   }
 
   async createOrder(createPaymentDto: CreatePaymentDto) {
-    const { amount, currency, userId } = createPaymentDto;
+    const { amount, currency, userId, planType } = createPaymentDto;
     const options = {
       amount: amount * 100,
       currency,
@@ -60,8 +60,9 @@ export class PaymentRepository {
           razorpay_order_id: razorpayOrder.id,
           amount,
           currency,
+          plan_type: planType as any,
           status: 'PENDING',
-        },
+        } as any,
       });
     } catch (error) {
       this.logger.error('Error saving payment to database:', error);
@@ -72,7 +73,7 @@ export class PaymentRepository {
   }
 
   async verifyPayment(verifyPaymentDto: VerifyPaymentDto) {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planType } =
       verifyPaymentDto;
 
     const body = razorpay_order_id + '|' + razorpay_payment_id;
@@ -105,6 +106,7 @@ export class PaymentRepository {
 
     await this.updateUserSubscription(
       updatedPayment.user_id,
+      planType as any,
       updatedPayment.razorpay_order_id,
     );
 
@@ -175,6 +177,7 @@ export class PaymentRepository {
 
   private async updateUserSubscription(
     userId: number,
+    planType: 'BASIC' | 'PRO',
     orderIdForLogging: string,
   ) {
     try {
@@ -184,13 +187,13 @@ export class PaymentRepository {
       await this.prisma.users.update({
         where: { user_id: userId },
         data: {
-          plan: 'PRO',
+          plan: planType,
           subscription_expires_at: newExpiryDate,
         },
       });
 
       this.logger.log(
-        `Successfully updated subscription for user ${userId} from payment ${orderIdForLogging}`,
+        `Successfully updated subscription to ${planType} for user ${userId} from payment ${orderIdForLogging}`,
       );
     } catch (error) {
       this.logger.error(

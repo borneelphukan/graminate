@@ -9,7 +9,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "@/components/modals/InfoModal";
 import CookieDisclaimer from "@/components/ui/CookieDisclaimer";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import FirstLoginModal from "@/components/modals/FirstLoginModal";
+import Head from "next/head";
 import { getTranslator } from "@/translations";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
@@ -38,7 +38,7 @@ const PlatformLayout = ({ children }: Props) => {
   const searchParams = useSearchParams();
   const { user_id } = router.query;
 
-  const { isFirstLogin, fetchUserSubTypes, language, userType, subTypes } = useUserPreferences();
+  const { isFirstLogin, fetchUserSubTypes, language, userType, subTypes, plan, entityType } = useUserPreferences();
 
   const t = useMemo(() => getTranslator(language), [language]);
 
@@ -106,8 +106,8 @@ const PlatformLayout = ({ children }: Props) => {
       }
     }
 
-    items.push(
-      {
+    if (entityType !== "Individual") {
+      items.push({
         icon: "group",
         label: t("employees"),
         section: "Labour",
@@ -122,7 +122,10 @@ const PlatformLayout = ({ children }: Props) => {
             path: `/${userId}/labour_payment`,
           },
         ],
-      },
+      });
+    }
+
+    items.push(
       {
         icon: "attach_money",
         label: t("finance"),
@@ -166,10 +169,10 @@ const PlatformLayout = ({ children }: Props) => {
     );
 
     return items;
-  }, [userId, userType, subTypes, t]);
+  }, [userId, userType, subTypes, entityType, t]);
 
   const activePath = useMemo(() => {
-    const params = searchParams.toString();
+    const params = searchParams?.toString() || "";
     const base = router.asPath.split("?")[0];
     return params ? `${base}?${params}` : base;
   }, [router.asPath, searchParams]);
@@ -219,7 +222,6 @@ const PlatformLayout = ({ children }: Props) => {
 
         const navbarHeight = 64;
         
-        // Allow temporary free movement during drag, but limit to loosely within screen
         newX = Math.max(-20, Math.min(window.innerWidth - 30, newX));
         newY = Math.max(navbarHeight, Math.min(window.innerHeight - 50, newY));
 
@@ -244,16 +246,14 @@ const PlatformLayout = ({ children }: Props) => {
         let finalX;
         let finalY = Math.max(72, Math.min(window.innerHeight - buttonSize - margin, prev.y));
         
-        // Check for Docking (hiding at edges) - ONLY FOR RIGHT
         if (prev.x > window.innerWidth - buttonSize - 5) {
           setIsDocked(true);
           setDockSide("right");
           finalX = window.innerWidth - buttonSize / 2;
         } else {
           setIsDocked(false);
-          // Snap to Left or Right
           if (prev.x < halfWindow) {
-            finalX = sidebarWidth + margin; // Always fully visible on left
+            finalX = sidebarWidth + margin;
             setDockSide("left");
           } else {
             finalX = window.innerWidth - buttonSize - margin;
@@ -287,7 +287,6 @@ const PlatformLayout = ({ children }: Props) => {
   const handleChatToggle = () => {
     if (!dragInfo.current.moved) {
       if (isDocked) {
-        // Undock on click
         setIsDocked(false);
         const sidebarWidth = window.innerWidth > 1024 ? 260 : 0;
         const margin = 16;
@@ -392,51 +391,6 @@ const PlatformLayout = ({ children }: Props) => {
     verifySession(user_id as string).catch(console.error);
   }, [router.isReady, user_id, verifySession]);
 
-  const handleFirstLoginSubmit = useCallback(
-    async (
-      businessName: string,
-      businessType: string,
-      subTypes?: string[],
-      addressLine1?: string,
-      addressLine2?: string,
-      city?: string,
-      state?: string,
-      postalCode?: string
-    ) => {
-      try {
-        await axiosInstance.put(`/user/${userId}/first-login-setup`, {
-          business_name: businessName,
-          business_type: businessType,
-          sub_type: subTypes,
-          address_line_1: addressLine1,
-          address_line_2: addressLine2,
-          city,
-          state,
-          postal_code: postalCode,
-        });
-
-        await fetchUserSubTypes(userId);
-
-        setModalState({
-          isOpen: true,
-          title: "Setup Complete!",
-          text: "Welcome aboard! Your profile is now ready.",
-          variant: "success",
-        });
-      } catch (error) {
-        console.error("Failed to save first login details:", error);
-        setModalState({
-          isOpen: true,
-          title: "Setup Failed",
-          text: "We couldn't save your details. Please try again.",
-          variant: "error",
-        });
-        throw error;
-      }
-    },
-    [userId, fetchUserSubTypes]
-  );
-
   if (!router.isReady || isLoadingAuth) {
     return null;
   }
@@ -459,12 +413,7 @@ const PlatformLayout = ({ children }: Props) => {
 
   return (
     <>
-      <FirstLoginModal
-        isOpen={isFirstLogin}
-        userId={userId}
-        onSubmit={handleFirstLoginSubmit}
-        onClose={() => {}}
-      />
+
 
       <div className="flex flex-col min-h-screen bg-light dark:bg-dark text-dark dark:text-light">
         <Navbar
@@ -503,64 +452,68 @@ const PlatformLayout = ({ children }: Props) => {
           </main>
         </div>
 
-        <div
-          style={
-            chatPos.x !== -1
-              ? {
-                  position: "fixed",
-                  left: `${chatPos.x}px`,
-                  top: `${chatPos.y}px`,
-                  zIndex: 50,
-                  transition: dragInfo.current.isDragging ? "none" : "all 0.3s ease-out",
-                }
-              : {
-                  position: "fixed",
-                  bottom: "16px",
-                  right: "16px",
-                  zIndex: 50,
-                }
-          }
-          onMouseDown={handleDragStart}
-        >
-          <Button
-            onClick={handleChatToggle}
-            variant={isDocked ? "ghost" : "secondary"}
-            shape={isDocked ? "default" : "circle"}
-            size="icon"
-            className={`h-14 w-14 p-0 shadow-lg active:scale-95 transition-all relative ${
-              dragInfo.current.isDragging ? "cursor-grabbing" : "cursor-grab"
-            } ${
-              isDocked
-                ? `border border-gray-300 opacity-50 hover:bg-gray-300 ${
-                    dockSide === "left"
-                      ? "rounded-l-none rounded-r-lg"
-                      : "rounded-r-none rounded-l-lg"
-                  }`
-                : ""
-            }`}
-          >
-            {isDocked ? (
-              <Icon
-                type={dockSide === "left" ? "chevron_right" : "chevron_left"}
-                className={`text-2xl! text-gray-200 ${
-                  dockSide === "left" ? "translate-x-4" : "-translate-x-4"
-                } animate-pulse`}
-              />
-            ) : (
-              <Icon type="smart_toy" size="lg" />
-            )}
-          </Button>
-        </div>
-
-        {isChatOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-            onClick={() => setIsChatOpen(false)}
-          >
-            <div onClick={(e) => e.stopPropagation()}>
-              <ChatWindow userId={userId} />
+        {plan === "PRO" && (
+          <>
+            <div
+              style={
+                chatPos.x !== -1
+                  ? {
+                      position: "fixed",
+                      left: `${chatPos.x}px`,
+                      top: `${chatPos.y}px`,
+                      zIndex: 50,
+                      transition: dragInfo.current.isDragging ? "none" : "all 0.3s ease-out",
+                    }
+                  : {
+                      position: "fixed",
+                      bottom: "16px",
+                      right: "16px",
+                      zIndex: 50,
+                    }
+              }
+              onMouseDown={handleDragStart}
+            >
+              <Button
+                onClick={handleChatToggle}
+                variant={isDocked ? "ghost" : "secondary"}
+                shape={isDocked ? "default" : "circle"}
+                size="icon"
+                className={`h-14 w-14 p-0 shadow-lg active:scale-95 transition-all relative ${
+                  dragInfo.current.isDragging ? "cursor-grabbing" : "cursor-grab"
+                } ${
+                  isDocked
+                    ? `border border-gray-300 opacity-50 hover:bg-gray-300 ${
+                        dockSide === "left"
+                          ? "rounded-l-none rounded-r-lg"
+                          : "rounded-r-none rounded-l-lg"
+                      }`
+                    : ""
+                }`}
+              >
+                {isDocked ? (
+                  <Icon
+                    type={dockSide === "left" ? "chevron_right" : "chevron_left"}
+                    className={`text-2xl! text-gray-200 ${
+                      dockSide === "left" ? "translate-x-4" : "-translate-x-4"
+                    } animate-pulse`}
+                  />
+                ) : (
+                  <Icon type="smart_toy" size="lg" />
+                )}
+              </Button>
             </div>
-          </div>
+
+            {isChatOpen && (
+              <div
+                className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+                onClick={() => setIsChatOpen(false)}
+              >
+                <div onClick={(e) => e.stopPropagation()}>
+                  <ChatWindow userId={userId} />
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -580,3 +533,4 @@ const PlatformLayout = ({ children }: Props) => {
 };
 
 export default PlatformLayout;
+

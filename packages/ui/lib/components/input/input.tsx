@@ -111,7 +111,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className={
               hideLabel
                 ? "sr-only"
-                : "text-neutral-gray font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
+                : "text-dark font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
             }
           >
             {label}
@@ -127,7 +127,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="text-neutral-gray text-sm font-medium shrink-0 flex items-center gap-1 hover:text-neutral-dark-gray transition-colors focus:outline-none"
+                    className="text-dark text-sm font-medium shrink-0 flex items-center gap-1 hover:text-neutral-dark-gray transition-colors focus:outline-none"
                   >
                     {dropdown.left.value}
                     <Icon type="arrow_drop_down" className="size-4" />
@@ -168,7 +168,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                       <span className="flex items-center gap-2">
                         <span>{country.flag}</span>
                         <span>{country.label}</span>
-                        <span className="text-neutral-gray">
+                        <span className="text-dark">
                           {country.code}
                         </span>
                       </span>
@@ -180,13 +180,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
             {icon?.left && (
               <Icon
-                className="text-neutral-gray group-focus-within/input:text-neutral-dark-gray shrink-0"
+                className="text-dark group-focus-within/input:text-neutral-dark-gray shrink-0"
                 type={icon.left}
               />
             )}
 
             <input
-              className={`border-none px-0.5 flex-1 w-full placeholder-neutral-gray focus:outline-none focus:placeholder-neutral-dark-gray text-sm leading-none ${
+              className={`border-none px-0.5 flex-1 w-full text-dark focus:outline-none focus:placeholder-neutral-dark-gray text-sm leading-none ${
                 options ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" : ""
               }`}
               id={id}
@@ -201,7 +201,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-neutral-gray hover:text-neutral-dark-gray transition-colors shrink-0 focus:outline-none"
+                className="text-dark hover:text-neutral-dark-gray transition-colors shrink-0 focus:outline-none"
                 tabIndex={-1}
               >
                 <Icon type={showPassword ? "visibility_off" : "visibility"} />
@@ -209,7 +209,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             {icon?.right && !isPasswordField && (
               <Icon
-                className="text-neutral-gray group-focus-within/input:text-neutral-dark-gray shrink-0"
+                className="text-dark group-focus-within/input:text-neutral-dark-gray shrink-0"
                 type={icon.right}
               />
             )}
@@ -231,7 +231,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     type="button"
                     onClick={() => handleSelectorChange("up")}
                     tabIndex={-1}
-                    className="text-neutral-gray hover:text-neutral-dark-gray active:text-brand-green transition-colors flex items-center justify-center h-3"
+                    className="text-dark hover:text-neutral-dark-gray active:text-brand-green transition-colors flex items-center justify-center h-3"
                   >
                     <Icon type="keyboard_arrow_up" className="size-4" />
                   </button>
@@ -239,7 +239,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                     type="button"
                     onClick={() => handleSelectorChange("down")}
                     tabIndex={-1}
-                    className="text-neutral-gray hover:text-neutral-dark-gray active:text-brand-green transition-colors flex items-center justify-center h-3"
+                    className="text-dark hover:text-neutral-dark-gray active:text-brand-green transition-colors flex items-center justify-center h-3"
                   >
                     <Icon type="keyboard_arrow_down" className="size-4" />
                   </button>
@@ -257,7 +257,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="text-neutral-gray text-sm font-medium shrink-0 flex items-center gap-1 hover:text-neutral-dark-gray transition-colors focus:outline-none"
+                    className="text-dark text-sm font-medium shrink-0 flex items-center gap-1 hover:text-neutral-dark-gray transition-colors focus:outline-none"
                   >
                     {dropdown.right.value}
                     <Icon type="arrow_drop_down" className="size-4" />
@@ -280,7 +280,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {(hint || error) && (
             <div className="flex flex-col gap-1 pt-0.5">
               {hint && (
-                <span className="text-neutral-gray font-normal text-xs">
+                <span className="text-green-200 font-normal text-xs">
                   {hint}
                 </span>
               )}

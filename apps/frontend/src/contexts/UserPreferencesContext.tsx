@@ -26,7 +26,10 @@ type UserPreferencesContextType = {
   userType: string | null;
   plan: string | null;
   country: string | null;
+  setCountry: (country: string | null) => void;
   subTypes: string[];
+  entityType: string | null;
+  setEntityType: (type: string | null) => void;
   isSubTypesLoading: boolean;
   fetchUserSubTypes: (userId: string | number) => Promise<void>;
   setUserSubTypes: (subTypes: string[]) => void;
@@ -102,6 +105,7 @@ export const UserPreferencesProvider = ({
   const [plan, setPlan] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
   const [subTypes, setSubTypesState] = useState<string[]>([]);
+  const [entityType, setEntityType] = useState<string | null>(null);
   const [widgets, setWidgetsState] = useState<string[]>([]);
   const [isSubTypesLoading, setIsSubTypesLoading] = useState(true);
 
@@ -162,15 +166,25 @@ export const UserPreferencesProvider = ({
   );
 
   const fetchUserSubTypes = useCallback(async (userId: string | number) => {
+    if (!userId || userId === "undefined" || userId === "null") {
+      console.warn("fetchUserSubTypes called with invalid userId:", userId);
+      setIsSubTypesLoading(false);
+      return;
+    }
     setIsSubTypesLoading(true);
     try {
       const response = await axiosInstance.get(`/user/${userId}`);
-      console.log("fetchUserSubTypes response:", response.data);
+      console.log("fetchUserSubTypes response data:", response.data);
+      
+      // Handle the { status, data: { user } } format from repository
       const user = response.data?.data?.user ?? response.data?.user;
-      console.log("fetchUserSubTypes extracted user:", user);
+      
       if (!user) {
         console.error("fetchUserSubTypes: User missing in response data", response.data);
-        throw new Error("User payload missing");
+        if (response.data?.status === 404) {
+          throw new Error(`User ${userId} not found in database`);
+        }
+        throw new Error("User payload missing from server response");
       }
 
       setIsFirstLoginState(!user.business_name);
@@ -178,6 +192,7 @@ export const UserPreferencesProvider = ({
       setPlan(user.plan || null);
       setCountry(user.country || null);
       setSubTypesState(Array.isArray(user.sub_type) ? user.sub_type : []);
+      setEntityType(user.entity_type || null);
       setWidgetsState(Array.isArray(user.widgets) ? user.widgets : []);
     } catch (error) {
       console.error("Error fetching user sub_types:", error);
@@ -219,7 +234,10 @@ export const UserPreferencesProvider = ({
         userType,
         plan,
         country,
+        setCountry,
         subTypes,
+        entityType,
+        setEntityType,
         isSubTypesLoading,
         fetchUserSubTypes,
         setUserSubTypes,

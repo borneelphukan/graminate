@@ -49,14 +49,24 @@ export class UserController {
   @Get(':id')
   async getUser(@Param('id', ParseIntPipe) id: number, @Request() req) {
     if (req.user.userId !== id) throw new UnauthorizedException();
-    return this.userService.getUserById(String(id));
+    try {
+      return await this.userService.getUserById(String(id));
+    } catch (err) {
+      console.error('Error in UserController.getUser:', err);
+      throw err;
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateUser(@Param('id') id: string, @Body() body: any, @Request() req) {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
-    return this.userService.updateUser(id, body);
+    try {
+      return await this.userService.updateUser(id, body);
+    } catch (err) {
+      console.error('Error in UserController.updateUser:', err);
+      throw err;
+    }
   }
 
   @UseGuards(JwtAuthGuard)

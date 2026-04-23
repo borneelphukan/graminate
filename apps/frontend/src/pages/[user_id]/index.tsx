@@ -218,6 +218,17 @@ const Dashboard = () => {
   const [isSetupModalOpen, setIsSetupModalOpen] = useState<boolean>(false);
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<boolean>(false);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const { 
+    setIsFirstLogin, 
+    setEntityType: setEntityTypeContext, 
+    setCountry: setCountryContext,
+    setTimeFormat,
+    setWidgets,
+    widgets,
+    updateUserWidgets,
+    timeFormat,
+    fetchUserSubTypes
+  } = useUserPreferences();
   const [successModal, setSuccessModal] = useState({
     isOpen: false,
     title: "",
@@ -242,9 +253,6 @@ const Dashboard = () => {
   const [loans, setLoans] = useState<any[]>([]);
   const [openingBalance, setOpeningBalance] = useState<number>(0);
 
-  const { timeFormat, setTimeFormat, widgets, setWidgets, updateUserWidgets } =
-    useUserPreferences();
-
   useEffect(() => {
     const timerId = setInterval(() => {
       setCurrentDateTime(new Date());
@@ -262,6 +270,7 @@ const Dashboard = () => {
       try {
         const response = await axiosInstance.get(`/user/${userId}`);
         const fetchedUser = response.data?.data?.user as User | undefined;
+        console.log("Fetched user in Dashboard:", fetchedUser);
         if (fetchedUser) {
           if (!isMounted) return;
           setUserData(fetchedUser);
@@ -465,8 +474,11 @@ const Dashboard = () => {
     state?: string,
     postalCode?: string,
     country?: string,
-    darkMode?: boolean
+    darkMode?: boolean,
+    userType?: string,
+    businessSize?: string
   ) => {
+    console.log("handleFirstLogin called with:", { businessName, businessType, userType, country });
     try {
       await axiosInstance.put(`/user/${userId}`, {
         business_name: businessName,
@@ -479,6 +491,8 @@ const Dashboard = () => {
         postal_code: postalCode,
         country: country,
         darkMode: darkMode,
+        entity_type: userType,
+        business_size: businessSize,
       });
       setSuccessModal({
         isOpen: true,
@@ -499,9 +513,23 @@ const Dashboard = () => {
               postal_code: postalCode,
               country: country,
               darkMode: darkMode || false,
+              entity_type: userType,
+              business_size: businessSize,
             }
           : prev
       );
+
+      // Close modal and update global context state
+      setIsFirstLogin(false);
+      setIsSetupModalOpen(false);
+      
+      if (userId) {
+        await fetchUserSubTypes(userId);
+      }
+      
+      if (userType) setEntityTypeContext(userType);
+      if (country) setCountryContext(country);
+      
     } catch (error) {
       console.error("Error updating business info:", error);
       setErrorModal({

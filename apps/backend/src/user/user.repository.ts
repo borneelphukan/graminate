@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
 import * as argon2 from 'argon2';
@@ -38,12 +38,12 @@ export class UserRepository {
           sub_type: true,
           plan: true,
           phone_number: true,
-          // @ts-ignore - Prisma client out of sync in IDE
           country: true,
           subscription_expires_at: true,
-          // @ts-ignore
-          opening_balance: true,
+          // opening_balance: true,
           created_at: true,
+          // entity_type: true,
+          // business_size: true,
         },
       });
 
@@ -59,9 +59,9 @@ export class UserRepository {
       });
 
       return { status: 200, data: { users } };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching all users:', err);
-      return { status: 500, data: { error: 'Failed to fetch all users' } };
+      throw new InternalServerErrorException(err.message || 'Failed to fetch all users');
     }
   }
 
@@ -94,6 +94,8 @@ export class UserRepository {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(id) },
       });
+
+      console.log('Fetched user in getUserById:', JSON.stringify(user, null, 2));
 
       if (!user) {
         return { status: 404, data: { error: 'User not found' } };
@@ -134,17 +136,19 @@ export class UserRepository {
             postal_code: user.postal_code || '',
             darkMode: user.darkMode,
             widgets: user.widgets || [],
-            plan: user.plan,
-            country: (user as any).country || '',
+            plan: String(user.plan),
+            country: String((user as any).country || ''),
             subscription_expires_at: user.subscription_expires_at,
             opening_balance: Number(user.opening_balance) || 0,
             is_subscription_active: isSubscriptionActive,
+            entity_type: (user as any).entity_type,
+            business_size: (user as any).business_size,
           },
         },
       };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching user:', err);
-      throw err;
+      throw new InternalServerErrorException(err.message || 'Failed to fetch user');
     }
   }
 
@@ -168,6 +172,8 @@ export class UserRepository {
       darkMode,
       widgets,
       opening_balance,
+      entity_type,
+      business_size,
     } = body;
 
     try {
@@ -197,6 +203,8 @@ export class UserRepository {
       if (darkMode !== undefined) updateData.darkMode = darkMode;
       if (widgets !== undefined) updateData.widgets = widgets;
       if (opening_balance !== undefined) updateData.opening_balance = Number(opening_balance);
+      if (entity_type !== undefined) updateData.entity_type = entity_type;
+      if (business_size !== undefined) updateData.business_size = business_size;
 
       if (sub_type !== undefined) {
         const validSubTypes = [
@@ -327,10 +335,11 @@ export class UserRepository {
           city: city || null,
           state: state || null,
           postal_code: postal_code || null,
-          // @ts-ignore - Prisma client out of sync in IDE
           country: country || null,
           darkMode: darkMode || false,
           widgets: ['Task Calendar'],
+          entity_type: body.entity_type || null,
+          business_size: body.business_size || null,
           plan: 'FREE',
           subscription_expires_at: null,
         },
@@ -347,12 +356,13 @@ export class UserRepository {
           city: true,
           state: true,
           postal_code: true,
-          // @ts-ignore - Prisma client out of sync in IDE
           country: true,
           darkMode: true,
           widgets: true,
           plan: true,
           subscription_expires_at: true,
+          entity_type: true,
+          business_size: true,
         },
       });
 
@@ -366,9 +376,9 @@ export class UserRepository {
           },
         },
       };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error registering user:', err);
-      return { status: 500, data: { error: 'Failed to register user' } };
+      throw new InternalServerErrorException(err.message || 'Failed to register user');
     }
   }
 

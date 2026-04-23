@@ -18,6 +18,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
@@ -275,6 +276,7 @@ const CRM = () => {
     view?: ViewType;
   }>();
   const theme = useTheme();
+  const { plan } = useUserPreferences();
   const [view, setView] = useState<ViewType>(viewFromParams || "contacts");
   const [data, setData] = useState<DataItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -643,6 +645,20 @@ const CRM = () => {
     });
   }, [filteredData, view, sortCriterion, sortOrder]);
 
+  const isLimitReached = useMemo(() => {
+    if (plan !== "FREE") return false;
+    switch (view) {
+      case "contacts":
+        return data.length >= 15;
+      case "companies":
+        return data.length >= 15;
+      case "contracts":
+        return data.length >= 15;
+      default:
+        return false;
+    }
+  }, [plan, view, data]);
+
   const resultCount =
     view === "tasks" ? groupedTasksData.length : sortedData.length;
 
@@ -677,6 +693,14 @@ const CRM = () => {
   }, [userProjects]);
 
   const handleAddButtonPress = () => {
+    if (isLimitReached) {
+      const itemType = view.charAt(0).toUpperCase() + view.slice(1, -1);
+      Alert.alert(
+        "Limit Reached",
+        `Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`
+      );
+      return;
+    }
     if (view === "contacts") setContactFormVisible(true);
     else if (view === "companies") setCompanyFormVisible(true);
     else if (view === "contracts") setContractFormVisible(true);

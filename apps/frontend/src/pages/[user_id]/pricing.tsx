@@ -12,7 +12,6 @@ const Pricing = () => {
   const router = useRouter();
   const { user_id } = router.query;
   const { plan: currentPlanFromDb, country, fetchUserSubTypes } = useUserPreferences();
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (user_id) {
@@ -24,28 +23,39 @@ const Pricing = () => {
   const REGIONAL_PRICING = useMemo(() => {
     const euroCountries = ["Germany", "France", "Spain", "Italy", "Netherlands", "Belgium", "Austria", "Portugal", "Finland", "Ireland", "Greece"];
     
-    if (country === "India") {
-      return { currency: "INR", symbol: "₹", proPrice: 50 };
-    } else if (euroCountries.includes(country || "") || country === "Europe") {
-      return { currency: "EUR", symbol: "€", proPrice: 10 };
+    if (euroCountries.includes(country || "") || country === "Europe") {
+      return { 
+        currency: "EUR", 
+        symbol: "€", 
+        basicPrice: 5,
+        proPrice: 15 
+      };
     } else {
-      // Default pricing (USD)
-      return { currency: "USD", symbol: "$", proPrice: 5.99 };
+      // Default to Indian pricing (INR)
+      return { 
+        currency: "INR", 
+        symbol: "₹", 
+        basicPrice: 299,
+        proPrice: 499 
+      };
     }
   }, [country]);
 
-  const handleGetPro = async () => {
+  const handleSubscribe = async (planType: "BASIC" | "PRO") => {
     if (!user_id) {
       Swal.fire("Error", "User identification missing. Please log in again.", "error");
       return;
     }
 
+    const price = planType === "BASIC" ? REGIONAL_PRICING.basicPrice : REGIONAL_PRICING.proPrice;
+
     try {
       // 1. Create order on the backend with regional pricing
       const orderResponse = await axiosInstance.post("/payment/create-order", {
-        amount: REGIONAL_PRICING.proPrice,
+        amount: price,
         currency: REGIONAL_PRICING.currency,
-        userId: Number(user_id)
+        userId: Number(user_id),
+        planType: planType
       });
       
       const order = orderResponse.data;
@@ -56,7 +66,7 @@ const Pricing = () => {
         amount: order.amount,
         currency: order.currency,
         name: "Graminate",
-        description: "Pro Plan Subscription",
+        description: `${planType.charAt(0) + planType.slice(1).toLowerCase()} Plan Subscription`,
         order_id: order.id,
         handler: async (response: any) => {
           Swal.fire({
@@ -72,12 +82,13 @@ const Pricing = () => {
             await axiosInstance.post("/payment/verify", {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
+              razorpay_signature: response.razorpay_signature,
+              planType: planType
             });
             
             Swal.fire({
               title: "Payment Successful!",
-              text: `Welcome to Graminate Pro! You are now subscribed at ${REGIONAL_PRICING.symbol}${REGIONAL_PRICING.proPrice}/${REGIONAL_PRICING.currency === "INR" ? "month" : "mo"}.`,
+              text: `Welcome to Graminate ${planType.charAt(0) + planType.slice(1).toLowerCase()}! You are now subscribed at ${REGIONAL_PRICING.symbol}${price}/${REGIONAL_PRICING.currency === "INR" ? "month" : "mo"}.`,
               icon: "success",
               confirmButtonColor: "#10b981",
             });
@@ -107,20 +118,20 @@ const Pricing = () => {
     }
   };
 
-  const handleCardClick = async (planName: string) => {
-    const normalizedName = planName.toUpperCase();
-    if (normalizedName === currentPlanFromDb) return;
+  const handleCardClick = async (planId: string) => {
+    const normalizedId = planId.toUpperCase();
+    if (normalizedId === currentPlanFromDb) return;
 
-    if (normalizedName === "FREE") {
+    if (normalizedId === "FREE") {
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "Are you sure you want to shift back to free program ? You will loose access to all the Pro features",
+        text: "Are you sure you want to shift back to free program? You will lose access to all the Premium features and be limited to 1 service.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#10b981",
         cancelButtonColor: "#ef4444",
         confirmButtonText: "Yes, shift to Free",
-        cancelButtonText: "No, keep Pro",
+        cancelButtonText: "No, keep current plan",
         background: document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff",
         color: document.documentElement.classList.contains("dark") ? "#f3f4f6" : "#111827",
       });
@@ -130,7 +141,7 @@ const Pricing = () => {
           await axiosInstance.post(`/user/${user_id}/downgrade-to-free`);
           Swal.fire({
             title: "Plan Downgraded",
-            text: "Starting from the following month, your plan will be set back to free.",
+            text: "Your plan will be set back to free at the end of the billing cycle.",
             icon: "success",
             confirmButtonColor: "#10b981",
           });
@@ -143,16 +154,9 @@ const Pricing = () => {
       return;
     }
 
-    if (normalizedName === "PRO") {
-      handleGetPro();
+    if (normalizedId === "BASIC" || normalizedId === "PRO") {
+      handleSubscribe(normalizedId as "BASIC" | "PRO");
       return;
-    }
-
-    setSelectedPlan(planName);
-    if (user_id) {
-      console.log(`Navigating user ${user_id} to checkout for ${planName}`);
-    } else {
-      console.log(`Navigating to checkout for ${planName}`);
     }
   };
 
@@ -160,32 +164,47 @@ const Pricing = () => {
     {
       name: "Free",
       id: "FREE",
-      price: REGIONAL_PRICING.currency === "INR" ? "₹0" : REGIONAL_PRICING.currency === "EUR" ? "€0" : "$0",
-      period: REGIONAL_PRICING.currency === "INR" ? "/month" : "/mo",
-      description: "Explore the basic tools of Graminate",
+      price: `${REGIONAL_PRICING.symbol}0`,
+      period: "/month",
+      description: "Basic record-keeping for marginal farmers.",
       features: [
-        "Basic access to CRM and Task Management tools",
-        "Limited access to document storage",
+        "Access to ONLY 1 farm service",
+        "Basic Finance Tracking",
+        "Limited CRM (50 contacts)",
+        "NO AI Assistant",
         "Community support",
-        "No AI access",
       ],
       popular: false,
+    },
+    {
+      name: "Standard",
+      id: "BASIC",
+      price: `${REGIONAL_PRICING.symbol}${REGIONAL_PRICING.basicPrice}`,
+      period: "/month",
+      description: "Full management for progressive farmers.",
+      features: [
+        "Access to ALL farm services",
+        "Advanced Finance & Inventory",
+        "Full CRM capabilities",
+        "Labour & Salary Management",
+        "NO AI Assistant",
+      ],
+      popular: true,
     },
     {
       name: "Pro",
       id: "PRO",
       price: `${REGIONAL_PRICING.symbol}${REGIONAL_PRICING.proPrice}`,
-      period: REGIONAL_PRICING.currency === "INR" ? "/month" : "/mo",
-      description: "Unlock the full power of Graminate with advanced AI assistance",
+      period: "/month",
+      description: "Ultimate farm ERP with AI-powered insights.",
       features: [
-        "Everything in Free",
-        "Full access to Graminate AI Assistant",
-        "Unlimited document storage",
-        "Priority 24/7 support",
-        "Advanced data analysis and reporting",
+        "Everything in Standard",
+        "Unlimited AI Assistant (Smart Toy)",
+        "Advanced Data Analysis",
         "Multi-user management",
+        "Priority 24/7 support",
       ],
-      popular: true,
+      popular: false,
     },
   ], [REGIONAL_PRICING]);
 
@@ -193,7 +212,7 @@ const Pricing = () => {
     const isCurrent = currentPlanFromDb === planId;
     return {
       isCurrent,
-      buttonText: isCurrent ? "Your current plan" : `Get ${planId.charAt(0) + planId.slice(1).toLowerCase()}`,
+      buttonText: isCurrent ? "Current Plan" : `Get ${planId.charAt(0) + planId.slice(1).toLowerCase()}`,
       buttonDisabled: isCurrent,
       variant: isCurrent ? "secondary" as const : "primary" as const
     };
@@ -303,27 +322,28 @@ const Pricing = () => {
                     <tr className="bg-gray-500">
                       <th className="p-4 font-semibold text-dark">Feature</th>
                       <th className="p-4 font-semibold text-dark text-center">Free</th>
+                      <th className="p-4 font-semibold text-dark text-center">Standard</th>
                       <th className="p-4 font-semibold text-dark text-center">Pro</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-400">
                     {[
-                      { name: "Graminate AI Assistant", free: false, pro: true },
-                      { name: "CRM Contacts", free: "Up to 50", pro: "Unlimited" },
-                      { name: "Document Storage", free: "100 MB", pro: "Unlimited" },
-                      { name: "Priority Support", free: false, pro: true },
-                      { name: "Advanced Analytics", free: false, pro: true },
-                      { name: "Custom Reports", free: "Standard", pro: "Customizable" },
-                      { name: "Multi-device Sync", free: true, pro: true },
+                      { name: "Graminate AI Assistant", free: false, standard: false, pro: true },
+                      { name: "Farm Services", free: "1 Service", standard: "Unlimited", pro: "Unlimited" },
+                      { name: "CRM Items (per type)", free: "Up to 15", standard: "Unlimited", pro: "Unlimited" },
+                      { name: "Labour & Salary Management", free: false, standard: true, pro: true },
+                      { name: "Document Storage", free: "100 MB", standard: "5 GB", pro: "Unlimited" },
+                      { name: "Advanced Analytics", free: false, standard: "Basic", pro: "AI-Powered" },
+                      { name: "Priority Support", free: false, standard: false, pro: true },
                     ].map((feature) => (
                       <tr key={feature.name} className="hover:bg-gray-50 transition-colors">
                         <td className="p-4 text-sm text-dark">{feature.name}</td>
                         <td className="p-4 text-center">
                           {typeof feature.free === "boolean" ? (
                             feature.free ? (
-                              <div className="flex justify-center"><Icon type="check_circle" className="text-green-300" /></div>
+                              <div className="flex justify-center"><Icon type="check_circle" className="text-green-200" /></div>
                             ) : (
-                              <div className="flex justify-center"><Icon type="cancel" className="text-gray-300" /></div>
+                              <div className="flex justify-center"><Icon type="cancel" className="text-red-200" /></div>
                             )
                           ) : (
                             <span className="text-sm font-medium text-dark">
@@ -332,11 +352,24 @@ const Pricing = () => {
                           )}
                         </td>
                         <td className="p-4 text-center">
+                          {typeof (feature as any).standard === "boolean" ? (
+                            (feature as any).standard ? (
+                              <div className="flex justify-center"><Icon type="check_circle" className="text-green-200" /></div>
+                            ) : (
+                              <div className="flex justify-center"><Icon type="cancel" className="text-red-200" /></div>
+                            )
+                          ) : (
+                            <span className="text-sm font-medium text-dark">
+                              {(feature as any).standard}
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4 text-center">
                           {typeof feature.pro === "boolean" ? (
                             feature.pro ? (
-                              <div className="flex justify-center"><Icon type="check_circle" className="text-green-300" /></div>
+                              <div className="flex justify-center"><Icon type="check_circle" className="text-green-200" /></div>
                             ) : (
-                              <div className="flex justify-center"><Icon type="cancel" className="text-gray-400" /></div>
+                              <div className="flex justify-center"><Icon type="cancel" className="text-red-200" /></div>
                             )
                           ) : (
                             <span className="text-sm font-medium text-dark font-bold">

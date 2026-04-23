@@ -12,6 +12,10 @@ export class CreatePaymentDto {
   @IsNumber()
   @IsNotEmpty()
   userId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  planType: string;
 }
 
 export class VerifyPaymentDto {
@@ -26,4 +30,8 @@ export class VerifyPaymentDto {
   @IsString()
   @IsNotEmpty()
   razorpay_signature: string;
+
+  @IsString()
+  @IsNotEmpty()
+  planType: string;
 }

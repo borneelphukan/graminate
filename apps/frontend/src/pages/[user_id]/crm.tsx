@@ -121,7 +121,7 @@ const mapSupportedLanguageToLocale = (lang: SupportedLanguage): string => {
 const CRM = () => {
   const router = useRouter();
   const { user_id, view: queryView } = router.query;
-  const { timeFormat, language: currentLanguage } = useUserPreferences();
+  const { timeFormat, language: currentLanguage, plan } = useUserPreferences();
 
   const view: View =
     typeof queryView === "string" &&
@@ -251,6 +251,20 @@ const CRM = () => {
     contractsData,
     tasksData,
   ]);
+  
+  const isLimitReached = useMemo(() => {
+    if (plan !== "FREE") return false;
+    switch (view) {
+      case "contacts":
+        return contactsData.length >= 15;
+      case "companies":
+        return companiesData.length >= 15;
+      case "contracts":
+        return contractsData.length >= 15;
+      default:
+        return false;
+    }
+  }, [plan, view, contactsData, companiesData, contractsData]);
 
   const tableData = useMemo(() => {
     const locale = mapSupportedLanguageToLocale(currentLanguage);
@@ -575,7 +589,14 @@ const CRM = () => {
               label={getButtonText(view)}
               variant="primary"
               icon={{ left: "add" }}
-              onClick={() => setIsSidebarOpen(true)}
+              onClick={() => {
+                if (isLimitReached) {
+                  const itemType = view.charAt(0).toUpperCase() + view.slice(1, -1);
+                  alert(`Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`);
+                  return;
+                }
+                setIsSidebarOpen(true);
+              }}
             />
           </div>
         </div>

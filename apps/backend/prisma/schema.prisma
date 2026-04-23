@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -346,6 +345,7 @@ model payments {
   status              payment_status @default(PENDING)
   created_at          DateTime?      @default(now()) @db.Timestamp(6)
   updated_at          DateTime?      @default(now()) @db.Timestamp(6)
+  plan_type           user_plan_type @default(PRO)
   users               users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([razorpay_order_id], map: "idx_razorpay_order_id")
@@ -481,12 +481,14 @@ model users {
   city                    String?          @db.VarChar(100)
   state                   String?          @db.VarChar(100)
   postal_code             String?          @db.VarChar(20)
-  country                 String?          @db.VarChar(100)
   darkMode                Boolean          @default(false)
   widgets                 String[]         @default([])
   plan                    user_plan_type   @default(FREE)
   subscription_expires_at DateTime?        @db.Timestamp(6)
+  country                 String?          @db.VarChar(100)
   opening_balance         Decimal          @default(0.00) @db.Decimal(15, 2)
+  business_size           String?          @db.VarChar(50)
+  entity_type             String?          @db.VarChar(50)
   apiculture              apiculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]
@@ -496,7 +498,9 @@ model users {
   expenses                expenses[]
   inventory               inventory[]
   invoices                invoices[]
+  kanban_columns          kanban_columns[]
   labours                 labours[]
+  loans                   loans[]
   login_history           login_history[]
   password_resets         password_resets?
   payments                payments[]
@@ -507,8 +511,6 @@ model users {
   sales                   sales[]
   tasks                   tasks[]
   warehouse               warehouse[]
-  kanban_columns          kanban_columns[]
-  loans                   loans[]
 }
 
 model kanban_columns {
@@ -542,18 +544,6 @@ model warehouse {
   users            users?      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-enum payment_status {
-  PENDING
-  SUCCESS
-  FAILED
-}
-
-enum user_plan_type {
-  FREE
-  BASIC
-  PRO
-}
-
 model loans {
   loan_id       Int       @id @default(autoincrement())
   user_id       Int
@@ -566,4 +556,16 @@ model loans {
   status        String    @default("Active") @db.VarChar(20)
   created_at    DateTime? @default(now()) @db.Timestamp(6)
   users         users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+enum payment_status {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum user_plan_type {
+  FREE
+  BASIC
+  PRO
 }

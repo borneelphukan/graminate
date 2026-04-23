@@ -59,7 +59,7 @@ const OTPModal = ({ isOpen, email, onValidate, onClose }: OTPModal) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-dark/80">
       <div className="bg-white shadow-lg rounded-lg p-6 w-96">
-        <h2 className="text-xl font-semibold mb-4 text-center">Enter OTP</h2>
+        <h2 className="text-xl font-semibold mb-4 text-center text-dark">Enter OTP</h2>
         <p className="text-center text-dark">
           An OTP has been sent to <strong>{email}</strong>
         </p>
@@ -72,7 +72,7 @@ const OTPModal = ({ isOpen, email, onValidate, onClose }: OTPModal) => {
                 inputRefs.current[index] = el as HTMLInputElement;
               }}
               type="text"
-              className="w-12 h-12 text-center border border-gray-300 rounded text-lg"
+              className="w-12 h-12 text-center border border-gray-300 text-dark rounded text-lg"
               maxLength={1}
               value={digit}
               onChange={(e) => handleInput(index, e)}

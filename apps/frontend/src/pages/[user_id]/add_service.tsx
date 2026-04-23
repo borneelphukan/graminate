@@ -67,7 +67,7 @@ const AddServicePage = () => {
     Apiculture: <BeeIcon />,
   };
 
-  const isProFeature = plan === "FREE";
+  const isProFeature = plan === "FREE" && subTypes.length >= 1;
 
   useEffect(() => {
     if (!user_id) return;
