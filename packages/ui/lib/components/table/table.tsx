@@ -476,7 +476,7 @@ const Table = ({
               Showing <span className="text-neutral-900 dark:text-neutral-100">{Math.min((currentPage - 1) * itemsPerPage + 1, totalRecordCount)}</span> to <span className="text-neutral-900 dark:text-neutral-100">{Math.min(currentPage * itemsPerPage, totalRecordCount)}</span> of <span className="text-neutral-900 dark:text-neutral-100">{totalRecordCount}</span>
             </p>
             <div className="h-4 w-px bg-neutral-200 dark:bg-neutral-800 hidden sm:block" />
-            <div className="relative z-[60]">
+            <div className="relative z-10">
               <Dropdown
                 direction="up"
                 items={paginationItems}

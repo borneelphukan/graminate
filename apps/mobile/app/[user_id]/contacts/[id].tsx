@@ -4,8 +4,6 @@ import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import * as FileSystem from "expo-file-system";
-import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -27,8 +25,6 @@ import {
   Divider,
   List,
   Menu,
-  Modal,
-  Portal,
   Text,
   TextInput,
   TouchableRipple,
@@ -49,7 +45,6 @@ type Contact = {
   city?: string;
   state?: string;
   postal_code?: string;
-  profile_image_url?: string;
 };
 type Form = {
   firstName: string;
@@ -94,11 +89,9 @@ const ContactDetails = () => {
   const [formData, setFormData] = useState<Form>(initialFormState);
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [isTypeMenuVisible, setTypeMenuVisible] = useState(false);
-  const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
 
   useEffect(() => {
@@ -106,7 +99,6 @@ const ContactDetails = () => {
       try {
         const parsedContact: Contact = JSON.parse(data);
         setContact(parsedContact);
-        setProfileImageUrl(parsedContact.profile_image_url || null);
         const newFormValues: Form = {
           firstName: parsedContact.first_name || "",
           lastName: parsedContact.last_name || "",
@@ -135,26 +127,14 @@ const ContactDetails = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   const hasChanges = useMemo(
     () =>
-      JSON.stringify(formData) !== JSON.stringify(initialFormData) ||
-      (contact?.profile_image_url || null) !== profileImageUrl,
-    [formData, initialFormData, profileImageUrl, contact]
+      JSON.stringify(formData) !== JSON.stringify(initialFormData),
+    [formData, initialFormData]
   );
 
   const handleSave = async () => {
     if (!contact) return;
     setSaving(true);
-    let finalProfileImageUrl = profileImageUrl;
     try {
-      const token = await AsyncStorage.getItem("accessToken");
-      if (profileImageUrl && profileImageUrl.startsWith("file://")) {
-        const base64 = await FileSystem.readAsStringAsync(profileImageUrl, {
-          encoding: "base64",
-        });
-        const mimeType = profileImageUrl.endsWith(".png")
-          ? "image/png"
-          : "image/jpeg";
-        finalProfileImageUrl = `data:${mimeType};base64,${base64}`;
-      }
       const payload = {
         id: contact.contact_id,
         first_name: formData.firstName,
@@ -167,7 +147,6 @@ const ContactDetails = () => {
         city: formData.city,
         state: formData.state,
         postal_code: formData.postalCode,
-        profile_image_url: finalProfileImageUrl || null,
       };
       await axiosInstance.put("/contacts/update", payload);
       Alert.alert("Success", "Contact updated.");
@@ -230,29 +209,7 @@ Email: ${formData.email || "N/A"}
     }
   };
 
-  const handlePickImage = async () => {
-    setImageModalVisible(false);
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission required",
-        "Please grant camera roll permissions."
-      );
-      return;
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-    if (!result.canceled) setProfileImageUrl(result.assets[0].uri);
-  };
 
-  const handleRemoveImage = () => {
-    setImageModalVisible(false);
-    setProfileImageUrl(null);
-  };
   const handleCall = () => {
     if (formData.phoneNumber) Linking.openURL(`tel:${formData.phoneNumber}`);
     else Alert.alert("No Phone Number", "This contact has no phone number.");
@@ -353,34 +310,7 @@ Email: ${formData.email || "N/A"}
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.profileHeader}>
-            <TouchableRipple
-              onPress={() => setImageModalVisible(true)}
-              style={styles.avatarRipple}
-            >
-              <>
-                {profileImageUrl ? (
-                  <Avatar.Image size={112} source={{ uri: profileImageUrl }} />
-                ) : (
-                  <Avatar.Text
-                    size={112}
-                    label={getInitials(contact.first_name, contact.last_name)}
-                  />
-                )}
-                <View
-                  style={[
-                    styles.editIcon,
-                    { backgroundColor: theme.colors.primary },
-                  ]}
-                >
-                  <Icon
-                    type={"pencil" as any}
-                    size={18}
-                    color={theme.colors.onPrimary}
-                  />
-                </View>
-              </>
-            </TouchableRipple>
+          <View style={styles.nameHeader}>
             <Text variant="headlineMedium">
               {`${formData.firstName} ${formData.lastName}`.trim()}
             </Text>
@@ -564,54 +494,7 @@ Email: ${formData.email || "N/A"}
           </Button>
         </Appbar>
       </KeyboardAvoidingView>
-      <Portal>
-        <Modal
-          visible={isImageModalVisible}
-          onDismiss={() => setImageModalVisible(false)}
-          contentContainerStyle={styles.modalContainer}
-        >
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.colors.elevation.level2 },
-            ]}
-          >
-            <List.Item
-              title="Upload Image"
-              left={() => (
-                <Icon
-                  type={"upload" as any}
-                  size={22}
-                  color={theme.colors.onSurface}
-                  style={styles.listIcon}
-                />
-              )}
-              onPress={handlePickImage}
-            />
-            {profileImageUrl && (
-              <List.Item
-                title="Remove Image"
-                titleStyle={{ color: theme.colors.error }}
-                left={() => (
-                  <Icon
-                    type={"delete" as any}
-                    size={22}
-                    color={theme.colors.error}
-                    style={styles.listIcon}
-                  />
-                )}
-                onPress={handleRemoveImage}
-              />
-            )}
-            <Divider />
-            <List.Item
-              title="Cancel"
-              onPress={() => setImageModalVisible(false)}
-              style={{ alignItems: "center" }}
-            />
-          </View>
-        </Modal>
-      </Portal>
+
     </PlatformLayout>
   );
 };
@@ -619,19 +502,8 @@ Email: ${formData.email || "N/A"}
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 24, paddingBottom: 80 },
-  profileHeader: { alignItems: "center", gap: 16 },
-  avatarRipple: { borderRadius: 56 },
-  editIcon: {
-    position: "absolute",
-    bottom: 4,
-    right: 4,
-    borderRadius: 16,
-    width: 32,
-    height: 32,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  container: { padding: 16, gap: 12, paddingBottom: 80 },
+  nameHeader: { alignItems: "center", paddingTop: 16, paddingBottom: 0 },
   actionsRow: {
     flexDirection: "row",
     justifyContent: "space-around",

@@ -1,6 +1,4 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
-
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,9 +7,7 @@ import { triggerToast } from "@/stores/toast";
 import { COMPANY_TYPES, INDUSTRY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
-import UploadContactImageModal from "@/components/modals/crm/UploadContactImageModal";
 import Swal from "sweetalert2";
-import Image from "next/image";
 
 type Company = {
   company_id: string;
@@ -27,7 +23,6 @@ type Company = {
   postal_code?: string;
   website?: string;
   industry?: string;
-  profile_image_url?: string;
 };
 
 type Form = {
@@ -83,14 +78,9 @@ const CompanyDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [initialCompanyName, setInitialCompanyName] = useState("");
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [avatarInitials, setAvatarInitials] = useState("?");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-
-  const avatarDropdownRef = useRef<HTMLDivElement>(null);
 
   const isLoading = !company;
 
@@ -99,7 +89,6 @@ const CompanyDetails = () => {
       try {
         const parsedCompany: Company = JSON.parse(data as string);
         setCompany(parsedCompany);
-        setProfileImageUrl(parsedCompany.profile_image_url || null);
 
         const newFormValues: Form = {
           companyName: parsedCompany.company_name || "",
@@ -124,21 +113,6 @@ const CompanyDetails = () => {
       }
     }
   }, [data]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        avatarDropdownRef.current &&
-        !avatarDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsAvatarDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const handleInputChange = (field: keyof Form, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -242,22 +216,6 @@ const CompanyDetails = () => {
     }
   };
 
-  const handleAvatarClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAvatarDropdownOpen((prev) => !prev);
-  };
-
-  const handleImageUploadConfirm = async (file: File) => {
-    setIsUploadModalOpen(false);
-    if (!company) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfileImageUrl(reader.result as string);
-      triggerToast("Company logo updated (simulated)", "success");
-    };
-    reader.readAsDataURL(file);
-  };
-
   const handleCallCompany = () => {
     const phoneNumber = initialFormData.phoneNumber;
     if (
@@ -295,7 +253,7 @@ const CompanyDetails = () => {
     Object.keys(formData).some(
       (key) =>
         formData[key as keyof Form] !== initialFormData[key as keyof Form]
-    ) || (company.profile_image_url || null) !== profileImageUrl;
+    );
 
   return (
     <PlatformLayout>
@@ -306,59 +264,9 @@ const CompanyDetails = () => {
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 md:p-8 relative">
           <div className="flex flex-col sm:flex-row items-center mb-8">
             <div
-              ref={avatarDropdownRef}
-              className="relative mr-0 sm:mr-6 mb-4 sm:mb-0"
+              className="mr-0 sm:mr-6 mb-4 sm:mb-0 w-24 h-24 sm:w-28 sm:h-28 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold flex-shrink-0 overflow-hidden"
             >
-              <div
-                className="group w-24 h-24 sm:w-28 sm:h-28 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold flex-shrink-0 overflow-hidden cursor-pointer"
-                onClick={handleAvatarClick}
-              >
-                {profileImageUrl ? (
-                  <Image
-                    src={profileImageUrl}
-                    alt={initialCompanyName || "Company Logo"}
-                    className="w-full h-full object-cover"
-                    width={112}
-                    height={112}
-                  />
-                ) : (
-                  avatarInitials
-                )}
-                <div className="absolute inset-0 rounded-full hover:bg-gray-200/50 bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-200">
-                  <Icon
-                    type={"edit"}
-                    className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  />
-                </div>
-              </div>
-              {isAvatarDropdownOpen && (
-                <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 bg-light dark:bg-gray-700 shadow-lg rounded-md py-1 w-48 z-20">
-                  <button
-                    onClick={() => {
-                      setIsUploadModalOpen(true);
-                      setIsAvatarDropdownOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    Upload Company Logo
-                  </button>
-                  {profileImageUrl && (
-                    <button
-                      onClick={() => {
-                        setProfileImageUrl(null);
-                        setIsAvatarDropdownOpen(false);
-                        triggerToast(
-                          "Company logo removed (simulated)",
-                          "success"
-                        );
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-300 dark:hover:bg-red-500/10 transition-colors"
-                    >
-                      Remove Logo
-                    </button>
-                  )}
-                </div>
-              )}
+              {avatarInitials}
             </div>
 
             <div className="flex-grow text-center sm:text-left">
@@ -444,31 +352,38 @@ const CompanyDetails = () => {
                 Company Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <TextField
+                <Input
+                  id="companyName"
                   label="Company Name"
                   value={formData.companyName}
-                  onChange={(val) => handleInputChange("companyName", val)}
+                  onChange={(e) => handleInputChange("companyName", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="contactPerson"
                   label="Contact Person"
                   value={formData.contactPerson}
-                  onChange={(val) => handleInputChange("contactPerson", val)}
+                  onChange={(e) => handleInputChange("contactPerson", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="email"
                   label="Email"
+                  type="email"
                   value={formData.email}
-                  onChange={(val) => handleInputChange("email", val)}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="phoneNumber"
                   label="Phone Number"
+                  type="tel"
                   value={formData.phoneNumber}
-                  onChange={(val) => handleInputChange("phoneNumber", val)}
+                  onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="website"
                   label="Website"
                   placeholder="e.g. https://company.com"
                   value={formData.website}
-                  onChange={(val) => handleInputChange("website", val)}
+                  onChange={(e) => handleInputChange("website", e.target.value)}
                 />
                 <Dropdown
                   items={INDUSTRY_OPTIONS}
@@ -496,30 +411,35 @@ const CompanyDetails = () => {
                 Address
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <TextField
+                <Input
+                  id="addressLine1"
                   label="Address Line 1"
                   value={formData.addressLine1}
-                  onChange={(val) => handleInputChange("addressLine1", val)}
+                  onChange={(e) => handleInputChange("addressLine1", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="addressLine2"
                   label="Address Line 2"
                   value={formData.addressLine2}
-                  onChange={(val) => handleInputChange("addressLine2", val)}
+                  onChange={(e) => handleInputChange("addressLine2", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="city"
                   label="City"
                   value={formData.city}
-                  onChange={(val) => handleInputChange("city", val)}
+                  onChange={(e) => handleInputChange("city", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="state"
                   label="State / Province"
                   value={formData.state}
-                  onChange={(val) => handleInputChange("state", val)}
+                  onChange={(e) => handleInputChange("state", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="postalCode"
                   label="Postal / Zip Code"
                   value={formData.postalCode}
-                  onChange={(val) => handleInputChange("postalCode", val)}
+                  onChange={(e) => handleInputChange("postalCode", e.target.value)}
                 />
               </div>
             </div>
@@ -542,15 +462,6 @@ const CompanyDetails = () => {
           </div>
         </div>
       </div>
-      <UploadContactImageModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onConfirm={handleImageUploadConfirm}
-        avatarInitials={avatarInitials}
-        currentProfileImageUrl={profileImageUrl}
-        firstName={initialCompanyName}
-        lastName=""
-      />
     </PlatformLayout>
   );
 };

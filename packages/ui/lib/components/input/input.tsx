@@ -1,5 +1,5 @@
 import { forwardRef, useState } from "react";
-import { cn } from "../../utils";
+
 import { Icon, type IconType } from "../icon/icon";
 import { Button } from "../button/button";
 import { Layout } from "../layouts/layout";
@@ -104,10 +104,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={disabled ? "cursor-not-allowed opacity-50" : ""}
       >
         <label
-          className={cn(
-            "flex flex-col gap-1.5 group/input",
-            disabled && "pointer-events-none"
-          )}
+          className={`flex flex-col gap-1.5 group/input ${disabled ? "pointer-events-none" : ""}`}
           htmlFor={id}
         >
           <span
@@ -121,15 +118,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {required && <span className="text-red-200 ml-1">*</span>}
           </span>
           <div
-            className={cn(
-              "flex flex-row gap-2 items-center py-2 px-3 rounded-lg border-1 border-neutral-light-gray/40 shadow-xs shadow-black/20 transition-colors",
-              error && "border-red-200",
-              "group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2",
-              error
-                ? "group-focus-within/input:!ring-red-200"
-                : "group-focus-within/input:!ring-brand-mute-green",
-              className
-            )}
+            className={`flex flex-row gap-2 items-center py-2 px-3 rounded-lg border-1 border-gray-400 transition-colors ${
+              error ? "border-red-200 group-focus-within/input:!ring-red-200" : "group-focus-within/input:!ring-green-200"
+            } group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2 ${className || ""}`}
           >
             {dropdown?.left && (
               <DropdownMenu>
@@ -195,11 +186,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
 
             <input
-              className={cn(
-                "border-none px-0.5 flex-1 w-full placeholder-neutral-gray focus:outline-none focus:placeholder-neutral-dark-gray text-sm leading-none",
-                options &&
-                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              )}
+              className={`border-none px-0.5 flex-1 w-full placeholder-neutral-gray focus:outline-none focus:placeholder-neutral-dark-gray text-sm leading-none ${
+                options ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" : ""
+              }`}
               id={id}
               name={id}
               ref={ref}

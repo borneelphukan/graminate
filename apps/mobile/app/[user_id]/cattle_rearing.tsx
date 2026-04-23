@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStockCard";
-import TaskManager from "@/components/cards/TaskManager";
+import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import BottomDrawer from "@/components/form/BottomDrawer";
 import {
   CATTLE_FIELDS,
@@ -389,10 +389,23 @@ const CattleRearingScreen = () => {
           )}
         </View>
 
+        <View style={styles.projectSection}>
+          <View style={styles.projectHeader}>
+            <Text variant="headlineSmall" style={styles.projectTitle}>
+              Your Cattle Rearing Tasks
+            </Text>
+            <Text variant="bodyMedium" style={styles.projectSubtitle}>
+              All your cattle rearing tasks visualized
+            </Text>
+          </View>
+          <View style={styles.projectBoardContainer}>
+            {numericUserId > 0 && (
+              <ProjectTaskBoard userId={numericUserId} projectTitle="Cattle Rearing" />
+            )}
+          </View>
+        </View>
+
         <View style={styles.widgetContainer}>
-          {numericUserId > 0 && (
-            <TaskManager userId={numericUserId} projectType="Cattle Rearing" />
-          )}
           {user_id && (
             <InventoryStockCard
               userId={user_id}
@@ -455,7 +468,30 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   emptyText: { textAlign: "center", marginTop: 40, padding: 16 },
-  widgetContainer: { gap: 16, paddingBottom: 32 },
+  widgetContainer: { gap: 16, marginTop: 16, paddingBottom: 32 },
+  projectSection: {
+    marginTop: 32,
+    paddingTop: 32,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(128, 128, 128, 0.2)",
+  },
+  projectHeader: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  projectTitle: {
+    fontWeight: "bold",
+  },
+  projectSubtitle: {
+    color: "#6b7280",
+    marginTop: 4,
+  },
+  projectBoardContainer: {
+    backgroundColor: "rgba(128, 128, 128, 0.05)",
+    borderRadius: 24,
+    paddingVertical: 16,
+    marginHorizontal: 16,
+  },
 });
 
 export default CattleRearingScreen;

@@ -22,8 +22,8 @@ const TasksPage = () => {
           <div className="mb-4 px-2">
             <Button
               label="Back"
-              variant="ghost"
-              icon={{ left: "arrow_back" }}
+              variant="link"
+              icon={{ left: "chevron_left" }}
               onClick={() => router.back()}
             />
           </div>

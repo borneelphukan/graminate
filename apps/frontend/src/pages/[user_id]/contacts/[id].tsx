@@ -1,6 +1,4 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
-
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
@@ -9,9 +7,7 @@ import { CONTACT_TYPES } from "@/constants/options";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import UploadContactImageModal from "@/components/modals/crm/UploadContactImageModal";
 import Swal from "sweetalert2";
-import Image from "next/image";
 
 type Contact = {
   contact_id: string;
@@ -25,7 +21,6 @@ type Contact = {
   city?: string;
   state?: string;
   postal_code?: string;
-  profile_image_url?: string;
 };
 
 type Form = {
@@ -93,14 +88,9 @@ const ContactDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [initialFullName, setInitialFullName] = useState("");
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [avatarInitials, setAvatarInitials] = useState("?");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-
-  const avatarDropdownRef = useRef<HTMLDivElement>(null);
 
   const isLoading = !contact;
 
@@ -109,7 +99,6 @@ const ContactDetails = () => {
       try {
         const parsedContact: Contact = JSON.parse(data as string);
         setContact(parsedContact);
-        setProfileImageUrl(parsedContact.profile_image_url || null);
 
         const newFormValues: Form = {
           firstName: parsedContact.first_name || "",
@@ -161,21 +150,6 @@ const ContactDetails = () => {
     fetchLoggedInUserEmail();
   }, [user_id]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        avatarDropdownRef.current &&
-        !avatarDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsAvatarDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const handleInputChange = (field: keyof Form, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -207,7 +181,6 @@ const ContactDetails = () => {
 
       const updatedContact = response.data.contact;
       setContact(updatedContact);
-      setProfileImageUrl(updatedContact.profile_image_url || null);
 
       const updatedFormValues: Form = {
         firstName: updatedContact.first_name || "",
@@ -280,29 +253,6 @@ const ContactDetails = () => {
     }
   };
 
-  const handleAvatarClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAvatarDropdownOpen((prev) => !prev);
-  };
-
-  const handleImageUploadConfirm = async (file: File) => {
-    setIsUploadModalOpen(false);
-    if (!contact) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfileImageUrl(reader.result as string);
-      triggerToast("Avatar updated (simulated)", "success");
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemoveImage = async () => {
-    setIsAvatarDropdownOpen(false);
-    if (!contact) return;
-    setProfileImageUrl(null);
-    triggerToast("Avatar removed (simulated)", "success");
-  };
-
   const handleCallContact = () => {
     const phoneNumber = initialFormData.phoneNumber;
     if (
@@ -341,7 +291,7 @@ const ContactDetails = () => {
     Object.keys(formData).some(
       (key) =>
         formData[key as keyof Form] !== initialFormData[key as keyof Form]
-    ) || (contact.profile_image_url || null) !== profileImageUrl;
+    );
 
   return (
     <PlatformLayout>
@@ -352,52 +302,9 @@ const ContactDetails = () => {
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 md:p-8 relative">
           <div className="flex flex-col sm:flex-row items-center mb-8">
             <div
-              ref={avatarDropdownRef}
-              className="relative mr-0 sm:mr-6 mb-4 sm:mb-0"
+              className="mr-0 sm:mr-6 mb-4 sm:mb-0 w-24 h-24 sm:w-28 sm:h-28 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold flex-shrink-0 overflow-hidden"
             >
-              <div
-                className="group w-24 h-24 sm:w-28 sm:h-28 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-white text-3xl sm:text-4xl font-semibold flex-shrink-0 overflow-hidden cursor-pointer"
-                onClick={handleAvatarClick}
-              >
-                {profileImageUrl ? (
-                  <Image
-                    src={profileImageUrl}
-                    alt={initialFullName || "Contact"}
-                    width={112}
-                    height={112}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  avatarInitials
-                )}
-                <div className="absolute inset-0 rounded-full hover:bg-gray-200/50 bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-200">
-                  <Icon
-                    type={"edit"}
-                    className="text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  />
-                </div>
-              </div>
-              {isAvatarDropdownOpen && (
-                <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 bg-light dark:bg-gray-700 shadow-lg rounded-md py-1 w-48 z-20">
-                  <button
-                    onClick={() => {
-                      setIsUploadModalOpen(true);
-                      setIsAvatarDropdownOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-sm text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    Upload Image
-                  </button>
-                  {profileImageUrl && (
-                    <button
-                      onClick={handleRemoveImage}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-300 dark:hover:bg-red-500/10 transition-colors"
-                    >
-                      Remove Image
-                    </button>
-                  )}
-                </div>
-              )}
+              {avatarInitials}
             </div>
 
             <div className="flex-grow text-center sm:text-left">
@@ -483,25 +390,31 @@ const ContactDetails = () => {
                 Personal Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <TextField
+                <Input
+                  id="firstName"
                   label="First Name"
                   value={formData.firstName}
-                  onChange={(val) => handleInputChange("firstName", val)}
+                  onChange={(e) => handleInputChange("firstName", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="lastName"
                   label="Last Name"
                   value={formData.lastName}
-                  onChange={(val) => handleInputChange("lastName", val)}
+                  onChange={(e) => handleInputChange("lastName", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="email"
                   label="Email"
+                  type="email"
                   value={formData.email}
-                  onChange={(val) => handleInputChange("email", val)}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="phoneNumber"
                   label="Phone Number"
+                  type="tel"
                   value={formData.phoneNumber}
-                  onChange={(val) => handleInputChange("phoneNumber", val)}
+                  onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
                 />
                 <Dropdown
                   items={CONTACT_TYPES}
@@ -519,30 +432,35 @@ const ContactDetails = () => {
                 Address
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <TextField
+                <Input
+                  id="addressLine1"
                   label="Address Line 1"
                   value={formData.addressLine1}
-                  onChange={(val) => handleInputChange("addressLine1", val)}
+                  onChange={(e) => handleInputChange("addressLine1", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="addressLine2"
                   label="Address Line 2"
                   value={formData.addressLine2}
-                  onChange={(val) => handleInputChange("addressLine2", val)}
+                  onChange={(e) => handleInputChange("addressLine2", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="city"
                   label="City"
                   value={formData.city}
-                  onChange={(val) => handleInputChange("city", val)}
+                  onChange={(e) => handleInputChange("city", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="state"
                   label="State / Province"
                   value={formData.state}
-                  onChange={(val) => handleInputChange("state", val)}
+                  onChange={(e) => handleInputChange("state", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="postalCode"
                   label="Postal / Zip Code"
                   value={formData.postalCode}
-                  onChange={(val) => handleInputChange("postalCode", val)}
+                  onChange={(e) => handleInputChange("postalCode", e.target.value)}
                 />
               </div>
             </div>
@@ -565,13 +483,6 @@ const ContactDetails = () => {
           </div>
         </div>
       </div>
-      <UploadContactImageModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onConfirm={handleImageUploadConfirm}
-        avatarInitials={avatarInitials}
-        currentProfileImageUrl={profileImageUrl}
-      />
     </PlatformLayout>
   );
 };

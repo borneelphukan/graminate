@@ -1,5 +1,4 @@
-import { Dropdown, Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
@@ -188,22 +187,26 @@ const ContractDetails = () => {
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TextField
+            <Input
+              id="contractName"
               label="Contract Title"
               value={contractName}
-              onChange={(val) => setContractName(val)}
+              onChange={(e) => setContractName(e.target.value)}
               placeholder="Enter contract name"
             />
-            <TextField
+            <Input
+              id="partnerClient"
               label="Partner / Client"
               value={partnerClient}
-              onChange={(val) => setPartnerClient(val)}
+              onChange={(e) => setPartnerClient(e.target.value)}
               placeholder="Enter partner or client name"
             />
-            <TextField
+            <Input
+              id="amount"
               label="Amount (₹)"
+              type="number"
               value={amount}
-              onChange={(val) => setAmount(val)}
+              onChange={(e) => setAmount(e.target.value)}
               placeholder="e.g., 50000"
             />
             <Dropdown
@@ -214,10 +217,11 @@ const ContractDetails = () => {
               label="Stage"
               width="full"
             />
-            <TextField
+            <Input
+              id="category"
               label="Category"
               value={category}
-              onChange={(val) => setCategory(val)}
+              onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g., Service Agreement, Product Sale"
             />
             <Dropdown

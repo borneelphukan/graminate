@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
+import { INDUSTRY_OPTIONS } from "@/constants/options";
 
 type CompanyFormProps = {
   userId: string | string[] | undefined;
@@ -166,6 +167,24 @@ const CompanyForm = ({ userId, onClose }: CompanyFormProps) => {
         }}
         type={companyErrors.phoneNumber ? "error" : ""}
         errorMessage={companyErrors.phoneNumber}
+      />
+      <TextField
+        label="Website"
+        placeholder="e.g. https://company.com"
+        value={companyValues.website}
+        onChange={(val: string) =>
+          setCompanyValues({ ...companyValues, website: val })
+        }
+      />
+      <Dropdown
+        items={INDUSTRY_OPTIONS}
+        selectedItem={companyValues.industry}
+        onSelect={(value: string) =>
+          setCompanyValues({ ...companyValues, industry: value })
+        }
+        
+        label="Industry"
+        width="full"
       />
       <Dropdown
         items={companyType}

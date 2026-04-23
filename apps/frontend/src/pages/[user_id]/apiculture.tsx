@@ -385,7 +385,7 @@ const Apiculture = () => {
               All your apiculture tasks visualized
             </p>
           </div>
-          <div className="rounded-3xl p-6 border shadow-xs">
+          <div className="rounded-3xl p-6 border border-gray-400 dark:border-gray-700 shadow-xs">
              <TaskBoard projectTitle="Apiculture" userId={parsedUserId as string} />
           </div>
         </section>

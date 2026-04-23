@@ -251,7 +251,7 @@ Email: ${formData.email || "N/A"}
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"arrow-left" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -266,7 +266,7 @@ Email: ${formData.email || "N/A"}
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"more_vert" as any}
+                  type={"dots-vertical" as any}
                   size={22}
                   color={theme.colors.onSurface}
                 />
@@ -314,19 +314,7 @@ Email: ${formData.email || "N/A"}
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.profileHeader}>
-            <View
-              style={[
-                styles.avatarContainer,
-                { backgroundColor: theme.colors.primaryContainer },
-              ]}
-            >
-              <Icon
-                type={"domain" as any}
-                size={56}
-                color={theme.colors.onPrimaryContainer}
-              />
-            </View>
+          <View style={styles.nameHeader}>
             <Text variant="headlineMedium" style={styles.textCenter}>
               {formData.companyName}
             </Text>
@@ -375,7 +363,7 @@ Email: ${formData.email || "N/A"}
             <Button
               icon={() => (
                 <Icon
-                  type={"language" as any}
+                  type={"web" as any}
                   size={18}
                   color={
                     formData.website
@@ -419,7 +407,7 @@ Email: ${formData.email || "N/A"}
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"person" as any}
+                        type={"account" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -472,7 +460,7 @@ Email: ${formData.email || "N/A"}
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"language" as any}
+                        type={"web" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -549,7 +537,7 @@ Email: ${formData.email || "N/A"}
                   <TextInput.Icon
                     icon={() => (
                       <Icon
-                        type={"location_on" as any}
+                        type={"map-marker" as any}
                         size={18}
                         color={theme.colors.onSurfaceVariant}
                       />
@@ -608,7 +596,7 @@ Email: ${formData.email || "N/A"}
             loading={saving}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
                 color={
                   !hasChanges || saving
@@ -630,14 +618,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
   container: { padding: 16, gap: 24, paddingBottom: 80 },
-  profileHeader: { alignItems: "center", gap: 8 },
-  avatarContainer: {
-    width: 112,
-    height: 112,
-    borderRadius: 56,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  nameHeader: { alignItems: "center", paddingVertical: 16, gap: 8 },
   textCenter: { textAlign: "center" },
   actionsRow: {
     flexDirection: "row",

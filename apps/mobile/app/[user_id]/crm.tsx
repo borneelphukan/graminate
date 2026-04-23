@@ -11,6 +11,7 @@ import {
   ContractFormData,
   TaskFormData,
 } from "@/constants/formConfigs";
+import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "@/lib/axiosInstance";
@@ -244,14 +245,17 @@ const ReceiptCard = ({
   );
 };
 
-const ProjectGroupCard = ({ group }: { group: ProjectGroup }) => (
-  <Card style={styles.card}>
+const ProjectGroupCard = ({ group, onPress }: { group: ProjectGroup; onPress: () => void }) => (
+  <Card style={styles.card} onPress={onPress}>
     <Card.Title
       title={group.title}
       right={() => (
-        <Text style={styles.countText}>
-          {group.count} task{group.count !== 1 ? "s" : ""}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 16 }}>
+          <Text style={styles.countText}>
+            {group.count} task{group.count !== 1 ? "s" : ""}
+          </Text>
+          <Icon type="chevron-right" size={20} />
+        </View>
       )}
     />
   </Card>
@@ -284,6 +288,7 @@ const CRM = () => {
   const [isReceiptFormVisible, setReceiptFormVisible] = useState(false);
   const [userProjects, setUserProjects] = useState<string[]>([]);
   const [allSales, setAllSales] = useState<any[]>([]);
+  const [selectedProjectTitle, setSelectedProjectTitle] = useState<string | null>(null);
 
   const fetchAllSales = useCallback(async () => {
     if (!user_id) return;
@@ -392,6 +397,7 @@ const CRM = () => {
       setSearchQuery("");
       setSortCriterion(SORT_OPTIONS[newView][0].value);
       setSortOrder("desc");
+      setSelectedProjectTitle(null);
     }
     setViewMenuVisible(false);
   };
@@ -771,6 +777,28 @@ const CRM = () => {
       );
 
     if (view === "tasks") {
+      if (selectedProjectTitle) {
+        return (
+          <View style={{ flex: 1 }}>
+            <View style={{ paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Button 
+                mode="text" 
+                compact 
+                icon="chevron-left" 
+                onPress={() => setSelectedProjectTitle(null)}
+              >
+                Back
+              </Button>
+              <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>{selectedProjectTitle}</Text>
+            </View>
+            <ProjectTaskBoard 
+              userId={Number(user_id)} 
+              projectTitle={selectedProjectTitle} 
+            />
+          </View>
+        );
+      }
+
       if (groupedTasksData.length === 0) {
         return (
           <View style={styles.centered}>
@@ -790,7 +818,12 @@ const CRM = () => {
       return (
         <FlatList<ProjectGroup>
           data={groupedTasksData}
-          renderItem={({ item }) => <ProjectGroupCard group={item} />}
+          renderItem={({ item }) => (
+            <ProjectGroupCard 
+              group={item} 
+              onPress={() => setSelectedProjectTitle(item.title)}
+            />
+          )}
           keyExtractor={(item) => item.title}
           onRefresh={() => fetchData(view)}
           refreshing={loading}
