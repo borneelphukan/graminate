@@ -49,6 +49,10 @@ export class UserService {
     return this.userRepository.scheduleDowngrade(userId, plan);
   }
 
+  async getBillingHistory(userId: string) {
+    return this.userRepository.getBillingHistory(userId);
+  }
+
   async getNotifications(userId: string) {
     return this.userRepository.getNotifications(userId);
   }

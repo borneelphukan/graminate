@@ -514,6 +514,32 @@ export class UserRepository {
     }
   }
 
+  async getBillingHistory(userId: string) {
+    try {
+      const payments = await this.prisma.payments.findMany({
+        where: {
+          user_id: Number(userId),
+          status: { not: 'PENDING' },
+        },
+        orderBy: { created_at: 'desc' },
+        select: {
+          payment_id: true,
+          razorpay_order_id: true,
+          razorpay_payment_id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          plan_type: true,
+          created_at: true,
+        },
+      });
+      return { status: 200, data: { payments } };
+    } catch (err) {
+      console.error('Error fetching billing history:', err);
+      return { status: 500, data: { error: 'Failed to fetch billing history' } };
+    }
+  }
+
   async getNotifications(userId: string) {
     try {
       const notifications = await (this.prisma as any).notifications.findMany({

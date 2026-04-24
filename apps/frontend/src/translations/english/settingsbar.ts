@@ -7,5 +7,6 @@ const englishSettingsBar = {
   notifications: "Notifications",
   account: "Account",
   accountSettings: "Account Settings",
+  billing: "Billing",
 };
 export default englishSettingsBar;

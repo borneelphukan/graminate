@@ -91,6 +91,12 @@ const SettingsScreen = () => {
         label: "Account",
         items: [
           {
+            label: "Billing",
+            type: "navigate",
+            routeName: `/${user_id}/settings/billing`,
+            icon: "credit-card-outline",
+          },
+          {
             label: "Account Settings",
             type: "navigate",
             routeName: `/${user_id}/settings/account`,

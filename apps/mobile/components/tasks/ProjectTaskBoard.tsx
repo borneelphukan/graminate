@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   column: {
-    width: Dimensions.get("window").width * 0.75,
+    width: Dimensions.get("window").width * 0.6,
     backgroundColor: "rgba(128, 128, 128, 0.05)",
     borderRadius: 12,
     padding: 12,
