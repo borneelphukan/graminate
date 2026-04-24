@@ -128,11 +128,6 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
       !phoneValid ||
       !salaryValidation.isValid
     ) {
-      console.log("Employee form validation failed:", {
-        ...addressValidation.errors,
-        ...salaryValidation.errors,
-        contactNumber: phoneErrorMsg,
-      });
       return;
     }
 

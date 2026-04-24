@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { Table, TableData } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
-import { format, addMonths } from "date-fns";
+import { format, addMonths, addDays } from "date-fns";
 import Swal from "sweetalert2";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -16,6 +16,7 @@ type User = {
   business_name: string | null;
   plan: string;
   subscription_expires_at: string | null;
+  pending_plan: string | null;
 };
 
 const SubscriptionsPage = () => {
@@ -129,7 +130,7 @@ const SubscriptionsPage = () => {
   }, [users, searchQuery]);
 
   const tableData: TableData = {
-    columns: ["#", "User Name", "Business", "Plan", "Subscription Expiry Date", "Action"],
+    columns: ["#", "User Name", "Business", "Plan", "Subscription Expiry", "Plan Change Status", "Action"],
     rows: filteredUsers.map((user) => [
       user.user_id,
       `${user.first_name} ${user.last_name}`,
@@ -140,6 +141,9 @@ const SubscriptionsPage = () => {
         : user.subscription_expires_at 
           ? format(new Date(user.subscription_expires_at), "MMM dd, yyyy") 
           : "N/A",
+      user.pending_plan 
+        ? `${user.pending_plan} (Starts: ${user.subscription_expires_at ? format(addDays(new Date(user.subscription_expires_at), 1), "MMM dd, yyyy") : "N/A"})`
+        : "No Pending Change",
       "ACTION_SLOT", // Placeholder for the Action column handled by Table component
     ]),
   };

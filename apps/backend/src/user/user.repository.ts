@@ -26,7 +26,7 @@ export class UserRepository {
 
   async getAllUsers() {
     try {
-      const usersList = await this.prisma.users.findMany({
+      const usersList = await (this.prisma.users as any).findMany({
         orderBy: { created_at: 'desc' },
         select: {
           user_id: true,
@@ -40,6 +40,7 @@ export class UserRepository {
           phone_number: true,
           country: true,
           subscription_expires_at: true,
+          pending_plan: true,
           // opening_balance: true,
           created_at: true,
           // entity_type: true,
@@ -95,17 +96,29 @@ export class UserRepository {
         where: { user_id: Number(id) },
       });
 
-      console.log('Fetched user in getUserById:', JSON.stringify(user, null, 2));
-
       if (!user) {
         return { status: 404, data: { error: 'User not found' } };
       }
 
+      // Check for pending plan transition
       const now = new Date();
-      const isSubscriptionActive =
-        user.plan !== 'FREE' ||
-        (user.subscription_expires_at &&
-          new Date(user.subscription_expires_at) > now);
+      let currentPlan = user.plan;
+      let currentExpiry = user.subscription_expires_at;
+
+      if (currentExpiry && now > currentExpiry && (user as any).pending_plan) {
+        const updatedUser = await (this.prisma.users as any).update({
+          where: { user_id: Number(id) },
+          data: {
+            plan: (user as any).pending_plan,
+            pending_plan: null,
+            subscription_expires_at: null,
+          },
+        });
+        currentPlan = updatedUser.plan;
+        currentExpiry = updatedUser.subscription_expires_at;
+      }
+
+      const isSubscriptionActive = currentPlan !== 'FREE' && (!currentExpiry || now <= currentExpiry);
 
       return {
         status: 200,
@@ -136,13 +149,14 @@ export class UserRepository {
             postal_code: user.postal_code || '',
             darkMode: user.darkMode,
             widgets: user.widgets || [],
-            plan: String(user.plan),
+            plan: String(currentPlan),
             country: String((user as any).country || ''),
-            subscription_expires_at: user.subscription_expires_at,
+            subscription_expires_at: currentExpiry,
             opening_balance: Number(user.opening_balance) || 0,
             is_subscription_active: isSubscriptionActive,
             entity_type: (user as any).entity_type,
             business_size: (user as any).business_size,
+            pending_plan: (user as any).pending_plan,
           },
         },
       };
@@ -175,6 +189,7 @@ export class UserRepository {
       entity_type,
       business_size,
       plan,
+      pending_plan,
       subscription_expires_at,
     } = body;
 
@@ -208,6 +223,7 @@ export class UserRepository {
       if (entity_type !== undefined) updateData.entity_type = entity_type;
       if (business_size !== undefined) updateData.business_size = business_size;
       if (plan !== undefined) updateData.plan = plan;
+      if (pending_plan !== undefined) updateData.pending_plan = pending_plan;
       if (subscription_expires_at !== undefined) updateData.subscription_expires_at = new Date(subscription_expires_at);
 
       if (sub_type !== undefined) {
@@ -305,11 +321,6 @@ export class UserRepository {
       });
 
       if (existing) {
-        console.log(
-          'User already exists with email/phone:',
-          email,
-          phone_number,
-        );
         return {
           status: 409,
           data: { error: 'Email or phone number already in use' },
@@ -425,24 +436,38 @@ export class UserRepository {
     }
   }
 
-  async downgradePlanToFree(userId: string) {
+  async scheduleDowngrade(userId: string, targetPlan: string) {
     try {
-      const now = new Date();
-      // Set expiry to the last day of the current month at 23:59:59
-      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+      const user = await this.prisma.users.findUnique({
+        where: { user_id: Number(userId) },
+        select: { plan: true, subscription_expires_at: true }
+      });
 
-      await this.prisma.users.update({
+      if (!user) return { status: 404, data: { error: 'User not found' } };
+
+      const planHierarchy = { 'FREE': 0, 'BASIC': 1, 'PRO': 2 };
+      const currentLevel = planHierarchy[user.plan as keyof typeof planHierarchy] || 0;
+      const targetLevel = planHierarchy[targetPlan as keyof typeof planHierarchy] || 0;
+
+      if (targetLevel >= currentLevel) {
+        return { status: 400, data: { error: 'Cannot schedule upgrade or same-level plan. Please use the subscribe flow for upgrades.' } };
+      }
+
+      await (this.prisma.users as any).update({
         where: { user_id: Number(userId) },
         data: {
-          plan: 'FREE',
-          subscription_expires_at: lastDayOfMonth,
+          pending_plan: targetPlan as any,
         },
       });
 
-      return { status: 200, data: { message: 'Plan has been changed to Free. Your Pro access will continue until the end of this month.' } };
+      const expiryStr = user.subscription_expires_at 
+        ? new Date(user.subscription_expires_at).toLocaleDateString() 
+        : "the end of your billing cycle";
+
+      return { status: 200, data: { message: `Your plan will be changed to ${targetPlan.charAt(0) + targetPlan.slice(1).toLowerCase()} at the end of your current billing cycle (${expiryStr}).` } };
     } catch (err) {
-      console.error('Error downgrading plan:', err);
-      return { status: 500, data: { error: 'Failed to downgrade plan' } };
+      console.error('Error scheduling plan downgrade:', err);
+      return { status: 500, data: { error: 'Failed to schedule plan downgrade' } };
     }
   }
 

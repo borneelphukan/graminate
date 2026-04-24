@@ -21,9 +21,6 @@ const ResetPasswordPage = () => {
     const emailParam = urlParams.get("email") || "";
     const tokenParam = urlParams.get("token") || "";
 
-    console.log("Extracted Email:", emailParam);
-    console.log("Extracted Token:", tokenParam);
-
     if (!emailParam || !tokenParam) {
       Swal.fire({
         title: "Invalid Link",

@@ -525,7 +525,6 @@ const General = () => {
                           variant="primary"
                           label={t("saveStorageSettings")}
                           onClick={() => {
-                            console.log("Saving combined storage settings:", storageSettings);
                             setProfileSuccessMessage(t("saveStorageSettings") + " " + t("profileUpdateSuccess"));
                           }}
                         />

@@ -89,9 +89,9 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':id/downgrade-to-free')
-  async downgradePlan(@Param('id') userId: string, @Request() req) {
+  @Post(':id/schedule-downgrade')
+  async scheduleDowngrade(@Param('id') userId: string, @Body('plan') plan: string, @Request() req) {
     if (String(req.user.userId) !== userId) throw new UnauthorizedException();
-    return this.userService.downgradePlanToFree(userId);
+    return this.userService.scheduleDowngrade(userId, plan);
   }
 }

@@ -80,7 +80,6 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   const navigateToSettings = () => {
     setNotificationBarOpen(false);
     setTimeout(() => {
-      console.log(`Navigating to: /${user_id}/settings/settings`);
       router.push(`/${user_id}/settings/settings`);
     }, 300);
   };

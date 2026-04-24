@@ -71,7 +71,6 @@ export class OtpRepository {
         text: `OTP for Email Verification: ${otp}`,
       });
 
-      console.log('OTP sent to:', email);
       return {
         status: 200,
         data: { message: 'OTP sent successfully.' },

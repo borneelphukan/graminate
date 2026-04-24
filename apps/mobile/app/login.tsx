@@ -99,7 +99,6 @@ const AuthScreen = () => {
       await AsyncStorage.setItem("accessToken", access_token);
       await AsyncStorage.setItem("user", JSON.stringify(user));
       Alert.alert("Success", "Logged in successfully!");
-      console.log(`Navigating to: /${user.user_id}`);
       router.replace(`/${user.user_id}`);
     } catch (error: any) {
       const errorMessage =

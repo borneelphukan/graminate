@@ -174,7 +174,6 @@ export const UserPreferencesProvider = ({
     setIsSubTypesLoading(true);
     try {
       const response = await axiosInstance.get(`/user/${userId}`);
-      console.log("fetchUserSubTypes response data:", response.data);
       
       // Handle the { status, data: { user } } format from repository
       const user = response.data?.data?.user ?? response.data?.user;

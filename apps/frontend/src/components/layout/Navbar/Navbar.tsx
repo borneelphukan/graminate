@@ -33,6 +33,7 @@ const Navbar = ({
     language: currentLanguage,
     darkMode,
     setDarkMode,
+    plan,
   } = useUserPreferences();
   const t = useMemo(() => getTranslator(currentLanguage), [currentLanguage]);
 
@@ -261,16 +262,22 @@ const Navbar = ({
                         </div>
                       </div>
                     </div>
-                    <div className="px-4 py-3">
+                    <div className="px-4 py-3 flex flex-col gap-2">
                       {userNavigation.map((item) => (
-                        <a
-                          key={item.nameKey}
-                          href={item.href}
-                          className="flex items-center mb-2 text-sm font-medium text-gray-200 dark:text-gray-500 hover:underline"
-                          target={item.external ? "_blank" : "_self"}
-                        >
-                          {t(item.nameKey)}
-                        </a>
+                        <div key={item.nameKey} className="flex items-center justify-between">
+                          <a
+                            href={item.href}
+                            className="text-sm font-medium text-gray-200 dark:text-gray-500 hover:underline"
+                            target={item.external ? "_blank" : "_self"}
+                          >
+                            {t(item.nameKey)}
+                          </a>
+                          {item.nameKey === "pricing" && plan && (
+                            <span className="px-2 py-0.5 rounded-md bg-green-200 text-[10px] font-bold text-light uppercase tracking-wider">
+                              {plan}
+                            </span>
+                          )}
+                        </div>
                       ))}
                     </div>
                     <div className="flex items-center justify-between px-4 py-3 text-sm text-dark dark:text-light border-t border-gray-500 dark:border-gray-700">

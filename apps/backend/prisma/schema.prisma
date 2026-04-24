@@ -489,6 +489,7 @@ model users {
   opening_balance         Decimal          @default(0.00) @db.Decimal(15, 2)
   business_size           String?          @db.VarChar(50)
   entity_type             String?          @db.VarChar(50)
+  pending_plan            user_plan_type?
   apiculture              apiculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]

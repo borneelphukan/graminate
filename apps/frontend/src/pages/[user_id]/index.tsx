@@ -270,7 +270,6 @@ const Dashboard = () => {
       try {
         const response = await axiosInstance.get(`/user/${userId}`);
         const fetchedUser = response.data?.data?.user as User | undefined;
-        console.log("Fetched user in Dashboard:", fetchedUser);
         if (fetchedUser) {
           if (!isMounted) return;
           setUserData(fetchedUser);
@@ -478,7 +477,6 @@ const Dashboard = () => {
     userType?: string,
     businessSize?: string
   ) => {
-    console.log("handleFirstLogin called with:", { businessName, businessType, userType, country });
     try {
       await axiosInstance.put(`/user/${userId}`, {
         business_name: businessName,

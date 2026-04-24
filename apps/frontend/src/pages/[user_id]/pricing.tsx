@@ -122,38 +122,48 @@ const Pricing = () => {
     const normalizedId = planId.toUpperCase();
     if (normalizedId === currentPlanFromDb) return;
 
-    if (normalizedId === "FREE") {
+    const planHierarchy = { 'FREE': 0, 'BASIC': 1, 'PRO': 2 };
+    const currentLevel = planHierarchy[currentPlanFromDb as keyof typeof planHierarchy] || 0;
+    const targetLevel = planHierarchy[normalizedId as keyof typeof planHierarchy] || 0;
+
+    // Downgrade logic
+    if (targetLevel < currentLevel) {
       const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "Are you sure you want to shift back to free program? You will lose access to all the Premium features and be limited to 1 service.",
+        title: "Downgrade Plan?",
+        text: `Are you sure you want to shift to the ${planId} plan? Your current features will remain active until the end of your billing cycle, after which you will be transitioned to ${planId}.`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#10b981",
         cancelButtonColor: "#ef4444",
-        confirmButtonText: "Yes, shift to Free",
-        cancelButtonText: "No, keep current plan",
+        confirmButtonText: `Yes, schedule ${planId}`,
+        cancelButtonText: "Keep current plan",
         background: document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff",
         color: document.documentElement.classList.contains("dark") ? "#f3f4f6" : "#111827",
       });
 
       if (result.isConfirmed) {
         try {
-          await axiosInstance.post(`/user/${user_id}/downgrade-to-free`);
+          const response = await axiosInstance.post(`/user/${user_id}/schedule-downgrade`, {
+            plan: normalizedId
+          });
+          
           Swal.fire({
-            title: "Plan Downgraded",
-            text: "Your plan will be set back to free at the end of the billing cycle.",
+            title: "Downgrade Scheduled",
+            text: response.data.data.message,
             icon: "success",
             confirmButtonColor: "#10b981",
           });
+          
           if (user_id) fetchUserSubTypes(user_id as string);
-        } catch (error) {
+        } catch (error: any) {
           console.error("Downgrade error:", error);
-          Swal.fire("Error", "Failed to downgrade plan. Please try again.", "error");
+          Swal.fire("Error", error.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.", "error");
         }
       }
       return;
     }
 
+    // Upgrade logic
     if (normalizedId === "BASIC" || normalizedId === "PRO") {
       handleSubscribe(normalizedId as "BASIC" | "PRO");
       return;
@@ -240,7 +250,7 @@ const Pricing = () => {
                         ? "ring-2 ring-green-400 transform scale-[1.02]"
                         : "hover:shadow-lg"
                     }`}
-                    onClick={() => handleCardClick(plan.name)}
+                    onClick={() => handleCardClick(plan.id)}
                   >
                     <div className="p-6 flex-grow">
                       <h3 className="text-xl font-semibold text-dark mb-2 flex items-center justify-center">
