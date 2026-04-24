@@ -445,13 +445,28 @@ const Table = ({
                         </div>
                       ) : view === "subscriptions" && data.columns[cellIndex] === "Action" ? (
                         <div className="w-44">
-                          <Dropdown
-                            items={["Allow Basic Access", "Allow Pro Access"]}
-                            selectedItem="Change Plan"
-                            onSelect={(action) => onAction?.(row, action)}
-                            variant="small"
-                            width="full"
-                          />
+                          {(() => {
+                            const currentPlan = (row as any[])[data.columns.indexOf("Plan")];
+                            let items: string[] = [];
+                            
+                            if (currentPlan === "FREE") {
+                              items = ["Allow Basic Access", "Allow Pro Access"];
+                            } else if (currentPlan === "BASIC") {
+                              items = ["Allow Pro Access", "Revoke Paid Access"];
+                            } else if (currentPlan === "PRO") {
+                              items = ["Allow Basic Access", "Revoke Paid Access"];
+                            }
+
+                            return items.length > 0 ? (
+                              <Dropdown
+                                items={items}
+                                selectedItem="Change Plan"
+                                onSelect={(action) => onAction?.(row, action)}
+                                variant="small"
+                                width="full"
+                              />
+                            ) : null;
+                          })()}
                         </div>
                       ) : view === "users" && data.columns[cellIndex] === "Actions" ? (
                         <div className="flex justify-end">

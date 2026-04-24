@@ -293,7 +293,6 @@ const CRM = () => {
             "Email",
             "Phone",
             "Type",
-            "Address",
             "Created On",
           ],
           rows: fetchedData
@@ -305,15 +304,6 @@ const CRM = () => {
               item.email,
               item.phone_number,
               item.type,
-              [
-                item.address_line_1,
-                item.address_line_2,
-                item.city,
-                item.state,
-                item.postal_code,
-              ]
-                .filter(Boolean)
-                .join(", "),
               new Date(item.created_at).toLocaleString(locale, dateTimeOptions),
             ]),
         };

@@ -74,13 +74,20 @@ const SubscriptionsPage = () => {
     const token = localStorage.getItem("admin_token");
     
     let newPlan = "";
-    if (action === "Allow Basic Access") newPlan = "BASIC";
-    if (action === "Allow Pro Access") newPlan = "PRO";
+    let newExpiry: string | null = null;
+
+    if (action === "Allow Basic Access") {
+      newPlan = "BASIC";
+      newExpiry = addMonths(new Date(), 1).toISOString();
+    } else if (action === "Allow Pro Access") {
+      newPlan = "PRO";
+      newExpiry = addMonths(new Date(), 1).toISOString();
+    } else if (action === "Revoke Paid Access") {
+      newPlan = "FREE";
+      newExpiry = null;
+    }
 
     if (!newPlan) return;
-
-    // Set expiry to 1 month from now
-    const newExpiry = addMonths(new Date(), 1).toISOString();
 
     try {
       const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
@@ -96,7 +103,7 @@ const SubscriptionsPage = () => {
       });
 
       if (response.ok) {
-        Swal.fire("Success", `User plan updated to ${newPlan}`, "success");
+        Swal.fire("Success", `User plan changed to ${newPlan}`, "success");
         fetchData();
       } else {
         throw new Error("Failed to update plan");
