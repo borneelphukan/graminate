@@ -31,19 +31,24 @@ const SignIn = () => {
           const decoded = JSON.parse(jsonPayload);
 
           const currentTime = Date.now() / 1000;
-          if (decoded.exp && decoded.exp > currentTime) {
+          const isExpired = decoded.exp && decoded.exp < currentTime;
+          
+          if (!isExpired) {
             const userId = decoded.user_id || decoded.id || decoded.sub;
             if (userId) {
               localStorage.setItem("user_id", userId);
               await router.replace(`/${userId}`);
               return;
             }
+          } else {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user_id");
           }
         } catch (error) {
           console.error("Auth check failed", error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user_id");
         }
-        localStorage.removeItem("token");
-        localStorage.removeItem("user_id");
       }
       setAuthLoading(false);
     };
@@ -367,7 +372,7 @@ const SignIn = () => {
                     : "opacity-0 -translate-x-full scale-95 pointer-events-none absolute w-full top-0"
                 }`}
               >
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleLogin} className="px-1">
                   <div className="mb-4">
                     <TextField
                       label="Email"
@@ -424,9 +429,9 @@ const SignIn = () => {
                     : "opacity-0 translate-x-full scale-95 pointer-events-none absolute w-full top-0"
                 }`}
               >
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handleRegister} className="px-1">
                   <div className="flex flex-row gap-2">
-                    <div className="mb-4">
+                    <div className="mb-4 flex-1">
                       <TextField
                         label="First Name"
                         placeholder="Enter your First Name"
@@ -441,7 +446,7 @@ const SignIn = () => {
                         width="large"
                       />
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-4 flex-1">
                       <TextField
                         label="Last Name"
                         placeholder="Enter your Last Name"

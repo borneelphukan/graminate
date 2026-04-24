@@ -97,7 +97,7 @@ const TextField = ({
   };
 
   return (
-    <div className={`w-full ${getWidthClass()}`} ref={textFieldRef}>
+    <div className={`w-full px-0.5 ${getWidthClass()}`} ref={textFieldRef}>
       {label && (
         <label
           htmlFor={calendar ? "calendar" : password ? "password" : "text"}

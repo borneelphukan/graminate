@@ -59,7 +59,7 @@ const AddServiceScreen = () => {
   const route = useRoute();
   const { user_id } = route.params as { user_id: string };
 
-  const { subTypes, setUserSubTypes } = useUserPreferences();
+  const { subTypes, setUserSubTypes, plan } = useUserPreferences();
 
   const [availableSubTypes, setAvailableSubTypes] = useState<string[]>([]);
   const [selectedSubTypes, setSelectedSubTypes] = useState<Set<string>>(
@@ -123,18 +123,32 @@ const AddServiceScreen = () => {
   const handleCheckboxChange = (
     subType: string,
     state: Set<string>,
-    setter: React.Dispatch<React.SetStateAction<Set<string>>>
+    setter: React.Dispatch<React.SetStateAction<Set<string>>>,
+    isAdding: boolean = false
   ) => {
     setter((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(subType)) newSet.delete(subType);
-      else newSet.add(subType);
+      if (newSet.has(subType)) {
+        newSet.delete(subType);
+      } else {
+        if (isAdding && plan === "FREE" && subTypes.length + newSet.size >= 1) {
+          Toast.show({
+            type: "info",
+            text1: "Upgrade Required",
+            text2: "Free plan users can only have one active service.",
+          });
+          return prev;
+        }
+        newSet.add(subType);
+      }
       return newSet;
     });
   };
 
+  const isProLocked = plan === "FREE" && subTypes.length >= 1;
+
   const handleAddSubmit = async () => {
-    if (selectedSubTypes.size === 0) return;
+    if (selectedSubTypes.size === 0 || isProLocked) return;
     setIsSubmitting(true);
     const newSubTypes = [
       ...new Set([...subTypes, ...Array.from(selectedSubTypes)]),
@@ -257,10 +271,13 @@ const AddServiceScreen = () => {
   const renderServiceCard = (
     subType: string,
     isSelected: boolean,
-    onPress: () => void
+    onPress: () => void,
+    isLocked: boolean = false
   ) => {
     const IconComponent = AgricultureIcons[subType];
-    const iconColor = isSelected
+    const iconColor = isLocked
+      ? theme.colors.onSurfaceVariant
+      : isSelected
       ? theme.colors.primary
       : theme.colors.onSurfaceVariant;
     const iconSize = 30;
@@ -268,16 +285,22 @@ const AddServiceScreen = () => {
     return (
       <View key={subType} style={styles.cardWrapper}>
         <TouchableRipple
-          onPress={onPress}
+          onPress={isLocked ? undefined : onPress}
           style={[styles.cardRipple, { borderRadius: theme.roundness }]}
         >
           <Card
             style={[
               styles.card,
+              isLocked && { backgroundColor: theme.colors.surfaceVariant },
               isSelected && { backgroundColor: theme.colors.primaryContainer },
             ]}
           >
             <Card.Content style={styles.cardContent}>
+              {isLocked && (
+                <View style={[styles.lockedBadge, { backgroundColor: theme.colors.primary }]}>
+                  <Text style={styles.lockedBadgeText}>Unlock Pro</Text>
+                </View>
+              )}
               {/* Conditionally render FontAwesomeIcon or a custom component */}
               {typeof IconComponent === "function" ? (
                 <IconComponent size={iconSize} color={iconColor} />
@@ -293,7 +316,9 @@ const AddServiceScreen = () => {
                 style={[
                   styles.cardText,
                   {
-                    color: isSelected
+                    color: isLocked
+                      ? theme.colors.onSurfaceVariant
+                      : isSelected
                       ? theme.colors.primary
                       : theme.colors.onSurface,
                   },
@@ -415,8 +440,10 @@ const AddServiceScreen = () => {
                         handleCheckboxChange(
                           subType,
                           selectedSubTypes,
-                          setSelectedSubTypes
-                        )
+                          setSelectedSubTypes,
+                          true
+                        ),
+                      isProLocked
                     )
                   )}
                 </View>
@@ -425,11 +452,11 @@ const AddServiceScreen = () => {
             <Button
               mode="contained"
               onPress={handleAddSubmit}
-              disabled={isSubmitting || selectedSubTypes.size === 0}
+              disabled={isSubmitting || selectedSubTypes.size === 0 || isProLocked}
               loading={isSubmitting}
               style={styles.button}
             >
-              Add Selected Services
+              {isProLocked ? "Upgrade for more" : "Add Selected Services"}
             </Button>
           </>
         ) : (
@@ -532,6 +559,20 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 8,
+  },
+  lockedBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+  lockedBadgeText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
   },
 });
 

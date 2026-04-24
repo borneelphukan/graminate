@@ -99,11 +99,21 @@ const AddServicePage = () => {
 
   const handleAddCheckboxChange = (subType: string) => {
     if (isProFeature) return;
+    
     setSelectedSubTypes((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(subType)) {
         newSet.delete(subType);
       } else {
+        // If FREE plan, only allow 1 total service (existing + selected)
+        if (plan === "FREE" && subTypes.length + newSet.size >= 1) {
+          toastMessage.set({
+            message: "Free plan users can only have one active service. Please upgrade for more.",
+            type: "error",
+          });
+          showToast.set(true);
+          return prev;
+        }
         newSet.add(subType);
       }
       return newSet;
@@ -325,63 +335,70 @@ const AddServicePage = () => {
                 Add Services
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                {servicesToShow.map((subType) => (
-                  <label
-                    key={subType}
-                    htmlFor={`add-subtype-${subType}`}
-                    className={`relative flex flex-col items-center justify-center text-center p-4 border rounded-xl 
-                                   transition-all duration-200 ease-in-out group
-                                   ${
-                                     isProFeature
-                                       ? "cursor-not-allowed dark:bg-gray-700 border-gray-400 dark:border-gray-700"
-                                       : `cursor-pointer hover:border-green-200 dark:hover:border-green-100 ${
-                                           selectedSubTypes.has(subType)
-                                             ? "bg-green-400 dark:bg-green-100/30 border-green-200 dark:border-green-100 shadow-lg"
-                                             : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-light dark:hover:bg-gray-600/50"
-                                         }`
-                                   }`}
-                  >
-                    {isProFeature && (
-                      <div className="absolute top-2 right-2 bg-green-200 text-light text-xs font-bold px-2 py-1 rounded-full">
-                        Unlock Pro
+                {servicesToShow.map((subType) => {
+                  const isSelected = selectedSubTypes.has(subType);
+                  const isDisabled = 
+                    isProFeature || 
+                    (plan === "FREE" && selectedSubTypes.size >= 1 && !isSelected);
+
+                  return (
+                    <label
+                      key={subType}
+                      htmlFor={`add-subtype-${subType}`}
+                      className={`relative flex flex-col items-center justify-center text-center p-4 border rounded-xl 
+                                     transition-all duration-200 ease-in-out group
+                                     ${
+                                       isDisabled
+                                         ? "cursor-not-allowed bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-700 opacity-60"
+                                         : `cursor-pointer hover:border-green-200 dark:hover:border-green-100 ${
+                                             isSelected
+                                               ? "bg-green-400 dark:bg-green-100/30 border-green-200 dark:border-green-100 shadow-lg"
+                                               : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-light dark:hover:bg-gray-600/50"
+                                           }`
+                                     }`}
+                    >
+                      {(isProFeature || (plan === "FREE" && isDisabled)) && (
+                        <div className="absolute top-2 right-2 bg-green-200 text-light text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                          {isProFeature ? "Unlock Pro" : "1 Limit"}
+                        </div>
+                      )}
+                      <input
+                        type="checkbox"
+                        id={`add-subtype-${subType}`}
+                        name="addSubType"
+                        value={subType}
+                        checked={isSelected}
+                        onChange={() => handleAddCheckboxChange(subType)}
+                        className="sr-only peer"
+                        disabled={isDisabled}
+                      />
+                      <div
+                        className={`w-10 h-10 mb-3 flex items-center justify-center text-3xl
+                                        transition-colors duration-200 
+                                        ${
+                                          isDisabled
+                                            ? "text-gray-300 dark:text-gray-500"
+                                            : isSelected
+                                            ? "text-green-100 dark:text-green-300"
+                                            : "text-gray-400 dark:text-gray-300 group-hover:text-green-200 dark:group-hover:text-green-200 peer-focus:text-green-200 dark:peer-focus:text-green-200"
+                                        }`}
+                      >
+                        {AgricultureIcons[subType]}
                       </div>
-                    )}
-                    <input
-                      type="checkbox"
-                      id={`add-subtype-${subType}`}
-                      name="addSubType"
-                      value={subType}
-                      checked={selectedSubTypes.has(subType)}
-                      onChange={() => handleAddCheckboxChange(subType)}
-                      className="sr-only peer"
-                      disabled={isProFeature}
-                    />
-                    <div
-                      className={`w-10 h-10 mb-3 flex items-center justify-center text-3xl
-                                      transition-colors duration-200 
-                                      ${
-                                        isProFeature
-                                          ? "text-gray-400 dark:text-gray-500"
-                                          : selectedSubTypes.has(subType)
-                                          ? "text-green-100 dark:text-green-300"
-                                          : "text-gray-400 dark:text-gray-300 group-hover:text-green-200 dark:group-hover:text-green-200 peer-focus:text-green-200 dark:peer-focus:text-green-200"
-                                      }`}
-                    >
-                      {AgricultureIcons[subType]}
-                    </div>
-                    <span
-                      className={`text-sm font-medium transition-colors duration-200 ${
-                        isProFeature
-                          ? "text-gray-500 dark:text-gray-400"
-                          : selectedSubTypes.has(subType)
-                          ? "text-green-100 dark:text-green-300"
-                          : "text-dark dark:text-light group-hover:text-green-200 dark:group-hover:text-green-200 peer-focus:text-green-100 dark:peer-focus:text-green-200"
-                      }`}
-                    >
-                      {subType}
-                    </span>
-                  </label>
-                ))}
+                      <span
+                        className={`text-sm font-medium transition-colors duration-200 ${
+                          isDisabled
+                            ? "text-dark dark:text-light"
+                            : isSelected
+                            ? "text-green-100 dark:text-green-300"
+                            : "text-dark dark:text-light group-hover:text-green-200 dark:group-hover:text-green-200 peer-focus:text-green-100 dark:peer-focus:text-green-200"
+                        }`}
+                      >
+                        {subType}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
