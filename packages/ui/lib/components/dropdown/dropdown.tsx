@@ -83,7 +83,7 @@ const Dropdown = ({
           value={selectedItem === "Set deadline" ? "" : selectedItem}
           onChange={(e) => onSelect(e.target.value)}
           disabled={isDisabled}
-          className="w-full p-2 border border-gray-400 dark:border-gray-200 rounded-md dark:bg-gray-700 text-dark dark:text-light disabled:opacity-50 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-green-200"
+          className="w-full p-2 border border-gray-400 dark:border-gray-200 rounded-md dark:bg-gray-700 text-dark dark:text-light disabled:opacity-50 disabled:cursor-not-allowed outline-none focus:ring-[2px] focus:ring-offset-2 focus:ring-green-200 dark:focus:ring-offset-gray-200"
         />
       </div>
     );
@@ -168,8 +168,8 @@ const Dropdown = ({
           isDisabled
             ? "bg-white dark:bg-gray-200 border-gray-400 dark:border-gray-700 cursor-not-allowed"
             : errorMessage
-            ? "dark:bg-gray-700 border-red-500 focus:outline-none focus:ring-1 focus:ring-red-200"
-            : "dark:bg-gray-700 border-gray-400 dark:border-gray-200 hover:border-gray-500 dark:hover:border-gray-500 focus:outline-none focus:ring-1 focus:ring-green-200"
+            ? "dark:bg-gray-700 border-red-500 focus:outline-none focus:ring-[2px] focus:ring-offset-2 dark:focus:ring-offset-gray-200 focus:ring-red-200"
+            : "dark:bg-gray-700 border-gray-400 dark:border-gray-200 hover:border-gray-500 dark:hover:border-gray-500 focus:outline-none focus:ring-[2px] focus:ring-offset-2 dark:focus:ring-offset-gray-200 focus:ring-green-200"
         }`}
         onClick={toggleDropdown}
         disabled={isDisabled}

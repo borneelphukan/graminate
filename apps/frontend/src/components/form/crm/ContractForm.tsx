@@ -1,9 +1,9 @@
-import { Dropdown, Button, Icon } from "@graminate/ui";
-import React, { useState, useRef, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Button, Icon, Input } from "@graminate/ui";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { CONTRACT_STATUS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
+import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 
 type ContractFormProps = {
   userId: string | string[] | undefined;
@@ -29,6 +29,24 @@ type Company = {
 };
 
 const ContractForm = ({ userId, onClose }: ContractFormProps) => {
+  const [animate, setAnimate] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useAnimatePanel(setAnimate);
+
+  const handleCloseAnimation = useCallback(() => {
+    setAnimate(false);
+    setTimeout(() => {
+      onClose();
+    }, 300);
+  }, [onClose]);
+
+  const handleClose = useCallback(() => {
+    handleCloseAnimation();
+  }, [handleCloseAnimation]);
+
+  useClickOutside(panelRef, handleClose);
+
   const [contractsValues, setContractsValues] = useState({
     dealName: "",
     dealPartner: "",
@@ -163,8 +181,8 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
     }
   };
 
-  const handleSubmitContracts = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitContracts = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (
       !contractsValues.dealName ||
       !contractsValues.status ||
@@ -217,167 +235,218 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
   };
 
   return (
-    <form
-      className="flex flex-col gap-4 w-full"
-      onSubmit={handleSubmitContracts}
-    >
-      <TextField
-        label={
-          <div className="flex items-center gap-2">
-            <Icon type="description" size="sm" />
-            <span>Contract Title</span>
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
+      <div
+        ref={panelRef}
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
+        style={{
+          transform: animate ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Create New Contract
+            </h2>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              Document a new deal or partnership in your CRM.
+            </p>
           </div>
-        }
-        placeholder="Name of your Contract"
-        value={contractsValues.dealName}
-        onChange={(val: string) =>
-          setContractsValues({ ...contractsValues, dealName: val })
-        }
-      />
-      <div className="relative">
-        <TextField
-          label={
-            <div className="flex items-center gap-2">
-              <Icon type="category" size="sm" />
-              <span>Contract Occupation Category</span>
-            </div>
-          }
-          placeholder="Contract category"
-          value={contractsValues.category}
-          onChange={handleCategoryInputChange}
-          onFocus={handleCategoryInputFocus}
-          isLoading={isLoadingCategorySubTypes}
-        />
-        {categorySuggestions.length > 0 && showCategorySuggestions && (
-          <div
-            ref={categorySuggestionsRef}
-            className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto"
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
           >
-            {categorySuggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="px-4 py-2 hover:bg-light dark:hover:bg-gray-800 text-sm cursor-pointer"
-                onClick={() => selectCategorySuggestion(suggestion)}
-              >
-                {suggestion}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <Dropdown
-        label={
-          <div className="flex items-center gap-2">
-            <Icon type="step" size="sm" />
-            <span>Contract Stage</span>
-          </div>
-        }
-        items={CONTRACT_STATUS}
-        selectedItem={contractsValues.status}
-        onSelect={(val: string) =>
-          setContractsValues({ ...contractsValues, status: val })
-        }
-        placeholder="Select Stage"
-      />
-      <TextField
-        label={
-          <div className="flex items-center gap-2">
-            <Icon type="payments" size="sm" />
-            <span>Amount (₹)</span>
-          </div>
-        }
-        placeholder="Budget involved"
-        value={contractsValues.amountPaid}
-        onChange={(val: string) =>
-          setContractsValues({ ...contractsValues, amountPaid: val })
-        }
-      />
-      <div className="flex flex-col sm:flex-row gap-4">
-        <TextField
-          label={
-            <div className="flex items-center gap-2">
-              <Icon type="calendar_today" size="sm" />
-              <span>Start Date</span>
-            </div>
-          }
-          placeholder="YYYY-MM-DD"
-          value={contractsValues.contractStartDate}
-          onChange={(val: string) =>
-            setContractsValues({
-              ...contractsValues,
-              contractStartDate: val,
-            })
-          }
-          calendar
-        />
-        <TextField
-          label={
-            <div className="flex items-center gap-2">
-              <Icon type="event_busy" size="sm" />
-              <span>End Date</span>
-            </div>
-          }
-          placeholder="YYYY-MM-DD"
-          value={contractsValues.contractEndDate}
-          onChange={(val: string) =>
-            setContractsValues({
-              ...contractsValues,
-              contractEndDate: val,
-            })
-          }
-          calendar
-        />
-      </div>
-      <div className="relative">
-        <TextField
-          label={
-            <div className="flex items-center gap-2">
-              <Icon type="business" size="sm" />
-              <span>Contract With</span>
-            </div>
-          }
-          placeholder="Company, Business owner"
-          value={contractsValues.dealPartner}
-          onChange={handleDealPartnerInputChange}
-          onFocus={handleDealPartnerInputFocus}
-          isLoading={isLoadingCompanyNames}
-        />
-        {dealPartnerSuggestions.length > 0 && showDealPartnerSuggestions && (
-          <div
-            ref={dealPartnerSuggestionsRef}
-            className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto"
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            className="space-y-8"
+            onSubmit={handleSubmitContracts}
+            noValidate
           >
-            {dealPartnerSuggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="px-4 py-2 hover:bg-light dark:hover:bg-gray-800 text-sm cursor-pointer"
-                onClick={() => selectDealPartnerSuggestion(suggestion)}
-              >
-                {suggestion}
+            {/* Contract Essentials Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Contract Essentials</h3>
               </div>
-            ))}
-          </div>
-        )}
+
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="dealName"
+                  label="Contract Title"
+                  placeholder="Name of your Contract"
+                  value={contractsValues.dealName}
+                  onChange={(e) =>
+                    setContractsValues({ ...contractsValues, dealName: e.target.value })
+                  }
+                  required
+                />
+                
+                <div className="relative">
+                  <Input
+                    id="category"
+                    label="Contract Occupation Category"
+                    placeholder="Contract category"
+                    value={contractsValues.category}
+                    onChange={(e) => handleCategoryInputChange(e.target.value)}
+                    onFocus={handleCategoryInputFocus}
+                  />
+                  {categorySuggestions.length > 0 && showCategorySuggestions && (
+                    <div
+                      ref={categorySuggestionsRef}
+                      className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                    >
+                      {categorySuggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
+                          onClick={() => selectCategorySuggestion(suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Dropdown
+                  label="Contract Stage"
+                  items={CONTRACT_STATUS}
+                  selectedItem={contractsValues.status}
+                  onSelect={(val: string) =>
+                    setContractsValues({ ...contractsValues, status: val })
+                  }
+                  placeholder="Select Stage"
+                  width="full"
+                />
+              </div>
+            </section>
+
+            {/* Timeline & Value Section */}
+            <section className="space-y-6 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Timeline & Value</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="amountPaid"
+                  type="number"
+                  label="Amount (₹)"
+                  placeholder="Budget involved"
+                  value={contractsValues.amountPaid}
+                  onChange={(e) =>
+                    setContractsValues({ ...contractsValues, amountPaid: e.target.value })
+                  }
+                  required
+                />
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="contractStartDate"
+                    type="date"
+                    label="Start Date"
+                    placeholder="YYYY-MM-DD"
+                    value={contractsValues.contractStartDate}
+                    onChange={(e) =>
+                      setContractsValues({
+                        ...contractsValues,
+                        contractStartDate: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                  <Input
+                    id="contractEndDate"
+                    type="date"
+                    label="End Date"
+                    placeholder="YYYY-MM-DD"
+                    value={contractsValues.contractEndDate}
+                    onChange={(e) =>
+                      setContractsValues({
+                        ...contractsValues,
+                        contractEndDate: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Partnership & Priority Section */}
+            <section className="space-y-6 pt-4 pb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Partnership & Priority</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <div className="relative">
+                  <Input
+                    id="dealPartner"
+                    label="Contract With (Partner)"
+                    placeholder="Company or Business owner"
+                    value={contractsValues.dealPartner}
+                    onChange={(e) => handleDealPartnerInputChange(e.target.value)}
+                    onFocus={handleDealPartnerInputFocus}
+                  />
+                  {dealPartnerSuggestions.length > 0 && showDealPartnerSuggestions && (
+                    <div
+                      ref={dealPartnerSuggestionsRef}
+                      className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                    >
+                      {dealPartnerSuggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
+                          onClick={() => selectDealPartnerSuggestion(suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Dropdown
+                  label="Priority Level"
+                  items={["Low", "Medium", "High"]}
+                  selectedItem={contractsValues.priority}
+                  onSelect={(val: string) =>
+                    setContractsValues({ ...contractsValues, priority: val })
+                  }
+                  placeholder="Select Priority"
+                  width="full"
+                />
+              </div>
+            </section>
+          </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            className="w-full"
+          />
+          <Button
+            label="Create Contract"
+            variant="primary"
+            type="submit"
+            onClick={handleSubmitContracts}
+            className="w-full"
+          />
+        </div>
       </div>
-      <Dropdown
-        label={
-          <div className="flex items-center gap-2">
-            <Icon type="priority_high" size="sm" />
-            <span>Priority</span>
-          </div>
-        }
-        items={["Low", "Medium", "High"]}
-        selectedItem={contractsValues.priority}
-        onSelect={(val: string) =>
-          setContractsValues({ ...contractsValues, priority: val })
-        }
-        placeholder="Select Priority"
-      />
-      <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-        <Button label="Cancel" variant="secondary" onClick={onClose} />
-        <Button label="Create Contract" variant="primary" type="submit" />
-      </div>
-    </form>
+    </div>
   );
 };
 

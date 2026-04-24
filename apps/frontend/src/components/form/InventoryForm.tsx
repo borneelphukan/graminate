@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button, Checkbox } from "@graminate/ui";
+import { Dropdown, Icon, Button, Checkbox, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { UNITS } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
@@ -230,8 +229,8 @@ const InventoryForm = ({
     }
   };
 
-  const handleSubmitInventoryItem = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitInventoryItem = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
 
     if (!validateForm()) {
       return;
@@ -294,173 +293,205 @@ const InventoryForm = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {formTitle || "Add New Inventory Item"}
             </h2>
-            <button
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              onClick={handleClose}
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              {initialData ? "Update existing item details." : "Register a new item to your warehouse inventory."}
+            </p>
           </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-          <div className="flex-grow overflow-y-auto px-1 custom-scrollbar">
-            <form
-              className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmitInventoryItem}
-              noValidate
-            >
-              <TextField
-                label="Item Name"
-                placeholder="e.g. Premium Arabica Beans"
-                value={inventoryItem.itemName}
-                onChange={(val: string) => {
-                  setInventoryItem({ ...inventoryItem, itemName: val });
-                  setInventoryErrors({
-                    ...inventoryErrors,
-                    itemName: undefined,
-                  });
-                }}
-                type={inventoryErrors.itemName ? "error" : ""}
-                errorMessage={inventoryErrors.itemName}
-              />
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            className="space-y-8"
+            onSubmit={handleSubmitInventoryItem}
+            noValidate
+          >
+            {/* Item Details Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Item Details</h3>
+              </div>
 
-              {inventoryItem.itemName.trim().length > 0 && (
-                <Checkbox
-                  id="feedCheckbox"
-                  label="Is it a Feed ?"
-                  checked={inventoryItem.feed}
-                  onCheckedChange={(checked: boolean) =>
-                    setInventoryItem({
-                      ...inventoryItem,
-                      feed: checked,
-                    })
-                  }
-                  className="mt-1 mb-2 font-medium"
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="itemName"
+                  label="Item Name"
+                  placeholder="e.g. Premium Arabica Beans"
+                  value={inventoryItem.itemName}
+                  onChange={(e) => {
+                    setInventoryItem({ ...inventoryItem, itemName: e.target.value });
+                    setInventoryErrors({
+                      ...inventoryErrors,
+                      itemName: undefined,
+                    });
+                  }}
+                  error={inventoryErrors.itemName}
                 />
-              )}
 
-              <div className="relative">
-                <TextField
-                  label="Item Occupation"
-                  placeholder="e.g. Raw Coffee, Packaging"
-                  value={inventoryItem.itemGroup}
-                  onChange={handleItemCategoryInputChange}
-                  onFocus={handleItemCategoryInputFocus}
-                  isLoading={isLoadingSubTypes}
-                  type={inventoryErrors.itemGroup ? "error" : ""}
-                  errorMessage={inventoryErrors.itemGroup}
-                />
-                {showSuggestions && (
-                  <div
-                    ref={suggestionsRef}
-                    className="absolute z-20 mt-1 w-full bg-light dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto"
-                  >
-                    {isLoadingSubTypes ? (
-                      <div className="p-3 flex justify-center items-center">
-                        <Loader />
-                      </div>
-                    ) : suggestions.length > 0 ? (
-                      suggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className="px-4 py-2 hover:bg-gray-400 dark:hover:bg-gray-700 text-sm cursor-pointer text-dark dark:text-light"
-                          onClick={() => selectCategorySuggestion(suggestion)}
-                        >
-                          {suggestion}
-                        </div>
-                      ))
-                    ) : (
-                      <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-                        No categories found.
-                      </p>
-                    )}
+                {inventoryItem.itemName.trim().length > 0 && (
+                  <div className="px-1 py-2 bg-gray-50/50 dark:bg-white/[0.02] rounded-lg border border-gray-100 dark:border-white/5">
+                    <Checkbox
+                      id="feedCheckbox"
+                      label="Is this item a livestock feed?"
+                      checked={inventoryItem.feed}
+                      onCheckedChange={(checked: boolean) =>
+                        setInventoryItem({
+                          ...inventoryItem,
+                          feed: checked,
+                        })
+                      }
+                      className="font-medium"
+                    />
                   </div>
                 )}
+
+                <div className="relative">
+                  <Input
+                    id="itemGroup"
+                    label="Item Category / Occupation"
+                    placeholder="e.g. Raw Coffee, Packaging"
+                    value={inventoryItem.itemGroup}
+                    onChange={(e) => handleItemCategoryInputChange(e.target.value)}
+                    onFocus={handleItemCategoryInputFocus}
+                    error={inventoryErrors.itemGroup}
+                  />
+                  {showSuggestions && (
+                    <div
+                      ref={suggestionsRef}
+                      className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+                    >
+                      {isLoadingSubTypes ? (
+                        <div className="p-4 flex justify-center items-center">
+                          <Loader />
+                        </div>
+                      ) : suggestions.length > 0 ? (
+                        suggestions.map((suggestion, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
+                            onClick={() => selectCategorySuggestion(suggestion)}
+                          >
+                            {suggestion}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 italic">
+                          No categories found.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <Dropdown
+                  items={UNITS}
+                  selectedItem={inventoryItem.units}
+                  onSelect={(value: string) => {
+                    setInventoryItem({ ...inventoryItem, units: value });
+                    setInventoryErrors({ ...inventoryErrors, units: undefined });
+                  }}
+                  label="Measurement Units"
+                  width="full"
+                />
+              </div>
+            </section>
+
+            {/* Pricing & Stock Section */}
+            <section className="space-y-6 pt-4 pb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Pricing & Stock</h3>
               </div>
 
-              <Dropdown
-                items={UNITS}
-                selectedItem={inventoryItem.units}
-                onSelect={(value: string) => {
-                  setInventoryItem({ ...inventoryItem, units: value });
-                  setInventoryErrors({ ...inventoryErrors, units: undefined });
-                }}
-                
-                label="Units"
-                width="full"
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextField
-                  number
-                  label="Quantity"
-                  placeholder="e.g. 100"
-                  value={inventoryItem.quantity}
-                  onChange={(val: string) => {
-                    setInventoryItem({ ...inventoryItem, quantity: val });
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="quantity"
+                    type="number"
+                    label="Current Quantity"
+                    placeholder="e.g. 100"
+                    value={inventoryItem.quantity}
+                    onChange={(e) => {
+                      setInventoryItem({ ...inventoryItem, quantity: e.target.value });
+                      setInventoryErrors({
+                        ...inventoryErrors,
+                        quantity: undefined,
+                      });
+                    }}
+                    error={inventoryErrors.quantity}
+                  />
+                  <Input
+                    id="pricePerUnit"
+                    type="number"
+                    label="Price Per Unit (₹)"
+                    placeholder="e.g. 25.50"
+                    value={inventoryItem.pricePerUnit}
+                    onChange={(e) => {
+                      setInventoryItem({ ...inventoryItem, pricePerUnit: e.target.value });
+                      setInventoryErrors({
+                        ...inventoryErrors,
+                        pricePerUnit: undefined,
+                      });
+                    }}
+                    error={inventoryErrors.pricePerUnit}
+                  />
+                </div>
+                <Input
+                  id="minimumLimit"
+                  type="number"
+                  label="Minimum Stock Limit (Alert)"
+                  placeholder="e.g. 10"
+                  value={inventoryItem.minimumLimit}
+                  onChange={(e) => {
+                    setInventoryItem({ ...inventoryItem, minimumLimit: e.target.value });
                     setInventoryErrors({
                       ...inventoryErrors,
-                      quantity: undefined,
+                      minimumLimit: undefined,
                     });
                   }}
-                  type={inventoryErrors.quantity ? "error" : ""}
-                  errorMessage={inventoryErrors.quantity}
-                />
-                <TextField
-                  number
-                  label="Price Per Unit"
-                  placeholder="e.g. 25.50"
-                  value={inventoryItem.pricePerUnit}
-                  onChange={(val: string) => {
-                    setInventoryItem({ ...inventoryItem, pricePerUnit: val });
-                    setInventoryErrors({
-                      ...inventoryErrors,
-                      pricePerUnit: undefined,
-                    });
-                  }}
-                  type={inventoryErrors.pricePerUnit ? "error" : ""}
-                  errorMessage={inventoryErrors.pricePerUnit}
+                  error={inventoryErrors.minimumLimit}
                 />
               </div>
-              <TextField
-                number
-                label="Minimum Stock Limit (Optional)"
-                placeholder="e.g. 10"
-                value={inventoryItem.minimumLimit}
-                onChange={(val: string) => {
-                  setInventoryItem({ ...inventoryItem, minimumLimit: val });
-                  setInventoryErrors({
-                    ...inventoryErrors,
-                    minimumLimit: undefined,
-                  });
-                }}
-                type={inventoryErrors.minimumLimit ? "error" : ""}
-                errorMessage={inventoryErrors.minimumLimit}
-              />
+            </section>
+          </form>
+        </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button label="Cancel" variant="secondary" onClick={handleClose} />
-                <Button
-                  label={initialData ? "Update Item" : "Add Item"}
-                  variant="primary"
-                  type="submit"
-                />
-              </div>
-            </form>
-          </div>
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            className="w-full"
+          />
+          <Button
+            label={initialData ? "Update Item" : "Add to Inventory"}
+            variant="primary"
+            type="submit"
+            onClick={handleSubmitInventoryItem}
+            className="w-full"
+          />
         </div>
       </div>
     </div>

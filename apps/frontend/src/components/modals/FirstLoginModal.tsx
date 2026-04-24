@@ -256,7 +256,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
                       key={size.id}
                       className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
                         businessSize === size.id
-                          ? "bg-green-300 border-green-200 shadow-sm text-dark"
+                          ? "bg-light border-green-200 shadow-sm text-dark"
                           : "border-gray-300 text-dark hover:border-green-200"
                       }`}
                     >
@@ -453,16 +453,16 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 id="city"
-                label="City*"
-                placeholder="City"
+                label="City"
+                placeholder="e.g. Guwahati"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 required
               />
               <Input
                 id="state"
-                label="State/Province/Region*"
-                placeholder="State"
+                label="State/Province/Region"
+                placeholder="e.g. Assam"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 required
@@ -471,8 +471,8 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 id="postalCode"
-                label="Postal Code*"
-                placeholder="Postal code"
+                label="Postal Code"
+                placeholder="e.g. 781001"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
                 required
@@ -535,7 +535,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
             Select Your Business Type
           </h2>
           <p
-            className={`text-sm text-center text-gray-300 mb-6
+            className={`text-sm text-center text-dark mb-6
                         transition-all transform duration-500 ease-out delay-100
                         ${
                           isStepMounted
@@ -803,11 +803,13 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-light/70 dark:bg-dark/70 backdrop-blur-md p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       role="dialog"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-lg relative transition-all duration-300 ease-out">
-        {renderStepContent()}
+      <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm p-6 sm:p-8 w-full relative transition-all duration-300 ease-out overflow-hidden">
+          {renderStepContent()}
+        </div>
       </div>
     </div>
   );

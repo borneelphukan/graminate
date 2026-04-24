@@ -79,52 +79,54 @@ const OpeningBalanceModal = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div className="bg-white dark:bg-gray-800 w-full max-w-md overflow-y-auto p-6 md:p-8 rounded-lg shadow-xl">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
-            <h3 className="text-xl font-semibold">Set Opening Balance</h3>
-            <button
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
-          </div>
-
-          <p className="text-sm text-dark dark:text-light mb-6">
-            Enter the starting cash balance for your business as of the beginning of the analysis period (6 months ago).
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <TextField
-              label="Opening Balance (INR)"
-              number
-              value={balance}
-              onChange={(v) => setBalance(v)}
-              placeholder="0.00"
-              errorMessage={error}
-              type={error ? "error" : ""}
-              width="large"
-            />
-
-            <div className="flex justify-end gap-4 pt-6 border-t border-gray-400 dark:border-gray-600">
-              <Button
-                label="Cancel"
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-md mx-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm p-6 md:p-8 overflow-hidden">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
+              <h3 className="text-xl font-semibold">Set Opening Balance</h3>
+              <button
                 type="button"
-                variant="secondary"
+                className="text-dark bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 onClick={onClose}
-                disabled={isLoading}
-              />
-              <Button
-                label={isLoading ? "Updating..." : "Update Balance"}
-                type="submit"
-                variant="primary"
-                disabled={isLoading}
-              />
+                aria-label="Close modal"
+              >
+                <Icon type={"close"} className="w-5 h-5" />
+              </button>
             </div>
-          </form>
+
+            <p className="text-sm text-dark dark:text-light mb-6">
+              Enter the starting cash balance for your business as of the beginning of the analysis period (6 months ago).
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <TextField
+                label="Opening Balance (INR)"
+                number
+                value={balance}
+                onChange={(v) => setBalance(v)}
+                placeholder="0.00"
+                errorMessage={error}
+                type={error ? "error" : ""}
+                width="large"
+              />
+
+              <div className="flex justify-end gap-4 pt-6 border-t border-gray-400 dark:border-gray-600">
+                <Button
+                  label="Cancel"
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  disabled={isLoading}
+                />
+                <Button
+                  label={isLoading ? "Updating..." : "Update Balance"}
+                  type="submit"
+                  variant="primary"
+                  disabled={isLoading}
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
       <InfoModal

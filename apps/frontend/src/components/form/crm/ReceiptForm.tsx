@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
-import { Dropdown, Button } from "@graminate/ui";
+import { Dropdown, Button, Input, Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 import Loader from "@/components/ui/Loader";
+import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 
 type Item = {
   description: string;
@@ -39,6 +39,24 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
   const router = useRouter();
   const { saleId: querySaleId } = router.query;
 
+  const [animate, setAnimate] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useAnimatePanel(setAnimate);
+
+  const handleCloseAnimation = useCallback(() => {
+    setAnimate(false);
+    setTimeout(() => {
+      onClose();
+    }, 300);
+  }, [onClose]);
+
+  const handleClose = useCallback(() => {
+    handleCloseAnimation();
+  }, [handleCloseAnimation]);
+
+  useClickOutside(panelRef, handleClose);
+
   const [receiptsValues, setReceiptsValues] = useState({
     title: "",
     receiptNumber: "",
@@ -58,11 +76,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
     items: [initialReceiptItem],
     linked_sale_id: querySaleId ? Number(querySaleId) : null,
   });
-  const [receiptErrors, setReceiptErrors] = useState({
-    title: "",
-    billTo: "",
-    dueDate: "",
-  });
+  const [receiptErrors, setReceiptErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [allSalesForUser, setAllSalesForUser] = useState<
     SaleRecordForDropdown[]
@@ -165,8 +179,8 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
     return isValid;
   };
 
-  const handleSubmitReceipts = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitReceipts = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!validateReceiptForm()) {
       triggerToast("Please fill all required invoice fields.", "error");
       return;
@@ -344,190 +358,337 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
     return items;
   }, [allSalesForUser, receiptsValues.linked_sale_id]);
 
+  const updateItem = (index: number, field: keyof Item, value: any) => {
+    const newItems = [...receiptsValues.items];
+    const item = { ...newItems[index], [field]: value };
+    if (field === "quantity" || field === "rate") {
+      item.amount = (Number(item.quantity) || 0) * (Number(item.rate) || 0);
+    }
+    newItems[index] = item;
+    setReceiptsValues({ ...receiptsValues, items: newItems });
+  };
+
+  const addItem = () => {
+    setReceiptsValues({
+      ...receiptsValues,
+      items: [...receiptsValues.items, { ...initialReceiptItem }],
+    });
+  };
+
+  const removeItem = (index: number) => {
+    if (receiptsValues.items.length === 1) return;
+    const newItems = receiptsValues.items.filter((_, i) => i !== index);
+    setReceiptsValues({ ...receiptsValues, items: newItems });
+  };
+
   return (
-    <form
-      className="flex flex-col gap-6 w-full"
-      onSubmit={handleSubmitReceipts}
-    >
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">
-          Invoice Details
-        </h3>
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TextField
-              label="Invoice Title*"
-              placeholder="e.g. Invoice for Customer"
-              value={receiptsValues.title}
-              onChange={(val: string) =>
-                setReceiptsValues({ ...receiptsValues, title: val })
-              }
-              errorMessage={receiptErrors.title}
-            />
-            <TextField
-              label="Invoice Number (Optional)"
-              placeholder="e.g. INV-2024-001"
-              value={receiptsValues.receiptNumber}
-              onChange={(val: string) =>
-                setReceiptsValues({
-                  ...receiptsValues,
-                  receiptNumber: val,
-                })
-              }
-            />
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
+      <div
+        ref={panelRef}
+        className="fixed top-0 right-0 h-full w-full md:w-[640px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
+        style={{
+          transform: animate ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Create New Invoice
+            </h2>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              Generate a professional invoice for your customer.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TextField
-              label="Bill To (Customer Name)*"
-              placeholder="e.g. Acme Corp"
-              value={receiptsValues.billTo}
-              onChange={(val: string) =>
-                setReceiptsValues({ ...receiptsValues, billTo: val })
-              }
-              errorMessage={receiptErrors.billTo}
-            />
-            <TextField
-              label="Due Date*"
-              placeholder="YYYY-MM-DD"
-              value={receiptsValues.dueDate}
-              onChange={(val: string) =>
-                setReceiptsValues({ ...receiptsValues, dueDate: val })
-              }
-              calendar
-              errorMessage={receiptErrors.dueDate}
-            />
-          </div>
-          {isLoadingSales ? (
-            <div className="flex flex-col">
-              <label className="block mb-1 text-sm font-medium text-dark dark:text-gray-300">
-                Link to Sale (Optional)
-              </label>
-              <div className="p-2.5 border border-gray-400 dark:border-gray-200 rounded-md flex items-center justify-center h-[42px]">
-                <Loader />
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            className="space-y-8"
+            onSubmit={handleSubmitReceipts}
+            noValidate
+          >
+            {/* Invoice Details Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Invoice Details</h3>
               </div>
-            </div>
-          ) : (
-            <Dropdown
-              label="Link to Sale (Optional)"
-              items={salesDropdownItems.map((item) => item.label)}
-              selectedItem={selectedSaleForDisplay || "None (No Linked Sale)"}
-              onSelect={(selectedLabel) => {
-                const selectedItem = salesDropdownItems.find(
-                  (item) => item.label === selectedLabel
-                );
-                handleSaleSelection(selectedItem ? selectedItem.value : "None");
-              }}
-              placeholder="Select a sale to link"
-            />
-          )}
 
-          <TextField
-            label="Payment Terms"
-            placeholder="e.g. Net 30, Due on Receipt"
-            value={receiptsValues.paymentTerms}
-            onChange={(val: string) =>
-              setReceiptsValues({
-                ...receiptsValues,
-                paymentTerms: val,
-              })
-            }
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="title"
+                    label="Invoice Title"
+                    placeholder="e.g. Invoice for Customer"
+                    value={receiptsValues.title}
+                    onChange={(e) =>
+                      setReceiptsValues({ ...receiptsValues, title: e.target.value })
+                    }
+                    error={receiptErrors.title}
+                    required
+                  />
+                  <Input
+                    id="receiptNumber"
+                    label="Invoice Number"
+                    placeholder="e.g. INV-2024-001"
+                    value={receiptsValues.receiptNumber}
+                    onChange={(e) =>
+                      setReceiptsValues({
+                        ...receiptsValues,
+                        receiptNumber: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="billTo"
+                    label="Bill To (Customer Name)"
+                    placeholder="e.g. Acme Corp"
+                    value={receiptsValues.billTo}
+                    onChange={(e) =>
+                      setReceiptsValues({ ...receiptsValues, billTo: e.target.value })
+                    }
+                    error={receiptErrors.billTo}
+                    required
+                  />
+                  <Input
+                    id="dueDate"
+                    type="date"
+                    label="Due Date"
+                    placeholder="YYYY-MM-DD"
+                    value={receiptsValues.dueDate}
+                    onChange={(e) =>
+                      setReceiptsValues({ ...receiptsValues, dueDate: e.target.value })
+                    }
+                    error={receiptErrors.dueDate}
+                    required
+                  />
+                </div>
+
+                {isLoadingSales ? (
+                  <div className="flex flex-col">
+                    <label className="block mb-1 text-sm font-medium text-dark dark:text-gray-300">
+                      Link to Sale (Optional)
+                    </label>
+                    <div className="p-2.5 border border-gray-400 dark:border-gray-200 rounded-md flex items-center justify-center h-[42px]">
+                      <Loader />
+                    </div>
+                  </div>
+                ) : (
+                  <Dropdown
+                    label="Link to Sale (Optional)"
+                    items={salesDropdownItems.map((item) => item.label)}
+                    selectedItem={selectedSaleForDisplay || "None (No Linked Sale)"}
+                    onSelect={(selectedLabel) => {
+                      const selectedItem = salesDropdownItems.find(
+                        (item) => item.label === selectedLabel
+                      );
+                      handleSaleSelection(selectedItem ? selectedItem.value : "None");
+                    }}
+                    placeholder="Select a sale to link"
+                    width="full"
+                  />
+                )}
+
+                <Input
+                  id="paymentTerms"
+                  label="Payment Terms"
+                  placeholder="e.g. Net 30, Due on Receipt"
+                  value={receiptsValues.paymentTerms}
+                  onChange={(e) =>
+                    setReceiptsValues({
+                      ...receiptsValues,
+                      paymentTerms: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </section>
+
+            {/* Line Items Section */}
+            <section className="space-y-6 pt-4">
+              <div className="flex justify-between items-center mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Invoice Items</h3>
+                </div>
+                <Button 
+                  label="Add Item" 
+                  variant="secondary" 
+                  icon={{ left: "add" }}
+                  size="sm"
+                  onClick={addItem}
+                />
+              </div>
+
+              <div className="space-y-4">
+                {receiptsValues.items.map((item, index) => (
+                  <div key={index} className="grid grid-cols-12 gap-3 items-end bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-600">
+                    <div className="col-span-12 sm:col-span-5">
+                      <Input
+                        id={`item-description-${index}`}
+                        label="Description"
+                        placeholder="Item name/description"
+                        value={item.description}
+                        onChange={(e) => updateItem(index, "description", e.target.value)}
+                      />
+                    </div>
+                    <div className="col-span-4 sm:col-span-2">
+                      <Input
+                        id={`item-quantity-${index}`}
+                        type="number"
+                        label="Qty"
+                        value={item.quantity}
+                        onChange={(e) => updateItem(index, "quantity", e.target.value)}
+                      />
+                    </div>
+                    <div className="col-span-4 sm:col-span-2">
+                      <Input
+                        id={`item-rate-${index}`}
+                        type="number"
+                        label="Rate"
+                        value={item.rate}
+                        onChange={(e) => updateItem(index, "rate", e.target.value)}
+                      />
+                    </div>
+                    <div className="col-span-3 sm:col-span-2 text-right py-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Amount</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">₹{item.amount.toFixed(2)}</p>
+                    </div>
+                    <div className="col-span-1 text-right">
+                      <button 
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="text-red-500 hover:text-red-600 p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                        disabled={receiptsValues.items.length === 1}
+                      >
+                        <Icon type="delete" size="sm" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Billing Address Section */}
+            <section className="space-y-6 pt-4 pb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Billing Address (Optional)</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="billToAddressLine1"
+                  label="Address Line 1"
+                  placeholder="Customer's street address"
+                  value={receiptsValues.billToAddressLine1}
+                  onChange={(e) =>
+                    setReceiptsValues({
+                      ...receiptsValues,
+                      billToAddressLine1: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  id="billToAddressLine2"
+                  label="Address Line 2"
+                  placeholder="Apartment, suite, etc."
+                  value={receiptsValues.billToAddressLine2}
+                  onChange={(e) =>
+                    setReceiptsValues({
+                      ...receiptsValues,
+                      billToAddressLine2: e.target.value,
+                    })
+                  }
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="billToCity"
+                    label="City"
+                    placeholder="Customer's city"
+                    value={receiptsValues.billToCity}
+                    onChange={(e) =>
+                      setReceiptsValues({
+                        ...receiptsValues,
+                        billToCity: e.target.value,
+                      })
+                    }
+                  />
+                  <Input
+                    id="billToState"
+                    label="State / Province"
+                    placeholder="Customer's state"
+                    value={receiptsValues.billToState}
+                    onChange={(e) =>
+                      setReceiptsValues({
+                        ...receiptsValues,
+                        billToState: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="billToPostalCode"
+                    label="Postal Code"
+                    placeholder="Customer's postal code"
+                    value={receiptsValues.billToPostalCode}
+                    onChange={(e) =>
+                      setReceiptsValues({
+                        ...receiptsValues,
+                        billToPostalCode: e.target.value,
+                      })
+                    }
+                  />
+                  <Input
+                    id="billToCountry"
+                    label="Country"
+                    placeholder="Customer's country"
+                    value={receiptsValues.billToCountry}
+                    onChange={(e) =>
+                      setReceiptsValues({
+                        ...receiptsValues,
+                        billToCountry: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            className="w-full"
+            disabled={isLoading || isLoadingSales}
+          />
+          <Button
+            label={isLoading || isLoadingSales ? "Creating..." : "Create Invoice"}
+            variant="primary"
+            type="submit"
+            onClick={handleSubmitReceipts}
+            className="w-full"
+            disabled={isLoading || isLoadingSales}
           />
         </div>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">
-          Billing Address (Optional)
-        </h3>
-        <div className="space-y-4">
-          <TextField
-            label="Address Line 1"
-            placeholder="Customer's street address"
-            value={receiptsValues.billToAddressLine1}
-            onChange={(val: string) =>
-              setReceiptsValues({
-                ...receiptsValues,
-                billToAddressLine1: val,
-              })
-            }
-          />
-          <TextField
-            label="Address Line 2"
-            placeholder="Apartment, suite, etc."
-            value={receiptsValues.billToAddressLine2}
-            onChange={(val: string) =>
-              setReceiptsValues({
-                ...receiptsValues,
-                billToAddressLine2: val,
-              })
-            }
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TextField
-              label="City"
-              placeholder="Customer's city"
-              value={receiptsValues.billToCity}
-              onChange={(val: string) =>
-                setReceiptsValues({
-                  ...receiptsValues,
-                  billToCity: val,
-                })
-              }
-            />
-            <TextField
-              label="State / Province"
-              placeholder="Customer's state"
-              value={receiptsValues.billToState}
-              onChange={(val: string) =>
-                setReceiptsValues({
-                  ...receiptsValues,
-                  billToState: val,
-                })
-              }
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TextField
-              label="Postal Code"
-              placeholder="Customer's postal code"
-              value={receiptsValues.billToPostalCode}
-              onChange={(val: string) =>
-                setReceiptsValues({
-                  ...receiptsValues,
-                  billToPostalCode: val,
-                })
-              }
-            />
-            <TextField
-              label="Country"
-              placeholder="Customer's country"
-              value={receiptsValues.billToCountry}
-              onChange={(val: string) =>
-                setReceiptsValues({
-                  ...receiptsValues,
-                  billToCountry: val,
-                })
-              }
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-        <Button
-          label="Cancel"
-          variant="secondary"
-          onClick={onClose}
-          disabled={isLoading || isLoadingSales}
-        />
-        <Button
-          label={isLoading || isLoadingSales ? "Creating..." : "Create Invoice"}
-          variant="primary"
-          type="submit"
-          disabled={isLoading || isLoadingSales}
-        />
-      </div>
-    </form>
+    </div>
   );
 };
 

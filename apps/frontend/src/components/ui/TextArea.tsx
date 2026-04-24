@@ -1,50 +1,59 @@
 type Props = {
   label?: string;
+  id?: string;
   isDisabled?: boolean;
-  type?: "disabled" | "";
   placeholder?: string;
   value: string;
   onChange: (val: string) => void;
+  error?: string;
+  required?: boolean;
+  rows?: number;
 };
 
 const TextArea = ({
   label = "",
+  id,
   isDisabled = false,
-  type = "",
   placeholder = "",
   value,
   onChange,
+  error,
+  required,
+  rows = 3
 }: Props) => {
-  const getFieldClass = () => {
-    switch (type) {
-      case "disabled":
-        return "border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
-      default:
-        return "border border-gray-400 dark:border-gray-200 text-dark dark:text-light placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200 dark:bg-gray-700";
-    }
-  };
+  const generatedId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
 
   return (
     <div className="w-full">
-      {label && (
-        <label
-          htmlFor="textarea"
-          className="block mb-1 text-sm font-medium text-gray-200 dark:text-gray-300"
+      <label
+        className={`flex flex-col gap-1.5 group/textarea ${isDisabled ? "pointer-events-none opacity-50" : ""}`}
+        htmlFor={generatedId}
+      >
+        {label && (
+          <span className="text-dark dark:text-light font-medium text-sm group-focus-within/textarea:text-neutral-dark-gray">
+            {label}
+            {required && <span className="text-red-200 ml-1">*</span>}
+          </span>
+        )}
+        <div
+          className={`flex flex-row gap-2 items-start py-2 px-3 rounded-lg border border-gray-400 dark:border-gray-200 transition-colors ${
+            error ? "border-red-200 group-focus-within/textarea:!ring-red-200" : "group-focus-within/textarea:!ring-green-200"
+          } group-focus-within/textarea:!ring-[2px] dark:group-focus-within/textarea:!ring-offset-gray-200 group-focus-within/textarea:!ring-offset-2 bg-white dark:bg-gray-700`}
         >
-          {label}
-        </label>
-      )}
-      <div className="relative flex items-start">
-        <textarea
-          id="textarea"
-          className={`${getFieldClass()} py-2 px-4 rounded`}
-          disabled={isDisabled}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={3}
-        ></textarea>
-      </div>
+          <textarea
+            id={generatedId}
+            className="border-none px-0.5 flex-1 w-full text-dark focus:outline-none focus:placeholder-neutral-dark-gray dark:text-light text-sm bg-transparent resize-none"
+            disabled={isDisabled}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            rows={rows}
+          ></textarea>
+        </div>
+        {error && (
+          <p className="text-xs text-red-200 mt-1">{error}</p>
+        )}
+      </label>
     </div>
   );
 };

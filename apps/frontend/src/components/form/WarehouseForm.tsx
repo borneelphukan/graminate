@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -165,8 +164,8 @@ const WarehouseForm = ({
     return isValid;
   };
 
-  const handleSubmitWarehouse = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitWarehouse = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
 
     if (!validateForm()) {
       return;
@@ -203,167 +202,209 @@ const WarehouseForm = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-400 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
-              {formTitle ||
-                (isEditMode ? "Edit Warehouse" : "Create Warehouse")}
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {formTitle || (isEditMode ? "Edit Warehouse" : "Create New Warehouse")}
             </h2>
-            <button
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              onClick={handleClose}
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              {isEditMode ? "Modify existing warehouse specifications." : "Register a new storage facility to your network."}
+            </p>
           </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-          <div className="flex-grow overflow-y-auto px-1 custom-scrollbar">
-            <form
-              className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmitWarehouse}
-              noValidate
-            >
-              <TextField
-                label="Warehouse Name"
-                placeholder="e.g. Main Storage Facility"
-                value={warehouseData.name}
-                onChange={(val: string) =>
-                  setWarehouseData({ ...warehouseData, name: val })
-                }
-                type={warehouseErrors.name ? "error" : ""}
-                errorMessage={warehouseErrors.name}
-              />
-
-              <Dropdown
-                items={WAREHOUSE_TYPES}
-                selectedItem={warehouseData.type}
-                onSelect={(value: string) =>
-                  setWarehouseData({ ...warehouseData, type: value })
-                }
-                
-                label="Warehouse Type"
-                width="full"
-              />
-
-              <TextField
-                label="Address Line 1"
-                placeholder="e.g. 123 Industrial Park Rd"
-                value={warehouseData.address_line_1}
-                onChange={(val: string) =>
-                  setWarehouseData({ ...warehouseData, address_line_1: val })
-                }
-                type={warehouseErrors.address_line_1 ? "error" : ""}
-                errorMessage={warehouseErrors.address_line_1}
-              />
-
-              <TextField
-                label="Address Line 2 (Optional)"
-                placeholder="e.g. Suite 100"
-                value={warehouseData.address_line_2}
-                onChange={(val: string) =>
-                  setWarehouseData({ ...warehouseData, address_line_2: val })
-                }
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextField
-                  label="City"
-                  placeholder="e.g. Guwahati"
-                  value={warehouseData.city}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, city: val })
-                  }
-                  type={warehouseErrors.city ? "error" : ""}
-                  errorMessage={warehouseErrors.city}
-                />
-
-                <TextField
-                  label="State / Province"
-                  placeholder="e.g. Assam"
-                  value={warehouseData.state}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, state: val })
-                  }
-                  type={warehouseErrors.state ? "error" : ""}
-                  errorMessage={warehouseErrors.state}
-                />
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            className="space-y-8"
+            onSubmit={handleSubmitWarehouse}
+            noValidate
+          >
+            {/* Basic Information Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextField
-                  label="Postal Code"
-                  placeholder="e.g. 123456"
-                  value={warehouseData.postal_code}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, postal_code: val })
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="name"
+                  label="Warehouse Name"
+                  placeholder="e.g. Main Storage Facility"
+                  value={warehouseData.name}
+                  onChange={(e) =>
+                    setWarehouseData({ ...warehouseData, name: e.target.value })
                   }
-                  type={warehouseErrors.postal_code ? "error" : ""}
-                  errorMessage={warehouseErrors.postal_code}
+                  error={warehouseErrors.name}
                 />
-                <TextField
-                  label="Country"
-                  placeholder="e.g. India"
-                  value={warehouseData.country}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, country: val })
+
+                <Dropdown
+                  items={WAREHOUSE_TYPES}
+                  selectedItem={warehouseData.type}
+                  onSelect={(value: string) =>
+                    setWarehouseData({ ...warehouseData, type: value })
                   }
-                  type={warehouseErrors.country ? "error" : ""}
-                  errorMessage={warehouseErrors.country}
+                  label="Warehouse Type"
+                  width="full"
                 />
               </div>
+            </section>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextField
-                  label="Contact Person (Optional)"
-                  placeholder="e.g. John Doe"
-                  value={warehouseData.contact_person}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, contact_person: val })
-                  }
-                />
-                <TextField
-                  label="Phone Number (Optional)"
-                  placeholder="e.g. 91 XXX XXXX XXX"
-                  value={warehouseData.phone}
-                  onChange={(val: string) =>
-                    setWarehouseData({ ...warehouseData, phone: val })
-                  }
-                  type={warehouseErrors.phone ? "error" : ""}
-                  errorMessage={warehouseErrors.phone}
-                />
+            {/* Location Details Section */}
+            <section className="space-y-6 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Location Details</h3>
               </div>
 
-              <TextField
-                number
-                label="Storage Capacity (Optional)"
-                placeholder="e.g. 10000.50 (numeric)"
-                value={warehouseData.storage_capacity}
-                onChange={(val: string) =>
-                  setWarehouseData({ ...warehouseData, storage_capacity: val })
-                }
-                type={warehouseErrors.storage_capacity ? "error" : ""}
-                errorMessage={warehouseErrors.storage_capacity}
-              />
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="address_line_1"
+                  label="Address Line 1"
+                  placeholder="e.g. 123 Industrial Park Rd"
+                  value={warehouseData.address_line_1}
+                  onChange={(e) =>
+                    setWarehouseData({ ...warehouseData, address_line_1: e.target.value })
+                  }
+                  error={warehouseErrors.address_line_1}
+                />
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button label="Cancel" variant="secondary" onClick={handleClose} />
-                <Button
-                  label={isEditMode ? "Update" : "Create"}
-                  variant="primary"
-                  type="submit"
+                <Input
+                  id="address_line_2"
+                  label="Address Line 2 (Optional)"
+                  placeholder="e.g. Suite 100"
+                  value={warehouseData.address_line_2}
+                  onChange={(e) =>
+                    setWarehouseData({ ...warehouseData, address_line_2: e.target.value })
+                  }
+                />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="city"
+                    label="City"
+                    placeholder="e.g. Guwahati"
+                    value={warehouseData.city}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, city: e.target.value })
+                    }
+                    error={warehouseErrors.city}
+                  />
+
+                  <Input
+                    id="state"
+                    label="State / Province"
+                    placeholder="e.g. Assam"
+                    value={warehouseData.state}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, state: e.target.value })
+                    }
+                    error={warehouseErrors.state}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="postal_code"
+                    label="Postal Code"
+                    placeholder="e.g. 123456"
+                    value={warehouseData.postal_code}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, postal_code: e.target.value })
+                    }
+                    error={warehouseErrors.postal_code}
+                  />
+                  <Input
+                    id="country"
+                    label="Country"
+                    placeholder="e.g. India"
+                    value={warehouseData.country}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, country: e.target.value })
+                    }
+                    error={warehouseErrors.country}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Contact & Capacity Section */}
+            <section className="space-y-6 pt-4 pb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Contact & Capacity</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="contact_person"
+                    label="Contact Person (Optional)"
+                    placeholder="e.g. John Doe"
+                    value={warehouseData.contact_person}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, contact_person: e.target.value })
+                    }
+                  />
+                  <Input
+                    id="phone"
+                    label="Phone Number"
+                    placeholder="e.g. +91XXXXXXXXXX"
+                    value={warehouseData.phone}
+                    onChange={(e) =>
+                      setWarehouseData({ ...warehouseData, phone: e.target.value })
+                    }
+                    error={warehouseErrors.phone}
+                  />
+                </div>
+
+                <Input
+                  id="storage_capacity"
+                  type="number"
+                  label="Storage Capacity (Numeric)"
+                  placeholder="e.g. 10000.50"
+                  value={warehouseData.storage_capacity}
+                  onChange={(e) =>
+                    setWarehouseData({ ...warehouseData, storage_capacity: e.target.value })
+                  }
+                  error={warehouseErrors.storage_capacity}
                 />
               </div>
-            </form>
-          </div>
+            </section>
+          </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            className="w-full"
+          />
+          <Button
+            label={isEditMode ? "Update Warehouse" : "Create Warehouse"}
+            variant="primary"
+            type="submit"
+            onClick={handleSubmitWarehouse}
+            className="w-full"
+          />
         </div>
       </div>
     </div>

@@ -115,98 +115,100 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div className="bg-white dark:bg-gray-800 w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 md:p-8 rounded-lg shadow-xl">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
-            <h3 className="text-xl text-dark dark:text-light font-semibold">Log New Loan</h3>
-            <button
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <TextField
-              label="Loan Name"
-              placeholder="e.g. Agricultural Expansion Loan"
-              value={formData.loan_name}
-              onChange={(v) => setFormData({ ...formData, loan_name: v })}
-              errorMessage={errors.loan_name}
-              type={errors.loan_name ? "error" : ""}
-              width="large"
-            />
-            <TextField
-              label="Lender"
-              placeholder="e.g. State Bank of India"
-              value={formData.lender}
-              onChange={(v) => setFormData({ ...formData, lender: v })}
-              errorMessage={errors.lender}
-              type={errors.lender ? "error" : ""}
-              width="large"
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
-                label="Amount (INR)"
-                number
-                value={formData.amount}
-                onChange={(v) => setFormData({ ...formData, amount: v })}
-                placeholder="0.00"
-                errorMessage={errors.amount}
-                type={errors.amount ? "error" : ""}
-                width="large"
-              />
-              <TextField
-                label="Interest Rate (%)"
-                number
-                value={formData.interest_rate}
-                onChange={(v) => setFormData({ ...formData, interest_rate: v })}
-                placeholder="0.00"
-                errorMessage={errors.interest_rate}
-                type={errors.interest_rate ? "error" : ""}
-                width="large"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
-                label="Start Date"
-                calendar
-                value={formData.start_date}
-                onChange={(v) => setFormData({ ...formData, start_date: v })}
-                errorMessage={errors.start_date}
-                type={errors.start_date ? "error" : ""}
-                width="large"
-              />
-              <TextField
-                label="End Date (Optional)"
-                calendar
-                value={formData.end_date}
-                onChange={(v) => setFormData({ ...formData, end_date: v })}
-                width="large"
-              />
-            </div>
-
-            <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
-              <Button
-                label="Cancel"
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-lg">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
+              <h3 className="text-xl text-dark dark:text-light font-semibold">Log New Loan</h3>
+              <button
                 type="button"
-                variant="secondary"
+                className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 onClick={onClose}
-                disabled={isLoading}
-              />
-              <Button
-                label={isLoading ? "Saving..." : "Save Loan"}
-                type="submit"
-                variant="primary"
-                disabled={isLoading}
-              />
+                aria-label="Close modal"
+              >
+                <Icon type={"close"} className="w-5 h-5" />
+              </button>
             </div>
-          </form>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <TextField
+                label="Loan Name"
+                placeholder="e.g. Agricultural Expansion Loan"
+                value={formData.loan_name}
+                onChange={(v) => setFormData({ ...formData, loan_name: v })}
+                errorMessage={errors.loan_name}
+                type={errors.loan_name ? "error" : ""}
+                width="large"
+              />
+              <TextField
+                label="Lender"
+                placeholder="e.g. State Bank of India"
+                value={formData.lender}
+                onChange={(v) => setFormData({ ...formData, lender: v })}
+                errorMessage={errors.lender}
+                type={errors.lender ? "error" : ""}
+                width="large"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <TextField
+                  label="Amount (INR)"
+                  number
+                  value={formData.amount}
+                  onChange={(v) => setFormData({ ...formData, amount: v })}
+                  placeholder="0.00"
+                  errorMessage={errors.amount}
+                  type={errors.amount ? "error" : ""}
+                  width="large"
+                />
+                <TextField
+                  label="Interest Rate (%)"
+                  number
+                  value={formData.interest_rate}
+                  onChange={(v) => setFormData({ ...formData, interest_rate: v })}
+                  placeholder="0.00"
+                  errorMessage={errors.interest_rate}
+                  type={errors.interest_rate ? "error" : ""}
+                  width="large"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <TextField
+                  label="Start Date"
+                  calendar
+                  value={formData.start_date}
+                  onChange={(v) => setFormData({ ...formData, start_date: v })}
+                  errorMessage={errors.start_date}
+                  type={errors.start_date ? "error" : ""}
+                  width="large"
+                />
+                <TextField
+                  label="End Date (Optional)"
+                  calendar
+                  value={formData.end_date}
+                  onChange={(v) => setFormData({ ...formData, end_date: v })}
+                  width="large"
+                />
+              </div>
+
+              <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
+                <Button
+                  label="Cancel"
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  disabled={isLoading}
+                />
+                <Button
+                  label={isLoading ? "Saving..." : "Save Loan"}
+                  type="submit"
+                  variant="primary"
+                  disabled={isLoading}
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
       <InfoModal

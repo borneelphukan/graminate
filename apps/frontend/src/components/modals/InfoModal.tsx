@@ -130,23 +130,25 @@ const InfoModal = ({
   const displayIcon = icon || defaultIcon;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
-        <div className="text-center">
-          {displayIcon && <div className="mb-4">{displayIcon}</div>}
-          <h3 className="text-lg font-medium text-dark mb-2">
-            {title}
-          </h3>
-          <p className=" text-dark">{text}</p>
-        </div>
-        <div className="mt-4 flex justify-center">
-          <button
-            type="button"
-            className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${buttonColorClass}`}
-            onClick={onClose}
-          >
-            {confirmButtonText}
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-md mx-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm p-6 overflow-hidden">
+          <div className="text-center">
+            {displayIcon && <div className="mb-4">{displayIcon}</div>}
+            <h3 className="text-lg font-medium text-dark dark:text-light mb-2">
+              {title}
+            </h3>
+            <p className="text-dark dark:text-light/80">{text}</p>
+          </div>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${buttonColorClass}`}
+              onClick={onClose}
+            >
+              {confirmButtonText}
+            </button>
+          </div>
         </div>
       </div>
     </div>

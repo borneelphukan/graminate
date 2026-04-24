@@ -57,33 +57,35 @@ const OTPModal = ({ isOpen, email, onValidate, onClose }: OTPModal) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-dark/80">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-96">
-        <h2 className="text-xl font-semibold mb-4 text-center text-dark">Enter OTP</h2>
-        <p className="text-center text-dark">
-          An OTP has been sent to <strong>{email}</strong>
-        </p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-md mx-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm p-6 md:p-8 overflow-hidden">
+          <h2 className="text-xl font-semibold mb-4 text-center text-dark dark:text-light">Enter OTP</h2>
+          <p className="text-center text-dark dark:text-light/80">
+            An OTP has been sent to <strong>{email}</strong>
+          </p>
 
-        <div className="flex justify-center space-x-2 my-4">
-          {otpDigits.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => {
-                inputRefs.current[index] = el as HTMLInputElement;
-              }}
-              type="text"
-              className="w-12 h-12 text-center border border-gray-300 text-dark rounded text-lg"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleInput(index, e)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-            />
-          ))}
-        </div>
+          <div className="flex justify-center space-x-2 my-6">
+            {otpDigits.map((digit, index) => (
+              <input
+                key={index}
+                ref={(el) => {
+                  inputRefs.current[index] = el as HTMLInputElement;
+                }}
+                type="text"
+                className="w-10 h-12 text-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-dark dark:text-light rounded-lg text-lg focus:ring-2 focus:ring-green-300 outline-none transition-all"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleInput(index, e)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+              />
+            ))}
+          </div>
 
-        <div className="flex justify-center space-x-2">
-          <Button label="Cancel" variant="secondary" onClick={onClose} />
-          <Button label="Validate" variant="primary" onClick={handleValidateOTP} />
+          <div className="flex justify-center space-x-3 pt-4">
+            <Button label="Cancel" variant="secondary" onClick={onClose} />
+            <Button label="Validate" variant="primary" onClick={handleValidateOTP} />
+          </div>
         </div>
       </div>
     </div>

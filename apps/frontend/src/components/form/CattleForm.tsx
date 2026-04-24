@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -137,8 +136,8 @@ const CattleForm = ({
     return isValid;
   };
 
-  const handleSubmitCattle = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitCattle = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!validateForm()) return;
     if (!parsedUserId) {
       alert("User ID is missing.");
@@ -181,102 +180,130 @@ const CattleForm = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full overflow-hidden">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-500 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
-              {formTitle ||
-                (cattleToEdit ? "Edit Cattle Record" : "Add New Cattle Record")}
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {formTitle || (cattleToEdit ? "Edit Cattle Record" : "Add New Cattle Record")}
             </h2>
-            <button
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              onClick={handleClose}
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              {cattleToEdit ? "Update existing cattle details." : "Register new livestock records to your profile."}
+            </p>
           </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-          <div className="flex-grow overflow-y-auto custom-scrollbar px-1">
-            <form
-              className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmitCattle}
-              noValidate
-            >
-              <TextField
-                label="Cattle / Herd Name"
-                placeholder="e.g. Dairy Herd A, Main Bull"
-                value={cattleData.cattle_name}
-                onChange={(val: string) => {
-                  setCattleData({ ...cattleData, cattle_name: val });
-                  setCattleErrors({ ...cattleErrors, cattle_name: undefined });
-                }}
-                type={cattleErrors.cattle_name ? "error" : ""}
-                errorMessage={cattleErrors.cattle_name}
-              />
-              <TextField
-                number
-                label="Number of Animals"
-                placeholder="e.g. 50"
-                value={String(cattleData.number_of_animals)}
-                onChange={(val: string) => {
-                  setCattleData({
-                    ...cattleData,
-                    number_of_animals: val, // Keep as string for controlled input, validation handles conversion
-                  });
-                  setCattleErrors({
-                    ...cattleErrors,
-                    number_of_animals: undefined,
-                  });
-                }}
-                type={cattleErrors.number_of_animals ? "error" : ""}
-                errorMessage={cattleErrors.number_of_animals}
-              />
-              <Dropdown
-                label="Cattle Type (Animal)"
-                items={CATTLE_TYPES_OPTIONS}
-                selectedItem={cattleData.cattle_type}
-                onSelect={(val: string) => {
-                  setCattleData({ ...cattleData, cattle_type: val });
-                }}
-                
-                width="full"
-              />
-              <Dropdown
-                label="Purpose"
-                items={CATTLE_PURPOSE_OPTIONS}
-                selectedItem={cattleData.purpose}
-                onSelect={(val: string) => {
-                  setCattleData({ ...cattleData, purpose: val });
-                }}
-                
-                width="full"
-              />
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            className="space-y-8"
+            onSubmit={handleSubmitCattle}
+            noValidate
+          >
+            {/* Basic Information Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+              </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={handleClose}
-                  disabled={isLoading}
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="cattle_name"
+                  label="Cattle / Herd Name"
+                  placeholder="e.g. Dairy Herd A, Main Bull"
+                  value={cattleData.cattle_name}
+                  onChange={(e) => {
+                    setCattleData({ ...cattleData, cattle_name: e.target.value });
+                    setCattleErrors({ ...cattleErrors, cattle_name: undefined });
+                  }}
+                  error={cattleErrors.cattle_name}
                 />
-                <Button
-                  label={cattleToEdit ? "Update Herd" : "Add Herd"}
-                  variant="primary"
-                  type="submit"
-                  disabled={isLoading}
+                
+                <Input
+                  id="number_of_animals"
+                  type="number"
+                  label="Number of Animals"
+                  placeholder="e.g. 50"
+                  value={String(cattleData.number_of_animals)}
+                  onChange={(e) => {
+                    setCattleData({
+                      ...cattleData,
+                      number_of_animals: e.target.value,
+                    });
+                    setCattleErrors({
+                      ...cattleErrors,
+                      number_of_animals: undefined,
+                    });
+                  }}
+                  error={cattleErrors.number_of_animals}
                 />
               </div>
-            </form>
-          </div>
+            </section>
+
+            {/* Animal Profile Section */}
+            <section className="space-y-6 pt-4 pb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Animal Profile</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Dropdown
+                    label="Cattle Type"
+                    items={CATTLE_TYPES_OPTIONS}
+                    selectedItem={cattleData.cattle_type}
+                    onSelect={(val: string) => {
+                      setCattleData({ ...cattleData, cattle_type: val });
+                    }}
+                    width="full"
+                  />
+                  <Dropdown
+                    label="Primary Purpose"
+                    items={CATTLE_PURPOSE_OPTIONS}
+                    selectedItem={cattleData.purpose}
+                    onSelect={(val: string) => {
+                      setCattleData({ ...cattleData, purpose: val });
+                    }}
+                    width="full"
+                  />
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            disabled={isLoading}
+            className="w-full"
+          />
+          <Button
+            label={cattleToEdit ? "Update Record" : "Add Record"}
+            variant="primary"
+            type="submit"
+            onClick={handleSubmitCattle}
+            disabled={isLoading}
+            className="w-full"
+          />
         </div>
       </div>
     </div>

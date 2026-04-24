@@ -1,199 +1,54 @@
-import { Icon } from "@graminate/ui";
-import { useState, useRef, useEffect } from "react";
-import Loader from "./Loader";
+import { Input } from "@graminate/ui";
+import React from "react";
 
-type Props = {
-  label?: React.ReactNode;
+type TextFieldProps = {
+  label: React.ReactNode;
   placeholder?: string;
-  errorMessage?: string;
-  isDisabled?: boolean;
-  type?: "success" | "error" | "disabled" | "";
-  icon?: "left" | "right" | "";
-  calendar?: boolean;
-  password?: boolean;
-  number?: boolean;
   value: string;
   onChange: (val: string) => void;
-  width?: "small" | "medium" | "large" | "";
-  onBlur?: () => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onFocus?: () => void;
-  suggestions?: string[];
+  type?: string;
+  errorMessage?: string;
   isLoading?: boolean;
+  onFocus?: () => void;
+  calendar?: boolean;
+  required?: boolean;
+  password?: boolean;
+  width?: string;
 };
 
 const TextField = ({
-  label = "",
-  placeholder = "",
-  errorMessage = "This cannot be left blank",
-  isDisabled = false,
-  type = "",
-  icon = "",
-  calendar = false,
-  password = false,
-  number = false,
+  label,
+  placeholder,
   value,
   onChange,
-  width = "",
-  onBlur,
-  onKeyDown,
+  type = "text",
+  errorMessage,
+  isLoading,
   onFocus,
-  suggestions = [],
-  isLoading = false,
-}: Props) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const textFieldRef = useRef<HTMLDivElement>(null);
+  calendar,
+  required,
+  password,
+  width
+}: TextFieldProps) => {
+  // Generate a reasonably unique ID based on the label if it's a string
+  const generatedId = typeof label === "string" 
+    ? label.toLowerCase().replace(/[^a-z0-9]/g, "-") 
+    : `input-${Math.random().toString(36).substr(2, 9)}`;
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      textFieldRef.current &&
-      !textFieldRef.current.contains(event.target as Node)
-    ) {
-      setShowSuggestions(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getFieldClass = () => {
-    switch (type) {
-      case "error":
-        return "border border-red-200 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
-      case "disabled":
-        return "border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
-      default:
-        return "border border-gray-400 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200";
-    }
-  };
-
-  const getWidthClass = () => {
-    switch (width) {
-      case "small":
-        return "w-1/4";
-      case "medium":
-        return "w-1/2";
-      case "large":
-        return "w-full";
-      default:
-        return "w-auto";
-    }
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleFocus = () => {
-    if (onFocus) onFocus();
-    if (suggestions.length > 0) {
-      setShowSuggestions(true);
-    }
-  };
+  const finalType = password ? "password" : (calendar ? "date" : type);
 
   return (
-    <div className={`w-full px-0.5 ${getWidthClass()}`} ref={textFieldRef}>
-      {label && (
-        <label
-          htmlFor={calendar ? "calendar" : password ? "password" : "text"}
-          className="block mb-1 text-sm font-medium text-dark"
-        >
-          {label}
-        </label>
-      )}
-      <div className="relative flex items-center">
-        <input
-          className={`${getFieldClass()} ${
-            icon === "left" ? "pl-10" : icon === "right" ? "pr-10" : ""
-          }`}
-          disabled={isDisabled}
-          type={
-            calendar
-              ? "date"
-              : password
-              ? showPassword
-                ? "text"
-                : "password"
-              : number
-              ? "number"
-              : "text"
-          }
-          id={calendar ? "calendar" : password ? "password" : "text"}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={handleFocus}
-          onBlur={onBlur}
-          onKeyDown={onKeyDown}
-        />
-
-        {password && (
-          <button
-            type="button"
-            className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
-            onClick={togglePasswordVisibility}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? (
-              <Icon type={"visibility_off"} className="size-4" />
-            ) : (
-              <Icon type={"visibility"} className="size-4" />
-            )}
-          </button>
-        )}
-
-        {suggestions.length > 0 && !password && (
-          <button
-            type="button"
-            className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
-            onClick={() => setShowSuggestions(!showSuggestions)}
-            aria-label="Toggle suggestions"
-          >
-            <Icon type={"expand_more"} className="size-4" />
-          </button>
-        )}
-      </div>
-
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
-          {isLoading ? (
-            <div className="px-4 py-2 text-gray-500">
-              <Loader/>
-            </div>
-          ) : (
-            suggestions.map((suggestion, index) => (
-              <div
-                key={index}
-                className="px-4 py-2 hover:bg-gray-400 cursor-pointer"
-                onClick={() => {
-                  onChange(suggestion);
-                  setShowSuggestions(false);
-                }}
-              >
-                {suggestion}
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {type === "error" && (
-        <div className="flex items-center mt-1">
-          <span className="font-medium mr-1">
-            <Icon
-              type={"info"}
-              className="size-6 text-red-200"
-            />
-          </span>
-          <p className="text-sm text-red-200">{errorMessage}</p>
-        </div>
-      )}
-    </div>
+    <Input
+      id={generatedId}
+      label={label}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      type={finalType}
+      error={errorMessage}
+      required={required}
+      onFocus={onFocus}
+    />
   );
 };
 

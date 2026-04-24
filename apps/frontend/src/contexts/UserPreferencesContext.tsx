@@ -179,10 +179,13 @@ export const UserPreferencesProvider = ({
       const user = response.data?.data?.user ?? response.data?.user;
       
       if (!user) {
-        console.error("fetchUserSubTypes: User missing in response data", response.data);
         if (response.data?.status === 404) {
-          throw new Error(`User ${userId} not found in database`);
+          console.warn(`User ${userId} not found, clearing session`);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user_id");
+          return;
         }
+        console.error("fetchUserSubTypes: User missing in response data", response.data);
         throw new Error("User payload missing from server response");
       }
 

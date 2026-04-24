@@ -233,186 +233,188 @@ const SalesModal = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 w-full max-w-3xl max-h-[90vh] my-auto overflow-y-auto p-6 md:p-8 rounded-lg shadow-xl">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Log New Sale
-          </h3>
-          <button
-            type="button"
-            className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-            onClick={onClose}
-            aria-label="Close modal"
-          >
-            <Icon type={"close"} className="w-5 h-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TextField
-              label="Sales Title"
-              placeholder="e.g., Weekly Farm Stand Sales"
-              value={salesName}
-              onChange={(val) => setSalesName(val)}
-              width="large"
-            />
-            <TextField
-              label="Sales Date"
-              calendar={true}
-              value={salesDate}
-              onChange={(val) => setSalesDate(val)}
-              errorMessage={errors.salesDate}
-              type={errors.salesDate ? "error" : ""}
-              width="large"
-            />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-3xl">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Log New Sale
+            </h3>
+            <button
+              type="button"
+              className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              onClick={onClose}
+              aria-label="Close modal"
+            >
+              <Icon type={"close"} className="w-5 h-5" />
+            </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-            {isLoadingSubTypes ? (
-              <div className="flex flex-col">
-                <div className="p-2.5 border border-gray-400 dark:border-gray-200 rounded-md flex items-center justify-center h-[42px]">
-                  <Loader />
-                </div>
-              </div>
-            ) : (
-              <Dropdown
-                label="Sale Occupation"
-                items={
-                  subTypes.length > 0
-                    ? subTypes
-                    : ["N/A - No occupations found"]
-                }
-                selectedItem={occupation}
-                onSelect={(val) =>
-                  setOccupation(val === "N/A - No occupations found" ? "" : val)
-                }
-                placeholder="Select an occupation"
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TextField
+                label="Sales Title"
+                placeholder="e.g., Weekly Farm Stand Sales"
+                value={salesName}
+                onChange={(val) => setSalesName(val)}
+                width="large"
               />
-            )}
-          </div>
-          {errors.occupation && !isLoadingSubTypes && subTypes.length > 0 && (
-            <p className="text-red-200 text-xs -mt-4 mb-2">
-              {errors.occupation}
-            </p>
-          )}
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-              Items Sold
-            </label>
-            {items.map((item, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-x-3 gap-y-2 items-end mb-3"
-              >
-                <TextField
-                  label="Item Name"
-                  placeholder="e.g., Organic Eggs"
-                  value={item.name}
-                  onChange={(val) => handleItemChange(index, "name", val)}
-                />
-
-                <TextField
-                  label="Quantity Sold"
-                  number={true}
-                  placeholder="e.g., 12"
-                  value={item.quantity}
-                  onChange={(val) => handleItemChange(index, "quantity", val)}
-                />
-                <TextField
-                  label={index === 0 ? "Price/Unit" : undefined}
-                  number={true}
-                  placeholder="e.g., 4.50"
-                  value={item.price_per_unit}
-                  onChange={(val) =>
-                    handleItemChange(index, "price_per_unit", val)
-                  }
-                />
-                <div className="relative">
-                  <TextField
-                    label="Measurement Unit"
-                    placeholder="e.g., dozen"
-                    value={item.unit}
-                    onChange={(val) => handleItemChange(index, "unit", val)}
-                    onFocus={() => handleUnitInputFocus(index)}
-                  />
-                  {showUnitSuggestionsFor === index &&
-                    unitSuggestions.length > 0 && (
-                      <div
-                        ref={unitSuggestionsRef}
-                        className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-32 overflow-auto"
-                      >
-                        {unitSuggestions.map((suggestion, sIndex) => (
-                          <div
-                            key={sIndex}
-                            className="px-3 py-1.5 hover:bg-gray-500 dark:hover:bg-gray-600 text-sm cursor-pointer"
-                            onClick={() =>
-                              selectUnitSuggestion(index, suggestion)
-                            }
-                          >
-                            {suggestion}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </div>
-
-                {items.length > 1 && (
-                  <div className={index === 0 ? "pt-[21px] sm:pt-0" : ""}>
-                    <Button
-                      type="button"
-                      variant="danger"
-                      onClick={() => handleRemoveItem(index)}
-                      aria-label="Remove item"
-                      label="X"
-                    />
+              <TextField
+                label="Sales Date"
+                calendar={true}
+                value={salesDate}
+                onChange={(val) => setSalesDate(val)}
+                errorMessage={errors.salesDate}
+                type={errors.salesDate ? "error" : ""}
+                width="large"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+              {isLoadingSubTypes ? (
+                <div className="flex flex-col">
+                  <div className="p-2.5 border border-gray-400 dark:border-gray-600 rounded-md flex items-center justify-center h-[42px] bg-gray-50 dark:bg-gray-700">
+                    <Loader />
                   </div>
-                )}
-              </div>
-            ))}
-            {(errors.itemsName ||
-              errors.itemsQuantity ||
-              errors.itemsUnit ||
-              errors.itemsPrice ||
-              errors.itemsGeneral) && (
-              <p className="text-red-200 text-xs mt-1">
-                {errors.itemsName ||
-                  errors.itemsQuantity ||
-                  errors.itemsUnit ||
-                  errors.itemsPrice ||
-                  errors.itemsGeneral ||
-                  "Please check item details."}
+                </div>
+              ) : (
+                <Dropdown
+                  label="Sale Occupation"
+                  items={
+                    subTypes.length > 0
+                      ? subTypes
+                      : ["N/A - No occupations found"]
+                  }
+                  selectedItem={occupation}
+                  onSelect={(val) =>
+                    setOccupation(val === "N/A - No occupations found" ? "" : val)
+                  }
+                  placeholder="Select an occupation"
+                />
+              )}
+            </div>
+            {errors.occupation && !isLoadingSubTypes && subTypes.length > 0 && (
+              <p className="text-red-500 dark:text-red-400 text-xs -mt-4 mb-2">
+                {errors.occupation}
               </p>
             )}
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleAddItem}
-              label="Add Item"
-            />
-          </div>
 
-          {errors.general && (
-            <p className="text-red-200 text-sm">{errors.general}</p>
-          )}
+            <div>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                Items Sold
+              </label>
+              {items.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-x-3 gap-y-2 items-end mb-3"
+                >
+                  <TextField
+                    label="Item Name"
+                    placeholder="e.g., Organic Eggs"
+                    value={item.name}
+                    onChange={(val) => handleItemChange(index, "name", val)}
+                  />
 
-          <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400">
-            <Button
-              label="Cancel"
-              type="button"
-              variant="secondary"
-              onClick={onClose}
-              disabled={isLoading || isLoadingSubTypes}
-            />
-            <Button
-              label={isLoading || isLoadingSubTypes ? "Logging..." : "Log Sale"}
-              type="submit"
-              variant="primary"
-              disabled={isLoading || isLoadingSubTypes}
-            />
-          </div>
-        </form>
+                  <TextField
+                    label="Quantity Sold"
+                    number={true}
+                    placeholder="e.g., 12"
+                    value={item.quantity}
+                    onChange={(val) => handleItemChange(index, "quantity", val)}
+                  />
+                  <TextField
+                    label={index === 0 ? "Price/Unit" : undefined}
+                    number={true}
+                    placeholder="e.g., 4.50"
+                    value={item.price_per_unit}
+                    onChange={(val) =>
+                      handleItemChange(index, "price_per_unit", val)
+                    }
+                  />
+                  <div className="relative">
+                    <TextField
+                      label="Measurement Unit"
+                      placeholder="e.g., dozen"
+                      value={item.unit}
+                      onChange={(val) => handleItemChange(index, "unit", val)}
+                      onFocus={() => handleUnitInputFocus(index)}
+                    />
+                    {showUnitSuggestionsFor === index &&
+                      unitSuggestions.length > 0 && (
+                        <div
+                          ref={unitSuggestionsRef}
+                          className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-32 overflow-auto"
+                        >
+                          {unitSuggestions.map((suggestion, sIndex) => (
+                            <div
+                              key={sIndex}
+                              className="px-3 py-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm cursor-pointer"
+                              onClick={() =>
+                                selectUnitSuggestion(index, suggestion)
+                              }
+                            >
+                              {suggestion}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+
+                  {items.length > 1 && (
+                    <div className={index === 0 ? "pt-[21px] sm:pt-0" : ""}>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => handleRemoveItem(index)}
+                        aria-label="Remove item"
+                        label="X"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+              {(errors.itemsName ||
+                errors.itemsQuantity ||
+                errors.itemsUnit ||
+                errors.itemsPrice ||
+                errors.itemsGeneral) && (
+                <p className="text-red-500 dark:text-red-400 text-xs mt-1">
+                  {errors.itemsName ||
+                    errors.itemsQuantity ||
+                    errors.itemsUnit ||
+                    errors.itemsPrice ||
+                    errors.itemsGeneral ||
+                    "Please check item details."}
+                </p>
+              )}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAddItem}
+                label="Add Item"
+              />
+            </div>
+
+            {errors.general && (
+              <p className="text-red-500 dark:text-red-400 text-sm">{errors.general}</p>
+            )}
+
+            <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
+              <Button
+                label="Cancel"
+                type="button"
+                variant="secondary"
+                onClick={onClose}
+                disabled={isLoading || isLoadingSubTypes}
+              />
+              <Button
+                label={isLoading || isLoadingSubTypes ? "Logging..." : "Log Sale"}
+                type="submit"
+                variant="primary"
+                disabled={isLoading || isLoadingSubTypes}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

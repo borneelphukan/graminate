@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { GENDER } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
@@ -33,7 +32,12 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
   });
 
   const [labourErrors, setLabourErrors] = useState({
+    fullName: "",
+    dateOfBirth: "",
+    gender: "",
+    role: "",
     contactNumber: "",
+    aadharCardNumber: "",
     addressLine1: "",
     city: "",
     state: "",
@@ -93,6 +97,40 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
     return { errors, isValid };
   };
 
+  const validateRequiredFields = () => {
+    const errors = {
+      fullName: "",
+      dateOfBirth: "",
+      gender: "",
+      role: "",
+      aadharCardNumber: "",
+    };
+    let isValid = true;
+
+    if (!labourValues.fullName.trim()) {
+      errors.fullName = "Full Name is required.";
+      isValid = false;
+    }
+    if (!labourValues.dateOfBirth) {
+      errors.dateOfBirth = "Date of Birth is required.";
+      isValid = false;
+    }
+    if (!labourValues.gender) {
+      errors.gender = "Gender is required.";
+      isValid = false;
+    }
+    if (!labourValues.role.trim()) {
+      errors.role = "Role is required.";
+      isValid = false;
+    }
+    if (!labourValues.aadharCardNumber.trim()) {
+      errors.aadharCardNumber = "Aadhar Card Number is required.";
+      isValid = false;
+    }
+
+    return { errors, isValid };
+  };
+
   const validateSalaryFields = () => {
     const errors = {
       baseSalary: "",
@@ -107,11 +145,12 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
     return { errors, isValid };
   };
 
-  const handleSubmitLabour = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitLabour = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
 
     const addressValidation = validateLabourAddress();
     const salaryValidation = validateSalaryFields();
+    const requiredValidation = validateRequiredFields();
     const phoneValid =
       isValidE164(labourValues.contactNumber) || !labourValues.contactNumber;
     const phoneErrorMsg = !phoneValid ? "Phone number is not valid" : "";
@@ -120,19 +159,21 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
       ...labourErrors,
       ...addressValidation.errors,
       ...salaryValidation.errors,
+      ...requiredValidation.errors,
       contactNumber: phoneErrorMsg,
     });
 
     if (
       !addressValidation.isValid ||
       !phoneValid ||
-      !salaryValidation.isValid
+      !salaryValidation.isValid ||
+      !requiredValidation.isValid
     ) {
       return;
     }
 
     const payload = {
-      user_id: user_id,
+      user_id: Number(user_id),
       full_name: labourValues.fullName,
       date_of_birth: labourValues.dateOfBirth,
       gender: labourValues.gender,
@@ -186,7 +227,12 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
       paymentFrequency: "Monthly",
     });
     setLabourErrors({
+      fullName: "",
+      dateOfBirth: "",
+      gender: "",
+      role: "",
       contactNumber: "",
+      aadharCardNumber: "",
       addressLine1: "",
       city: "",
       state: "",
@@ -198,250 +244,311 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full overflow-hidden">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {formTitle ? formTitle : "Add New Employee"}
             </h2>
-            <button
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              onClick={handleClose}
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              Enter the professional and personal details of the employee.
+            </p>
           </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-          <div className="flex-grow overflow-y-auto custom-scrollbar px-1">
+          <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
             <form
-              className="flex flex-col gap-4 w-full"
+              className="space-y-8"
               onSubmit={handleSubmitLabour}
               noValidate
             >
-              <TextField
-                label="Full Name"
-                placeholder="e.g. John Doe"
-                value={labourValues.fullName}
-                onChange={(val: string) =>
-                  setLabourValues({ ...labourValues, fullName: val })
-                }
-              />
-              <div className="flex flex-col sm:flex-row gap-4">
-                <TextField
-                  label="Date of Birth"
-                  placeholder="YYYY-MM-DD"
-                  value={labourValues.dateOfBirth}
-                  onChange={(val: string) =>
-                    setLabourValues({ ...labourValues, dateOfBirth: val })
-                  }
-                  calendar
-                />
-                <TextField
-                  label="Designation / Role"
-                  placeholder="Role of the Employee"
-                  value={labourValues.role}
-                  onChange={(val: string) =>
-                    setLabourValues({ ...labourValues, role: val })
-                  }
-                />
-              </div>
-              <Dropdown
-                items={GENDER}
-                selectedItem={labourValues.gender}
-                onSelect={(value: string) =>
-                  setLabourValues({ ...labourValues, gender: value })
-                }
-                
-                label="Gender"
-                width="full"
-              />
-              <div className="flex flex-col sm:flex-row gap-4">
-                <TextField
-                  label="Contact Number"
-                  placeholder="e.g. +91XXXXXXXXXX"
-                  value={labourValues.contactNumber}
-                  onChange={(val: string) => {
-                    setLabourValues({ ...labourValues, contactNumber: val });
-                    if (val && !isValidE164(val)) {
-                      setLabourErrors({
-                        ...labourErrors,
-                        contactNumber:
-                          "Phone number format is not valid (e.g., +919876543210)",
-                      });
-                    } else {
-                      setLabourErrors({ ...labourErrors, contactNumber: "" });
-                    }
-                  }}
-                  type={labourErrors.contactNumber ? "error" : ""}
-                  errorMessage={labourErrors.contactNumber}
-                />
-                <TextField
-                  label="Aadhar Card Number"
-                  placeholder="e.g. XXXX XXXX XXXX"
-                  value={labourValues.aadharCardNumber}
-                  onChange={(val: string) =>
-                    setLabourValues({ ...labourValues, aadharCardNumber: val })
-                  }
-                />
-              </div>
-              <TextField
-                label="Address Line 1"
-                placeholder="e.g. House No, Street Name"
-                value={labourValues.addressLine1}
-                onChange={(val: string) =>
-                  setLabourValues({ ...labourValues, addressLine1: val })
-                }
-                type={labourErrors.addressLine1 ? "error" : ""}
-                errorMessage={labourErrors.addressLine1}
-              />
-              <TextField
-                label="Address Line 2 (Optional)"
-                placeholder="e.g. Landmark, Apartment Name"
-                value={labourValues.addressLine2}
-                onChange={(val: string) =>
-                  setLabourValues({ ...labourValues, addressLine2: val })
-                }
-              />
-              <TextField
-                label="City"
-                placeholder="e.g. Mumbai"
-                value={labourValues.city}
-                onChange={(val: string) =>
-                  setLabourValues({ ...labourValues, city: val })
-                }
-                type={labourErrors.city ? "error" : ""}
-                errorMessage={labourErrors.city}
-              />
-              <div className="flex flex-col sm:flex-row gap-4">
-                <TextField
-                  label="State"
-                  placeholder="e.g. Maharashtra"
-                  value={labourValues.state}
-                  onChange={(val: string) =>
-                    setLabourValues({ ...labourValues, state: val })
-                  }
-                  type={labourErrors.state ? "error" : ""}
-                  errorMessage={labourErrors.state}
-                />
-                <TextField
-                  label="Postal Code"
-                  placeholder="e.g. 400001"
-                  value={labourValues.postalCode}
-                  onChange={(val: string) =>
-                    setLabourValues({ ...labourValues, postalCode: val })
-                  }
-                  type={labourErrors.postalCode ? "error" : ""}
-                  errorMessage={labourErrors.postalCode}
-                />
-              </div>
+              {/* Personal Information Section */}
+              <section className="space-y-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information</h3>
+                </div>
 
-              {/* Salary Section */}
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold mb-4">
-                  Salary Information
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <TextField
-                    label="Base Salary (₹)"
-                    placeholder=""
-                    value={labourValues.baseSalary}
-                    onChange={(val: string) => {
-                      setLabourValues({ ...labourValues, baseSalary: val });
-                      if (val && isNaN(Number(val))) {
-                        setLabourErrors({
-                          ...labourErrors,
-                          baseSalary: "Must be a valid number",
-                        });
-                      } else {
-                        setLabourErrors({ ...labourErrors, baseSalary: "" });
+                <div className="grid grid-cols-1 gap-6">
+                  <Input
+                    id="fullName"
+                    label="Full Name"
+                    placeholder="e.g. John Doe"
+                    value={labourValues.fullName}
+                    onChange={(e) =>
+                      setLabourValues({ ...labourValues, fullName: e.target.value })
+                    }
+                    error={labourErrors.fullName}
+                  />
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <Input
+                      id="dateOfBirth"
+                      label="Date of Birth"
+                      placeholder="YYYY-MM-DD"
+                      value={labourValues.dateOfBirth}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, dateOfBirth: e.target.value })
                       }
-                    }}
-                    type={labourErrors.baseSalary ? "error" : ""}
-                    errorMessage={labourErrors.baseSalary}
-                  />
-                  <Dropdown
-                    items={["Monthly", "Weekly", "Bi-weekly", "Daily"]}
-                    selectedItem={labourValues.paymentFrequency}
-                    onSelect={(value: string) =>
-                      setLabourValues({
-                        ...labourValues,
-                        paymentFrequency: value,
-                      })
-                    }
-                    
-                    label="Payment Frequency"
-                    width="full"
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <TextField
-                    label="Bonus (₹)"
-                    placeholder="e.g. 1000"
-                    value={labourValues.bonus}
-                    onChange={(val: string) =>
-                      setLabourValues({ ...labourValues, bonus: val })
-                    }
-                  />
-                  <TextField
-                    label="Overtime Pay (₹)"
-                    placeholder="e.g. 500"
-                    value={labourValues.overtimePay}
-                    onChange={(val: string) =>
-                      setLabourValues({ ...labourValues, overtimePay: val })
-                    }
-                  />
-                  <TextField
-                    label="Housing Allowance (₹)"
-                    placeholder="e.g. 2000"
-                    value={labourValues.housingAllowance}
-                    onChange={(val: string) =>
-                      setLabourValues({
-                        ...labourValues,
-                        housingAllowance: val,
-                      })
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <TextField
-                    label="Travel Allowance (₹)"
-                    placeholder="e.g. 1000"
-                    value={labourValues.travelAllowance}
-                    onChange={(val: string) =>
-                      setLabourValues({ ...labourValues, travelAllowance: val })
-                    }
-                  />
-                  <TextField
-                    label="Meal Allowance (₹)"
-                    placeholder="e.g. 800"
-                    value={labourValues.mealAllowance}
-                    onChange={(val: string) =>
-                      setLabourValues({ ...labourValues, mealAllowance: val })
-                    }
-                  />
-                </div>
-              </div>
+                      type="date"
+                      error={labourErrors.dateOfBirth}
+                    />
+                    <Input
+                      id="role"
+                      label="Designation / Role"
+                      placeholder="Role of the Employee"
+                      value={labourValues.role}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, role: e.target.value })
+                      }
+                      error={labourErrors.role}
+                    />
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={handleClose}
-                />
-                <Button label="Add Labour" variant="primary" type="submit" />
-              </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-1">
+                      <Dropdown
+                        items={GENDER}
+                        selectedItem={labourValues.gender}
+                        onSelect={(value: string) =>
+                          setLabourValues({ ...labourValues, gender: value })
+                        }
+                        label="Gender"
+                        width="full"
+                      />
+                      {labourErrors.gender && (
+                        <p className="text-red-500 text-xs mt-1">{labourErrors.gender}</p>
+                      )}
+                    </div>
+                    <Input
+                      id="contactNumber"
+                      label="Contact Number"
+                      placeholder="e.g. +91XXXXXXXXXX"
+                      value={labourValues.contactNumber}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setLabourValues({ ...labourValues, contactNumber: val });
+                        if (val && !isValidE164(val)) {
+                          setLabourErrors({
+                            ...labourErrors,
+                            contactNumber:
+                              "Phone number format is not valid",
+                          });
+                        } else {
+                          setLabourErrors({ ...labourErrors, contactNumber: "" });
+                        }
+                      }}
+                      error={labourErrors.contactNumber}
+                    />
+                  </div>
+
+                  <Input
+                    id="aadharCardNumber"
+                    label="Aadhar Card Number"
+                    placeholder="e.g. XXXX XXXX XXXX"
+                    value={labourValues.aadharCardNumber}
+                    onChange={(e) =>
+                      setLabourValues({ ...labourValues, aadharCardNumber: e.target.value })
+                    }
+                    error={labourErrors.aadharCardNumber}
+                  />
+                </div>
+              </section>
+
+              {/* Address Section */}
+              <section className="space-y-6 pt-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Address Details</h3>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
+                  <Input
+                    id="addressLine1"
+                    label="Address Line 1"
+                    placeholder="e.g. House No, Street Name"
+                    value={labourValues.addressLine1}
+                    onChange={(e) =>
+                      setLabourValues({ ...labourValues, addressLine1: e.target.value })
+                    }
+                    error={labourErrors.addressLine1}
+                  />
+                  <Input
+                    id="addressLine2"
+                    label="Address Line 2 (Optional)"
+                    placeholder="e.g. Landmark, Apartment Name"
+                    value={labourValues.addressLine2}
+                    onChange={(e) =>
+                      setLabourValues({ ...labourValues, addressLine2: e.target.value })
+                    }
+                  />
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <Input
+                      id="city"
+                      label="City"
+                      placeholder="e.g. Mumbai"
+                      value={labourValues.city}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, city: e.target.value })
+                      }
+                      error={labourErrors.city}
+                    />
+                    <Input
+                      id="state"
+                      label="State"
+                      placeholder="e.g. Maharashtra"
+                      value={labourValues.state}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, state: e.target.value })
+                      }
+                      error={labourErrors.state}
+                    />
+                    <Input
+                      id="postalCode"
+                      label="Postal Code"
+                      placeholder="e.g. 400001"
+                      value={labourValues.postalCode}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, postalCode: e.target.value })
+                      }
+                      error={labourErrors.postalCode}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Salary Information Section */}
+              <section className="space-y-6 pt-4 pb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Salary Information</h3>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <Input
+                      id="baseSalary"
+                      label="Base Salary (₹)"
+                      placeholder="0.00"
+                      value={labourValues.baseSalary}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setLabourValues({ ...labourValues, baseSalary: val });
+                        if (val && isNaN(Number(val))) {
+                          setLabourErrors({
+                            ...labourErrors,
+                            baseSalary: "Must be a valid number",
+                          });
+                        } else {
+                          setLabourErrors({ ...labourErrors, baseSalary: "" });
+                        }
+                      }}
+                      error={labourErrors.baseSalary}
+                    />
+                    <Dropdown
+                      items={["Monthly", "Weekly", "Bi-weekly", "Daily"]}
+                      selectedItem={labourValues.paymentFrequency}
+                      onSelect={(value: string) =>
+                        setLabourValues({
+                          ...labourValues,
+                          paymentFrequency: value,
+                        })
+                      }
+                      label="Payment Frequency"
+                      width="full"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <Input
+                      id="bonus"
+                      label="Bonus (₹)"
+                      placeholder="0.00"
+                      value={labourValues.bonus}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, bonus: e.target.value })
+                      }
+                    />
+                    <Input
+                      id="overtimePay"
+                      label="Overtime (₹)"
+                      placeholder="0.00"
+                      value={labourValues.overtimePay}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, overtimePay: e.target.value })
+                      }
+                    />
+                    <Input
+                      id="housingAllowance"
+                      label="Housing (₹)"
+                      placeholder="0.00"
+                      value={labourValues.housingAllowance}
+                      onChange={(e) =>
+                        setLabourValues({
+                          ...labourValues,
+                          housingAllowance: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <Input
+                      id="travelAllowance"
+                      label="Travel Allowance (₹)"
+                      placeholder="0.00"
+                      value={labourValues.travelAllowance}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, travelAllowance: e.target.value })
+                      }
+                    />
+                    <Input
+                      id="mealAllowance"
+                      label="Meal Allowance (₹)"
+                      placeholder="0.00"
+                      value={labourValues.mealAllowance}
+                      onChange={(e) =>
+                        setLabourValues({ ...labourValues, mealAllowance: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+              </section>
             </form>
           </div>
-        </div>
+
+          {/* Action Footer */}
+          <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+            <Button
+              label="Cancel"
+              variant="secondary"
+              onClick={handleClose}
+              className="w-full"
+            />
+            <Button 
+              label="Add Employee" 
+              variant="primary" 
+              type="submit" 
+              onClick={handleSubmitLabour}
+              className="w-full"
+            />
+          </div>
       </div>
     </div>
   );

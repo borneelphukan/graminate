@@ -17,7 +17,7 @@ import {
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
 
-type View = "contacts" | "companies" | "contracts" | "tasks";
+type View = "contacts" | "companies" | "contracts" | "tasks" | "receipts";
 
 type Contact = {
   contact_id: number;
@@ -140,41 +140,6 @@ const CRM = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [animate, setAnimate] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  const handleClosePanelAnimation = useCallback(() => {
-    setAnimate(false);
-    setTimeout(() => setIsSidebarOpen(false), 300);
-  }, [setAnimate, setIsSidebarOpen]);
-
-  useEffect(() => {
-    if (isSidebarOpen) {
-      setAnimate(true);
-      document.body.classList.add("overflow-hidden");
-      return () => {
-        document.body.classList.remove("overflow-hidden");
-      };
-    }
-  }, [isSidebarOpen]);
-
-  useEffect(() => {
-    if (isSidebarOpen) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          panelRef.current &&
-          !panelRef.current.contains(event.target as Node)
-        ) {
-          handleClosePanelAnimation();
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
-  }, [isSidebarOpen, panelRef, handleClosePanelAnimation]);
-
   const dropdownItems = [
     { label: "Contacts", view: "contacts" },
     { label: "Companies", view: "companies" },
@@ -214,7 +179,8 @@ const CRM = () => {
         setCompaniesData(companiesRes.data.companies || []);
         setContractsData(contractsRes.data.contracts || []);
         setTasksData(tasksRes.data.tasks || []);
-      } catch {
+      } catch (error) {
+        console.error("Error fetching CRM data:", error);
         setContactsData([]);
         setCompaniesData([]);
         setContractsData([]);
@@ -315,9 +281,7 @@ const CRM = () => {
             "#",
             "Company Name",
             "Owner Name",
-            "Email",
             "Phone Number",
-            "Address",
             "Type",
             "Created On",
           ],
@@ -327,19 +291,9 @@ const CRM = () => {
               item.company_id,
               item.company_name,
               item.contact_person,
-              item.email,
               item.phone_number,
-              [
-                item.address_line_1,
-                item.address_line_2,
-                item.city,
-                item.state,
-                item.postal_code,
-              ]
-                .filter(Boolean)
-                .join(", "),
               item.type,
-              new Date(item.created_at).toLocaleDateString(locale, dateOptions),
+              new Date(item.created_at).toLocaleString(locale, dateTimeOptions),
             ]),
         };
 
@@ -638,58 +592,38 @@ const CRM = () => {
           onResetTable={handleResetTable}
         />
         {isSidebarOpen && (
-          <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
-            <div
-              ref={panelRef}
-              className="fixed top-0 right-0 h-full w-full md:w-[650px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
-              style={{
-                transform: animate ? "translateX(0)" : "translateX(100%)",
-                transition: "transform 300ms ease-out",
-              }}
-            >
-              <div className="p-6 flex flex-col h-full">
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-400 dark:border-gray-200">
-                  <h2 className="text-xl font-semibold text-dark dark:text-light">
-                    {sidebarTitle}
-                  </h2>
-                  <button
-                    className="text-gray-300 hover:text-gray-200 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
-                    onClick={handleClosePanelAnimation}
-                    aria-label="Close panel"
-                  >
-                    <Icon type={"close"} className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <div className="flex-grow overflow-y-auto pr-2 -mr-2 space-y-6">
-                  {view === "contacts" && (
-                    <ContactForm
-                      userId={user_id}
-                      onClose={handleClosePanelAnimation}
-                    />
-                  )}
-                  {view === "companies" && (
-                    <CompanyForm
-                      userId={user_id}
-                      onClose={handleClosePanelAnimation}
-                    />
-                  )}
-                  {view === "contracts" && (
-                    <ContractForm
-                      userId={user_id}
-                      onClose={handleClosePanelAnimation}
-                    />
-                  )}
-                  {view === "tasks" && (
-                    <TaskForm
-                      userId={user_id}
-                      onClose={handleClosePanelAnimation}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <>
+            {view === "contacts" && (
+              <ContactForm
+                userId={user_id}
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            )}
+            {view === "companies" && (
+              <CompanyForm
+                userId={user_id}
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            )}
+            {view === "contracts" && (
+              <ContractForm
+                userId={user_id}
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            )}
+            {view === "receipts" && (
+              <ReceiptForm
+                userId={user_id}
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            )}
+            {view === "tasks" && (
+              <TaskForm
+                userId={user_id}
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            )}
+          </>
         )}
       </div>
     </PlatformLayout>

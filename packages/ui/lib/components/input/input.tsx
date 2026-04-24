@@ -19,7 +19,7 @@ type DropdownConfig = {
 
 type InputProps = React.ComponentPropsWithoutRef<"input"> & {
   id: string;
-  label: string;
+  label: React.ReactNode;
   icon?: {
     left?: IconType;
     right?: IconType;
@@ -111,16 +111,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className={
               hideLabel
                 ? "sr-only"
-                : "text-dark font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
+                : "text-dark dark:text-light font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
             }
           >
             {label}
             {required && <span className="text-red-200 ml-1">*</span>}
           </span>
           <div
-            className={`flex flex-row gap-2 items-center py-2 px-3 rounded-lg border-1 border-gray-400 transition-colors ${
+            className={`flex flex-row gap-2 items-center py-2 px-3 rounded-lg border-1 border-gray-400 dark:border-gray-200 transition-colors ${
               error ? "border-red-200 group-focus-within/input:!ring-red-200" : "group-focus-within/input:!ring-green-200"
-            } group-focus-within/input:!ring-[2px] group-focus-within/input:!ring-offset-2 ${className || ""}`}
+            } group-focus-within/input:!ring-[2px] dark:group-focus-within/input:!ring-offset-gray-200 group-focus-within/input:!ring-offset-2 ${className || ""}`}
           >
             {dropdown?.left && (
               <DropdownMenu>
@@ -186,7 +186,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
 
             <input
-              className={`border-none px-0.5 flex-1 w-full text-dark focus:outline-none focus:placeholder-neutral-dark-gray text-sm leading-none ${
+              className={`border-none px-0.5 flex-1 w-full text-dark focus:outline-none focus:placeholder-neutral-dark-gray dark:text-light text-sm leading-none ${
                 options ? "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" : ""
               }`}
               id={id}
@@ -209,7 +209,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             {icon?.right && !isPasswordField && (
               <Icon
-                className="text-dark group-focus-within/input:text-neutral-dark-gray shrink-0"
+                className="text-dark group-focus-within/input:text-dark shrink-0"
                 type={icon.right}
               />
             )}

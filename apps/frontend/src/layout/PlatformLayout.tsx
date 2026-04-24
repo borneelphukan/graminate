@@ -345,6 +345,12 @@ const PlatformLayout = ({ children }: Props) => {
 
       try {
         await fetchUserSubTypes(currentUserId);
+        // Check if session was cleared by fetchUserSubTypes (on 404)
+        if (!localStorage.getItem("token")) {
+          setIsAuthorized(false);
+          router.push("/login");
+          return;
+        }
         setIsAuthorized(true);
       } catch (error: unknown) {
         setIsAuthorized(false);
@@ -355,6 +361,8 @@ const PlatformLayout = ({ children }: Props) => {
             errorText = "Session expired. Please log in again.";
           } else if (axiosError.response?.status === 404) {
             errorText = `User not found`;
+            localStorage.removeItem("token");
+            localStorage.removeItem("user_id");
           }
         }
         setModalState({
@@ -401,7 +409,7 @@ const PlatformLayout = ({ children }: Props) => {
           isOpen={modalState.isOpen}
           onClose={() => {
             setModalState((prev) => ({ ...prev, isOpen: false }));
-            router.push("/");
+            router.push("/login");
           }}
           title={modalState.title}
           text={modalState.text}
@@ -521,7 +529,7 @@ const PlatformLayout = ({ children }: Props) => {
         isOpen={modalState.isOpen && !isAuthorized}
         onClose={() => {
           setModalState((prev) => ({ ...prev, isOpen: false }));
-          if (!isAuthorized) router.push("/");
+          if (!isAuthorized) router.push("/login");
         }}
         title={modalState.title}
         text={modalState.text}

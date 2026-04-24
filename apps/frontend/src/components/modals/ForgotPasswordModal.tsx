@@ -60,38 +60,40 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-        <div className="bg-white rounded-lg shadow-lg p-8 w-11/12 max-w-md text-center">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-            Forgot password?
-          </h2>
-          <p className="text-dark mb-6">
-            No worries, we’ll send you reset instructions.
-          </p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="min-w-96 rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-11/12 max-w-md">
+          <div className="bg-white rounded-xl border border-gray-400/20 shadow-sm p-8 text-center overflow-hidden">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+              Forgot password?
+            </h2>
+            <p className="text-dark mb-6">
+              No worries, we’ll send you reset instructions.
+            </p>
 
-          <form onSubmit={handleResetPassword}>
-            <div className="mb-4 text-left">
-              <TextField
-                label="Email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={setEmail}
-                width="large"
-              />
-            </div>
-            <div className="flex flex-col gap-4">
-              <Button
-                label="Reset Password"
-                variant="primary"
-                type="submit"
-              />
-              <Button
-                label="Back to Login"
-                variant="secondary"
-                onClick={closeModal}
-              />
-            </div>
-          </form>
+            <form onSubmit={handleResetPassword}>
+              <div className="mb-4 text-left">
+                <TextField
+                  label="Email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={setEmail}
+                  width="large"
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <Button
+                  label="Reset Password"
+                  variant="primary"
+                  type="submit"
+                />
+                <Button
+                  label="Back to Login"
+                  variant="secondary"
+                  onClick={closeModal}
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 

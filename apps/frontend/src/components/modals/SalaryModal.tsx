@@ -116,112 +116,112 @@ const SalaryModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out">
-      <div className="bg-white dark:bg-gray-800 w-full max-w-3xl max-h-[90vh] my-auto overflow-y-auto p-8 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-        <div className="mb-6 pb-4 border-b border-gray-200 dark:border-gray-600">
-          <h1 className="text-xl font-semibold">
-            {editMode ? "Update Salary" : "Add New Salary"}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1"></p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ease-in-out">
+      <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-3xl">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+          <div className="mb-6 pb-4 border-b border-gray-200 dark:border-gray-600">
+            <h1 className="text-xl font-semibold">
+              {editMode ? "Update Salary" : "Add New Salary"}
+            </h1>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TextField
+                label="Payment Date *"
+                calendar
+                value={paymentDate}
+                onChange={setPaymentDate}
+                width="large"
+              />
+              <TextField
+                label="Salary to Pay / Paid *"
+                number
+                value={salaryPaid}
+                onChange={setSalaryPaid}
+                width="large"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TextField
+                label="Bonus"
+                number
+                value={bonus}
+                onChange={setBonus}
+                width="large"
+                placeholder="0.00"
+              />
+              <TextField
+                label="Overtime Pay"
+                number
+                value={overtimePay}
+                onChange={setOvertimePay}
+                width="large"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <TextField
+                label="Housing Allowance"
+                number
+                value={housingAllowance}
+                onChange={setHousingAllowance}
+                width="large"
+                placeholder="0.00"
+              />
+              <TextField
+                label="Travel Allowance"
+                number
+                value={travelAllowance}
+                onChange={setTravelAllowance}
+                width="large"
+                placeholder="0.00"
+              />
+              <TextField
+                label="Meal Allowance"
+                number
+                value={mealAllowance}
+                onChange={setMealAllowance}
+                width="large"
+                placeholder="0.00"
+              />
+            </div>
+
+            <Dropdown
+              items={["Pending", "Paid"]}
+              selectedItem={paymentStatus}
+              onSelect={setPaymentStatus}
+              label="Payment Status"
+              width="full"
+            />
+
+            <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
+              <Button
+                label="Cancel"
+                variant="secondary"
+                onClick={onClose}
+                type="button"
+                disabled={loading}
+              />
+              <Button
+                label={
+                  loading
+                    ? editMode
+                      ? "Updating..."
+                      : "Adding..."
+                    : editMode
+                    ? "Update Salary"
+                    : "Add Salary"
+                }
+                variant="primary"
+                type="submit"
+                disabled={loading}
+              />
+            </div>
+          </form>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TextField
-              label="Payment Date *"
-              calendar
-              value={paymentDate}
-              onChange={setPaymentDate}
-              width="large"
-            />
-            <TextField
-              label="Salary to Pay / Paid *"
-              number
-              value={salaryPaid}
-              onChange={setSalaryPaid}
-              width="large"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TextField
-              label="Bonus"
-              number
-              value={bonus}
-              onChange={setBonus}
-              width="large"
-              placeholder="0.00"
-            />
-            <TextField
-              label="Overtime Pay"
-              number
-              value={overtimePay}
-              onChange={setOvertimePay}
-              width="large"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <TextField
-              label="Housing Allowance"
-              number
-              value={housingAllowance}
-              onChange={setHousingAllowance}
-              width="large"
-              placeholder="0.00"
-            />
-            <TextField
-              label="Travel Allowance"
-              number
-              value={travelAllowance}
-              onChange={setTravelAllowance}
-              width="large"
-              placeholder="0.00"
-            />
-            <TextField
-              label="Meal Allowance"
-              number
-              value={mealAllowance}
-              onChange={setMealAllowance}
-              width="large"
-              placeholder="0.00"
-            />
-          </div>
-
-          <Dropdown
-            items={["Pending", "Paid"]}
-            selectedItem={paymentStatus}
-            onSelect={setPaymentStatus}
-            label="Payment Status"
-            
-            width="full"
-          />
-
-          <div className="flex justify-end gap-4 pt-6 mt-8">
-            <Button
-              label="Cancel"
-              variant="secondary"
-              onClick={onClose}
-              type="button"
-              disabled={loading}
-            />
-            <Button
-              label={
-                loading
-                  ? editMode
-                    ? "Updating..."
-                    : "Adding..."
-                  : editMode
-                  ? "Update Salary"
-                  : "Add Salary"
-              }
-              variant="primary"
-              type="submit"
-              disabled={loading}
-            />
-          </div>
-        </form>
       </div>
     </div>
   );

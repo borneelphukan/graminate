@@ -167,7 +167,7 @@ const LabourDatabase = () => {
             onSubmit={() => {
               setIsSidebarOpen(false);
             }}
-            formTitle="Add Labour"
+            formTitle="Add Employee"
           />
         )}
       </div>

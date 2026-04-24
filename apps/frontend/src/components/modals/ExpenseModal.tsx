@@ -172,121 +172,123 @@ const ExpenseModal = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div className="bg-white dark:bg-gray-800 w-full max-w-lg max-h-[90vh] my-auto overflow-y-auto p-6 md:p-8 rounded-lg shadow-xl">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
-            <h3 className="text-xl font-semibold">
-              Log New Expense
-            </h3>
-            <button
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <TextField
-              label="Expense Title"
-              placeholder="e.g., Purchase of Animal Feed"
-              value={title}
-              onChange={(val) => setTitle(val)}
-              errorMessage={errors.title}
-              type={errors.title ? "error" : ""}
-              width="large"
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
-                label="Date of Logging Expense"
-                calendar={true}
-                value={dateCreated}
-                onChange={(val) => setDateCreated(val)}
-                errorMessage={errors.dateCreated}
-                type={errors.dateCreated ? "error" : ""}
-                width="large"
-              />
-              <TextField
-                label="Amount (₹)"
-                number={true}
-                value={expenseAmount}
-                onChange={(val) =>
-                  setExpenseAmount(val.replace(/[^0-9.]/g, ""))
-                }
-                errorMessage={errors.expenseAmount}
-                type={errors.expenseAmount ? "error" : ""}
-                width="large"
-              />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 w-full max-w-lg">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
+              <h3 className="text-xl text-dark dark:text-light font-semibold">
+                Log New Expense
+              </h3>
+              <button
+                type="button"
+                className="text-dark dark:text-light bg-transparent hover:bg-gray-500 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={onClose}
+                aria-label="Close modal"
+              >
+                <Icon type={"close"} className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {isLoadingSubTypes ? (
-                <div className="flex flex-col">
-                  <div className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center h-[42px] bg-gray-50 dark:bg-gray-700">
-                    <Loader />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <TextField
+                label="Expense Title"
+                placeholder="e.g., Purchase of Animal Feed"
+                value={title}
+                onChange={(val) => setTitle(val)}
+                errorMessage={errors.title}
+                type={errors.title ? "error" : ""}
+                width="large"
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <TextField
+                  label="Date of Logging Expense"
+                  calendar={true}
+                  value={dateCreated}
+                  onChange={(val) => setDateCreated(val)}
+                  errorMessage={errors.dateCreated}
+                  type={errors.dateCreated ? "error" : ""}
+                  width="large"
+                />
+                <TextField
+                  label="Amount (₹)"
+                  number={true}
+                  value={expenseAmount}
+                  onChange={(val) =>
+                    setExpenseAmount(val.replace(/[^0-9.]/g, ""))
+                  }
+                  errorMessage={errors.expenseAmount}
+                  type={errors.expenseAmount ? "error" : ""}
+                  width="large"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {isLoadingSubTypes ? (
+                  <div className="flex flex-col">
+                    <div className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center h-[42px] bg-gray-50 dark:bg-gray-700">
+                      <Loader />
+                    </div>
                   </div>
-                </div>
-              ) : (
+                ) : (
+                  <Dropdown
+                    direction="up"
+                    label="Related Occupation"
+                    items={
+                      subTypes.length > 0
+                        ? subTypes
+                        : ["N/A - No occupations found"]
+                    }
+                    selectedItem={occupation}
+                    onSelect={(val) =>
+                      setOccupation(
+                        val === "N/A - No occupations found" ? "" : val
+                      )
+                    }
+                    placeholder="Select an occupation"
+                  />
+                )}
+
                 <Dropdown
                   direction="up"
-                  label="Related Occupation"
-                  items={
-                    subTypes.length > 0
-                      ? subTypes
-                      : ["N/A - No occupations found"]
-                  }
-                  selectedItem={occupation}
-                  onSelect={(val) =>
-                    setOccupation(
-                      val === "N/A - No occupations found" ? "" : val
-                    )
-                  }
-                  placeholder="Select an occupation"
+                  label="Expense Category"
+                  items={EXPENSE_CATEGORIES}
+                  selectedItem={category}
+                  onSelect={(val) => setCategory(val)}
+                  placeholder="Select a category"
                 />
+              </div>
+
+              {errors.general && (
+                <p className="text-red-500 dark:text-red-400 text-sm">
+                  {errors.general}
+                </p>
+              )}
+              {errors.category && (
+                <p className="text-red-500 dark:text-red-400 text-sm -mt-4">
+                  {errors.category}
+                </p>
               )}
 
-              <Dropdown
-                direction="up"
-                label="Expense Category"
-                items={EXPENSE_CATEGORIES}
-                selectedItem={category}
-                onSelect={(val) => setCategory(val)}
-                placeholder="Select a category"
-              />
-            </div>
-
-            {errors.general && (
-              <p className="text-red-500 dark:text-red-400 text-sm">
-                {errors.general}
-              </p>
-            )}
-            {errors.category && (
-              <p className="text-red-500 dark:text-red-400 text-sm -mt-4">
-                {errors.category}
-              </p>
-            )}
-
-            <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
-              <Button
-                label="Cancel"
-                type="button"
-                variant="secondary"
-                onClick={onClose}
-                disabled={isLoading || isLoadingSubTypes}
-              />
-              <Button
-                label={
-                  isLoading || isLoadingSubTypes ? "Logging..." : "Log Expense"
-                }
-                type="submit"
-                variant="primary"
-                disabled={isLoading || isLoadingSubTypes}
-              />
-            </div>
-          </form>
+              <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">
+                <Button
+                  label="Cancel"
+                  type="button"
+                  variant="secondary"
+                  onClick={onClose}
+                  disabled={isLoading || isLoadingSubTypes}
+                />
+                <Button
+                  label={
+                    isLoading || isLoadingSubTypes ? "Logging..." : "Log Expense"
+                  }
+                  type="submit"
+                  variant="primary"
+                  disabled={isLoading || isLoadingSubTypes}
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
       <InfoModal

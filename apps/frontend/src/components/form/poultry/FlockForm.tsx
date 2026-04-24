@@ -1,12 +1,10 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { POULTRY_TYPES, HOUSING_TYPES } from "@/constants/options";
-
 import TextArea from "@/components/ui/TextArea";
 
 type FlockData = {
@@ -79,6 +77,7 @@ const POULTRY_BREEDS_STRUCTURED = {
     "Indian Runner (Layer)",
     "Khaki Campbell (Layer)",
     "Pekin (Breeder)",
+    "Muscovy (Breeder)",
     "Muscovy (Breeder)",
   ],
   Quails: ["Japanese Quail (Coturnix) (Layer)", "Bobwhite (Breeder)"],
@@ -194,7 +193,7 @@ const FlockForm = ({
     setAnimate(false);
     setTimeout(() => {
       onClose();
-    }, 300);
+    }, 400);
   }, [onClose]);
 
   const handleClose = useCallback(() => {
@@ -254,151 +253,189 @@ const FlockForm = ({
     if (flockData.housing_type) payload.housing_type = flockData.housing_type;
     if (flockData.notes.trim()) payload.notes = flockData.notes;
 
-    let response;
-    if (flockToEdit && flockToEdit.flock_id) {
-      response = await axiosInstance.put(
-        `/flock/update/${flockToEdit.flock_id}`,
-        payload
-      );
-    } else {
-      response = await axiosInstance.post(`/flock/add`, payload);
-    }
+    try {
+      let response;
+      if (flockToEdit && flockToEdit.flock_id) {
+        response = await axiosInstance.put(
+          `/flock/update/${flockToEdit.flock_id}`,
+          payload
+        );
+      } else {
+        response = await axiosInstance.post(`/flock/add`, payload);
+      }
 
-    if (onFlockUpdateOrAdd) {
-      onFlockUpdateOrAdd(response.data);
+      if (onFlockUpdateOrAdd) {
+        onFlockUpdateOrAdd(response.data);
+      }
+      setIsLoading(false);
+      handleClose();
+    } catch (error) {
+      console.error("Error submitting flock:", error);
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    handleClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full overflow-hidden">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-500 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {formTitle ||
                 (flockToEdit ? "Edit Flock Details" : "Add New Flock")}
             </h2>
-            <button
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              onClick={handleClose}
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              Manage your poultry batches and production cycles.
+            </p>
           </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-          <div className="flex-grow overflow-y-auto custom-scrollbar px-1">
-            <form
-              className="flex flex-col gap-4 w-full"
-              onSubmit={handleSubmitFlock}
-              noValidate
-            >
-              <TextField
-                label="Flock Name"
-                placeholder="e.g. Layer Batch 1"
-                value={flockData.flock_name}
-                onChange={(val: string) => {
-                  setFlockData({ ...flockData, flock_name: val });
-                  setFlockErrors({ ...flockErrors, flock_name: undefined });
-                }}
-                type={flockErrors.flock_name ? "error" : ""}
-                errorMessage={flockErrors.flock_name}
-              />
-              <Dropdown
-                label="Flock Type"
-                items={POULTRY_TYPES}
-                selectedItem={flockData.flock_type}
-                onSelect={(val: string) => {
-                  setFlockData({ ...flockData, flock_type: val, breed: "" });
-                  setFlockErrors({ ...flockErrors, flock_type: undefined });
-                }}
-                
-                width="full"
-              />
-              {flockErrors.flock_type && (
-                <p className="text-xs text-red-200 -mt-2 ml-1">
-                  {flockErrors.flock_type}
-                </p>
-              )}
-              <TextField
-                number
-                label="Quantity"
-                placeholder="e.g. 100"
-                value={String(flockData.quantity)}
-                onChange={(val: string) => {
-                  setFlockData({
-                    ...flockData,
-                    quantity: val === "" ? "" : parseInt(val, 10),
-                  });
-                  setFlockErrors({ ...flockErrors, quantity: undefined });
-                }}
-                type={flockErrors.quantity ? "error" : ""}
-                errorMessage={flockErrors.quantity}
-              />
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            id="flock-form"
+            className="space-y-8"
+            onSubmit={handleSubmitFlock}
+            noValidate
+          >
+            {/* Flock Essentials Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-brand-green rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Flock Essentials</h3>
+              </div>
 
-              <Dropdown
-                label="Breed"
-                items={filteredBreedItems}
-                selectedItem={flockData.breed}
-                onSelect={(val: string) => {
-                  setFlockData({ ...flockData, breed: val });
-                }}
-                placeholder="Select a breed"
-                disabledItems={filteredBreedCategoryHeaders}
-                isDisabled={!flockData.flock_type}
-              />
-              <TextField
-                label="Source (Optional)"
-                placeholder="e.g. Local Hatchery, Self-bred"
-                value={flockData.source}
-                onChange={(val: string) => {
-                  setFlockData({ ...flockData, source: val });
-                }}
-              />
-              <Dropdown
-                label="Housing Type (Optional)"
-                items={HOUSING_TYPES.map((h) => h.name)}
-                selectedItem={flockData.housing_type}
-                onSelect={(val: string) => {
-                  setFlockData({ ...flockData, housing_type: val });
-                }}
-                
-                width="full"
-              />
-              <TextArea
-                label="Notes (Optional)"
-                placeholder="e.g. Aggression, pecking order, stress indicators"
-                value={flockData.notes}
-                onChange={(val: string) => {
-                  setFlockData({ ...flockData, notes: val });
-                }}
-              />
-
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={handleClose}
-                  disabled={isLoading}
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="flock_name"
+                  label="Flock Name"
+                  placeholder="e.g. Layer Batch 1"
+                  value={flockData.flock_name}
+                  onChange={(e) => {
+                    setFlockData({ ...flockData, flock_name: e.target.value });
+                    setFlockErrors({ ...flockErrors, flock_name: undefined });
+                  }}
+                  error={flockErrors.flock_name}
+                  required
                 />
-                <Button
-                  label={flockToEdit ? "Update Flock" : "Create Flock"}
-                  variant="primary"
-                  type="submit"
-                  disabled={isLoading}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Dropdown
+                    label="Flock Type"
+                    items={POULTRY_TYPES}
+                    selectedItem={flockData.flock_type}
+                    onSelect={(val: string) => {
+                      setFlockData({ ...flockData, flock_type: val, breed: "" });
+                      setFlockErrors({ ...flockErrors, flock_type: undefined });
+                    }}
+                    errorMessage={flockErrors.flock_type}
+                    width="full"
+                  />
+                  <Input
+                    id="quantity"
+                    type="number"
+                    label="Quantity"
+                    placeholder="e.g. 100"
+                    value={String(flockData.quantity)}
+                    onChange={(e) => {
+                      setFlockData({
+                        ...flockData,
+                        quantity: e.target.value === "" ? "" : parseInt(e.target.value, 10),
+                      });
+                      setFlockErrors({ ...flockErrors, quantity: undefined });
+                    }}
+                    error={flockErrors.quantity}
+                    required
+                  />
+                </div>
+
+                <Dropdown
+                  label="Breed"
+                  items={filteredBreedItems}
+                  selectedItem={flockData.breed}
+                  onSelect={(val: string) => {
+                    setFlockData({ ...flockData, breed: val });
+                  }}
+                  placeholder="Select a breed"
+                  disabledItems={filteredBreedCategoryHeaders}
+                  isDisabled={!flockData.flock_type}
+                  width="full"
                 />
               </div>
-            </form>
-          </div>
+            </section>
+
+            {/* Source & Housing Section */}
+            <section className="space-y-6 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Source & Housing</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="source"
+                  label="Source (Optional)"
+                  placeholder="e.g. Local Hatchery, Self-bred"
+                  value={flockData.source}
+                  onChange={(e) => {
+                    setFlockData({ ...flockData, source: e.target.value });
+                  }}
+                />
+                
+                <Dropdown
+                  label="Housing Type (Optional)"
+                  items={HOUSING_TYPES.map((h) => h.name)}
+                  selectedItem={flockData.housing_type}
+                  onSelect={(val: string) => {
+                    setFlockData({ ...flockData, housing_type: val });
+                  }}
+                  width="full"
+                />
+
+                <TextArea
+                  label="Notes (Optional)"
+                  placeholder="e.g. Aggression, pecking order, stress indicators"
+                  value={flockData.notes}
+                  onChange={(val: string) => {
+                    setFlockData({ ...flockData, notes: val });
+                  }}
+                  rows={4}
+                />
+              </div>
+            </section>
+          </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            className="w-full"
+            disabled={isLoading}
+          />
+          <Button
+            label={isLoading ? (flockToEdit ? "Updating..." : "Creating...") : (flockToEdit ? "Update Flock" : "Create Flock")}
+            variant="primary"
+            type="submit"
+            form="flock-form"
+            className="w-full"
+            disabled={isLoading}
+          />
         </div>
       </div>
     </div>
