@@ -66,7 +66,7 @@ const PoultryFeedsPage = () => {
     []
   );
   const [loadingFeedItems, setLoadingFeedItems] = useState(true);
-  const { handleDeleteRows, handleResetTable } = useTableActions("poultry_feeds");
+  const { handleDeleteRows } = useTableActions("poultry_feeds");
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -282,7 +282,6 @@ const PoultryFeedsPage = () => {
           view="poultry_feeds"
           loading={loading}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
       </div>
       {showFeedModal && parsedUserId && parsedFlockId && (

@@ -190,7 +190,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const { handleDeleteRows, handleResetTable } = useTableActions("honey_harvests");
+  const { handleDeleteRows } = useTableActions("honey_harvests");
 
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
@@ -807,7 +807,6 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
             view="honey_harvests"
             loading={isLoading}
             onDeleteRows={handleDeleteRows}
-            onResetTable={handleResetTable}
           />
         );
       case "chart":
@@ -843,7 +842,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
                   }
                   onChange={handleEndDateChange}
                   placeholder="YYYY-MM-DD"
-                  isDisabled={!startDate || !isValidDate(startDate)}
+                  disabled={!startDate || !isValidDate(startDate)}
                 />
               </div>
               {!isCustomDateRangeActive && (

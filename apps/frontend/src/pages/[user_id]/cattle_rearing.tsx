@@ -54,7 +54,7 @@ const CattleRearing = () => {
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const { handleDeleteRows, handleResetTable } = useTableActions("cattle");
+  const { handleDeleteRows } = useTableActions("cattle");
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
@@ -322,11 +322,9 @@ const CattleRearing = () => {
               }}
               view="cattle"
               loading={loadingCattle && cattleRecords.length > 0}
-              reset={true}
               hideChecks={false}
               download={true}
               onDeleteRows={handleDeleteRows}
-              onResetTable={handleResetTable}
             />
           </div>
         </section>

@@ -222,7 +222,6 @@ const LoansPage = () => {
                     loading={isLoansLoading}
                     onDataMutated={fetchLoansData}
                     download={true}
-                    reset={true}
                     currentUserId={currentUserId}
                   />
                 </div>

@@ -168,7 +168,7 @@ const FinanceReceipts = () => {
     });
   };
 
-  const { handleDeleteRows, handleResetTable } = useTableActions("receipts");
+  const { handleDeleteRows } = useTableActions("receipts");
 
   return (
     <PlatformLayout>
@@ -215,7 +215,6 @@ const FinanceReceipts = () => {
           setSearchQuery={setSearchQuery}
           loading={loading}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
         {isSidebarOpen && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">

@@ -49,7 +49,7 @@ const PoultryEggCollection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
-  const { handleDeleteRows, handleResetTable } = useTableActions("poultry_eggs");
+  const { handleDeleteRows } = useTableActions("poultry_eggs");
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -209,7 +209,6 @@ const PoultryEggCollection = () => {
           view="poultry_eggs"
           loading={loading}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
       </div>
       {showEggModal && parsedUserId && parsedFlockId && (

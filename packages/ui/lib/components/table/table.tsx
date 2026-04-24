@@ -33,11 +33,9 @@ type Props = {
   view?: string;
   exportEnabled?: boolean;
   loading?: boolean;
-  reset?: boolean;
   hideChecks?: boolean;
   download?: boolean;
   onDeleteRows?: (selectedRows: RowType[]) => Promise<void>;
-  onResetTable?: () => Promise<void>;
   onAction?: (row: RowType, action: string) => void;
 };
 
@@ -54,11 +52,9 @@ const Table = ({
   totalRecordCount,
   view = "",
   loading,
-  reset = true,
   hideChecks = false,
   download = true,
   onDeleteRows,
-  onResetTable,
   onAction,
 }: Props) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -221,7 +217,7 @@ const Table = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden transition-all">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-visible transition-all">
       <div className="px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
           <div className="w-full max-w-[280px]">
@@ -252,17 +248,6 @@ const Table = ({
             </div>
           )}
         </div>
-        <div className="flex flex-row items-center gap-2">
-          {reset && onResetTable && (
-            <Button
-              variant="secondary"
-              size="sm"
-              label="Reset"
-              disabled={filteredRows.length === 0}
-              onClick={onResetTable}
-            />
-          )}
-
           {download && (
             <div className="relative" ref={dropdownRef}>
               <Button
@@ -299,7 +284,6 @@ const Table = ({
               )}
             </div>
           )}
-        </div>
       </div>
 
       {effectiveLoading ? (
@@ -309,7 +293,7 @@ const Table = ({
           hideChecks={hideChecks}
         />
       ) : sortedAndPaginatedRows.length > 0 ? (
-        <div className="overflow-x-visible relative z-10">
+        <div className="overflow-x-auto relative z-10 custom-scrollbar">
           <table className="min-w-full divide-y divide-neutral-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
             <thead className="text-xs text-gray-700 uppercase bg-gray-500 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -501,7 +485,7 @@ const Table = ({
 
       {!effectiveLoading && totalRecordCount > 0 && (
         <nav
-          className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 bg-neutral-50/50 dark:bg-neutral-800/30 gap-4 relative z-0"
+          className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 bg-neutral-50/50 dark:bg-neutral-800/30 gap-4 relative z-20 rounded-b-xl"
           aria-label="Pagination"
         >
           <div className="flex items-center gap-6 order-2 sm:order-1">

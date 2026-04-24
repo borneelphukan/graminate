@@ -108,7 +108,7 @@ const Warehouse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const { handleDeleteRows, handleResetTable } = useTableActions("inventory");
+  const { handleDeleteRows } = useTableActions("inventory");
   const [loadingInventory, setLoadingInventory] = useState(true);
   const [loadingWarehouseDetails, setLoadingWarehouseDetails] = useState(true);
 
@@ -525,7 +525,6 @@ const Warehouse = () => {
           view="inventory"
           loading={loadingInventory}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
 
         {isInventoryFormOpen && parsedId && (

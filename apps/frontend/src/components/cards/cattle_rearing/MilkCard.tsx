@@ -137,7 +137,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const { handleDeleteRows, handleResetTable } = useTableActions("milk_records");
+  const { handleDeleteRows } = useTableActions("milk_records");
 
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
@@ -840,7 +840,6 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             view="milk_records"
             loading={isLoading}
             onDeleteRows={handleDeleteRows}
-            onResetTable={handleResetTable}
           />
         );
       case "chart":
@@ -876,7 +875,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
                   }
                   onChange={handleEndDateChange}
                   placeholder="YYYY-MM-DD"
-                  isDisabled={!startDate || !isValidDate(startDate)}
+                  disabled={!startDate || !isValidDate(startDate)}
                 />
               </div>
               {!isCustomDateRangeActive && (

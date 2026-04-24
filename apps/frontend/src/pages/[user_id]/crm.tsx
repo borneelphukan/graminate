@@ -508,7 +508,7 @@ const CRM = () => {
     }
   };
 
-  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+  const { handleDeleteRows } = useTableActions(view);
 
   return (
     <PlatformLayout>
@@ -589,7 +589,6 @@ const CRM = () => {
           setSearchQuery={setSearchQuery}
           loading={loading}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
         {isSidebarOpen && (
           <>

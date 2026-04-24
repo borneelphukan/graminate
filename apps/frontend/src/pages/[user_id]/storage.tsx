@@ -40,7 +40,7 @@ const WarehousePage = () => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+  const { handleDeleteRows } = useTableActions(view);
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -182,11 +182,7 @@ const WarehousePage = () => {
           }}
           view={view}
           loading={loading}
-          reset={true}
-          hideChecks={false}
-          download={true}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
 
         {isSidebarOpen && (

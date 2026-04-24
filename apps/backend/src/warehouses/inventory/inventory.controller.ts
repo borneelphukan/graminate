@@ -15,7 +15,6 @@ import { InventoryService } from './inventory.service';
 import {
   CreateInventoryDto,
   UpdateInventoryDto,
-  ResetInventoryDto,
 } from './inventory.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
@@ -75,11 +74,5 @@ export class InventoryController {
       throw new HttpException('Inventory item not found', HttpStatus.NOT_FOUND);
     }
     return { message: 'Deleted successfully' };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('reset')
-  async resetInventory(@Body() resetDto: ResetInventoryDto) {
-    return this.inventoryService.resetTable(resetDto.userId);
   }
 }

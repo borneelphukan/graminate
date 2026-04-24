@@ -46,7 +46,7 @@ const PoultryHealth = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
-  const { handleDeleteRows, handleResetTable } = useTableActions("poultry_health");
+  const { handleDeleteRows } = useTableActions("poultry_health");
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -188,7 +188,6 @@ const PoultryHealth = () => {
           view="poultry_health"
           loading={loading}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
       </div>
       {showVeterinaryForm && (

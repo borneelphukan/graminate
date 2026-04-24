@@ -79,7 +79,7 @@ const ApicultureDetailPage = () => {
   const [hiveSearchQuery, setHiveSearchQuery] = useState("");
   const [hiveCurrentPage, setHiveCurrentPage] = useState(1);
   const [hiveItemsPerPage, setHiveItemsPerPage] = useState(5);
-  const { handleDeleteRows, handleResetTable } = useTableActions("hives");
+  const { handleDeleteRows } = useTableActions("hives");
 
   const [apicultureInventoryItems, setApicultureInventoryItems] = useState<
     ItemRecord[]
@@ -457,7 +457,6 @@ const ApicultureDetailPage = () => {
             view="hives"
             loading={loadingHives}
             onDeleteRows={handleDeleteRows}
-            onResetTable={handleResetTable}
           />
         </div>
       </div>

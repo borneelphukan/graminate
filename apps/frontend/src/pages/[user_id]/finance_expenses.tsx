@@ -261,7 +261,6 @@ const Expenses = () => {
                     loading={isExpensesLoading}
                     onDataMutated={fetchExpensesData}
                     download={true}
-                    reset={true}
                     currentUserId={currentUserId}
                   />
                 </div>

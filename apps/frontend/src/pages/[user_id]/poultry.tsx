@@ -58,7 +58,7 @@ const Poultry = () => {
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const { handleDeleteRows, handleResetTable } = useTableActions("flock");
+  const { handleDeleteRows } = useTableActions("flock");
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
@@ -336,11 +336,7 @@ const Poultry = () => {
               }}
               view="flock"
               loading={loadingFlocks && flockRecords.length > 0}
-              reset={true}
-              hideChecks={false}
-              download={true}
               onDeleteRows={handleDeleteRows}
-              onResetTable={handleResetTable}
             />
           </div>
         </section>

@@ -290,7 +290,6 @@ const Sales = () => {
                   loading={isSalesLoading}
                   onDataMutated={fetchSalesData}
                   download={true}
-                  reset={true}
                   currentUserId={currentUserId}
                 />
               </div>

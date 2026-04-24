@@ -92,7 +92,7 @@ const Apiculture = () => {
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
   const currentView: View | "tasks" = router.query.view === "apiculture" ? "apiculture" : "tasks";
-  const { handleDeleteRows, handleResetTable } = useTableActions("apiculture");
+  const { handleDeleteRows } = useTableActions("apiculture");
 
   const [apicultureRecords, setApicultureRecords] = useState<
     ApicultureRecord[]
@@ -366,11 +366,9 @@ const Apiculture = () => {
               }}
               view="apiculture"
               loading={loadingApiculture && apicultureRecords.length > 0}
-              reset={true}
               hideChecks={false}
               download={true}
               onDeleteRows={handleDeleteRows}
-              onResetTable={handleResetTable}
             />
           </div>
         </section>

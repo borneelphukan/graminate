@@ -86,53 +86,7 @@ export const useTableActions = (view: string) => {
     }
   };
 
-  const handleResetTable = async () => {
-    const entityNames: Record<string, string> = {
-      contacts: "contacts",
-      companies: "companies",
-      contracts: "contracts",
-      tasks: "tasks",
-      labour: "labour",
-      inventory: "inventory",
-      warehouse: "warehouse",
-      flock: "flock",
-      poultry_health: "poultry-health",
-      poultry_eggs: "poultry-eggs",
-      poultry_feeds: "poultry-feeds",
-      cattle: "cattle-rearing",
-      cattle_milk: "cattle-milk",
-      apiculture: "apiculture",
-      hives: "bee-hives",
-      inspections: "hive-inspections",
-    };
-
-    const entityToTruncate = entityNames[view] || view;
-
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: `This will reset your ${entityToTruncate} records.`,
-      icon: "warning",
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
-      showCancelButton: true,
-      confirmButtonText: "Reset",
-      cancelButtonText: "Cancel",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const userId = localStorage.getItem("userId");
-        await axiosInstance.post(`/${entityToTruncate}/reset`, { userId });
-        window.location.reload();
-      } catch (error) {
-        console.error(error);
-        Swal.fire("Error", "Failed to reset table.", "error");
-      }
-    }
-  };
-
   return {
     handleDeleteRows,
-    handleResetTable,
   };
 };

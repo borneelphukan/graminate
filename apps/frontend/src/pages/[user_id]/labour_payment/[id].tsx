@@ -52,7 +52,7 @@ const LabourPaymentDetails = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(25);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const { handleDeleteRows, handleResetTable } = useTableActions("labour_payment");
+  const { handleDeleteRows } = useTableActions("labour_payment");
   const PAGINATION_ITEMS = ["10 per page", "25 per page", "50 per page", "100 per page"];
 
   useEffect(() => {
@@ -213,10 +213,8 @@ const LabourPaymentDetails = () => {
               setShowSalaryModal(true);
             }
           }}
-          reset={false}
           hideChecks={true}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
 
         {showSalaryModal && (

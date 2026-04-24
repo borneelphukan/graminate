@@ -460,7 +460,7 @@ const PlatformLayout = ({ children }: Props) => {
           </main>
         </div>
 
-        {plan === "PRO" && (
+        {(plan === "PRO" || plan === "FREE" || plan === "BASIC") && (
           <>
             <div
               style={
@@ -506,7 +506,14 @@ const PlatformLayout = ({ children }: Props) => {
                     } animate-pulse`}
                   />
                 ) : (
-                  <Icon type="smart_toy" size="lg" />
+                  <div className="relative">
+                    <Icon type="smart_toy" size="lg" />
+                    {plan !== "PRO" && (
+                      <div className="absolute -top-1 -right-1 rounded-full p-0.5 scale-75">
+                        <Icon type="smart_toy" size={12} />
+                      </div>
+                    )}
+                  </div>
                 )}
               </Button>
             </div>

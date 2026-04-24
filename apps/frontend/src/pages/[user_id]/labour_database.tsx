@@ -38,7 +38,7 @@ const LabourDatabase = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const { handleDeleteRows, handleResetTable } = useTableActions(view);
+  const { handleDeleteRows } = useTableActions(view);
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -157,7 +157,6 @@ const LabourDatabase = () => {
           setItemsPerPage={setItemsPerPage}
           setSearchQuery={setSearchQuery}
           onDeleteRows={handleDeleteRows}
-          onResetTable={handleResetTable}
         />
 
         {isSidebarOpen && (

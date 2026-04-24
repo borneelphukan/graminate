@@ -61,7 +61,7 @@ const HiveDetailsPage = () => {
   const [activeView, setActiveView] = useState<HiveView>("status");
   const [inspectionToEdit, setInspectionToEdit] =
     useState<InspectionData | null>(null);
-  const { handleDeleteRows, handleResetTable } = useTableActions("inspections");
+  const { handleDeleteRows } = useTableActions("inspections");
 
   const [weatherData, setWeatherData] = useState<{
     temperature: number | null;
@@ -706,7 +706,6 @@ const HiveDetailsPage = () => {
                 loading={loadingInspections}
                 hideChecks={false}
                 onDeleteRows={handleDeleteRows}
-                onResetTable={handleResetTable}
               />
             )}
           </div>

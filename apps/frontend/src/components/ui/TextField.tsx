@@ -14,6 +14,8 @@ type TextFieldProps = {
   required?: boolean;
   password?: boolean;
   width?: string;
+  disabled?: boolean;
+  isDisabled?: boolean;
 };
 
 const TextField = ({
@@ -23,12 +25,12 @@ const TextField = ({
   onChange,
   type = "text",
   errorMessage,
-  isLoading,
   onFocus,
   calendar,
   required,
   password,
-  width
+  disabled,
+  isDisabled
 }: TextFieldProps) => {
   // Generate a reasonably unique ID based on the label if it's a string
   const generatedId = typeof label === "string" 
@@ -48,6 +50,7 @@ const TextField = ({
       error={errorMessage}
       required={required}
       onFocus={onFocus}
+      disabled={disabled || isDisabled}
     />
   );
 };
