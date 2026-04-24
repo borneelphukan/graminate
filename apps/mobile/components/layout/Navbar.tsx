@@ -202,8 +202,11 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
         notifications={notifications}
         onRemove={dismissNotification}
         onClearAll={async () => {
-          for (const n of notifications) {
-            await dismissNotification(n.id);
+          try {
+            await axiosInstance.delete(`/user/${user_id}/notifications`);
+            setNotifications([]);
+          } catch (error) {
+            console.error("Error clearing all notifications:", error);
           }
         }}
         onSettings={navigateToSettings}

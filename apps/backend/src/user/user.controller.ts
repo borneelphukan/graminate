@@ -123,4 +123,14 @@ export class UserController {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.deleteNotification(id, Number(notificationId));
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/notifications')
+  async clearAllNotifications(
+    @Param('id') id: string,
+    @Request() req,
+  ) {
+    if (String(req.user.userId) !== id) throw new UnauthorizedException();
+    return this.userService.clearAllNotifications(id);
+  }
 }

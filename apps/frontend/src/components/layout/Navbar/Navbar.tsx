@@ -108,13 +108,8 @@ const Navbar = ({
   }, [fetchNotifications]);
 
   const clearAllNotifications = async () => {
-    // For simplicity, we can delete all or mark all as read. 
-    // The user wants permanent removal, so ideally we delete all.
     try {
-      // Assuming we want to clear all locally and on backend
-      for (const n of notifications) {
-        await axiosInstance.delete(`/user/${userId}/notifications/${n.id}`);
-      }
+      await axiosInstance.delete(`/user/${userId}/notifications`);
       setNotifications([]);
     } catch (error) {
       console.error("Error clearing all notifications:", error);

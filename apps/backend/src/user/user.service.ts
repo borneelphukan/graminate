@@ -61,6 +61,10 @@ export class UserService {
     return this.userRepository.deleteNotification(userId, notificationId);
   }
 
+  async clearAllNotifications(userId: string) {
+    return this.userRepository.clearAllNotifications(userId);
+  }
+
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
   }

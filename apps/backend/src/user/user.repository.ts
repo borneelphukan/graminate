@@ -571,6 +571,20 @@ export class UserRepository {
     }
   }
 
+  async clearAllNotifications(userId: string) {
+    try {
+      await (this.prisma as any).notifications.deleteMany({
+        where: {
+          user_id: Number(userId),
+        },
+      });
+      return { status: 200, data: { message: 'All notifications cleared successfully' } };
+    } catch (err) {
+      console.error('Error clearing notifications:', err);
+      return { status: 500, data: { error: 'Failed to clear notifications' } };
+    }
+  }
+
   async findByEmail(email: string) {
     const user = await this.prisma.users.findUnique({
       where: { email },

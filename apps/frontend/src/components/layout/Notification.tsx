@@ -1,8 +1,6 @@
 import React from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { Icon } from "@graminate/ui";
-import { format, isToday, isYesterday, differenceInHours } from "date-fns";
+import { format, differenceInHours } from "date-fns";
 
 export const Notification = ({
   id,
@@ -13,14 +11,6 @@ export const Notification = ({
   notification: { title: string; description: string; isRead?: boolean; _raw?: any };
   onRemove?: (id: number) => void;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
   const createMarkup = () => {
     return { __html: notification.description };
   };
@@ -44,11 +34,7 @@ export const Notification = ({
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="p-3 shadow-md rounded-md mb-2 bg-gray-50 dark:bg-gray-600 cursor-pointer relative group transition-all duration-300"
+      className="p-3 shadow-sm border border-gray-400 dark:border-gray-700 rounded-md mb-2 bg-white dark:bg-gray-600 cursor-pointer relative group transition-all duration-300"
     >
       <div className="flex justify-between items-start mb-1">
         <p className="font-semibold text-gray-800 dark:text-light flex-1 pr-12">
@@ -60,11 +46,10 @@ export const Notification = ({
               e.stopPropagation();
               onRemove?.(id);
             }}
-            onPointerDown={(e) => e.stopPropagation()}
             title="Remove"
             className="text-dark dark:text-light transition-colors p-1 rounded-md hover:bg-gray-500 dark:hover:bg-gray-500 cursor-pointer"
           >
-            <Icon type="close" size={18} className="select-none" />
+            <Icon type="close" className="select-none" />
           </button>
         </div>
       </div>

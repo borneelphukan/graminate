@@ -1,21 +1,5 @@
 import { Icon } from "@graminate/ui";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { Notification } from "./Notification";
 import type { NotificationBar } from "@/types/card-props";
 
@@ -27,39 +11,15 @@ const NotificationBar = ({
   onRemove,
   userId,
 }: NotificationBar) => {
-  const [items, setItems] = useState(notifications.map((n) => n.id));
   const router = useRouter();
 
   const clearAllNotifications = () => {
     onClearAll?.();
   };
 
-  useEffect(() => {
-    setItems(notifications.map((n) => n.id));
-  }, [notifications]);
-
   const handleRemove = (id: number) => {
-    setItems((prev) => prev.filter((itemId) => itemId !== id));
     onRemove?.(id);
   };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      setItems((prev) => {
-        const oldIndex = prev.indexOf(active.id as number);
-        const newIndex = prev.indexOf(over?.id as number);
-        return arrayMove(prev, oldIndex, newIndex);
-      });
-    }
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   const navigateToSettings = () => {
     closeNotificationBar();
@@ -124,29 +84,14 @@ const NotificationBar = ({
             </p>
           ) : (
             <div className="overflow-y-auto custom-scrollbar pr-2" style={{ maxHeight: "calc(100vh - 180px)" }}>
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={items}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {items.map((id) => {
-                    const notification = notifications.find((n) => n.id === id);
-                    if (!notification) return null;
-                    return (
-                      <Notification
-                        key={notification.id}
-                        id={notification.id}
-                        notification={notification}
-                        onRemove={handleRemove}
-                      />
-                    );
-                  })}
-                </SortableContext>
-              </DndContext>
+              {notifications.map((notification) => (
+                <Notification
+                  key={notification.id}
+                  id={notification.id}
+                  notification={notification}
+                  onRemove={handleRemove}
+                />
+              ))}
             </div>
           )}
         </div>
