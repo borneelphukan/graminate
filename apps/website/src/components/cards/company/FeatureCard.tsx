@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "@graminate/ui";
 
 interface Feature {
   title: string;
@@ -13,17 +14,8 @@ interface FeatureCardProps {
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature }) => {
   return (
     <div className="flex flex-col">
-      <dt className="flex items-center gap-x-3 text-base leading-7 font-semibold text-gray-600">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-6 w-6"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d={feature.icon} />
-        </svg>
+      <dt className="flex items-center gap-x-3 text-base leading-7 font-semibold text-gray-900">
+        <Icon type={feature.icon} className="size-6 text-emerald-600" />
         {feature.title}
       </dt>
       <dd className="mt-4 text-base leading-7 text-gray-600">

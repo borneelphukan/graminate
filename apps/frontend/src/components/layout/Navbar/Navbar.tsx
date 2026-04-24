@@ -56,7 +56,7 @@ const Navbar = ({
     () => [
       {
         nameKey: "pricing" as TranslationKey,
-        href: `/${userId}/pricing`,
+        href: `http://localhost:3003/pricing`,
         external: true,
       },
       {

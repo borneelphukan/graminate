@@ -18,7 +18,7 @@ axiosInstance.interceptors.response.use(
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
         localStorage.removeItem("user_id");
-        // Optional: window.location.href = "/login";
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);

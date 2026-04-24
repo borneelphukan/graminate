@@ -267,6 +267,11 @@ const Dashboard = () => {
     setIsUserDataLoading(true);
 
     const fetchUserData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
       try {
         const response = await axiosInstance.get(`/user/${userId}`);
         const fetchedUser = response.data?.data?.user as User | undefined;
@@ -416,6 +421,9 @@ const Dashboard = () => {
       return;
     }
     const fetchFinanceData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      
       setIsFinanceLoading(true);
       try {
         const [userResponse, salesResponse, expensesResponse, loansResponse] =

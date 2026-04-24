@@ -1,6 +1,4 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 import router from "next/router";
 
 const navigateTo = (route: string) => {
@@ -36,9 +34,9 @@ const Banner = ({
           <hr className="mx-5 mb-2 text-gray-400" />
           <div className="flex justify-center items-center gap-8">
             <div className="flex flex-row items-center gap-2">
-              <FontAwesomeIcon
-                icon={faPhone}
-                className="w-4 h-4 text-green-100"
+              <Icon
+                type="call"
+                className="size-4 text-emerald-400"
               />
               <a
                 href="tel:+4917671259396"

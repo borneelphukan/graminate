@@ -4,20 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import PriceCard from "@/components/cards/company/PriceCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAddressBook,
-  faArrowTrendUp,
-  faBoxes,
-  faChevronLeft,
-  faChevronRight,
-  faCloud,
-  faDollar,
-  faUsers,
-  faUsersViewfinder,
-  faWheatAwn,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Link from "next/link";
 
@@ -204,49 +191,49 @@ const pricing: Pricing = {
 
 const features = [
   {
-    icon: faAddressBook,
+    icon: "contact_page",
     title: "Customer Relationship Management (CRM)",
     description:
       "Maintain client databases, manage contracts, track receipts, and organize tasks in taskboards.",
   },
   {
-    icon: faWheatAwn,
+    icon: "agriculture",
     title: "Farm & Poultry Management",
     description:
       "Track yields and boost output while encouraging organic farming practices.",
   },
   {
-    icon: faArrowTrendUp,
+    icon: "trending_up",
     title: "Price Tracker",
     description:
       "Monitor live commodity prices and view historical trends to make informed decisions.",
   },
   {
-    icon: faCloud,
+    icon: "cloud",
     title: "Weather Monitor",
     description:
       "Get tailored weather updates and recommendations for your crops and produce.",
   },
   {
-    icon: faDollar,
+    icon: "payments",
     title: "Finance Tracker",
     description:
       "Keep track of your live expenses, losses and overall profit as you proceed in your business or your yield.",
   },
   {
-    icon: faBoxes,
+    icon: "inventory_2",
     title: "Inventory Management",
     description:
       "Track stock levels, input/output, expiry and more to streamline your supply chain.",
   },
   {
-    icon: faUsers,
+    icon: "groups",
     title: "Worker Management",
     description:
       "Managing a team of workers and need help managing their payment, data or performance? Streamline data for your employees.",
   },
   {
-    icon: faUsersViewfinder,
+    icon: "person_search",
     title: "Partner Finder",
     description:
       "Looking for businesses near your locality who could assist with supplies or distribution? Look no further than the Partner Finder.",
@@ -482,7 +469,7 @@ export default function GraminateERP() {
                 className="absolute left-0 lg:-left-10 top-1/2 z-20 -translate-y-1/2 rounded-full p-2.5 text-gray-500 shadow-md hover:bg-gray-300 transition disabled:opacity-50"
                 aria-label="Previous Feature"
               >
-                <FontAwesomeIcon icon={faChevronLeft} className="h-5 w-5" />
+                <Icon type="chevron_left" className="size-5" />
               </button>
               <button
                 onClick={handleNext}
@@ -490,7 +477,7 @@ export default function GraminateERP() {
                 className="absolute right-0 lg:-right-10 top-1/2 z-20 -translate-y-1/2 rounded-full p-2.5 text-gray-500 shadow-md hover:bg-gray-300 transition disabled:opacity-50"
                 aria-label="Next Feature"
               >
-                <FontAwesomeIcon icon={faChevronRight} className="h-5 w-5" />
+                <Icon type="chevron_right" className="size-5" />
               </button>
 
               <div className="overflow-hidden">
@@ -522,9 +509,9 @@ export default function GraminateERP() {
                               whileHover={featureIconHover}
                               className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-lg bg-green-200"
                             >
-                              <FontAwesomeIcon
-                                icon={feature.icon}
-                                className="h-5 w-5 text-white"
+                              <Icon
+                                type={feature.icon}
+                                className="size-5 text-white"
                                 aria-hidden="true"
                               />
                             </motion.div>
@@ -729,9 +716,9 @@ export default function GraminateERP() {
                             animate={{ rotate: faqOpen.has(index) ? 45 : 0 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <FontAwesomeIcon
-                              icon={faPlus}
-                              className={`h-5 w-5 ${
+                            <Icon
+                              type="add"
+                              className={`size-5 ${
                                 faqOpen.has(index) ? "text-emerald-600" : ""
                               }`}
                             />

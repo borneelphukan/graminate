@@ -3,8 +3,7 @@ import Head from "next/head";
 import FeatureCard from "@/components/cards/company/FeatureCard";
 import JobCard from "@/components/cards/company/JobCard";
 import { reasonsForJoining, companyFeatures } from "@/lib/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 import { motion, Variants } from "framer-motion";
 
 import { Jobs } from "@/lib/types";
@@ -178,9 +177,9 @@ const Careers = () => {
                       variants={staggerItem}
                       className="flex gap-x-3 items-center"
                     >
-                      <FontAwesomeIcon
-                        icon={faCircleCheck}
-                        className="h-5 w-5 flex-none text-emerald-500"
+                      <Icon
+                        type="check_circle"
+                        className="size-5 flex-none text-emerald-500"
                         aria-hidden="true"
                       />
                       {item}

@@ -1,11 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Banner from "./Banner";
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 import { useTranslation } from "@/contexts/I18nContext";
 
 type NavLink = {
@@ -19,97 +17,30 @@ type NavSection = {
   links: NavLink[];
 };
 
-const SERVICES_NAV_DATA: NavSection[] = [
+const SOLUTIONS_NAV_DATA: NavSection[] = [
   {
-    title: "Farm Modules",
-    path: "/services#modules",
-    links: [
-      {
-        label: "Cattle & Dairy",
-        href: "/services#cattle",
-      },
-      {
-        label: "Poultry Management",
-        href: "/services#poultry",
-      },
-      {
-        label: "Apiculture (Beekeeping)",
-        href: "/services#apiculture",
-      },
-      {
-        label: "Crop Tracking",
-        href: "/services#crops",
-      },
-    ],
-  },
-  {
-    title: "Management Tools",
-    path: "/services#tools",
-    links: [
-      { label: "Integrated Farm CRM", href: "/services#crm" },
-      { label: "Smart Warehouse", href: "/services#warehouse" },
-      {
-        label: "Task & Labor Tracking",
-        href: "/services#tasks",
-      },
-    ],
-  },
-  {
-    title: "Intelligence",
-    path: "/services#intelligence",
-    links: [
-      {
-        label: "Graminate AI Assistant",
-        href: "/services#ai_assistant",
-      },
-      {
-        label: "Market Insights",
-        href: "/services#market",
-      },
-      {
-        label: "Weather Forecasting",
-        href: "/services#weather",
-      },
-    ],
-  },
-  {
-    title: "Pricing & Plans",
+    title: "Platform Solutions",
     path: "/industries",
     links: [
       {
-        label: "Free Plan",
-        href: "/industries#free",
+        label: "For Producers",
+        href: "/industries#producers",
       },
       {
-        label: "Pro Plan",
-        href: "/industries#pro",
-      },
-      {
-        label: "Enterprise Solutions",
-        href: "/industries#enterprise",
+        label: "For Sellers",
+        href: "/industries#sellers",
       },
     ],
   },
 ];
 
-const INDUSTRIES_NAV_DATA: NavSection[] = [
+const COMPANY_NAV_DATA: NavSection[] = [
   {
-    title: "Scale Solutions",
-    path: "/industries#scale",
+    title: "About Graminate",
+    path: "/company/about_us",
     links: [
-      {
-        label: "Independent Farmers",
-        href: "/industries#independent",
-      },
-      {
-        label: "Agricultural Cooperatives",
-        href: "/industries#cooperatives",
-      },
-      {
-        label: "National Distributors",
-        href: "/industries#distributors",
-      },
-      { label: "Government Agencies", href: "/industries#government" },
+      { label: "About Us", href: "/company/about_us" },
+      { label: "Careers", href: "/company/career" },
     ],
   },
 ];
@@ -120,20 +51,20 @@ const MAIN_NAV_ITEMS: {
   bannerKey?: string;
   data?: NavSection[];
 }[] = [
-  {
-    label: "Features",
-    path: "/services",
-    bannerKey: "services",
-    data: SERVICES_NAV_DATA,
-  },
+  { label: "Home", path: "/" },
   {
     label: "Solutions",
     path: "/industries",
-    bannerKey: "industries",
-    data: INDUSTRIES_NAV_DATA,
+    bannerKey: "solutions",
+    data: SOLUTIONS_NAV_DATA,
   },
-  { label: "About Us", path: "/company/about_us" },
-  { label: "Careers", path: "/company/career" },
+  { label: "Docs", path: "/docs" },
+  {
+    label: "Company",
+    path: "/company/about_us",
+    bannerKey: "company",
+    data: COMPANY_NAV_DATA,
+  },
 ];
 
 type BannerKey = (typeof MAIN_NAV_ITEMS)[number]["bannerKey"] | null;
@@ -154,48 +85,17 @@ const Navbar = ({
   const navbarRef = useRef<HTMLElement>(null);
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeBanner, setActiveBanner] = useState<BannerKey>(null);
   type MobileDropdownKey = NonNullable<BannerKey>;
-
-  const [openMobileDropdown, setOpenMobileDropdown] =
-    useState<MobileDropdownKey | null>(null);
-
-  const handleBannerToggle = (bannerKey: BannerKey) => {
-    setActiveBanner(bannerKey);
-  };
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<MobileDropdownKey | null>(null);
 
   const closeBannersAndMenu = () => {
-    setActiveBanner(null);
+    setMobileMenuOpen(false);
     setOpenMobileDropdown(null);
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (activeBanner) {
-        setActiveBanner(null);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeBanner]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navbarRef.current &&
-        !navbarRef.current.contains(event.target as Node)
-      ) {
-        setActiveBanner(null);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
     if (!isMobileMenuOpen) {
       setOpenMobileDropdown(null);
-      setActiveBanner(null);
     }
   }, [isMobileMenuOpen]);
 
@@ -235,7 +135,7 @@ const Navbar = ({
                 onClick={closeBannersAndMenu}
                 className="hover:text-gray-300"
               >
-                {link.label}
+                {t(`nav.${link.label.toLowerCase().replace(/ /g, "")}`)}
               </Link>
             </li>
           ))}
@@ -275,29 +175,60 @@ const Navbar = ({
 
             <nav className="hidden space-x-6 md:flex">
               {MAIN_NAV_ITEMS.map((item) => (
-                <div
-                  key={item.label}
-                  className="relative"
-                  onMouseEnter={() =>
-                    item.bannerKey
-                      ? handleBannerToggle(item.bannerKey)
-                      : setActiveBanner(null)
-                  }
-                  onClick={
-                    item.bannerKey ? () => navigateTo(item.path) : undefined
-                  }
-                >
-                  {item.bannerKey ? (
-                    <button className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none capitalize">
-                      {t(`nav.${item.bannerKey === "services" ? "features" : "solutions"}`)}
-                    </button>
+                <div key={item.label} className="relative flex items-center">
+                  {item.data ? (
+                    <Menu as="div" className="relative">
+                      {({ open }) => (
+                        <>
+                          <MenuButton className="flex items-center gap-2 text-sm text-white hover:text-gray-300 focus:outline-none capitalize transition-colors">
+                            {t(`nav.${item.label.toLowerCase()}`)}
+                            <Icon 
+                              type={open ? "expand_less" : "expand_more"} 
+                              className="size-4 opacity-70"
+                            />
+                          </MenuButton>
+
+                          <Transition
+                            as={React.Fragment}
+                            enter="transition ease-out duration-200"
+                            enterFrom="transform opacity-0 scale-95 translate-y-[-10px]"
+                            enterTo="transform opacity-100 scale-100 translate-y-0"
+                            leave="transition ease-in duration-150"
+                            leaveFrom="transform opacity-100 scale-100 translate-y-0"
+                            leaveTo="transform opacity-0 scale-95 translate-y-[-10px]"
+                          >
+                            <MenuItems className="absolute left-0 mt-4 w-48 origin-top-left rounded-2xl bg-white/90 backdrop-blur-md p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] ring-1 ring-black/5 focus:outline-none border border-white/20">
+                              <div className="flex flex-col gap-1">
+                                {item.data?.[0]?.links.map((link) => (
+                                  <MenuItem key={link.href}>
+                                    {({ active }) => (
+                                      <Link
+                                        href={link.href}
+                                        className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
+                                          active 
+                                            ? "bg-emerald-50 text-emerald-700 translate-x-1" 
+                                            : "text-gray-700 hover:bg-gray-50"
+                                        }`}
+                                      >
+                                        <div className={`size-1.5 rounded-full transition-all duration-300 ${active ? "bg-emerald-500 scale-100" : "bg-gray-300 scale-50"}`} />
+                                        {t(`nav.${link.label.toLowerCase().replace(/ /g, "")}`)}
+                                      </Link>
+                                    )}
+                                  </MenuItem>
+                                ))}
+                              </div>
+                            </MenuItems>
+                          </Transition>
+                        </>
+                      )}
+                    </Menu>
                   ) : (
                     <Link
                       href={item.path}
-                      className="text-sm text-white my-auto hover:text-gray-300 focus:outline-none capitalize"
+                      className="text-sm text-white hover:text-gray-300 focus:outline-none capitalize transition-colors"
                       onClick={closeBannersAndMenu}
                     >
-                      {t(`nav.${item.label.toLowerCase().replace(" ", "")}`)}
+                      {t(`nav.${item.label.toLowerCase()}`)}
                     </Link>
                   )}
                 </div>
@@ -348,8 +279,8 @@ const Navbar = ({
               {/* Language Dropdown */}
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none bg-gray-700/50 px-3 py-1.5 rounded-full border border-gray-600">
-                    <FontAwesomeIcon icon={faGlobe} className="h-4 w-4" />
+                  <MenuButton className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none bg-gray-700/50 px-3 py-1.5 rounded-full border border-gray-200">
+                    <Icon type="public" className="size-4" />
                     <span className="uppercase font-bold tracking-wider text-[10px]">
                       {router.locale}
                     </span>
@@ -357,15 +288,15 @@ const Navbar = ({
                 </div>
 
                 <Transition
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
+                  enter="transition ease-out duration-200"
+                  enterFrom="transform opacity-0 scale-95 translate-y-[-10px]"
+                  enterTo="transform opacity-100 scale-100 translate-y-0"
+                  leave="transition ease-in duration-150"
+                  leaveFrom="transform opacity-100 scale-100 translate-y-0"
+                  leaveTo="transform opacity-0 scale-95 translate-y-[-10px]"
                 >
-                  <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-xl bg-gray-800 border border-gray-700 shadow-2xl focus:outline-none overflow-hidden">
-                    <div className="py-1">
+                  <MenuItems className="absolute right-0 z-10 mt-4 w-44 origin-top-right rounded-2xl bg-gray-900/90 backdrop-blur-md border border-gray-700/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] focus:outline-none overflow-hidden p-1.5">
+                    <div className="flex flex-col gap-1">
                       {[
                         { code: "en", label: "English", flag: "🇺🇸" },
                         { code: "de", label: "Deutsch", flag: "🇩🇪" },
@@ -373,17 +304,20 @@ const Navbar = ({
                         { code: "as", label: "অসমীয়া", flag: "🇮🇳" },
                       ].map((lang) => (
                         <MenuItem key={lang.code}>
-                          {({ focus }) => (
+                          {({ active }) => (
                             <button
                               onClick={() => router.push(router.pathname, router.asPath, { locale: lang.code })}
-                              className={`${
-                                focus ? "bg-gray-700 text-white" : "text-gray-300"
-                              } ${
-                                router.locale === lang.code ? "text-emerald-400 font-bold" : ""
-                              } group flex w-full items-center px-4 py-2 text-sm transition-colors`}
+                              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
+                                active || router.locale === lang.code
+                                  ? "bg-gray-800 text-emerald-400 translate-x-1" 
+                                  : "text-gray-300 hover:bg-gray-800/50"
+                              }`}
                             >
-                              <span className="mr-3">{lang.flag}</span>
-                              {lang.label}
+                              <span className="text-base">{lang.flag}</span>
+                              <span className="flex-grow text-left">{lang.label}</span>
+                              {router.locale === lang.code && (
+                                <div className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                              )}
                             </button>
                           )}
                         </MenuItem>
@@ -447,7 +381,7 @@ const Navbar = ({
                         {item.label}
                       </button>
                       {isOpen && (
-                        <div className="mt-2 bg-gray-700 p-4 rounded">
+                        <div className="mt-2 bg-gray-700/50 backdrop-blur-sm p-4 rounded-2xl border border-white/5 space-y-4 shadow-inner">
                           {renderNavContent(item.data, true)}
                         </div>
                       )}
@@ -479,32 +413,6 @@ const Navbar = ({
           </Transition>
         </div>
       </header>
-
-      {MAIN_NAV_ITEMS.map(
-        (item) =>
-          item.bannerKey &&
-          item.data && (
-            <Banner
-              key={`${item.bannerKey}-banner`}
-              isVisible={activeBanner === item.bannerKey}
-              borderColorClass={
-                item.bannerKey === "services"
-                  ? "border-t border-red-300"
-                  : undefined
-              }
-            >
-              <div
-                className={`grid grid-cols-1 ${
-                  item.bannerKey === "industries"
-                    ? "md:grid-cols-3"
-                    : "md:grid-cols-4"
-                } gap-8 text-gray-800`}
-              >
-                {renderNavContent(item.data)}
-              </div>
-            </Banner>
-          )
-      )}
     </>
   );
 };

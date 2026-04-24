@@ -20,6 +20,7 @@ const Footer = () => {
     company: [
       { label: t("nav.aboutus"), href: "/company/about_us" },
       { label: t("nav.careers"), href: "/company/career" },
+      { label: "Pricing", href: "/pricing" },
     ],
   };
 

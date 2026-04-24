@@ -1,5 +1,4 @@
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import Image from "next/image";
 
 type ContentSectionProps = {
@@ -52,7 +51,7 @@ const ContentSection = ({
       <ul className={listClass}>
         {listItems.map((item, index) => (
           <li key={index} className="flex gap-x-3">
-            <FontAwesomeIcon icon={faCircleCheck} className="text-green-200" />
+            <Icon type="check_circle" className="text-emerald-500 size-5" />
             <span>{item}</span>
           </li>
         ))}

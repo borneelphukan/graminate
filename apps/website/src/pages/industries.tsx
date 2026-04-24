@@ -2,8 +2,7 @@ import DefaultLayout from "@/layout/DefaultLayout";
 import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@graminate/ui";
 import { useTranslation } from "@/contexts/I18nContext";
 
 type Industry = {
@@ -170,9 +169,9 @@ export default function Industries() {
                         className="inline-flex items-center text-green-200 font-semibold hover:text-green-100 transition-colors group"
                       >
                         {t("industries.learn_more")}
-                        <FontAwesomeIcon
-                          icon={faArrowRight}
-                          className="ml-2 h-4 w-4 transform transition-transform duration-200 group-hover:translate-x-1"
+                        <Icon
+                          type="arrow_forward"
+                          className="ml-2 size-4 transform transition-transform duration-200 group-hover:translate-x-1"
                         />
                       </motion.a>
                     </Link>

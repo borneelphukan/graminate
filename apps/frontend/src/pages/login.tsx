@@ -139,7 +139,16 @@ const SignIn = () => {
       const { access_token, user } = response.data;
       localStorage.setItem("token", access_token);
       localStorage.setItem("user_id", user.user_id);
-      router.push(`/${user.user_id}`);
+      
+      const callbackUrl = router.query.callbackUrl as string;
+      if (callbackUrl) {
+        const url = new URL(callbackUrl);
+        url.searchParams.set("token", access_token);
+        url.searchParams.set("user_id", user.user_id);
+        window.location.href = url.toString();
+      } else {
+        router.push(`/${user.user_id}`);
+      }
     } catch (err: unknown) {
       let status: number | undefined;
       let serverMessage: string | undefined = "An unknown error occurred.";

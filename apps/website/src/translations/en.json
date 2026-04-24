@@ -6,7 +6,12 @@
     "careers": "Careers",
     "getPro": "Get Pro",
     "login": "Login",
-    "brand": "Graminate"
+    "brand": "Graminate",
+    "home": "Home",
+    "company": "Company",
+    "docs": "Docs",
+    "forproducers": "For Producers",
+    "forsellers": "For Sellers"
   },
   "hero": {
     "badge": "Next-Gen Farm Management",

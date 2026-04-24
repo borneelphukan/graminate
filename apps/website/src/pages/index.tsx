@@ -3,19 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Services from "@/components/cards/company/PunchCard";
 import { Button } from "@graminate/ui";
-import {
-  faChevronCircleLeft,
-  faChevronCircleRight,
-  faCloud,
-  faCode,
-  faBuilding,
-  faList,
-  faCompassDrafting,
-  faRecycle,
-  faCheck,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "@graminate/ui";
 import { useState, useRef, useEffect } from "react";
 import DefaultLayout from "@/layout/DefaultLayout";
 import { motion, AnimatePresence, Variants } from "framer-motion";
@@ -23,7 +11,7 @@ import { useTranslation } from "@/contexts/I18nContext";
 
 type ProcessStep = {
   step: string;
-  icon: IconDefinition;
+  icon: string;
   title: string;
   description: string;
 };
@@ -104,27 +92,27 @@ export default function Home() {
   const steps: ProcessStep[] = [
     {
       step: "1",
-      icon: faList,
+      icon: "list_alt",
       title: "Account Setup",
       description:
         "Create your secure farm profile and set your regional currency and units.",
     },
     {
       step: "2",
-      icon: faCompassDrafting,
+      icon: "architecture",
       title: "Module Configuration",
       description: "Select specialized modules for Livestock, Apiculture, or Poultry management.",
     },
     {
       step: "3",
-      icon: faRecycle,
+      icon: "sync_alt",
       title: "Inventory Sync",
       description:
         "Seamlessly import your existing warehouse and livestock data into our smart database.",
     },
     {
       step: "4",
-      icon: faCheck,
+      icon: "verified",
       title: "AI Integration",
       description:
         "Initialize your AI assistant with your farm's historical data for personalized insights.",
@@ -242,7 +230,7 @@ export default function Home() {
                     className="group flex items-center space-x-3 text-white font-semibold hover:text-emerald-400 transition-colors"
                   >
                     <span>{t("hero.explore")}</span>
-                    <FontAwesomeIcon icon={faChevronCircleRight} className="group-hover:translate-x-1 transition-transform" />
+                    <Icon type="arrow_circle_right" className="size-6 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </motion.div>
               </div>
@@ -260,7 +248,7 @@ export default function Home() {
               >
                 <motion.div variants={staggerItem}>
                   <Services
-                    icon={faBuilding}
+                    icon="business"
                     title={t("home.erp.title")}
                     content={t("home.erp.content")}
                   />
@@ -268,7 +256,7 @@ export default function Home() {
 
                 <motion.div variants={staggerItem}>
                   <Services
-                    icon={faCode}
+                    icon="smart_toy"
                     title={`${t("nav.brand")} ${t("home.ai.title")}`}
                     content={t("home.ai.content")}
                   />
@@ -276,7 +264,7 @@ export default function Home() {
 
                 <motion.div variants={staggerItem}>
                   <Services
-                    icon={faCloud}
+                    icon="cloud"
                     title={t("home.supply.title")}
                     content={t("home.supply.content")}
                   />
@@ -369,10 +357,10 @@ export default function Home() {
                     variants={staggerItem}
                     className="flex flex-col items-center text-center p-4 max-w-[240px] group"
                   >
-                    <div className="w-24 h-24 mb-4 shadow-lg rounded-full flex items-center justify-center transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-gray-200/50 group-hover:shadow-lg">
-                      <FontAwesomeIcon
-                        icon={step.icon}
-                        className="text-emerald-500 text-4xl transition-colors duration-300 group-hover:text-emerald-600" // Changed icon color
+                    <div className="w-24 h-24 mb-4 shadow-lg rounded-full flex items-center justify-center transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-gray-200/50 group-hover:shadow-lg bg-white">
+                      <Icon
+                        type={step.icon}
+                        className="text-emerald-500 text-4xl transition-colors duration-300 group-hover:text-emerald-600"
                       />
                     </div>
                     <h5 className="text-lg font-semibold text-gray-900 mt-4">
@@ -413,9 +401,9 @@ export default function Home() {
                       className="absolute w-full max-w-xs mx-auto flex flex-col items-center text-center px-4 py-4"
                     >
                       <div className="w-20 h-20 mb-4 shadow-lg bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-full flex items-center justify-center">
-                        <FontAwesomeIcon
-                          icon={steps[currentStep].icon}
-                          className="text-green-200 text-3xl"
+                        <Icon
+                          type={steps[currentStep].icon}
+                          className="text-emerald-600 size-10"
                         />
                       </div>
                       <h5 className="text-xl font-semibold mt-4 text-gray-900">
@@ -433,8 +421,8 @@ export default function Home() {
                   className={`absolute left-0 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity duration-300 z-10`}
                   aria-label="Previous Step"
                 >
-                  <FontAwesomeIcon
-                    icon={faChevronCircleLeft}
+                  <Icon
+                    type="arrow_circle_left"
                     className="text-4xl"
                   />
                 </button>
@@ -444,8 +432,8 @@ export default function Home() {
                   className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity duration-300 z-10`}
                   aria-label="Next Step"
                 >
-                  <FontAwesomeIcon
-                    icon={faChevronCircleRight}
+                  <Icon
+                    type="arrow_circle_right"
                     className="text-4xl"
                   />
                 </button>
