@@ -12,19 +12,20 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 type Props = {
   data: {
     free: number;
-    paid: number;
+    basic: number;
+    pro: number;
   };
   isLoading: boolean;
 };
 
 const UserDistributionWidget = ({ data, isLoading }: Props) => {
   const chartData = {
-    labels: ["Free Users", "Pro Users"],
+    labels: ["Free", "Basic", "Pro"],
     datasets: [
       {
-        data: [data.free, data.paid],
-        backgroundColor: ["#E2E8F0", "#2b7860"],
-        borderColor: ["#CBD5E0", "#1f5c4a"],
+        data: [data.free, data.basic, data.pro],
+        backgroundColor: ["#E2E8F0", "#60a5fa", "#2b7860"],
+        borderColor: ["#CBD5E0", "#3b82f6", "#1f5c4a"],
         borderWidth: 1,
       },
     ],
@@ -62,7 +63,7 @@ const UserDistributionWidget = ({ data, isLoading }: Props) => {
           )}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-xl font-bold text-dark dark:text-light">
-              {isLoading ? "..." : (data.free + data.paid)}
+              {isLoading ? "..." : (data.free + data.basic + data.pro)}
             </span>
             <span className="text-[10px] uppercase font-bold text-gray-400">Total</span>
           </div>
@@ -78,17 +79,24 @@ const UserDistributionWidget = ({ data, isLoading }: Props) => {
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <div className="size-3 rounded-full bg-blue-400" />
+              <span className="text-sm font-medium text-dark dark:text-light">Basic Users</span>
+            </div>
+            <span className="text-sm font-bold text-dark dark:text-light">{data.basic}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
               <div className="size-3 rounded-full bg-[#2b7860]" />
               <span className="text-sm font-medium text-dark dark:text-light">Pro Users</span>
             </div>
-            <span className="text-sm font-bold text-dark dark:text-light">{data.paid}</span>
+            <span className="text-sm font-bold text-dark dark:text-light">{data.pro}</span>
           </div>
           
           <div className="pt-4 border-t border-gray-400 dark:border-gray-700">
              <div className="flex justify-between items-center text-xs">
                 <span className="text-dark dark:text-light">Conversion Rate</span>
                 <span className="font-bold text-green-600">
-                  {data.free + data.paid > 0 ? ((data.paid / (data.free + data.paid)) * 100).toFixed(1) : 0}%
+                  {data.free + data.basic + data.pro > 0 ? (((data.basic + data.pro) / (data.free + data.basic + data.pro)) * 100).toFixed(1) : 0}%
                 </span>
              </div>
           </div>

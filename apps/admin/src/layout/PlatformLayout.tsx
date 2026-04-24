@@ -24,6 +24,11 @@ const PlatformLayout = ({ children }: Props) => {
       icon: "group",
       path: `/platform/${admin_id}/users`,
     },
+    {
+      label: "Subscription",
+      icon: "payments",
+      path: `/platform/${admin_id}/subscriptions`,
+    },
   ];
 
   useEffect(() => {

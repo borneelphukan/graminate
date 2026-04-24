@@ -38,6 +38,7 @@ type Props = {
   download?: boolean;
   onDeleteRows?: (selectedRows: RowType[]) => Promise<void>;
   onResetTable?: () => Promise<void>;
+  onAction?: (row: RowType, action: string) => void;
 };
 
 const Table = ({
@@ -58,6 +59,7 @@ const Table = ({
   download = true,
   onDeleteRows,
   onResetTable,
+  onAction,
 }: Props) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<number | null>(null);
@@ -307,7 +309,7 @@ const Table = ({
           hideChecks={hideChecks}
         />
       ) : sortedAndPaginatedRows.length > 0 ? (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-visible relative z-10">
           <table className="min-w-full divide-y divide-neutral-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
             <thead className="text-xs text-gray-700 uppercase bg-gray-500 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -352,7 +354,8 @@ const Table = ({
                     selectedRows[rowIndex]
                       ? "bg-primary-50/40 dark:bg-primary-900/10"
                       : "hover:bg-gray-50 dark:hover:bg-gray-600"
-                  } border-b border-neutral-200 dark:border-gray-700`}
+                  } border-b border-neutral-200 dark:border-gray-700 relative`}
+                  style={{ zIndex: sortedAndPaginatedRows.length - rowIndex }}
                   onClick={(e) => {
                     if (
                       (e.target as HTMLElement).tagName !== "INPUT" &&
@@ -380,7 +383,9 @@ const Table = ({
                   {(row as any[]).map((cell, cellIndex) => data.columns[cellIndex] !== "#" && (
                     <td
                       key={cellIndex}
-                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-dark dark:text-light max-w-[240px] truncate"
+                      className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-dark dark:text-light max-w-[240px] ${
+                        view === "subscriptions" && data.columns[cellIndex] === "Action" ? "" : "truncate"
+                      }`}
                       title={
                         Array.isArray(cell)
                           ? cell.join(", ")
@@ -438,12 +443,25 @@ const Table = ({
                             ));
                           })()}
                         </div>
-                      ) : typeof cell === "string" ||
-                        typeof cell === "number" ||
-                        typeof cell === "boolean" ||
-                        cell === null ||
-                        cell === undefined ? (
-                        String(cell)
+                      ) : view === "subscriptions" && data.columns[cellIndex] === "Action" ? (
+                        <div className="w-44">
+                          <Dropdown
+                            items={["Allow Basic Access", "Allow Pro Access"]}
+                            selectedItem="Change Plan"
+                            onSelect={(action) => onAction?.(row, action)}
+                            variant="small"
+                            width="full"
+                          />
+                        </div>
+                      ) : view === "users" && data.columns[cellIndex] === "Actions" ? (
+                        <div className="flex justify-end">
+                          <Button
+                            label="Delete"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => onAction?.(row, "DELETE")}
+                          />
+                        </div>
                       ) : (
                         String(cell)
                       )}
@@ -468,7 +486,7 @@ const Table = ({
 
       {!effectiveLoading && totalRecordCount > 0 && (
         <nav
-          className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 bg-neutral-50/50 dark:bg-neutral-800/30 gap-4"
+          className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 bg-neutral-50/50 dark:bg-neutral-800/30 gap-4 relative z-0"
           aria-label="Pagination"
         >
           <div className="flex items-center gap-6 order-2 sm:order-1">

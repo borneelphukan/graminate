@@ -174,6 +174,8 @@ export class UserRepository {
       opening_balance,
       entity_type,
       business_size,
+      plan,
+      subscription_expires_at,
     } = body;
 
     try {
@@ -205,6 +207,8 @@ export class UserRepository {
       if (opening_balance !== undefined) updateData.opening_balance = Number(opening_balance);
       if (entity_type !== undefined) updateData.entity_type = entity_type;
       if (business_size !== undefined) updateData.business_size = business_size;
+      if (plan !== undefined) updateData.plan = plan;
+      if (subscription_expires_at !== undefined) updateData.subscription_expires_at = new Date(subscription_expires_at);
 
       if (sub_type !== undefined) {
         const validSubTypes = [

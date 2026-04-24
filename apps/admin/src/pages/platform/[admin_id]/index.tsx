@@ -53,7 +53,8 @@ const AdminDashboardPage = () => {
   const [stats, setStats] = useState({
     totalUsers: 0,
     freeUsers: 0,
-    paidUsers: 0,
+    basicUsers: 0,
+    proUsers: 0,
   });
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [allUsers, setAllUsers] = useState<UserRecord[]>([]);
@@ -61,7 +62,8 @@ const AdminDashboardPage = () => {
   const [growthData, setGrowthData] = useState({
     labels: [] as string[],
     signupCounts: [] as number[],
-    conversionRates: [] as number[],
+    basicConversionRates: [] as number[],
+    proConversionRates: [] as number[],
   });
   const [isGrowthLoading, setIsGrowthLoading] = useState(true);
 
@@ -98,14 +100,16 @@ const AdminDashboardPage = () => {
         const fetchedUsers = usersRes.data?.data?.users || [];
         setAllUsers(fetchedUsers);
         
-        const pro = fetchedUsers.filter((u: UserRecord) => u.plan === "PRO" || u.plan === "BASIC").length;
+        const proCount = fetchedUsers.filter((u: UserRecord) => u.plan === "PRO").length;
+        const basicCount = fetchedUsers.filter((u: UserRecord) => u.plan === "BASIC").length;
         const totalFetched = fetchedUsers.length;
-        const free = totalFetched - pro;
+        const freeCount = totalFetched - proCount - basicCount;
 
         setStats({
           totalUsers: totalFetched,
-          freeUsers: free,
-          paidUsers: pro,
+          freeUsers: freeCount,
+          basicUsers: basicCount,
+          proUsers: proCount,
         });
 
         // Initial growth data processing (Weekly)
@@ -127,7 +131,8 @@ const AdminDashboardPage = () => {
     const now = new Date();
     let labels: string[] = [];
     let signupCounts: number[] = [];
-    let conversionRates: number[] = [];
+    let basicConversionRates: number[] = [];
+    let proConversionRates: number[] = [];
 
     if (period === "Daily") {
       const hours = eachHourOfInterval({
@@ -140,15 +145,18 @@ const AdminDashboardPage = () => {
         (h) => users.filter((u) => isSameHour(new Date(u.created_at), h)).length
       );
 
-      conversionRates = hours.map((h) => {
-        const usersInHour = users.filter((u) =>
-          isSameHour(new Date(u.created_at), h)
-        );
+      basicConversionRates = hours.map((h) => {
+        const usersInHour = users.filter((u) => isSameHour(new Date(u.created_at), h));
         if (usersInHour.length === 0) return 0;
-        const paidInHour = usersInHour.filter(
-          (u) => u.plan === "PRO" || u.plan === "BASIC"
-        ).length;
-        return (paidInHour / usersInHour.length) * 100;
+        const basicInHour = usersInHour.filter((u) => u.plan === "BASIC").length;
+        return (basicInHour / usersInHour.length) * 100;
+      });
+
+      proConversionRates = hours.map((h) => {
+        const usersInHour = users.filter((u) => isSameHour(new Date(u.created_at), h));
+        if (usersInHour.length === 0) return 0;
+        const proInHour = usersInHour.filter((u) => u.plan === "PRO").length;
+        return (proInHour / usersInHour.length) * 100;
       });
     } else if (period === "Weekly") {
       const days = eachDayOfInterval({
@@ -162,13 +170,18 @@ const AdminDashboardPage = () => {
       );
       
       // Calculate cumulative conversion rate for each day
-      conversionRates = days.map((d) => {
+      basicConversionRates = days.map((d) => {
         const usersOnDay = users.filter((u) => isSameDay(new Date(u.created_at), d));
         if (usersOnDay.length === 0) return 0;
-        const paidOnDay = usersOnDay.filter(
-          (u) => u.plan === "PRO" || u.plan === "BASIC"
-        ).length;
-        return (paidOnDay / usersOnDay.length) * 100;
+        const basicOnDay = usersOnDay.filter((u) => u.plan === "BASIC").length;
+        return (basicOnDay / usersOnDay.length) * 100;
+      });
+
+      proConversionRates = days.map((d) => {
+        const usersOnDay = users.filter((u) => isSameDay(new Date(u.created_at), d));
+        if (usersOnDay.length === 0) return 0;
+        const proOnDay = usersOnDay.filter((u) => u.plan === "PRO").length;
+        return (proOnDay / usersOnDay.length) * 100;
       });
 
     } else if (period === "Monthly") {
@@ -182,15 +195,18 @@ const AdminDashboardPage = () => {
         users.filter(u => isSameWeek(new Date(u.created_at), w, { weekStartsOn: 1 })).length
       );
 
-      conversionRates = weeks.map((w) => {
-        const usersInWeek = users.filter((u) =>
-          isSameWeek(new Date(u.created_at), w, { weekStartsOn: 1 })
-        );
+      basicConversionRates = weeks.map((w) => {
+        const usersInWeek = users.filter((u) => isSameWeek(new Date(u.created_at), w, { weekStartsOn: 1 }));
         if (usersInWeek.length === 0) return 0;
-        const paidInWeek = usersInWeek.filter(
-          (u) => u.plan === "PRO" || u.plan === "BASIC"
-        ).length;
-        return (paidInWeek / usersInWeek.length) * 100;
+        const basicInWeek = usersInWeek.filter((u) => u.plan === "BASIC").length;
+        return (basicInWeek / usersInWeek.length) * 100;
+      });
+
+      proConversionRates = weeks.map((w) => {
+        const usersInWeek = users.filter((u) => isSameWeek(new Date(u.created_at), w, { weekStartsOn: 1 }));
+        if (usersInWeek.length === 0) return 0;
+        const proInWeek = usersInWeek.filter((u) => u.plan === "PRO").length;
+        return (proInWeek / usersInWeek.length) * 100;
       });
 
     } else if (period === "Yearly") {
@@ -204,19 +220,22 @@ const AdminDashboardPage = () => {
         users.filter(u => isSameMonth(new Date(u.created_at), m)).length
       );
 
-      conversionRates = months.map((m) => {
-        const usersInMonth = users.filter((u) =>
-          isSameMonth(new Date(u.created_at), m)
-        );
+      basicConversionRates = months.map((m) => {
+        const usersInMonth = users.filter((u) => isSameMonth(new Date(u.created_at), m));
         if (usersInMonth.length === 0) return 0;
-        const paidInMonth = usersInMonth.filter(
-          (u) => u.plan === "PRO" || u.plan === "BASIC"
-        ).length;
-        return (paidInMonth / usersInMonth.length) * 100;
+        const basicInMonth = usersInMonth.filter((u) => u.plan === "BASIC").length;
+        return (basicInMonth / usersInMonth.length) * 100;
+      });
+
+      proConversionRates = months.map((m) => {
+        const usersInMonth = users.filter((u) => isSameMonth(new Date(u.created_at), m));
+        if (usersInMonth.length === 0) return 0;
+        const proInMonth = usersInMonth.filter((u) => u.plan === "PRO").length;
+        return (proInMonth / usersInMonth.length) * 100;
       });
     }
 
-    setGrowthData({ labels, signupCounts, conversionRates });
+    setGrowthData({ labels, signupCounts, basicConversionRates, proConversionRates });
   };
 
   const handleSaveWidgets = async (newWidgets: string[]) => {
@@ -283,13 +302,22 @@ const AdminDashboardPage = () => {
             )}
             {widgets.includes("Plan Distribution") && (
               <UserDistributionWidget 
-                data={{ free: stats.freeUsers, paid: stats.paidUsers }} 
+                data={{ 
+                  free: stats.freeUsers, 
+                  basic: stats.basicUsers, 
+                  pro: stats.proUsers 
+                }} 
                 isLoading={isStatsLoading} 
               />
             )}
             {widgets.includes("User Growth Trend") && (
               <SignupGraphWidget 
-                data={growthData} 
+                data={{
+                  labels: growthData.labels,
+                  signupCounts: growthData.signupCounts,
+                  basicConversionRates: growthData.basicConversionRates,
+                  proConversionRates: growthData.proConversionRates,
+                }} 
                 isLoading={isGrowthLoading} 
                 onPeriodChange={(period) => {
                   processGrowthData(allUsers, period);

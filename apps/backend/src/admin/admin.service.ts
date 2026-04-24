@@ -46,4 +46,8 @@ export class AdminService {
   async deleteUser(userId: string) {
     return this.adminRepository.deleteUser(userId);
   }
+
+  async updateUser(userId: string, body: any) {
+    return this.adminRepository.updateUser(userId, body);
+  }
 }

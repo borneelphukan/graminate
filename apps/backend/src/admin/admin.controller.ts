@@ -76,4 +76,11 @@ export class AdminController {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.deleteUser(userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('users/:id')
+  async updateUser(@Param('id') userId: string, @Body() body: any, @Request() req) {
+    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+    return this.adminService.updateUser(userId, body);
+  }
 }

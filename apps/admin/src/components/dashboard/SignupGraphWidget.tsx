@@ -29,7 +29,8 @@ type Props = {
   data: {
     labels: string[];
     signupCounts: number[];
-    conversionRates: number[];
+    basicConversionRates: number[];
+    proConversionRates: number[];
   };
   isLoading: boolean;
   onPeriodChange?: (period: string) => void;
@@ -39,11 +40,12 @@ const TIME_RANGE_OPTIONS = ["Daily", "Weekly", "Monthly", "Yearly"];
 
 const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("Weekly");
+  const [viewMode, setViewMode] = useState<"SIGNUPS" | "CONVERSION">("SIGNUPS");
   const isDark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const chartData = {
     labels: data.labels,
-    datasets: [
+    datasets: viewMode === "SIGNUPS" ? [
       {
         label: "New Signups",
         data: data.signupCounts,
@@ -54,11 +56,22 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
         pointBorderColor: "#fff",
         tension: 0.4,
         borderWidth: 2,
-        yAxisID: "y",
+      }
+    ] : [
+      {
+        label: "Basic Conversion (%)",
+        data: data.basicConversionRates,
+        fill: false,
+        backgroundColor: "transparent",
+        borderColor: "#60a5fa",
+        pointBackgroundColor: "#60a5fa",
+        pointBorderColor: "#fff",
+        tension: 0.4,
+        borderWidth: 2,
       },
       {
-        label: "Conversion Rate (%)",
-        data: data.conversionRates,
+        label: "Pro Conversion (%)",
+        data: data.proConversionRates,
         fill: false,
         backgroundColor: "transparent",
         borderColor: "#8b5cf6",
@@ -66,9 +79,7 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
         pointBorderColor: "#fff",
         tension: 0.4,
         borderWidth: 2,
-        yAxisID: "y1",
-        borderDash: [5, 5],
-      },
+      }
     ],
   };
 
@@ -117,34 +128,14 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
           color: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
         },
         ticks: {
-          color: "#2b7860",
+          color: isDark ? "#94a3b8" : "#64748b",
           font: { size: 11 },
-          stepSize: 1,
-          callback: (value) => (Number.isInteger(value) ? value : null),
+          callback: (value) => viewMode === "CONVERSION" ? `${value}%` : value,
         },
         title: {
           display: true,
-          text: "Signups",
-          color: "#2b7860",
-          font: { size: 10, weight: "bold" },
-        },
-      },
-      y1: {
-        type: "linear",
-        display: true,
-        position: "right",
-        grid: {
-          drawOnChartArea: false,
-        },
-        ticks: {
-          color: "#8b5cf6",
-          font: { size: 11 },
-          callback: (value) => `${value}%`,
-        },
-        title: {
-          display: true,
-          text: "Conversion %",
-          color: "#8b5cf6",
+          text: viewMode === "CONVERSION" ? "Conversion %" : "Signups",
+          color: isDark ? "#94a3b8" : "#64748b",
           font: { size: 10, weight: "bold" },
         },
       },
@@ -157,10 +148,16 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
   };
 
   const totalSignups = data.signupCounts.reduce((a, b) => a + b, 0);
-  const totalConverted = data.signupCounts.reduce((acc, count, i) => {
-    return acc + (count * (data.conversionRates[i] || 0)) / 100;
+  
+  const totalBasicConverted = data.signupCounts.reduce((acc, count, i) => {
+    return acc + (count * (data.basicConversionRates[i] || 0)) / 100;
   }, 0);
-  const avgConversionRate = totalSignups > 0 ? (totalConverted / totalSignups) * 100 : 0;
+  const avgBasicRate = totalSignups > 0 ? (totalBasicConverted / totalSignups) * 100 : 0;
+
+  const totalProConverted = data.signupCounts.reduce((acc, count, i) => {
+    return acc + (count * (data.proConversionRates[i] || 0)) / 100;
+  }, 0);
+  const avgProRate = totalSignups > 0 ? (totalProConverted / totalSignups) * 100 : 0;
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-400 dark:border-gray-700 shadow-sm hover:shadow-md transition-all lg:col-span-3 flex flex-col">
@@ -170,8 +167,31 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
             Growth & Conversion Insights
           </h3>
           <p className="text-xs text-dark dark:text-light mt-1">
-            New registrations vs. paid conversion percentage
+            New registrations vs. tier-wise conversion
           </p>
+        </div>
+
+        <div className="flex bg-gray-500 dark:bg-gray-800 p-1 rounded-xl border border-gray-400 dark:border-gray-700">
+          <button
+            onClick={() => setViewMode("SIGNUPS")}
+            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              viewMode === "SIGNUPS"
+                ? "bg-white dark:bg-gray-700 text-dark shadow-sm"
+                : "text-dark hover:text-dark dark:hover:text-light"
+            }`}
+          >
+            Signups
+          </button>
+          <button
+            onClick={() => setViewMode("CONVERSION")}
+            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+              viewMode === "CONVERSION"
+                ? "bg-white dark:bg-gray-700 text-dark shadow-sm"
+                : "text-dark hover:text-dark dark:hover:text-light"
+            }`}
+          >
+            Conversion
+          </button>
         </div>
       </div>
 
@@ -208,17 +228,25 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
             </div>
           </div>
 
-          <div className="p-4 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/20">
-            <p className="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-tight mb-1">
-              Conversion Rate
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-300 dark:border-blue-900/20">
+            <p className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-tight mb-1">
+              Basic Conversion
             </p>
             <div className="flex items-baseline space-x-2">
               <h4 className="text-2xl font-bold text-dark dark:text-light">
-                {isLoading ? "..." : `${avgConversionRate.toFixed(1)}%`}
+                {isLoading ? "..." : `${avgBasicRate.toFixed(1)}%`}
               </h4>
-              <span className="text-[10px] text-purple-600 dark:text-purple-500 font-medium bg-purple-100 dark:bg-purple-900/30 px-1.5 py-0.5 rounded">
-                Avg
-              </span>
+            </div>
+          </div>
+
+          <div className="p-4 bg-purple-50 dark:bg-purple-900/10 rounded-xl border border-purple-100 dark:border-purple-900/20">
+            <p className="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-tight mb-1">
+              Pro Conversion
+            </p>
+            <div className="flex items-baseline space-x-2">
+              <h4 className="text-2xl font-bold text-dark dark:text-light">
+                {isLoading ? "..." : `${avgProRate.toFixed(1)}%`}
+              </h4>
             </div>
           </div>
         </div>
