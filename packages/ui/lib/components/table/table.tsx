@@ -478,7 +478,7 @@ const Table = ({
                           />
                         </div>
                       ) : (
-                        String(cell)
+                        React.isValidElement(cell) ? (cell as React.ReactNode) : String(cell)
                       )}
                     </td>
                   ))}

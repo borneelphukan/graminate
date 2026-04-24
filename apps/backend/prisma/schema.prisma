@@ -490,6 +490,7 @@ model users {
   business_size           String?          @db.VarChar(50)
   entity_type             String?          @db.VarChar(50)
   pending_plan            user_plan_type?
+  pending_plan_source     String?
   apiculture              apiculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]

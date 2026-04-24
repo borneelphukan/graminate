@@ -17,6 +17,7 @@ type User = {
   plan: string;
   subscription_expires_at: string | null;
   pending_plan: string | null;
+  pending_plan_source: string | null;
 };
 
 const SubscriptionsPage = () => {
@@ -98,8 +99,8 @@ const SubscriptionsPage = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          plan: newPlan,
-          subscription_expires_at: newExpiry,
+          pending_plan: newPlan,
+          pending_plan_source: 'ADMIN',
         }),
       });
 
@@ -142,8 +143,19 @@ const SubscriptionsPage = () => {
           ? format(new Date(user.subscription_expires_at), "MMM dd, yyyy") 
           : "N/A",
       user.pending_plan 
-        ? `${user.pending_plan} (Starts: ${user.subscription_expires_at ? format(addDays(new Date(user.subscription_expires_at), 1), "MMM dd, yyyy") : "N/A"})`
-        : "No Pending Change",
+        ? (
+          <div className="flex flex-col gap-1">
+            <span className="font-medium">
+              {user.pending_plan} (From {user.subscription_expires_at ? format(addDays(new Date(user.subscription_expires_at), 1), "MMM dd, yyyy") : "Next Month"})
+            </span>
+            {user.pending_plan_source === 'ADMIN' && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-300 text-blue-100 w-fit">
+                Manual
+              </span>
+            )}
+          </div>
+        )
+        : "None",
       "ACTION_SLOT", // Placeholder for the Action column handled by Table component
     ]),
   };

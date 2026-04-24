@@ -41,6 +41,7 @@ export class UserRepository {
           country: true,
           subscription_expires_at: true,
           pending_plan: true,
+          pending_plan_source: true,
           // opening_balance: true,
           created_at: true,
           // entity_type: true,
@@ -111,6 +112,7 @@ export class UserRepository {
           data: {
             plan: (user as any).pending_plan,
             pending_plan: null,
+            pending_plan_source: null,
             subscription_expires_at: null,
           },
         });
@@ -157,6 +159,7 @@ export class UserRepository {
             entity_type: (user as any).entity_type,
             business_size: (user as any).business_size,
             pending_plan: (user as any).pending_plan,
+            pending_plan_source: (user as any).pending_plan_source,
           },
         },
       };
@@ -190,6 +193,7 @@ export class UserRepository {
       business_size,
       plan,
       pending_plan,
+      pending_plan_source,
       subscription_expires_at,
     } = body;
 
@@ -224,6 +228,7 @@ export class UserRepository {
       if (business_size !== undefined) updateData.business_size = business_size;
       if (plan !== undefined) updateData.plan = plan;
       if (pending_plan !== undefined) updateData.pending_plan = pending_plan;
+      if (pending_plan_source !== undefined) updateData.pending_plan_source = pending_plan_source;
       if (subscription_expires_at !== undefined) updateData.subscription_expires_at = new Date(subscription_expires_at);
 
       if (sub_type !== undefined) {
@@ -457,6 +462,7 @@ export class UserRepository {
         where: { user_id: Number(userId) },
         data: {
           pending_plan: targetPlan as any,
+          pending_plan_source: 'USER',
         },
       });
 
