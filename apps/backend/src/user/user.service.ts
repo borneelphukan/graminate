@@ -49,6 +49,18 @@ export class UserService {
     return this.userRepository.scheduleDowngrade(userId, plan);
   }
 
+  async getNotifications(userId: string) {
+    return this.userRepository.getNotifications(userId);
+  }
+
+  async markNotificationsRead(userId: string, notificationId?: number) {
+    return this.userRepository.markNotificationsRead(userId, notificationId);
+  }
+
+  async deleteNotification(userId: string, notificationId: number) {
+    return this.userRepository.deleteNotification(userId, notificationId);
+  }
+
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
   }

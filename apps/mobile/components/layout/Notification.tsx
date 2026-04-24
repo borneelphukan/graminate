@@ -1,14 +1,21 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { List, useTheme } from "react-native-paper";
+import { Appbar, List, useTheme } from "react-native-paper";
 
 export type NotificationProps = {
+  id: number;
   title: string;
   description: string;
   darkMode?: boolean;
+  onRemove?: (id: number) => void;
 };
 
-export const Notification = ({ title, description }: NotificationProps) => {
+export const Notification = ({
+  id,
+  title,
+  description,
+  onRemove,
+}: NotificationProps) => {
   const theme = useTheme();
 
   return (
@@ -21,6 +28,15 @@ export const Notification = ({ title, description }: NotificationProps) => {
         styles.container,
         { backgroundColor: theme.colors.elevation.level1 },
       ]}
+      right={(props) => (
+        <Appbar.Action
+          {...props}
+          icon="close"
+          size={20}
+          onPress={() => onRemove?.(id)}
+          color={theme.colors.onSurfaceVariant}
+        />
+      )}
     />
   );
 };

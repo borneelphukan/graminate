@@ -504,6 +504,7 @@ model users {
   labours                 labours[]
   loans                   loans[]
   login_history           login_history[]
+  notifications           notifications[]
   password_resets         password_resets?
   payments                payments[]
   poultry_eggs            poultry_eggs[]
@@ -513,6 +514,19 @@ model users {
   sales                   sales[]
   tasks                   tasks[]
   warehouse               warehouse[]
+}
+
+model notifications {
+  notification_id Int       @id @default(autoincrement())
+  user_id         Int
+  title           String    @db.VarChar(255)
+  message         String
+  type            String    @default("info") @db.VarChar(50)
+  is_read         Boolean   @default(false)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  users           users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_notifications_user_id")
 }
 
 model kanban_columns {

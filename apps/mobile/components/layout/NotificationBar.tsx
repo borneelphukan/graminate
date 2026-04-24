@@ -26,6 +26,7 @@ type NotificationBarProps = {
   isOpen: boolean;
   closeNotificationBar: () => void;
   onClearAll: () => void;
+  onRemove?: (id: number) => void;
   onSettings: () => void;
 };
 
@@ -37,6 +38,7 @@ const NotificationBar = ({
   isOpen,
   closeNotificationBar,
   onClearAll,
+  onRemove,
   onSettings,
 }: NotificationBarProps) => {
   const { darkMode } = useUserPreferences();
@@ -181,9 +183,9 @@ const NotificationBar = ({
                   ) : (
                     <FlatList
                       data={notifications}
-                      keyExtractor={(_, index) => index.toString()}
+                      keyExtractor={(item) => item.id.toString()}
                       renderItem={({ item }) => (
-                        <Notification {...item} darkMode={darkMode} />
+                        <Notification {...item} onRemove={onRemove} darkMode={darkMode} />
                       )}
                       contentContainerStyle={styles.listContent}
                     />

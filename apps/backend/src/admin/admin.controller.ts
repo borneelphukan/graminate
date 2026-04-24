@@ -83,4 +83,11 @@ export class AdminController {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.updateUser(userId, body);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('users/:id/billing-history')
+  async getUserBillingHistory(@Param('id') userId: string, @Request() req) {
+    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+    return this.adminService.getUserBillingHistory(userId);
+  }
 }

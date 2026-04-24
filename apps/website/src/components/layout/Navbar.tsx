@@ -84,35 +84,6 @@ const Navbar = ({
   const { t } = useTranslation();
   const navbarRef = useRef<HTMLElement>(null);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get("token");
-    const userIdFromUrl = urlParams.get("user_id");
-
-    if (tokenFromUrl && userIdFromUrl) {
-      localStorage.setItem("token", tokenFromUrl);
-      localStorage.setItem("user_id", userIdFromUrl);
-      setIsLoggedIn(true);
-      setUserId(userIdFromUrl);
-      
-      const { pathname, query } = router;
-      const newQuery = { ...query };
-      delete newQuery.token;
-      delete newQuery.user_id;
-      router.replace({ pathname, query: newQuery }, undefined, { shallow: true });
-    } else {
-      const storedToken = localStorage.getItem("token");
-      const storedUserId = localStorage.getItem("user_id");
-      if (storedToken && storedUserId) {
-        setIsLoggedIn(true);
-        setUserId(storedUserId);
-      }
-    }
-  }, [router]);
-
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   type MobileDropdownKey = NonNullable<BannerKey>;
   const [openMobileDropdown, setOpenMobileDropdown] = useState<MobileDropdownKey | null>(null);
@@ -135,6 +106,19 @@ const Navbar = ({
 
   const handleMobileDropdownToggle = (key: MobileDropdownKey) => {
     setOpenMobileDropdown((prev) => (prev === key ? null : key));
+  };
+
+  const handleLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    closeBannersAndMenu();
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("user_id");
+
+    if (token && userId) {
+      window.location.assign(`http://localhost:3000/${userId}`);
+    } else {
+      window.location.assign("http://localhost:3000/login");
+    }
   };
 
   const renderNavContent = (
@@ -356,35 +340,24 @@ const Navbar = ({
                 </Transition>
               </Menu>
 
-              {isLoggedIn ? (
-                <Link
-                  href={`http://localhost:3000/${userId}`}
-                  className="bg-emerald-500 text-sm text-white py-1.5 px-6 rounded-full hover:bg-emerald-600 font-bold shadow-lg transition-all hover:scale-105 whitespace-nowrap"
-                  onClick={closeBannersAndMenu}
-                >
-                  Dashboard
-                </Link>
-              ) : (
-                <>
-                  {signIn && (
-                    <Link
-                      href="http://localhost:3000/login"
-                      className="text-sm whitespace-nowrap text-white hover:text-gray-300"
-                      onClick={closeBannersAndMenu}
-                    >
-                      {t("nav.login")}
-                    </Link>
-                  )}
-                  {!signIn && contact && (
-                    <button
-                      className="bg-emerald-500 text-sm text-white py-1.5 px-6 rounded-full hover:bg-emerald-600 cursor-pointer font-bold shadow-lg transition-all hover:scale-105"
-                      onClick={() => window.location.assign("http://localhost:3000/login")}
-                    >
-                      {t("nav.login")}
-                    </button>
-                  )}
-                </>
-              )}
+              <>
+                {signIn && (
+                  <button
+                    onClick={handleLogin}
+                    className="text-sm whitespace-nowrap text-white hover:text-gray-300"
+                  >
+                    {t("nav.login")}
+                  </button>
+                )}
+                {!signIn && contact && (
+                  <button
+                    className="bg-emerald-500 text-sm text-white py-1.5 px-6 rounded-full hover:bg-emerald-600 cursor-pointer font-bold shadow-lg transition-all hover:scale-105"
+                    onClick={handleLogin}
+                  >
+                    {t("nav.login")}
+                  </button>
+                )}
+              </>
             </div>
           </div>
 
@@ -399,35 +372,24 @@ const Navbar = ({
             leaveTo="opacity-0 transform -translate-y-4"
           >
             <div className="mt-2 space-y-2 py-4 text-center text-white md:hidden">
-              {isLoggedIn ? (
-                <Link
-                  href={`http://localhost:3000/${userId}`}
-                  className="block p-2 text-emerald-400 font-bold hover:text-emerald-300"
-                  onClick={closeBannersAndMenu}
-                >
-                  Dashboard
-                </Link>
-              ) : (
-                <>
-                  {signIn && (
-                    <Link
-                      href="http://localhost:3000/login"
-                      className="block border-b border-gray-300 p-2 hover:text-gray-300"
-                      onClick={closeBannersAndMenu}
-                    >
-                      {t("nav.login")}
-                    </Link>
-                  )}
-                  {!signIn && contact && (
-                    <button
-                      className="mt-4 bg-emerald-500 font-bold text-sm text-white py-2 px-6 rounded-full hover:bg-emerald-600 cursor-pointer w-auto inline-block shadow-lg"
-                      onClick={() => window.location.assign("http://localhost:3000/login")}
-                    >
-                      {t("nav.login")}
-                    </button>
-                  )}
-                </>
-              )}
+              <>
+                {signIn && (
+                  <button
+                    onClick={handleLogin}
+                    className="block border-b border-gray-300 p-2 hover:text-gray-300 w-full text-center"
+                  >
+                    {t("nav.login")}
+                  </button>
+                )}
+                {!signIn && contact && (
+                  <button
+                    className="mt-4 bg-emerald-500 font-bold text-sm text-white py-2 px-6 rounded-full hover:bg-emerald-600 cursor-pointer w-auto inline-block shadow-lg"
+                    onClick={handleLogin}
+                  >
+                    {t("nav.login")}
+                  </button>
+                )}
+              </>
 
               {MAIN_NAV_ITEMS.map((item) => {
                 if (item.bannerKey && item.data) {
@@ -465,7 +427,7 @@ const Navbar = ({
               {!signIn && contact && (
                 <button
                   className="mt-4 bg-emerald-500 font-bold text-sm text-white py-2 px-6 rounded-full hover:bg-emerald-600 cursor-pointer w-auto inline-block shadow-lg"
-                  onClick={() => window.location.assign("http://localhost:3000/login")}
+                  onClick={handleLogin}
                 >
                   {t("nav.login")}
                 </button>

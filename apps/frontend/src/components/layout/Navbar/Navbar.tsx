@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@graminate/ui";
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import NotificationBar from "../NotificationSideBar";
 import Image from "next/image";
@@ -18,8 +18,10 @@ interface NavbarProps extends NavbarType {
 }
 
 type Notification = {
+  id: number;
   titleKey: TranslationKey;
   description: string;
+  isRead: boolean;
 };
 
 const Navbar = ({
@@ -56,8 +58,7 @@ const Navbar = ({
     () => [
       {
         nameKey: "pricing" as TranslationKey,
-        href: `http://localhost:3003/pricing`,
-        external: true,
+        href: `/${userId}/pricing`,
       },
       {
         nameKey: "trainingAndServices" as TranslationKey,
@@ -70,8 +71,54 @@ const Navbar = ({
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const clearAllNotifications = () => {
-    setNotifications([]);
+  const fetchNotifications = useCallback(async () => {
+    if (!userId) return;
+    try {
+      const response = await axiosInstance.get(`/user/${userId}/notifications`);
+      const data = response.data?.data?.notifications;
+      if (Array.isArray(data)) {
+        setNotifications(
+          data.map((n: any) => ({
+            id: n.id,
+            titleKey: n.title as TranslationKey,
+            description: n.message,
+            isRead: n.is_read,
+            _raw: n,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  }, [userId]);
+
+  const dismissNotification = async (notificationId: number) => {
+    try {
+      await axiosInstance.delete(`/user/${userId}/notifications/${notificationId}`);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+  const clearAllNotifications = async () => {
+    // For simplicity, we can delete all or mark all as read. 
+    // The user wants permanent removal, so ideally we delete all.
+    try {
+      // Assuming we want to clear all locally and on backend
+      for (const n of notifications) {
+        await axiosInstance.delete(`/user/${userId}/notifications/${n.id}`);
+      }
+      setNotifications([]);
+    } catch (error) {
+      console.error("Error clearing all notifications:", error);
+    }
   };
 
   const notificationCount = notifications.length;
@@ -309,6 +356,7 @@ const Navbar = ({
         isOpen={isNotificationBarOpen}
         closeNotificationBar={toggleNotificationBar}
         onClearAll={clearAllNotifications}
+        onRemove={dismissNotification}
       />
     </>
   );

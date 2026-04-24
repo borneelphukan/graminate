@@ -48,14 +48,41 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
 
   const [user, setUser] = useState<User>({ name: "", email: "" });
   const [isNotificationBarOpen, setNotificationBarOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { title: "Welcome!", description: "Thank you for joining our platform." },
-    {
-      title: "Profile Update",
-      description:
-        "Remember to complete your profile to get the best experience.",
-    },
-  ]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const response = await axiosInstance.get(`/user/${user_id}/notifications`);
+      if (response.data?.data) {
+        setNotifications(
+          response.data.data.map((n: any) => ({
+            id: n.id,
+            title: n.title,
+            description: n.message,
+            _raw: n,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  }, [user_id]);
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+  const dismissNotification = async (notificationId: number) => {
+    try {
+      await axiosInstance.delete(`/user/${user_id}/notifications/${notificationId}`);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
 
   useEffect(() => {
     async function fetchUserDetails() {
@@ -173,7 +200,12 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
         isOpen={isNotificationBarOpen}
         closeNotificationBar={() => setNotificationBarOpen(false)}
         notifications={notifications}
-        onClearAll={() => setNotifications([])}
+        onRemove={dismissNotification}
+        onClearAll={async () => {
+          for (const n of notifications) {
+            await dismissNotification(n.id);
+          }
+        }}
         onSettings={navigateToSettings}
       />
     </>

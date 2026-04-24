@@ -5,6 +5,7 @@ import { Table, TableData } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { format, addMonths, addDays } from "date-fns";
 import Swal from "sweetalert2";
+import ReasonModal from "@/components/modals/ReasonModal";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -29,6 +30,11 @@ const SubscriptionsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
+
+  // Modal state
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ row: any[]; action: string } | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!admin_id) return;
@@ -71,8 +77,16 @@ const SubscriptionsPage = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAction = async (row: any[], action: string) => {
-    const userId = row[0]; // The hidden # column containing user_id
+  const handleAction = (row: any[], action: string) => {
+    setPendingAction({ row, action });
+    setIsReasonModalOpen(true);
+  };
+
+  const handleReasonSubmit = async (reason: string) => {
+    if (!pendingAction) return;
+
+    const { row, action } = pendingAction;
+    const userId = row[0];
     const token = localStorage.getItem("admin_token");
     
     let newPlan = "";
@@ -91,6 +105,8 @@ const SubscriptionsPage = () => {
 
     if (!newPlan) return;
 
+    setIsActionLoading(true);
+
     try {
       const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
         method: "POST",
@@ -101,19 +117,33 @@ const SubscriptionsPage = () => {
         body: JSON.stringify({
           pending_plan: newPlan,
           pending_plan_source: 'ADMIN',
+          admin_reason: reason,
+          admin_action: action,
+          subscription_expires_at: newExpiry,
         }),
       });
 
       if (response.ok) {
         Swal.fire("Success", `User plan changed to ${newPlan}`, "success");
+        setIsReasonModalOpen(false);
+        setPendingAction(null);
         fetchData();
       } else {
         throw new Error("Failed to update plan");
       }
     } catch (err: any) {
-      Swal.fire("Error", err.message, "error");
+      console.error("Error updating user plan:", err);
+      Swal.fire("Error", "Failed to update user plan", "error");
+    } finally {
+      setIsActionLoading(false);
     }
   };
+
+  const pendingUserName = useMemo(() => {
+    if (!pendingAction) return "";
+    const userNameIndex = 1; // "User Name" column index in row data
+    return String(pendingAction.row[userNameIndex] || "Unknown User");
+  }, [pendingAction]);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -205,12 +235,28 @@ const SubscriptionsPage = () => {
                   hideChecks={true}
                   download={false}
                   onAction={handleAction}
+                  onRowClick={(row) => {
+                    const userId = (row as any[])[0];
+                    router.push(`/platform/${admin_id}/subscription/${userId}`);
+                  }}
                 />
               </div>
             )}
           </section>
         </div>
       </PlatformLayout>
+
+      <ReasonModal
+        isOpen={isReasonModalOpen}
+        onClose={() => {
+          setIsReasonModalOpen(false);
+          setPendingAction(null);
+        }}
+        onSubmit={handleReasonSubmit}
+        action={pendingAction?.action || ""}
+        userName={pendingUserName}
+        isLoading={isActionLoading}
+      />
     </>
   );
 };

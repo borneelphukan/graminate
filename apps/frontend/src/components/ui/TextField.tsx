@@ -16,6 +16,7 @@ type TextFieldProps = {
   width?: string;
   disabled?: boolean;
   isDisabled?: boolean;
+  number?: boolean;
 };
 
 const TextField = ({
@@ -25,19 +26,22 @@ const TextField = ({
   onChange,
   type = "text",
   errorMessage,
+  isLoading,
   onFocus,
   calendar,
   required,
   password,
+  width,
   disabled,
-  isDisabled
+  isDisabled,
+  number
 }: TextFieldProps) => {
   // Generate a reasonably unique ID based on the label if it's a string
   const generatedId = typeof label === "string" 
     ? label.toLowerCase().replace(/[^a-z0-9]/g, "-") 
     : `input-${Math.random().toString(36).substr(2, 9)}`;
 
-  const finalType = password ? "password" : (calendar ? "date" : type);
+  const finalType = password ? "password" : (calendar ? "date" : (number ? "number" : type));
 
   return (
     <Input
@@ -51,6 +55,8 @@ const TextField = ({
       required={required}
       onFocus={onFocus}
       disabled={disabled || isDisabled}
+      isLoading={isLoading}
+      width={width}
     />
   );
 };

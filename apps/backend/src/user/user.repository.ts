@@ -253,6 +253,43 @@ export class UserRepository {
         data: updateData,
       });
 
+      // Create notification if admin provided a reason for plan change
+      const { admin_reason, admin_action } = body;
+      if (admin_reason && admin_action && pending_plan_source === 'ADMIN') {
+        let notificationTitle = 'Subscription Updated';
+        if (admin_action === 'Revoke Paid Access') {
+          notificationTitle = 'Paid Plan Revoked';
+        } else if (admin_action === 'Allow Basic Access') {
+          notificationTitle = 'Basic Plan Granted';
+        } else if (admin_action === 'Allow Pro Access') {
+          notificationTitle = 'Pro Plan Granted';
+        }
+
+        // Delete existing admin-triggered notifications for this user to avoid duplicates/clutter
+        await (this.prisma as any).notifications.deleteMany({
+          where: {
+            user_id: userId,
+            title: {
+              in: [
+                'Paid Plan Revoked',
+                'Basic Plan Granted',
+                'Pro Plan Granted',
+                'Subscription Updated',
+              ],
+            },
+          },
+        });
+
+        await (this.prisma as any).notifications.create({
+          data: {
+            user_id: userId,
+            title: notificationTitle,
+            message: admin_reason,
+            type: admin_action === 'Revoke Paid Access' ? 'warning' : 'success',
+          },
+        });
+      }
+
       return { status: 200, data: { message: 'User updated successfully' } };
     } catch (err) {
       console.error('Error updating user:', err);
@@ -474,6 +511,63 @@ export class UserRepository {
     } catch (err) {
       console.error('Error scheduling plan downgrade:', err);
       return { status: 500, data: { error: 'Failed to schedule plan downgrade' } };
+    }
+  }
+
+  async getNotifications(userId: string) {
+    try {
+      const notifications = await (this.prisma as any).notifications.findMany({
+        where: { user_id: Number(userId) },
+        orderBy: { created_at: 'desc' },
+        take: 50,
+        select: {
+          notification_id: true,
+          title: true,
+          message: true,
+          type: true,
+          is_read: true,
+          created_at: true,
+        },
+      });
+
+      return { status: 200, data: { notifications } };
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+      return { status: 500, data: { error: 'Failed to fetch notifications' } };
+    }
+  }
+
+  async markNotificationsRead(userId: string, notificationId?: number) {
+    try {
+      const where: any = { user_id: Number(userId), is_read: false };
+      if (notificationId) {
+        where.id = Number(notificationId);
+      }
+
+      await (this.prisma as any).notifications.updateMany({
+        where,
+        data: { is_read: true },
+      });
+
+      return { status: 200, data: { message: 'Notifications marked as read' } };
+    } catch (err) {
+      console.error('Error marking notifications as read:', err);
+      return { status: 500, data: { error: 'Failed to mark notifications as read' } };
+    }
+  }
+
+  async deleteNotification(userId: string, notificationId: number) {
+    try {
+      await (this.prisma as any).notifications.delete({
+        where: {
+          id: Number(notificationId),
+          user_id: Number(userId),
+        },
+      });
+      return { status: 200, data: { message: 'Notification deleted successfully' } };
+    } catch (err) {
+      console.error('Error deleting notification:', err);
+      return { status: 500, data: { error: 'Failed to delete notification' } };
     }
   }
 

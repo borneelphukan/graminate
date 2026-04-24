@@ -428,7 +428,7 @@ const Table = ({
                           })()}
                         </div>
                       ) : view === "subscriptions" && data.columns[cellIndex] === "Action" ? (
-                        <div className="w-44">
+                        <div className="w-44" onClick={(e) => e.stopPropagation()}>
                           {(() => {
                             const currentPlan = (row as any[])[data.columns.indexOf("Plan")];
                             let items: string[] = [];
@@ -453,7 +453,7 @@ const Table = ({
                           })()}
                         </div>
                       ) : view === "users" && data.columns[cellIndex] === "Actions" ? (
-                        <div className="flex justify-end">
+                        <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
                           <Button
                             label="Delete"
                             variant="destructive"

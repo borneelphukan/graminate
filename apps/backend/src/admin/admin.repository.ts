@@ -145,4 +145,32 @@ export class AdminRepository {
   async updateUser(userId: string, body: any) {
     return this.userService.updateUser(userId, body);
   }
+
+  async getUserBillingHistory(userId: string) {
+    try {
+      const payments = await this.prisma.payments.findMany({
+        where: { user_id: Number(userId) },
+        orderBy: { created_at: 'desc' },
+        select: {
+          payment_id: true,
+          razorpay_order_id: true,
+          razorpay_payment_id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          plan_type: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+
+      return { status: 200, data: { payments } };
+    } catch (err) {
+      console.error('Error fetching billing history:', err);
+      return {
+        status: 500,
+        data: { error: 'Failed to fetch billing history' },
+      };
+    }
+  }
 }

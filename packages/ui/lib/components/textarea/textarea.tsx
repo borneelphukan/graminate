@@ -23,7 +23,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             className={
               hideLabel
                 ? "sr-only"
-                : "text-neutral-gray font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
+                : "text-dark dark:text-light font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
             }
           >
             {label}
@@ -41,7 +41,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             )}
           >
             <textarea
-              className="border-none bg-transparent px-0.5 w-full placeholder-neutral-gray focus:outline-none focus:placeholder-neutral-dark-gray text-sm min-h-16 field-sizing-content"
+              className="border-none text-dark dark:text-light px-0.5 w-full placeholder-gray-300 focus:outline-none focus:placeholder-gray-300 text-sm min-h-16 field-sizing-content"
               id={id}
               name={id}
               ref={ref}
@@ -50,7 +50,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             />
           </div>
           {hint && (
-            <span className="text-neutral-gray font-normal text-xs">
+            <span className="text-dark dark:text-light font-normal text-xs">
               {hint}
             </span>
           )}

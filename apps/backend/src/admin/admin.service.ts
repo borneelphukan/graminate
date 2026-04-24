@@ -50,4 +50,8 @@ export class AdminService {
   async updateUser(userId: string, body: any) {
     return this.adminRepository.updateUser(userId, body);
   }
+
+  async getUserBillingHistory(userId: string) {
+    return this.adminRepository.getUserBillingHistory(userId);
+  }
 }

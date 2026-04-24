@@ -71,8 +71,11 @@ export type Sidebar = {
 
 // Notification Props
 type Notification = {
+  id: number;
   title: string;
   description: string;
+  isRead?: boolean;
+  _raw?: any;
 };
 
 export type NotificationBar = {
@@ -80,6 +83,7 @@ export type NotificationBar = {
   isOpen: boolean;
   closeNotificationBar: () => void;
   onClearAll?: () => void;
+  onRemove?: (id: number) => void;
   userId: string;
 };
 

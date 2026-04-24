@@ -94,4 +94,33 @@ export class UserController {
     if (String(req.user.userId) !== userId) throw new UnauthorizedException();
     return this.userService.scheduleDowngrade(userId, plan);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/notifications')
+  async getNotifications(@Param('id') id: string, @Request() req) {
+    if (String(req.user.userId) !== id) throw new UnauthorizedException();
+    return this.userService.getNotifications(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/notifications/read')
+  async markNotificationsRead(
+    @Param('id') id: string,
+    @Body('notificationId') notificationId: number | undefined,
+    @Request() req
+  ) {
+    if (String(req.user.userId) !== id) throw new UnauthorizedException();
+    return this.userService.markNotificationsRead(id, notificationId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/notifications/:notificationId')
+  async deleteNotification(
+    @Param('id') id: string,
+    @Param('notificationId') notificationId: string,
+    @Request() req,
+  ) {
+    if (String(req.user.userId) !== id) throw new UnauthorizedException();
+    return this.userService.deleteNotification(id, Number(notificationId));
+  }
 }
