@@ -439,6 +439,7 @@ const AdminUsersPage = () => {
                                 <Button
                                   label="Delete"
                                   variant="destructive"
+                                  size="sm"
                                   onClick={(e) => handleDeleteUser(e, user.user_id, user.email)}
                                 />
                               </td>

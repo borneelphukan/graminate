@@ -42,12 +42,6 @@ type HiveData = {
   honey_capacity: number | null;
   unit: string | null;
 };
-type ItemRecord = {
-  inventory_id: number;
-  item_name: string;
-  quantity: number;
-  minimum_limit?: number;
-};
 
 const ApicultureDetailPage = () => {
   const router = useRouter();

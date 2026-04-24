@@ -20,8 +20,6 @@ type UserDetails = {
   created_at: string;
 };
 
-
-
 const AdminUserDetailsPage = () => {
   const router = useRouter();
   const { admin_id, user_id } = router.query;
@@ -142,11 +140,6 @@ const AdminUserDetailsPage = () => {
               <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden">
                 <div className="p-6 md:p-8 border-b border-gray-400 dark:border-gray-600 bg-gray-50/50 dark:bg-gray-800/30">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <Avatar className="size-16 rounded-2xl">
-                      <AvatarFallback className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-2xl font-bold rounded-2xl">
-                        {user.first_name[0]}{user.last_name[0]}
-                      </AvatarFallback>
-                    </Avatar>
                     <div>
                       <h2 className="text-2xl font-bold text-dark dark:text-light">
                         {user.first_name} {user.last_name}
@@ -157,44 +150,44 @@ const AdminUserDetailsPage = () => {
                 </div>
 
                 <div className="p-6 md:p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
                     {/* Basic Details */}
-                    <div className="space-y-6">
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">Account Details</h3>
-                      <div className="space-y-4">
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-dark dark:text-light">Account Details</h3>
+                      <div className="space-y-2">
                         <div className="flex justify-between items-center py-1">
-                          <span className="text-gray-500 dark:text-gray-400">Business Name</span>
+                          <span className="text-dark dark:text-light">Business Name</span>
                           <span className="font-medium text-dark dark:text-light">{user.business_name || "N/A"}</span>
                         </div>
                         <div className="flex justify-between items-center py-1">
-                          <span className="text-gray-500 dark:text-gray-400">Account Type</span>
+                          <span className="text-dark dark:text-light">Account Type</span>
                           <span className="px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase">
                             {user.type}
                           </span>
                         </div>
                         <div className="flex justify-between items-center py-1">
-                          <span className="text-gray-500 dark:text-gray-400">Joined On</span>
+                          <span className="text-dark dark:text-light">Joined On</span>
                           <span className="font-medium text-dark dark:text-light">{formattedDate(user.created_at)}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Subscription Details */}
-                    <div className="space-y-6">
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">Subscription</h3>
-                      <div className="space-y-4">
+                    <div className="space-y-4">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-dark dark:text-light">Subscription</h3>
+                      <div className="space-y-2">
                         <div className="flex justify-between items-center py-1">
-                          <span className="text-gray-500 dark:text-gray-400">Current Plan</span>
+                          <span className="text-dark dark:text-light">Current Plan</span>
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
                             user.plan === "PRO" 
-                              ? "bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400"
-                              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                              ? "bg-green-200 text-green-600"
+                              : "bg-gray-400 text-gray-600"
                           }`}>
                             {user.plan}
                           </span>
                         </div>
                         <div className="flex justify-between items-center py-1">
-                          <span className="text-gray-500 dark:text-gray-400">Expires At</span>
+                          <span className="text-dark dark:text-light">Expires At</span>
                           <span className="font-medium text-dark dark:text-light">
                             {user.plan === "FREE" ? "Unlimited" : formattedDate(user.subscription_expires_at)}
                           </span>
