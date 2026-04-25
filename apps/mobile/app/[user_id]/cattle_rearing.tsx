@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
-import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import BottomDrawer from "@/components/form/BottomDrawer";
 import {
   CATTLE_FIELDS,
@@ -407,11 +407,7 @@ const CattleRearingScreen = () => {
 
         <View style={styles.widgetContainer}>
           {user_id && (
-            <InventoryStockCard
-              userId={user_id}
-              title="Cattle Inventory"
-              category="Cattle Rearing"
-            />
+            <WarehouseWidget userId={user_id} serviceName="Cattle Rearing" />
           )}
         </View>
       </ScrollView>

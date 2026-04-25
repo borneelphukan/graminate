@@ -58,6 +58,7 @@ const AddServicePage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
   const [isRemoving, setIsRemoving] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,13 +81,16 @@ const AddServicePage = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const availableResponse = await axiosInstance.get(
-          `/user/${user_id}/available-sub-types`
-        );
+        const [availableResponse, userResponse] = await Promise.all([
+          axiosInstance.get(`/user/${user_id}/available-sub-types`),
+          axiosInstance.get(`/user/${user_id}`),
+        ]);
         const available = availableResponse.data?.data?.subTypes;
         if (!Array.isArray(available)) {
           throw new Error("Available sub-types not found.");
         }
+        const user = userResponse.data?.data?.user ?? userResponse.data?.user;
+        setUserData(user);
         setAvailableSubTypes(available);
       } catch (error) {
         console.error("Failed to fetch available service data:", error);
@@ -151,17 +155,48 @@ const AddServicePage = () => {
       await axiosInstance.put(`/user/${user_id}`, {
         sub_type: newSubTypes,
       });
+
+      // Create a warehouse for each newly added service
+      const warehouseCreationPromises = Array.from(selectedSubTypes).map((subType) => {
+        const payload = {
+          user_id: parseInt(user_id as string, 10),
+          name: `${subType} Warehouse`,
+          type: "Ambient Storage",
+          address_line_1: userData?.address_line_1 || "",
+          address_line_2: userData?.address_line_2 || "",
+          city: userData?.city || "",
+          state: userData?.state || "",
+          postal_code: userData?.postal_code || "",
+          country: userData?.country || "India",
+          category: subType,
+        };
+        return axiosInstance.post("/warehouse/add", payload);
+      });
+
+      if (warehouseCreationPromises.length > 0) {
+        const results = await Promise.allSettled(warehouseCreationPromises);
+        const failures = results.filter((r) => r.status === "rejected");
+        
+        if (failures.length > 0) {
+          console.error("Some warehouse creations failed:", failures);
+          const firstFailure: any = failures[0];
+          const serverMessage = firstFailure.reason?.response?.data?.message || firstFailure.reason?.message;
+          throw new Error(serverMessage || "Failed to create some warehouses.");
+        }
+      }
+
       toastMessage.set({
-        message: "Services added successfully!",
+        message: "Services and warehouses created successfully!",
         type: "success",
       });
       showToast.set(true);
       setUserSubTypes(newSubTypes);
       setSelectedSubTypes(new Set());
-    } catch (error) {
-      console.error("Failed to add user services:", error);
+    } catch (error: any) {
+      console.error("Failed to add user services or create warehouses:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to add services. Please try again.";
       toastMessage.set({
-        message: "Failed to add services. Please try again.",
+        message: errorMessage,
         type: "error",
       });
       showToast.set(true);
@@ -205,6 +240,11 @@ const AddServicePage = () => {
               userId: userIdNumber,
               occupation: config.occupation,
             })
+          );
+          deletionPromises.push(
+            axiosInstance.delete(
+              `warehouse/delete-by-category/${userIdNumber}/${service}`
+            )
           );
         }
       }

@@ -9,6 +9,7 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import InventoryStockCard from "@/components/cards/InventoryStock";
 import { useTableActions } from "@/hooks/useTableActions";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -333,12 +334,8 @@ const Apiculture = () => {
           </div>
 
           {numericUserId && !isNaN(numericUserId) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InventoryStockCard
-                userId={parsedUserId}
-                title="Apiculture Inventory"
-                category="Apiculture"
-              />
+            <div className="w-full">
+              <WarehouseWidget serviceName="Apiculture" />
             </div>
           )}
 

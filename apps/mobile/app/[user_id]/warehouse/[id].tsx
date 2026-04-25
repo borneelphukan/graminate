@@ -17,8 +17,6 @@ import {
   Appbar,
   Button,
   Card,
-  Chip,
-  List,
   Text,
   useTheme,
 } from "react-native-paper";
@@ -51,6 +49,7 @@ type WarehouseDetails = {
   contact_person: string | null;
   phone: string | null;
   storage_capacity: number | string | null;
+  category?: string | null;
 };
 
 const screenWidth = Dimensions.get("window").width;
@@ -131,6 +130,15 @@ const WarehouseDetailScreen = () => {
     return INVENTORY_FIELDS.map((f) => {
       if (f.name === "itemGroup") {
         return { ...f, items: userSubTypes };
+      }
+      return f;
+    });
+  }, [userSubTypes]);
+
+  const warehouseFields = useMemo(() => {
+    return WAREHOUSE_FIELDS.map((f) => {
+      if (f.name === "category") {
+        return { ...f, type: "dropdown" as const, items: userSubTypes };
       }
       return f;
     });
@@ -239,11 +247,11 @@ const WarehouseDetailScreen = () => {
   if (loading) {
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header style={{ backgroundColor: theme.colors.surface }}>
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"arrow-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -261,11 +269,11 @@ const WarehouseDetailScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header style={{ backgroundColor: theme.colors.surface }}>
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"arrow-left" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -274,160 +282,128 @@ const WarehouseDetailScreen = () => {
         />
         <Appbar.Content
           title={warehouseName}
-          titleStyle={styles.appbarTitle}
+          titleStyle={[styles.appbarTitle, { fontWeight: "bold" }]}
           subtitle={`${inventory.length} Item(s)`}
         />
       </Appbar.Header>
+
       <ScrollView
         style={{ backgroundColor: theme.colors.background }}
+        contentContainerStyle={{ paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Header Actions */}
         <View style={styles.headerActions}>
           <Button
             mode="outlined"
             onPress={() => setIsWarehouseFormOpen(true)}
+            style={styles.actionButton}
+            contentStyle={{ height: 44 }}
             icon={() => (
               <Icon
-                type={"edit" as any}
-                size={16}
+                type={"pencil" as any}
+                size={18}
                 color={theme.colors.primary}
               />
             )}
           >
-            Edit
+            Edit Facility
           </Button>
           <Button
             mode="contained"
             icon={() => (
               <Icon
                 type={"plus" as any}
-                size={16}
+                size={18}
                 color={theme.colors.onPrimary}
               />
             )}
             onPress={() => setIsInventoryFormOpen(true)}
+            style={styles.actionButton}
+            contentStyle={{ height: 44 }}
           >
             Add Item
           </Button>
         </View>
 
+        {/* Stats Summary Grid */}
+        <View style={styles.statsGrid}>
+          <View style={[styles.statBox, { borderLeftColor: theme.colors.primary }]}>
+            <Text variant="labelSmall" style={styles.statLabel}>Total Items</Text>
+            <Text variant="titleLarge" style={styles.statValue}>{inventory.length}</Text>
+          </View>
+          <View style={[styles.statBox, { borderLeftColor: "#22c55e" }]}>
+            <Text variant="labelSmall" style={styles.statLabel}>Asset Value</Text>
+            <Text variant="titleLarge" style={styles.statValue}>
+              ₹{(totalAssetValue / 1000).toFixed(1)}k
+            </Text>
+          </View>
+        </View>
+
+        {/* Facility Info Card */}
         {warehouseDetails && (
-          <Card style={styles.card}>
+          <Card style={styles.infoCard} elevation={1}>
             <Card.Content>
-              <List.Item
-                title={warehouseDetails.type}
-                description="Type"
-                left={(props) => (
-                  <List.Icon
-                    {...props}
-                    icon={() => (
-                      <Icon
-                        type={"warehouse" as any}
-                        size={22}
-                        color={props.color}
-                      />
-                    )}
-                  />
-                )}
-              />
+              <View style={styles.infoRow}>
+                <View style={styles.infoIconBox}>
+                  <Icon type="warehouse" size={20} color={theme.colors.primary} />
+                </View>
+                <View style={styles.infoTextContainer}>
+                  <Text variant="labelSmall" style={styles.infoLabel}>TYPE</Text>
+                  <Text variant="bodyLarge" style={styles.infoValue}>{warehouseDetails.type}</Text>
+                </View>
+              </View>
+
               {warehouseDetails.storage_capacity && (
-                <List.Item
-                  title={`${warehouseDetails.storage_capacity} sq. ft.`}
-                  description="Area"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={() => (
-                        <Icon
-                          type={"box" as any}
-                          size={22}
-                          color={props.color}
-                        />
-                      )}
-                    />
-                  )}
-                />
+                <View style={styles.infoRow}>
+                  <View style={styles.infoIconBox}>
+                    <Icon type="package-variant-closed" size={20} color={theme.colors.primary} />
+                  </View>
+                  <View style={styles.infoTextContainer}>
+                    <Text variant="labelSmall" style={styles.infoLabel}>STORAGE AREA</Text>
+                    <Text variant="bodyLarge" style={styles.infoValue}>{warehouseDetails.storage_capacity} sq. ft.</Text>
+                  </View>
+                </View>
               )}
-              {warehouseDetails.contact_person && (
-                <List.Item
-                  title={warehouseDetails.contact_person}
-                  description="Contact Person"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={() => (
-                        <Icon
-                          type={"account-cog" as any}
-                          size={22}
-                          color={props.color}
-                        />
-                      )}
-                    />
+
+              <View style={styles.infoRow}>
+                <View style={styles.infoIconBox}>
+                  <Icon type="map-marker" size={20} color={theme.colors.primary} />
+                </View>
+                <View style={styles.infoTextContainer}>
+                  <Text variant="labelSmall" style={styles.infoLabel}>ADDRESS</Text>
+                  <Text variant="bodyMedium" style={styles.infoValue}>
+                    {[warehouseDetails.address_line_1, warehouseDetails.city, warehouseDetails.state]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </Text>
+                </View>
+              </View>
+
+              {(warehouseDetails.contact_person || warehouseDetails.phone) && (
+                <View style={styles.contactSection}>
+                  <View style={styles.infoRow}>
+                    <Icon type="account" size={16} color={theme.colors.outline} />
+                    <Text variant="bodySmall" style={styles.contactText}>
+                      {warehouseDetails.contact_person || "No manager assigned"}
+                    </Text>
+                  </View>
+                  {warehouseDetails.phone && (
+                    <View style={styles.infoRow}>
+                      <Icon type="phone" size={16} color={theme.colors.outline} />
+                      <Text variant="bodySmall" style={styles.contactText}>{warehouseDetails.phone}</Text>
+                    </View>
                   )}
-                />
-              )}
-              {warehouseDetails.phone && (
-                <List.Item
-                  title={warehouseDetails.phone}
-                  description="Phone"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={() => (
-                        <Icon
-                          type={"phone" as any}
-                          size={22}
-                          color={props.color}
-                        />
-                      )}
-                    />
-                  )}
-                />
-              )}
-              {warehouseDetails.address_line_1 && (
-                <List.Item
-                  title={[
-                    warehouseDetails.address_line_1,
-                    warehouseDetails.city,
-                    warehouseDetails.state,
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                  description="Address"
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={() => (
-                        <Icon
-                          type={"location_on" as any}
-                          size={22}
-                          color={props.color}
-                        />
-                      )}
-                    />
-                  )}
-                />
+                </View>
               )}
             </Card.Content>
           </Card>
         )}
 
-        <Card style={styles.card}>
-          <Card.Content style={styles.centeredCard}>
-            <Text variant="bodyMedium">Total Asset Value</Text>
-            <Text variant="headlineMedium">
-              ₹
-              {totalAssetValue.toLocaleString("en-IN", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </Text>
-          </Card.Content>
-        </Card>
-
+        {/* Analytics Section */}
         {inventory.length > 0 && (
-          <Card style={styles.card}>
-            <Card.Title title="Item Quantities" />
+          <View style={styles.chartSection}>
+            <Text variant="titleMedium" style={styles.sectionTitle}>Stock Distribution</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <BarChart
                 data={barChartData}
@@ -440,112 +416,76 @@ const WarehouseDetailScreen = () => {
                 withCustomBarColorFromData
                 flatColor
                 showBarTops={false}
+                style={styles.chart}
               />
             </ScrollView>
-            <Card.Actions style={styles.legend}>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendColor, { backgroundColor: "#ef4444" }]}
-                />
-                <Text>{"<"} 25%</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendColor, { backgroundColor: "#f97316" }]}
-                />
-                <Text>{"<"} 50%</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendColor, { backgroundColor: "#eab308" }]}
-                />
-                <Text>{"<"} 75%</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendColor, { backgroundColor: "#22c55e" }]}
-                />
-                <Text>≥ 75%</Text>
-              </View>
-            </Card.Actions>
-          </Card>
+          </View>
         )}
 
+        {/* Low Stock Alerts */}
         {lowStockItems.length > 0 && (
-          <Card style={[styles.card, { borderColor: theme.colors.error }]}>
-            <Card.Title
-              title="Low Stock Alerts"
-              titleStyle={{ color: theme.colors.error }}
-            />
-            <Card.Content>
-              {lowStockItems.map((item) => (
-                <List.Item
-                  key={item.inventory_id}
-                  title={item.item_name}
-                  description={`Qty: ${item.quantity} (Min: ${item.minimum_limit})`}
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon={() => (
-                        <Icon
-                          type={"warning" as any}
-                          size={22}
-                          color={theme.colors.error}
-                        />
-                      )}
-                    />
-                  )}
-                />
-              ))}
-            </Card.Content>
-          </Card>
+          <View style={styles.alertSection}>
+            <View style={styles.alertHeader}>
+              <Icon type="alert" size={18} color={theme.colors.error} />
+              <Text variant="titleSmall" style={[styles.alertTitle, { color: theme.colors.error }]}>
+                Critical Stock Alerts
+              </Text>
+            </View>
+            {lowStockItems.map((item) => (
+              <View key={item.inventory_id} style={styles.alertItem}>
+                <Text style={styles.alertItemText}>{item.item_name}</Text>
+                <Text style={[styles.alertQty, { color: theme.colors.error }]}>
+                  {item.quantity} / {item.minimum_limit}
+                </Text>
+              </View>
+            ))}
+          </View>
         )}
 
-        <View style={styles.inventorySection}>
-          <Text variant="titleLarge" style={styles.inventoryTitle}>
-            Inventory Items
-          </Text>
+        {/* Inventory List */}
+        <View style={styles.inventoryContainer}>
+          <Text variant="titleMedium" style={styles.sectionTitle}>Detailed Inventory</Text>
           {inventory.length > 0 ? (
             inventory.map((item) => {
               const isLowStock =
                 item.minimum_limit != null &&
                 item.quantity < item.minimum_limit;
               return (
-                <Card key={item.inventory_id} style={styles.itemCard}>
-                  <Card.Title
-                    title={item.item_name}
-                    subtitle={item.item_group}
-                    right={() => (
-                      <Text style={styles.priceText}>
-                        ₹{(Number(item.price_per_unit) || 0).toFixed(2)}
-                      </Text>
-                    )}
-                    rightStyle={styles.priceContainer}
-                  />
-                  <Card.Content style={styles.itemContent}>
-                    <Text>
-                      Quantity: {item.quantity} {item.units}
-                    </Text>
-                    {isLowStock && (
-                      <Chip
-                        icon={() => (
-                          <Icon
-                            type={"warning" as any}
-                            size={16}
-                            color={theme.colors.error}
-                          />
-                        )}
-                        selectedColor={theme.colors.error}
-                      >
-                        Low Stock
-                      </Chip>
-                    )}
+                <Card key={item.inventory_id} style={styles.inventoryCard} mode="contained">
+                  <Card.Content>
+                    <View style={styles.itemHeader}>
+                      <View>
+                        <Text variant="titleMedium" style={styles.itemName}>{item.item_name}</Text>
+                        <Text variant="bodySmall" style={styles.itemGroup}>{item.item_group}</Text>
+                      </View>
+                      <View style={styles.priceBadge}>
+                        <Text style={styles.priceLabel}>₹</Text>
+                        <Text style={styles.priceValue}>{(Number(item.price_per_unit) || 0).toFixed(0)}</Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.itemFooter}>
+                      <View style={styles.qtyContainer}>
+                        <Icon type="package-variant" size={14} color={theme.colors.outline} />
+                        <Text variant="bodyMedium" style={styles.qtyText}>
+                          {item.quantity} {item.units}
+                        </Text>
+                      </View>
+                      {isLowStock && (
+                        <View style={[styles.lowStockBadge, { backgroundColor: theme.colors.errorContainer }]}>
+                          <Text style={[styles.lowStockText, { color: theme.colors.error }]}>LOW</Text>
+                        </View>
+                      )}
+                    </View>
                   </Card.Content>
                 </Card>
               );
             })
           ) : (
-            <Text style={styles.emptyText}>No items in this warehouse.</Text>
+            <View style={styles.emptyContainer}>
+              <Icon type="package-variant-closed" size={48} color={theme.colors.outlineVariant} />
+              <Text variant="bodyMedium" style={styles.emptyText}>No items found in this facility.</Text>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -563,7 +503,7 @@ const WarehouseDetailScreen = () => {
         onSubmit={handleUpdateWarehouse}
         initialValues={warehouseDetails || undefined}
         title={`Edit ${warehouseName}`}
-        fields={WAREHOUSE_FIELDS}
+        fields={warehouseFields}
       />
     </PlatformLayout>
   );
@@ -575,33 +515,188 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  appbarTitle: { flexShrink: 1 },
+  appbarTitle: { fontSize: 18 },
   headerActions: {
     flexDirection: "row",
-    gap: 8,
+    gap: 12,
     padding: 16,
-    justifyContent: "flex-end",
   },
-  card: { margin: 16, marginTop: 0 },
-  centeredCard: { alignItems: "center", gap: 4 },
-  legend: { justifyContent: "center", flexWrap: "wrap", gap: 16 },
-  legendItem: { flexDirection: "row", alignItems: "center", gap: 4 },
-  legendColor: { width: 12, height: 12, borderRadius: 2 },
-  inventorySection: { padding: 16 },
-  inventoryTitle: { marginBottom: 16 },
-  itemCard: { marginBottom: 12 },
-  itemContent: {
+  actionButton: {
+    flex: 1,
+    borderRadius: 12,
+  },
+  statsGrid: {
+    flexDirection: "row",
+    gap: 12,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.02)",
+    padding: 12,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+  },
+  statLabel: {
+    opacity: 0.6,
+    marginBottom: 4,
+  },
+  statValue: {
+    fontWeight: "bold",
+  },
+  infoCard: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 16,
+    backgroundColor: "white",
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    gap: 12,
+  },
+  infoIconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.04)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoLabel: {
+    opacity: 0.5,
+    letterSpacing: 1,
+  },
+  infoValue: {
+    fontWeight: "600",
+  },
+  contactSection: {
+    marginTop: 8,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderColor: "rgba(0,0,0,0.05)",
+  },
+  contactText: {
+    opacity: 0.7,
+  },
+  chartSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  chart: {
+    borderRadius: 16,
+  },
+  alertSection: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+    padding: 16,
+    backgroundColor: "rgba(239, 68, 68, 0.05)",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.1)",
+  },
+  alertHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
+  },
+  alertTitle: {
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  alertItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 16,
-    marginTop: 16,
+    paddingVertical: 8,
     borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
+    borderColor: "rgba(0,0,0,0.05)",
   },
-  priceContainer: { paddingRight: 16 },
-  priceText: { fontSize: 16, fontWeight: "bold" },
-  emptyText: { textAlign: "center", paddingVertical: 32 },
+  alertItemText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  alertQty: {
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  inventoryContainer: {
+    paddingHorizontal: 16,
+  },
+  inventoryCard: {
+    marginBottom: 12,
+    borderRadius: 16,
+  },
+  itemHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  itemName: {
+    fontWeight: "bold",
+  },
+  itemGroup: {
+    opacity: 0.5,
+  },
+  priceBadge: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    backgroundColor: "rgba(0,0,0,0.05)",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  priceLabel: {
+    fontSize: 10,
+    opacity: 0.6,
+    marginRight: 2,
+  },
+  priceValue: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  itemFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  qtyContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  qtyText: {
+    fontWeight: "500",
+  },
+  lowStockBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  lowStockText: {
+    fontSize: 10,
+    fontWeight: "bold",
+  },
+  emptyContainer: {
+    alignItems: "center",
+    paddingVertical: 40,
+    gap: 12,
+  },
+  emptyText: {
+    opacity: 0.4,
+  },
 });
 
 export default WarehouseDetailScreen;

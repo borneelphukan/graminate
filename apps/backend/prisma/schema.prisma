@@ -557,6 +557,7 @@ model warehouse {
   contact_person   String?     @db.VarChar(100)
   phone            String?     @db.VarChar(20)
   storage_capacity Decimal?    @db.Decimal(10, 2)
+  category         String?     @db.VarChar(100)
   inventory        inventory[]
   users            users?      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }

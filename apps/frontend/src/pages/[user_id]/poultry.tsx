@@ -12,6 +12,7 @@ import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import InventoryStockCard from "@/components/cards/InventoryStock";
 import TaskBoard from "@/components/tasks/TaskBoard";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
 
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
@@ -303,12 +304,8 @@ const Poultry = () => {
           </div>
 
           {numericUserId && !isNaN(numericUserId) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InventoryStockCard
-                userId={parsedUserId}
-                title="Poultry Inventory"
-                category="Poultry"
-              />
+            <div className="w-full">
+              <WarehouseWidget serviceName="Poultry" />
             </div>
           )}
 

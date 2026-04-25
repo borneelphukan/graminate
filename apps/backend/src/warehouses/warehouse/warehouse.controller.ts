@@ -33,7 +33,8 @@ export class WarehouseController {
   @UseGuards(JwtAuthGuard)
   @Post('add')
   async addWarehouse(@Body() createDto: CreateWarehouseDto) {
-    return this.warehouseService.create(createDto);
+    const warehouse = await this.warehouseService.create(createDto);
+    return { message: 'Warehouse created successfully', id: warehouse.warehouse_id };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,5 +64,18 @@ export class WarehouseController {
   @Post('reset')
   async resetWarehouse(@Body() resetDto: ResetWarehouseDto) {
     return this.warehouseService.resetTable(resetDto.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete-by-category/:userId/:category')
+  async deleteByUserIdAndCategory(
+    @Param('userId') userId: string,
+    @Param('category') category: string,
+  ) {
+    await this.warehouseService.deleteByUserIdAndCategory(
+      Number(userId),
+      category,
+    );
+    return { message: 'Warehouses deleted successfully by category' };
   }
 }

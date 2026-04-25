@@ -13,6 +13,7 @@ import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import CattleForm from "@/components/form/CattleForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import InventoryStockCard from "@/components/cards/InventoryStock";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
 type View = "cattle";
 
@@ -289,12 +290,8 @@ const CattleRearing = () => {
           </div>
 
           {numericUserId && !isNaN(numericUserId) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InventoryStockCard
-                userId={parsedUserId}
-                title="Cattle Inventory"
-                category="Cattle Rearing"
-              />
+            <div className="w-full">
+              <WarehouseWidget serviceName="Cattle Rearing" />
             </div>
           )}
 

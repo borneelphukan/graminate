@@ -333,7 +333,7 @@ const InventoryForm = ({
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Item Details</h3>
               </div>
 
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-4">
                 <Input
                   id="itemName"
                   label="Item Name"
@@ -349,8 +349,7 @@ const InventoryForm = ({
                   error={inventoryErrors.itemName}
                 />
 
-                {inventoryItem.itemName.trim().length > 0 && (
-                  <div className="px-1 py-2 bg-gray-50/50 dark:bg-white/[0.02] rounded-lg border border-gray-100 dark:border-white/5">
+                {inventoryItem.itemName.trim().length > 0 && (        
                     <Checkbox
                       id="feedCheckbox"
                       label="Is this item a livestock feed?"
@@ -363,7 +362,6 @@ const InventoryForm = ({
                       }
                       className="font-medium"
                     />
-                  </div>
                 )}
 
                 <div className="relative">
@@ -389,7 +387,7 @@ const InventoryForm = ({
                         suggestions.map((suggestion, index) => (
                           <div
                             key={index}
-                            className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
+                            className="px-4 py-3 hover:bg-gray-400 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
                             onClick={() => selectCategorySuggestion(suggestion)}
                           >
                             {suggestion}

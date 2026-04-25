@@ -1,9 +1,10 @@
 import { Dropdown, Icon, Button, Input } from "@graminate/ui";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const WAREHOUSE_TYPES = [
   "Ambient Storage",
@@ -26,6 +27,7 @@ type WarehouseData = {
   contact_person: string;
   phone: string;
   storage_capacity: string;
+  category: string;
 };
 
 type WarehouseFormErrors = {
@@ -38,11 +40,13 @@ type WarehouseFormErrors = {
   country?: string;
   phone?: string;
   storage_capacity?: string;
+  category?: string;
 };
 
 interface WarehouseFormProps extends SidebarProp {
   initialData?: Partial<WarehouseData>;
   warehouseId?: number;
+  onSuccess?: () => void;
 }
 
 const WarehouseForm = ({
@@ -50,9 +54,12 @@ const WarehouseForm = ({
   formTitle,
   initialData,
   warehouseId,
+  onSuccess,
 }: WarehouseFormProps) => {
   const router = useRouter();
   const { user_id: queryUserId } = router.query;
+  const { subTypes } = useUserPreferences();
+
   const parsedUserId = Array.isArray(queryUserId)
     ? queryUserId[0]
     : queryUserId;
@@ -70,6 +77,7 @@ const WarehouseForm = ({
     contact_person: initialData?.contact_person || "",
     phone: initialData?.phone || "",
     storage_capacity: initialData?.storage_capacity?.toString() || "",
+    category: initialData?.category || "",
   });
   const [warehouseErrors, setWarehouseErrors] = useState<WarehouseFormErrors>(
     {}
@@ -107,6 +115,7 @@ const WarehouseForm = ({
         contact_person: initialData.contact_person || "",
         phone: initialData.phone || "",
         storage_capacity: initialData.storage_capacity?.toString() || "",
+        category: initialData.category || "",
       });
       setWarehouseErrors({});
     }
@@ -186,6 +195,7 @@ const WarehouseForm = ({
       storage_capacity: warehouseData.storage_capacity
         ? parseFloat(warehouseData.storage_capacity)
         : undefined,
+      category: warehouseData.category || undefined,
     };
 
     if (isEditMode && warehouseId) {
@@ -198,7 +208,11 @@ const WarehouseForm = ({
       await axiosInstance.post(`/warehouse/add`, payload);
     }
     handleClose();
-    window.location.reload();
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      window.location.reload();
+    }
   };
 
   return (
@@ -261,6 +275,16 @@ const WarehouseForm = ({
                     setWarehouseData({ ...warehouseData, type: value })
                   }
                   label="Warehouse Type"
+                  width="full"
+                />
+
+                <Dropdown
+                  items={subTypes}
+                  selectedItem={warehouseData.category}
+                  onSelect={(value: string) =>
+                    setWarehouseData({ ...warehouseData, category: value })
+                  }
+                  label="Warehouse Category (Service Mapping)"
                   width="full"
                 />
               </div>

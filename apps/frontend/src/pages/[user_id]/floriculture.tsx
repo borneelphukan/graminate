@@ -12,7 +12,7 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import FloricultureForm, { FloricultureData } from "@/components/form/floriculture/FloricultureForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
-import InventoryStockCard from "@/components/cards/InventoryStock";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
 type View = "floriculture";
 
@@ -186,6 +186,10 @@ const Floriculture = () => {
                 ))}
               </div>
             )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <WarehouseWidget serviceName="Floriculture" />
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">

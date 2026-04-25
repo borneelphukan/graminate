@@ -37,7 +37,7 @@ const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Poultry Inventory Stock",
-    name: "Poultry Inventory",
+    name: "Poultry Storage & Inventory",
     requiredSubType: "Poultry",
   },
   {
@@ -47,7 +47,7 @@ const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Apiculture Inventory Stock",
-    name: "Apiculture Inventory",
+    name: "Apiculture Storage & Inventory",
     requiredSubType: "Apiculture",
   },
   {
@@ -57,7 +57,7 @@ const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Cattle Rearing Inventory Stock",
-    name: "Cattle Rearing Inventory",
+    name: "Cattle Rearing Storage & Inventory",
     requiredSubType: "Cattle Rearing",
   },
 ];

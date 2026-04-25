@@ -1,5 +1,5 @@
 import { Icon, Button, Table } from "@graminate/ui";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -19,6 +19,7 @@ import {
 import InventoryForm from "@/components/form/InventoryForm";
 import WarehouseForm from "@/components/form/WarehouseForm";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 ChartJS.register(
   CategoryScale,
@@ -58,6 +59,7 @@ type WarehouseDetails = {
   contact_person: string | null;
   phone: string | null;
   storage_capacity: number | string | null;
+  category?: string | null;
 };
 
 const getBarColor = (quantity: number, max: number) => {
@@ -111,6 +113,7 @@ const Warehouse = () => {
   const { handleDeleteRows } = useTableActions("inventory");
   const [loadingInventory, setLoadingInventory] = useState(true);
   const [loadingWarehouseDetails, setLoadingWarehouseDetails] = useState(true);
+  const { darkMode } = useUserPreferences();
 
   const [chartThemeColors, setChartThemeColors] = useState({
     textColor: "#333",
@@ -118,59 +121,51 @@ const Warehouse = () => {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isDarkMode = document.documentElement.classList.contains("dark");
-      setChartThemeColors({
-        textColor: isDarkMode ? "#CCC" : "#333",
-        gridColor: isDarkMode ? "#444" : "#DDD",
-      });
-    }
-  }, []);
+    setChartThemeColors({
+      textColor: darkMode ? "#CCC" : "#333",
+      gridColor: darkMode ? "#444" : "#DDD",
+    });
+  }, [darkMode]);
 
-  useEffect(() => {
-    if (!router.isReady || !parsedUserId || !parsedId) {
-      if (router.isReady && parsedUserId && !parsedId) {
-        setInventoryForWarehouse([]);
-        setLoadingInventory(false);
-        setCurrentWarehouseDetails(null);
-        setLoadingWarehouseDetails(false);
-      }
+  const fetchWarehouseData = useCallback(async () => {
+    if (!parsedUserId || !parsedId) {
+      setLoadingInventory(false);
+      setLoadingWarehouseDetails(false);
       return;
     }
+    setLoadingInventory(true);
+    setLoadingWarehouseDetails(true);
+    try {
+      const [inventoryResponse, warehouseDetailsResponse] = await Promise.all([
+        axiosInstance.get(`/inventory/${parsedUserId}`, {
+          params: { warehouse_id: parsedId },
+        }),
+        axiosInstance.get(`/warehouse/user/${parsedUserId}`),
+      ]);
 
-    const fetchWarehouseData = async () => {
-      setLoadingInventory(true);
-      setLoadingWarehouseDetails(true);
-      try {
-        const [inventoryResponse, warehouseDetailsResponse] = await Promise.all(
-          [
-            axiosInstance.get(`/inventory/${parsedUserId}`, {
-              params: { warehouse_id: parsedId },
-            }),
-            axiosInstance.get(`/warehouse/user/${parsedUserId}`),
-          ]
-        );
+      setInventoryForWarehouse(inventoryResponse.data.items || []);
 
-        setInventoryForWarehouse(inventoryResponse.data.items || []);
+      const warehouses = warehouseDetailsResponse.data.warehouses || [];
+      const foundWarehouse = warehouses.find(
+        (wh: WarehouseDetails) =>
+          wh.warehouse_id === parseInt(parsedId as string, 10)
+      );
+      setCurrentWarehouseDetails(foundWarehouse || null);
+    } catch (error) {
+      console.error("Error fetching warehouse-specific data:", error);
+      setInventoryForWarehouse([]);
+      setCurrentWarehouseDetails(null);
+    } finally {
+      setLoadingInventory(false);
+      setLoadingWarehouseDetails(false);
+    }
+  }, [parsedUserId, parsedId]);
 
-        const warehouses = warehouseDetailsResponse.data.warehouses || [];
-        const foundWarehouse = warehouses.find(
-          (wh: WarehouseDetails) =>
-            wh.warehouse_id === parseInt(parsedId as string, 10)
-        );
-        setCurrentWarehouseDetails(foundWarehouse || null);
-      } catch (error) {
-        console.error("Error fetching warehouse-specific data:", error);
-        setInventoryForWarehouse([]);
-        setCurrentWarehouseDetails(null);
-      } finally {
-        setLoadingInventory(false);
-        setLoadingWarehouseDetails(false);
-      }
-    };
-
-    fetchWarehouseData();
-  }, [router.isReady, parsedUserId, parsedId]);
+  useEffect(() => {
+    if (router.isReady) {
+      fetchWarehouseData();
+    }
+  }, [router.isReady, fetchWarehouseData]);
 
   const searchedInventory = useMemo(() => {
     if (!searchQuery) {
@@ -299,234 +294,273 @@ const Warehouse = () => {
       <Head>
         <title>Graminate | {dynamicWarehouseName} - Inventory</title>
       </Head>
-      <div className="min-h-screen container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="mb-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-            <div className="mb-4 md:mb-0">
-              <h1 className="text-2xl font-bold">
-                Inventory for{" "}
-                <span>{dynamicWarehouseName}</span>
-              </h1>
-              <p className="text-sm text-gray-300 mt-1">
-                {loadingInventory
-                  ? "Loading items..."
-                  : `${searchedInventory.length} Item(s) in this Warehouse ${
-                      searchQuery ? "(filtered)" : ""
-                    }`}
-              </p>
+
+      <div className="min-h-screen bg-gray-50/50 dark:bg-gray-900/50 p-4 sm:p-6 lg:p-8">
+        {/* Breadcrumbs & Header */}
+        <div className="max-w-7xl mx-auto mb-8">
+          <nav className="flex items-center gap-2 text-sm text-dark dark:text-light mb-4">
+            <button 
+              onClick={() => router.push(`/${parsedUserId}`)}
+              className="hover:text-blue-600 transition-colors"
+            >
+              Dashboard
+            </button>
+            <Icon type="chevron_right" className="w-4 h-4" />
+            <button 
+              onClick={() => router.push(`/${parsedUserId}/storage`)}
+              className="hover:text-blue-600 transition-colors"
+            >
+              Storage
+            </button>
+            <Icon type="chevron_right" className="w-4 h-4" />
+            <span className="text-gray-900 dark:text-white font-medium">{dynamicWarehouseName}</span>
+          </nav>
+
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  {dynamicWarehouseName}
+                </h1>
+                <div className="flex items-center gap-3 mt-1 text-sm text-dark dark:text-light">
+                  <span className="flex items-center gap-1">
+                    <Icon type="warehouse" />
+                    {currentWarehouseDetails?.category || "General"} Storage
+                  </span>
+                  <span className="w-1 h-1 bg-gray-300 dark:bg-gray-700 rounded-full" />
+                  <span className="flex items-center gap-1">
+                    <Icon type="location_on" className="w-4 h-4" />
+                    {currentWarehouseDetails?.city}, {currentWarehouseDetails?.state}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div className="flex flex-wrap items-center gap-3">
               <Button
-                icon={{ left: "arrow_back" }}
-                label="All Warehouses"
+                icon={{ left: "edit" }}
+                label="Edit Warehouse"
                 variant="secondary"
-                onClick={() => router.push(`/${parsedUserId}/storage`)}
+                onClick={() => setIsWarehouseFormOpen(true)}
+                className="!rounded-xl"
               />
-              {parsedId && currentWarehouseDetails && (
-                <Button
-                  label="Edit Warehouse"
-                  variant="secondary"
-                  onClick={() => setIsWarehouseFormOpen(true)}
-                  disabled={loadingWarehouseDetails}
-                />
-              )}
               <Button
-                label="Add Item"
+                icon={{ left: "add" }}
+                label="Add New Item"
                 variant="primary"
                 onClick={() => setIsInventoryFormOpen(true)}
-                disabled={!parsedId}
+                className="!rounded-xl shadow-lg shadow-blue-600/20"
               />
             </div>
           </div>
-
-          {!loadingWarehouseDetails && currentWarehouseDetails && (
-            <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-gray-300">
-                <div className="flex items-center">
-                  <div>
-                    <span className="font-semibold block">Type</span>
-                    {currentWarehouseDetails.type}
-                  </div>
-                </div>
-                {currentWarehouseDetails.storage_capacity != null && (
-                  <div className="flex items-center">
-                    <div>
-                      <span className="font-semibold block">Area</span>
-                      {currentWarehouseDetails.storage_capacity} sq. ft.
-                    </div>
-                  </div>
-                )}
-                {currentWarehouseDetails.contact_person && (
-                  <div className="flex items-center">
-                    <div>
-                      <span className="font-semibold block">
-                        Contact Person
-                      </span>
-                      {currentWarehouseDetails.contact_person}
-                    </div>
-                  </div>
-                )}
-                {currentWarehouseDetails.phone && (
-                  <div className="flex items-center">
-                    <div>
-                      <span className="font-semibold block">Phone</span>
-                      {currentWarehouseDetails.phone}
-                    </div>
-                  </div>
-                )}
-                {cumulativeAddress && (
-                  <div className="flex items-center md:col-span-2 lg:col-span-1">
-                    <div>
-                      <span className="font-semibold block">Address</span>
-                      {cumulativeAddress}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
-        {inventoryForWarehouse.length > 0 && !loadingInventory && (
-          <div className="mb-6 dark:bg-gray-800 p-4 rounded-lg shadow">
-            <div className="flex flex-col lg:flex-row gap-6 justify-between">
-              <div className="flex-1">
-                <Bar data={chartData} options={chartOptions} />
-              </div>
-              <div className="flex flex-col gap-4 lg:w-1/3">
-                <div className="p-4 bg-gray-500 dark:bg-gray-700 rounded-xl shadow text-center">
-                  <p className="text-lg font-medium text-gray-700 dark:text-light">
-                    Total Asset Value
-                  </p>
-                  <p className="text-3xl font-bold text-dark dark:text-light mt-2">
-                    ₹
-                    {totalAssetValue.toLocaleString("en-IN", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { 
+                label: "Total Items", 
+                value: inventoryForWarehouse.length, 
+                icon: "inventory", 
+                color: "blue",
+                sub: "In storage" 
+              },
+              { 
+                label: "Asset Value", 
+                value: `₹${totalAssetValue.toLocaleString("en-IN")}`, 
+                icon: "payments", 
+                color: "green",
+                sub: "Estimated total" 
+              },
+              { 
+                label: "Low Stock", 
+                value: lowStockItems.length, 
+                icon: "warning", 
+                color: lowStockItems.length > 0 ? "red" : "blue",
+                sub: "Need attention" 
+              },
+              { 
+                label: "Capacity", 
+                value: `${currentWarehouseDetails?.storage_capacity || "N/A"}`, 
+                icon: "view_quilt", 
+                color: "orange",
+                sub: "sq. ft. area" 
+              },
+            ].map((stat, i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-400 dark:border-gray-700 group hover:border-green-200 transition-all">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-medium text-dark dark:text-light uppercase tracking-wider">{stat.label}</span>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-dark dark:text-light mb-1">{stat.value}</h3>
+                  <p className="text-xs text-dark dark:text-light flex items-center gap-1">
+                    {stat.sub}
                   </p>
                 </div>
-                <div className="p-4">
-                  <h2 className="text-sm font-semibold text-center text-dark dark:text-light mb-2">
-                    Inventory Share by Quantity
-                  </h2>
-                  <div className="w-full max-w-[250px] mx-auto">
-                    <Pie
-                      data={{
-                        labels: inventoryForWarehouse.map(
-                          (item) => item.item_name
-                        ),
-                        datasets: [
-                          {
-                            label: "Share by Quantity",
-                            data: inventoryForWarehouse.map(
-                              (item) => item.quantity
-                            ),
-                            backgroundColor: pieColors,
-                            borderWidth: 1,
-                            borderColor: "#fff dark:#888",
-                          },
-                        ],
-                      }}
-                      options={{
-                        responsive: true,
-                        plugins: { legend: { display: false } },
-                      }}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Visual Insights */}
+            <div className="lg:col-span-2 space-y-8">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Stock Distribution</h3>
+                    <p className="text-sm text-dark dark:text-light">Inventory levels across categories</p>
+                  </div>
+                </div>
+                <div className="h-[300px]">
+                  <Bar data={chartData} options={{ ...chartOptions, maintainAspectRatio: false }} />
+                </div>
+              </div>
+
+              {/* Inventory Table Container */}
+              <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-400 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <h3 className="text-lg font-bold text-dark dark:text-light">Detailed Inventory</h3>
+                  <div className="relative w-full sm:w-64">
+                    <Icon type="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark dark:text-light" />
+                    <input 
+                      type="text"
+                      placeholder="Search items..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-400 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-green-400 focus:border-green-200 outline-none transition-all"
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-4 mt-6 text-sm dark:text-gray-300 text-gray-700">
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-4 h-4 bg-red-200 rounded-sm" />
-                {"< 25%"} of Maximum
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-block w-4 h-4 bg-orange-500 rounded-sm" />
-                {"< 50%"} of Maximum
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block w-4 h-4 rounded-sm"
-                  style={{ backgroundColor: "#facd1d" }}
+                <Table
+                  data={tableData}
+                  filteredRows={tableData.rows}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  setItemsPerPage={setItemsPerPage}
+                  paginationItems={PAGINATION_ITEMS}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  totalRecordCount={inventoryForWarehouse.length}
+                  onRowClick={(row) => {
+                    const inventoryId = row[0] as number;
+                    const item = inventoryForWarehouse.find(
+                      (i) => i.inventory_id === inventoryId
+                    );
+                    if (item) {
+                      setEditingItem(item);
+                      setIsInventoryFormOpen(true);
+                    }
+                  }}
+                  view="inventory"
+                  loading={loadingInventory}
+                  onDeleteRows={handleDeleteRows}
                 />
-                {"< 75%"} of Maximum
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block w-4 h-4 rounded-sm"
-                  style={{ backgroundColor: "#04ad79" }}
-                />
-                {"≥ 75%"} of Maximum
               </div>
             </div>
 
-            {lowStockItems.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-red-200 dark:text-red-400 mb-4 flex items-center">
-                  <Icon
-                    type={"warning"}
-                    className="mr-2 w-5 h-5 text-red-200 dark:text-red-400"
+            {/* Sidebar Details & Alerts */}
+            <div className="space-y-8">
+              {/* Asset Share Pie */}
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 text-center">Quantity Share</h3>
+                <div className="max-w-[220px] mx-auto">
+                  <Pie
+                    data={{
+                      labels: inventoryForWarehouse.map((item) => item.item_name),
+                      datasets: [{
+                        data: inventoryForWarehouse.map((item) => item.quantity),
+                        backgroundColor: pieColors,
+                        borderWidth: 0,
+                      }],
+                    }}
+                    options={{
+                      plugins: { legend: { display: false } },
+                      maintainAspectRatio: true
+                    }}
                   />
-                  Low Stock Alerts
-                </h3>
-                <div className="space-y-3">
-                  {lowStockItems.map((item) => (
-                    <div
-                      key={item.inventory_id}
-                      className="p-3 bg-red-400 dark:bg-red-900/30 border border-red-300 dark:border-red-700/60 rounded-lg text-sm flex flex-col sm:flex-row sm:justify-between sm:items-center"
-                    >
-                      <div className="flex-grow mb-1 sm:mb-0">
-                        <span className="font-semibold text-gray-900 dark:text-white">
-                          {item.item_name}
-                        </span>
-                        <span className="text-gray-700 dark:text-gray-300 ml-1">
-                          ({item.item_group})
-                        </span>
+                </div>
+                <div className="mt-6 space-y-2">
+                  {inventoryForWarehouse.slice(0, 4).map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pieColors[idx] }} />
+                        <span className="text-dark dark:text-light truncate max-w-[100px]">{item.item_name}</span>
                       </div>
-                      <div className="text-red-600 dark:text-red-400 sm:text-right whitespace-nowrap">
-                        <span className="font-medium">
-                          Qty: {item.quantity}
-                        </span>
-                        <span className="ml-2 text-xs">
-                          (Min: {item.minimum_limit})
-                        </span>
-                      </div>
+                      <span className="font-bold text-dark dark:text-light">{item.quantity} {item.units}</span>
                     </div>
                   ))}
+                  {inventoryForWarehouse.length > 4 && (
+                    <p className="text-[10px] text-center text-dark dark:text-light pt-2 border-t border-gray-100 dark:border-gray-700">
+                      + {inventoryForWarehouse.length - 4} more items
+                    </p>
+                  )}
                 </div>
               </div>
-            )}
+
+              {/* Alerts Card */}
+              {lowStockItems.length > 0 && (
+                <div className="bg-red-50 dark:bg-red-900/10 p-6 rounded-3xl border border-red-100 dark:border-red-900/20">
+                  <div className="flex items-center gap-2 mb-4 text-red-600 dark:text-red-400">
+                    <Icon type="warning" className="w-5 h-5" />
+                    <h3 className="font-bold uppercase tracking-wider text-xs">Critical Alerts</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {lowStockItems.slice(0, 3).map((item) => (
+                      <div key={item.inventory_id} className="bg-white dark:bg-gray-800/50 p-3 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-bold text-gray-900 dark:text-white">{item.item_name}</p>
+                          <p className="text-[10px] text-red-500">Low Stock: {item.quantity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-dark dark:text-light uppercase">Min</p>
+                          <p className="text-xs font-bold text-dark dark:text-light">{item.minimum_limit}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {lowStockItems.length > 3 && (
+                      <p className="text-[10px] text-center text-red-400">
+                        {lowStockItems.length - 3} more alerts available
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Warehouse Details Card */}
+              <div className="bg-white dark:bg-gray-700 rounded-3xl p-6 text-dark dark:text-light border-1 shadow-sm border-gray-400 dark:border-gray-700 relative overflow-hidden group">
+                <h3 className="text-lg font-bold mb-4 relative z-10">Facility Info</h3>
+                <div className="space-y-4 relative z-10">
+                  <div className="flex items-start gap-3">
+                    <div className="p-1.5 bg-white/20 rounded-lg">
+                      <Icon type="person" className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-green-200 uppercase tracking-wider">Manager</p>
+                      <p className="text-sm font-medium">{currentWarehouseDetails?.contact_person || "Not Assigned"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-1.5 bg-white/20 rounded-lg">
+                      <Icon type="call" className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-green-200 uppercase tracking-wider">Contact</p>
+                      <p className="text-sm font-medium">{currentWarehouseDetails?.phone || "N/A"}</p>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-white/20 mt-4">
+                    <p className="text-[10px] text-blue-100 uppercase tracking-wider mb-1">Full Address</p>
+                    <p className="text-xs leading-relaxed opacity-90">{cumulativeAddress || "No address provided"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
 
-        <Table
-          data={tableData}
-          filteredRows={tableData.rows}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-          paginationItems={PAGINATION_ITEMS}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          totalRecordCount={inventoryForWarehouse.length}
-          onRowClick={(row) => {
-            const inventoryId = row[0] as number;
-            const item = inventoryForWarehouse.find(
-              (i) => i.inventory_id === inventoryId
-            );
-            if (item) {
-              setEditingItem(item);
-              setIsInventoryFormOpen(true);
-            }
-          }}
-          view="inventory"
-          loading={loadingInventory}
-          onDeleteRows={handleDeleteRows}
-        />
-
+        {/* Forms */}
         {isInventoryFormOpen && parsedId && (
           <InventoryForm
             onClose={() => {
@@ -543,7 +577,7 @@ const Warehouse = () => {
             onSuccess={() => {
               setIsInventoryFormOpen(false);
               setEditingItem(null);
-              router.replace(router.asPath);
+              fetchWarehouseData();
             }}
           />
         )}
@@ -565,6 +599,11 @@ const Warehouse = () => {
               phone: currentWarehouseDetails.phone || "",
               storage_capacity:
                 currentWarehouseDetails.storage_capacity?.toString() || "",
+              category: currentWarehouseDetails.category || "",
+            }}
+            onSuccess={() => {
+              setIsWarehouseFormOpen(false);
+              fetchWarehouseData();
             }}
           />
         )}

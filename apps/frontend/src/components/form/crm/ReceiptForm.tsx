@@ -382,14 +382,10 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
+    <div className="fixed inset-0 z-50 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
         className="fixed top-0 right-0 h-full w-full md:w-[640px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
-        style={{
-          transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
       >
         <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
           <div>
@@ -520,7 +516,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Invoice Items</h3>
+                  <h3 className="text-lg font-semibold text-dark dark:text-light">Invoice Items</h3>
                 </div>
                 <Button 
                   label="Add Item" 
@@ -533,7 +529,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
 
               <div className="space-y-4">
                 {receiptsValues.items.map((item, index) => (
-                  <div key={index} className="grid grid-cols-12 gap-3 items-end bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-600">
+                  <div key={index} className="grid grid-cols-12 gap-3 items-end">
                     <div className="col-span-12 sm:col-span-5">
                       <Input
                         id={`item-description-${index}`}
@@ -562,7 +558,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
                       />
                     </div>
                     <div className="col-span-3 sm:col-span-2 text-right py-2">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Amount</p>
+                      <p className="text-xs text-dark dark:text-light mb-1">Amount</p>
                       <p className="font-semibold text-gray-900 dark:text-white">₹{item.amount.toFixed(2)}</p>
                     </div>
                     <div className="col-span-1 text-right">
@@ -572,7 +568,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
                         className="text-red-500 hover:text-red-600 p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                         disabled={receiptsValues.items.length === 1}
                       >
-                        <Icon type="delete" size="sm" />
+                        <Icon type="delete" size="md" />
                       </button>
                     </div>
                   </div>

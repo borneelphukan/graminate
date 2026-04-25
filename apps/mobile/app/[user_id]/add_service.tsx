@@ -65,6 +65,7 @@ const AddServiceScreen = () => {
   const { subTypes, setUserSubTypes, plan } = useUserPreferences();
 
   const [availableSubTypes, setAvailableSubTypes] = useState<string[]>([]);
+  const [userData, setUserData] = useState<any>(null);
   const [selectedSubTypes, setSelectedSubTypes] = useState<Set<string>>(
     new Set()
   );
@@ -107,6 +108,8 @@ const AddServiceScreen = () => {
           throw new Error("User's current sub-types not found.");
         }
 
+        const user = userResponse.data?.data?.user;
+        setUserData(user);
         setAvailableSubTypes(available);
         setUserSubTypes(currentUserSubTypes);
       } catch (err) {
@@ -160,18 +163,50 @@ const AddServiceScreen = () => {
     try {
       const token = await AsyncStorage.getItem("accessToken");
       if (!token) throw new Error("Authentication token not found.");
+      const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
 
       await api.put(
         `/user/${user_id}`,
         { sub_type: newSubTypes },
-        { headers: { Authorization: `Bearer ${token}` } }
+        authHeaders
       );
-      Toast.show({ type: "success", text1: "Services added successfully!" });
+
+      // Create a warehouse for each newly added service
+      const warehouseCreationPromises = Array.from(selectedSubTypes).map((subType) => {
+        const payload = {
+          user_id: parseInt(user_id as string, 10),
+          name: `${subType} Warehouse`,
+          type: "Ambient Storage",
+          address_line_1: userData?.address_line_1 || "",
+          address_line_2: userData?.address_line_2 || "",
+          city: userData?.city || "",
+          state: userData?.state || "",
+          postal_code: userData?.postal_code || "",
+          country: userData?.country || "India",
+          category: subType,
+        };
+        return api.post("/warehouse/add", payload, authHeaders);
+      });
+
+      if (warehouseCreationPromises.length > 0) {
+        const results = await Promise.allSettled(warehouseCreationPromises);
+        const failures = results.filter((r) => r.status === "rejected");
+        
+        if (failures.length > 0) {
+          console.error("Some warehouse creations failed:", failures);
+          const firstFailure: any = failures[0];
+          const serverMessage = firstFailure.reason?.response?.data?.message || firstFailure.reason?.message;
+          throw new Error(serverMessage || "Failed to create some warehouses.");
+        }
+      }
+
+      Toast.show({ type: "success", text1: "Services and warehouses created successfully!" });
       setUserSubTypes(newSubTypes);
       setSelectedSubTypes(new Set());
-    } catch (err) {
-      console.error("Failed to add user services:", err);
-      Toast.show({ type: "error", text1: "Failed to add services." });
+    } catch (err: any) {
+      console.error("Failed to add user services or create warehouses:", err);
+      const errorMessage = err.response?.data?.message || err.message || "Failed to add services.";
+      Toast.show({ type: "error", text1: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -210,6 +245,10 @@ const AddServiceScreen = () => {
                 api.post(
                   "/expenses/delete-by-occupation",
                   { userId: userIdNumber, occupation: config.occupation },
+                  authHeaders
+                ),
+                api.delete(
+                  `/warehouse/delete-by-category/${userIdNumber}/${service}`,
                   authHeaders
                 ),
               ]

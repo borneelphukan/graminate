@@ -128,6 +128,22 @@ const StoragePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [userSubTypes, setUserSubTypes] = useState<string[]>([]);
+
+  const fetchUserSubTypes = useCallback(async () => {
+    if (!user_id) return;
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      if (!token) return;
+      const response = await api.get(`/user/${user_id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const user = response.data?.data?.user ?? response.data?.user;
+      setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
+    } catch (err) {
+      console.error("Error fetching user sub_types:", err);
+    }
+  }, [user_id]);
 
   const fetchWarehouses = useCallback(async () => {
     if (!user_id) return;
@@ -156,7 +172,8 @@ const StoragePage = () => {
   useFocusEffect(
     useCallback(() => {
       fetchWarehouses();
-    }, [fetchWarehouses])
+      fetchUserSubTypes();
+    }, [fetchWarehouses, fetchUserSubTypes])
   );
 
   const handleCreateWarehouse = async (data: WarehouseFormData) => {
@@ -226,6 +243,15 @@ const StoragePage = () => {
       );
     });
   }, [warehouses, searchQuery]);
+
+  const warehouseFields = useMemo(() => {
+    return WAREHOUSE_FIELDS.map((f) => {
+      if (f.name === "category") {
+        return { ...f, type: "dropdown" as const, items: userSubTypes };
+      }
+      return f;
+    });
+  }, [userSubTypes]);
 
   const renderContent = () => {
     if (!user_id)
@@ -323,7 +349,7 @@ const StoragePage = () => {
           onClose={() => setIsFormVisible(false)}
           onSubmit={handleCreateWarehouse}
           title="Add New Warehouse"
-          fields={WAREHOUSE_FIELDS}
+          fields={warehouseFields}
         />
       </SafeAreaView>
     </PlatformLayout>

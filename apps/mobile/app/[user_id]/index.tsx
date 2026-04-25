@@ -1,5 +1,5 @@
 import CompareGraph from "@/components/cards/CompareGraph";
-import InventoryStockCard from "@/components/cards/InventoryStockCard";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import TaskManager from "@/components/cards/TaskManager";
 import TrendGraph from "@/components/cards/TrendGraph";
 import { ALL_AVAILABLE_WIDGETS } from "@/constants/formConfigs";
@@ -718,11 +718,10 @@ const DashboardScreen = () => {
                     );
                   if (widgetName.endsWith("Inventory Stock"))
                     return (
-                      <InventoryStockCard
+                      <WarehouseWidget
                         key={widgetName}
-                        userId={user_id}
-                        title={`${subTypeMatch} Supplies`}
-                        category={subTypeMatch}
+                        userId={user_id!}
+                        serviceName={subTypeMatch}
                       />
                     );
                 }

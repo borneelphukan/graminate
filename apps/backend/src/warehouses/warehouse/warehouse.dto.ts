@@ -11,6 +11,7 @@ export class CreateWarehouseDto {
   contact_person?: string;
   phone?: string;
   storage_capacity?: number;
+  category?: string;
 }
 
 export class UpdateWarehouseDto {
@@ -25,6 +26,7 @@ export class UpdateWarehouseDto {
   contact_person?: string;
   phone?: string;
   storage_capacity?: number;
+  category?: string;
 }
 
 export class ResetWarehouseDto {

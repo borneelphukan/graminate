@@ -26,7 +26,7 @@ export const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Poultry Inventory Stock",
-    name: "Poultry Inventory",
+    name: "Poultry Storage & Inventory",
     requiredSubType: "Poultry",
   },
   {
@@ -36,7 +36,7 @@ export const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Apiculture Inventory Stock",
-    name: "Apiculture Inventory",
+    name: "Apiculture Storage & Inventory",
     requiredSubType: "Apiculture",
   },
   {
@@ -46,7 +46,7 @@ export const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Cattle Rearing Inventory Stock",
-    name: "Cattle Rearing Inventory",
+    name: "Cattle Rearing Storage & Inventory",
     requiredSubType: "Cattle Rearing",
   },
   {
@@ -56,7 +56,7 @@ export const ALL_AVAILABLE_WIDGETS = [
   },
   {
     id: "Floriculture Inventory Stock",
-    name: "Floriculture Inventory",
+    name: "Floriculture Storage & Inventory",
     requiredSubType: "Floriculture",
   },
 ];
@@ -384,6 +384,7 @@ export type WarehouseFormData = {
   contact_person: string;
   phone: string;
   storage_capacity: string;
+  category: string;
 };
 
 export const WAREHOUSE_TYPES = [
@@ -455,6 +456,12 @@ export const WAREHOUSE_FIELDS: FormField[] = [
     name: "storage_capacity",
     label: "Storage Capacity (sq. ft.)",
     type: "number",
+  },
+  {
+    name: "category",
+    label: "Warehouse Category (Service)",
+    type: "text",
+    icon: "briefcase",
   },
 ];
 

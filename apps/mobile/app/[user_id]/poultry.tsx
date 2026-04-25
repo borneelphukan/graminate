@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
-import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { FLOCK_FIELDS, FlockFormData } from "@/constants/formConfigs";
 import BottomDrawer from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
@@ -470,11 +470,7 @@ const PoultryScreen = () => {
 
         <View style={styles.widgetContainer}>
           {user_id && (
-            <InventoryStockCard
-              userId={user_id}
-              title="Poultry Inventory"
-              category="Poultry"
-            />
+            <WarehouseWidget userId={user_id} serviceName="Poultry" />
           )}
         </View>
       </ScrollView>

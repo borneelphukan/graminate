@@ -20,7 +20,7 @@ import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
 import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import TaskManager from "@/components/cards/TaskManager";
-import InventoryStockCard from "@/components/cards/InventoryStock";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
@@ -627,10 +627,8 @@ const Dashboard = () => {
                       />
                     )}
                   {widgets.includes(`${subType} Inventory Stock`) && userId && (
-                    <InventoryStockCard
-                      userId={userId}
-                      title={`${subType} Supplies`}
-                      category={subType}
+                    <WarehouseWidget
+                      serviceName={subType}
                     />
                   )}
                 </React.Fragment>

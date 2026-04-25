@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
-import InventoryStockCard from "@/components/cards/InventoryStockCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
+import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import BottomDrawer from "@/components/form/BottomDrawer";
 import {
   FLORICULTURE_FIELDS,
@@ -385,11 +385,7 @@ const FloricultureScreen = () => {
 
         <View style={styles.widgetContainer}>
           {user_id && (
-            <InventoryStockCard
-              userId={user_id}
-              title="Floriculture Inventory"
-              category="Floriculture"
-            />
+            <WarehouseWidget userId={user_id} serviceName="Floriculture" />
           )}
         </View>
       </ScrollView>
