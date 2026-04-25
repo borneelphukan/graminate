@@ -11,6 +11,7 @@ const englishSidebar = {
   healthReports: "Health Reports",
   cattleRearing: "Cattle Rearing",
   apiculture: "Apiculture",
+  floriculture: "Floriculture",
   weatherMonitor: "Weather Monitor",
   employees: "Employees",
   database: "Database",

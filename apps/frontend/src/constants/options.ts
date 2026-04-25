@@ -133,4 +133,6 @@ export const POULTRY_EXPENSE_CONFIG: ExpenseCategoryConfig = {
   },
 };
 
+export const FLORICULTURE_EXPENSE_CONFIG = POULTRY_EXPENSE_CONFIG;
+
 

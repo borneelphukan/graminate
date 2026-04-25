@@ -98,6 +98,12 @@ const SettingsBar = () => {
             href: `/${userId}/settings/apiculture_settings`,
           });
         }
+        if (subTypes.includes("Floriculture")) {
+          yourPreferenceSubItems.push({
+            label: t("floriculture" as GeneralTranslationKeys),
+            href: `/${userId}/settings/floriculture_settings`,
+          });
+        }
       }
     }
 

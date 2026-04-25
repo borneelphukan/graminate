@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import * as argon2 from 'argon2';
 
 const subTypeMapping = {
-  Producer: ['Poultry', 'Cattle Rearing', 'Apiculture'],
+  Producer: ['Poultry', 'Cattle Rearing', 'Apiculture', 'Floriculture'],
 };
 
 @Injectable()
@@ -237,6 +237,7 @@ export class UserRepository {
           'Poultry',
           'Cattle Rearing',
           'Apiculture',
+          'Floriculture',
         ];
         const filteredSubTypes = Array.isArray(sub_type)
           ? sub_type.filter((t) => validSubTypes.includes(t))

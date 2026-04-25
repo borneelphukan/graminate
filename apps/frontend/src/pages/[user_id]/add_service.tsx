@@ -13,6 +13,7 @@ import PasswordModal from "@/components/modals/PasswordModal";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
+import FlowerIcon from "@/icons/FlowerIcon";
 
 type ServiceConfig = {
   [key: string]: {
@@ -33,6 +34,10 @@ const SERVICE_CONFIG: ServiceConfig = {
   Apiculture: {
     endpoint: "apiculture",
     occupation: "Apiculture",
+  },
+  Floriculture: {
+    endpoint: "floriculture",
+    occupation: "Floriculture",
   },
 };
 
@@ -64,6 +69,7 @@ const AddServicePage = () => {
     Poultry: <PoultryIcon />,
     "Cattle Rearing": <CattleIcon />,
     Apiculture: <BeeIcon />,
+    Floriculture: <FlowerIcon />,
   };
 
   const isProFeature = plan === "FREE" && subTypes.length >= 1;
@@ -306,6 +312,7 @@ const AddServicePage = () => {
           Enter password to remove selected service(s) and all related data.
         </p>
         <TextField
+          label="Password"
           placeholder="Enter your password"
           password={true}
           value={password}

@@ -171,8 +171,7 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
                 <div className="relative">
                   <Input
                     id="projectName"
-                    label="Project Name / Category"
-                    placeholder="e.g. Poultry, Main Farm, Distribution"
+                    label="Project Category"
                     value={projectValue}
                     onChange={(e) => handleProjectInputChange(e.target.value)}
                     onFocus={handleProjectInputFocus}

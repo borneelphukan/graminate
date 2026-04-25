@@ -119,6 +119,14 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           route: `/${currentUserId}/apiculture`,
           subItems: [],
         });
+      if (subTypes.includes("Floriculture"))
+        base.push({
+          icon: "flower",
+          label: "Floriculture",
+          section: "Floriculture",
+          route: `/${currentUserId}/floriculture`,
+          subItems: [],
+        });
     }
 
     base.push(

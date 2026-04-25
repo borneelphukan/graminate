@@ -1,6 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import CattleIcon from "@/assets/icon/CattleIcon";
+import FlowerIcon from "@/assets/icon/FlowerIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,6 +44,7 @@ const SERVICE_CONFIG: ServiceConfig = {
   },
   Poultry: { endpoint: "flock", occupation: "Poultry" },
   Apiculture: { endpoint: "apiculture", occupation: "Apiculture" },
+  Floriculture: { endpoint: "floriculture", occupation: "Floriculture" },
 };
 
 const AgricultureIcons: Record<
@@ -52,6 +54,7 @@ const AgricultureIcons: Record<
   Poultry: "egg",
   "Cattle Rearing": CattleIcon,
   Apiculture: BeeIcon,
+  Floriculture: FlowerIcon,
 };
 
 const AddServiceScreen = () => {

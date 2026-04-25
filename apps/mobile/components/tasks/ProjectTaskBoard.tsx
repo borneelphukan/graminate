@@ -282,7 +282,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.boardContainer}>
       {columns.map((column) => {
         const columnTasks = filteredTasks.filter(t => 
-          t.status.toLowerCase() === column.title.toLowerCase() ||
+          t.status?.toLowerCase() === column.title.toLowerCase() ||
           t.status === column.id
         );
 
@@ -496,6 +496,9 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 };
 
+const { width: windowWidth } = Dimensions.get("window");
+const isTablet = windowWidth >= 768;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -547,7 +550,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   column: {
-    width: Dimensions.get("window").width * 0.6,
+    width: isTablet ? (windowWidth - 48) / 2 : windowWidth - 32,
     backgroundColor: "rgba(128, 128, 128, 0.05)",
     borderRadius: 12,
     padding: 12,

@@ -49,6 +49,16 @@ export const ALL_AVAILABLE_WIDGETS = [
     name: "Cattle Rearing Inventory",
     requiredSubType: "Cattle Rearing",
   },
+  {
+    id: "Floriculture Task Manager",
+    name: "Floriculture Task Manager",
+    requiredSubType: "Floriculture",
+  },
+  {
+    id: "Floriculture Inventory Stock",
+    name: "Floriculture Inventory",
+    requiredSubType: "Floriculture",
+  },
 ];
 
 // CRM FORM CONFIGURATIONS (Contacts, Companies, Contracts)
@@ -765,4 +775,53 @@ export const RECEIPT_FIELDS_WITH_ITEMS: FormField[] = [
   { name: "discount", label: "Discount (₹)", type: "number", icon: "tag", halfWidth: true },
   { name: "shipping", label: "Shipping (₹)", type: "number", icon: "truck-delivery", halfWidth: true },
   { name: "notes", label: "Notes", type: "text", icon: "note-text", multiline: true },
+];
+
+export type FloricultureFormData = {
+  flower_name: string;
+  flower_type: string;
+  area: string;
+  method: string;
+  planting_date: string;
+};
+
+export const FLOWER_TYPES_OPTIONS = ["Rose", "Tulip", "Marigold", "Lily", "Sunflower", "Orchid"];
+export const CULTIVATION_METHOD_OPTIONS = ["Open Field", "Greenhouse", "Hydroponics", "Polyhouse"];
+
+export const FLORICULTURE_FIELDS: FormField[] = [
+  {
+    name: "flower_name",
+    label: "Flower Name / Variety",
+    type: "text",
+    icon: "tag-outline",
+    required: true,
+  },
+  {
+    name: "flower_type",
+    label: "Flower Type",
+    type: "dropdown",
+    items: FLOWER_TYPES_OPTIONS,
+    icon: "flower",
+  },
+  {
+    name: "method",
+    label: "Cultivation Method",
+    type: "dropdown",
+    items: CULTIVATION_METHOD_OPTIONS,
+    icon: "office-building",
+  },
+  {
+    name: "area",
+    label: "Planting Area (sq. ft)",
+    type: "number",
+    icon: "ruler",
+    halfWidth: true,
+  },
+  {
+    name: "planting_date",
+    label: "Planting Date",
+    type: "date",
+    icon: "calendar",
+    halfWidth: true,
+  },
 ];

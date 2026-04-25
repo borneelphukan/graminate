@@ -14,6 +14,7 @@ import { WarehousesModule } from './warehouses/warehouses.module';
 import { LlmModule } from './llm/llm.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { FloricultureModule } from './floriculture/floriculture.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PaymentModule,
     LlmModule,
     PrismaModule,
+    FloricultureModule,
   ],
 })
 export class AppModule {}

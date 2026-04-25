@@ -1,0 +1,34 @@
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { FloricultureService } from './floriculture.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
+@UseGuards(JwtAuthGuard)
+@Controller('floriculture')
+export class FloricultureController {
+  constructor(private readonly floricultureService: FloricultureService) {}
+
+  @Post('add')
+  create(@Body() body: any) {
+    return this.floricultureService.create(body);
+  }
+
+  @Get('user/:userId')
+  findByUser(@Param('userId', ParseIntPipe) userId: number) {
+    return this.floricultureService.findByUser(userId);
+  }
+
+  @Put('update/:id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
+    return this.floricultureService.update(id, body);
+  }
+
+  @Delete('delete/:id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.floricultureService.remove(id);
+  }
+
+  @Post('reset-service')
+  reset(@Body('userId') userId: number) {
+    return this.floricultureService.reset(userId);
+  }
+}

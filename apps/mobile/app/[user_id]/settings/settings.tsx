@@ -77,6 +77,13 @@ const SettingsScreen = () => {
             routeName: `/${user_id}/settings/apiculture`,
             icon: BeeIcon,
           });
+        if (subTypes.includes("Floriculture"))
+          preferenceItems.push({
+            label: "Floriculture",
+            type: "navigate",
+            routeName: `/${user_id}/settings/floriculture`,
+            icon: "flower",
+          });
       }
     }
     preferenceItems.push({

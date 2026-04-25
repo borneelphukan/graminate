@@ -15,7 +15,7 @@ import {
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { FlockService } from './flock.service';
-import { CreateFlockDto, UpdateFlockDto } from './flock.dto';
+import { CreateFlockDto, UpdateFlockDto, ResetFlockDto } from './flock.dto';
 
 @Controller('flock')
 export class FlockController {
@@ -71,5 +71,11 @@ export class FlockController {
       );
     }
     return { message: 'Flock deleted successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('reset-service')
+  async resetService(@Body() resetDto: ResetFlockDto) {
+    return this.flockService.resetForUser(resetDto.userId);
   }
 }

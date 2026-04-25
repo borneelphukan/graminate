@@ -14,6 +14,7 @@ import { getTranslator } from "@/translations";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
+import FlowerIcon from "@/icons/FlowerIcon";
 
 type Props = {
   children: React.ReactNode;
@@ -102,6 +103,15 @@ const PlatformLayout = ({ children }: Props) => {
           section: "Apiculture",
           path: `/${userId}/apiculture`,
           basePath: `/${userId}/apiculture`,
+        });
+      }
+      if (subTypes.includes("Floriculture")) {
+        items.push({
+          icon: FlowerIcon,
+          label: t("floriculture"),
+          section: "Floriculture",
+          path: `/${userId}/floriculture`,
+          basePath: `/${userId}/floriculture`,
         });
       }
     }
