@@ -69,7 +69,6 @@ const WeatherSettingsScreen = () => {
     temperatureScale: contextTemperatureScale,
     setTemperatureScale: setContextTemperatureScale,
   } = useUserPreferences();
-  const theme = useTheme();
 
   const [isLoading, setIsLoading] = useState(true);
   const [weatherSettings, setWeatherSettings] = useState<{
@@ -147,7 +146,7 @@ const WeatherSettingsScreen = () => {
       });
       setContextTemperatureScale(weatherSettings.scale);
       setSuccessMessage("Weather settings updated successfully!");
-    } catch (error) {
+    } catch {
       setErrorMessage("Failed to update weather settings. Please try again.");
     } finally {
       setIsSaving(false);

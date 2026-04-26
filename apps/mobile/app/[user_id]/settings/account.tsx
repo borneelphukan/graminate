@@ -86,7 +86,7 @@ const AccountSettingsScreen = () => {
       } else {
         setPasswordError("The password you entered is incorrect.");
       }
-    } catch (error) {
+    } catch {
       setPasswordError("Password verification failed. Please try again.");
     } finally {
       setIsVerifying(false);
@@ -109,7 +109,7 @@ const AccountSettingsScreen = () => {
       } else {
         throw new Error("Deletion failed");
       }
-    } catch (err) {
+    } catch {
       openModal("info", {
         title: "Error",
         message: "Failed to delete account. Please try again later.",

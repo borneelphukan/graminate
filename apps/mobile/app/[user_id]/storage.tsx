@@ -3,7 +3,7 @@ import { WAREHOUSE_FIELDS, WarehouseFormData } from "@/constants/formConfigs";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
@@ -159,7 +159,7 @@ const StoragePage = () => {
         Array.isArray(response.data?.warehouses) ? response.data.warehouses : []
       );
     } catch (err: any) {
-      const errorMessage = axios.isAxiosError(err)
+      const errorMessage = isAxiosError(err)
         ? err.response?.data?.message || "Failed to connect"
         : err.message || "An unexpected error occurred.";
       setError(errorMessage);
@@ -197,7 +197,7 @@ const StoragePage = () => {
       Alert.alert("Success", "Warehouse created successfully.");
       await fetchWarehouses();
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
+      const errorMessage = isAxiosError(err)
         ? err.response?.data?.message || "An API error occurred"
         : "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);

@@ -160,7 +160,7 @@ const GeneralSettingsScreen = () => {
         country: user.country,
       });
       setProfileSuccessMessage("Profile updated successfully!");
-    } catch (error) {
+    } catch {
       setProfileErrorMessage("Failed to update profile. Please try again.");
     } finally {
       setIsSavingProfile(false);

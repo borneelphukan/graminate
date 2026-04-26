@@ -370,8 +370,8 @@ export const BottomDrawer = ({
     try {
       await onSubmit(formData);
       onClose();
-    } catch (error) {
-      console.error("Form submission error:", error);
+    } catch {
+      Alert.alert("Error", "Failed to save record. Please try again.");
     } finally {
       setIsSubmittingInternal(false);
     }
@@ -417,7 +417,7 @@ export const BottomDrawer = ({
     }
 
     return rows;
-  }, [fields, formData, errors]);
+  }, [fields, formData, errors, theme, tagInput]);
 
   function renderField(field: FormField, index: number, isHalf: boolean) {
     const containerStyle = isHalf ? styles.halfWidth : styles.fullWidth;

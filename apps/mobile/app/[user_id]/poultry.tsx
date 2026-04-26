@@ -84,10 +84,7 @@ const DETAILED_EXPENSE_CATEGORIES = {
     "Others",
   ],
 };
-const EXPENSE_TYPE_MAP = {
-  COGS: "Goods & Services",
-  OPERATING_EXPENSES: "Utility Expenses",
-};
+
 const categoryToMainGroup: Record<string, string> = {};
 for (const mainGroup in DETAILED_EXPENSE_CATEGORIES) {
   DETAILED_EXPENSE_CATEGORIES[

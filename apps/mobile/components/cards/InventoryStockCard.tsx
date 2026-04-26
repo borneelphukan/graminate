@@ -56,7 +56,7 @@ const InventoryStockCard = ({
         });
         const items = response.data.items || [];
         setInventoryItems(sortItems(items, quantitySortAsc));
-      } catch (err) {
+      } catch {
         setError(`Failed to load ${category.toLowerCase()} inventory data.`);
       } finally {
         setLoading(false);

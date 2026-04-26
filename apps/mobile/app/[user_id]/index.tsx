@@ -30,7 +30,6 @@ import {
   Card,
   Checkbox,
   Divider,
-  FAB,
   Modal,
   Portal,
   Text,
@@ -301,11 +300,6 @@ const DashboardScreen = () => {
     const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const updateUserWidgets = async (userId: string, newWidgets: string[]) => {
-    await axiosInstance.put(`/user/${userId}`, { widgets: newWidgets });
-    setWidgets(newWidgets);
-  };
 
   useEffect(() => {
     if (!user_id) return;

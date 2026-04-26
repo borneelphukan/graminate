@@ -57,7 +57,7 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
       section: string;
       route?: string;
       basePath?: string;
-      subItems: Array<{ label: string; route: string }>;
+      subItems: { label: string; route: string }[];
     };
 
     const base: Section[] = [
@@ -222,7 +222,6 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
   const sidebarActive = "#1f2937"; // gray-700
   const sidebarText = "#bbbbbc"; // gray-300
   const sidebarActiveText = "#ffffff"; // white
-  const sidebarItemText = "#e8e8e9"; // gray-400
 
   return (
     <SafeAreaView

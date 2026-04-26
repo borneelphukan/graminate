@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { COMPANY_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";

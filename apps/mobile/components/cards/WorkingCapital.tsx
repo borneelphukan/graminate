@@ -1,5 +1,4 @@
 import {
-  addDays as addDaysDateFns,
   eachDayOfInterval,
   endOfMonth,
   format,
@@ -109,7 +108,7 @@ const WorkingCapital = ({
         netWorkingCapital: parseFloat(cumulativeBalance.toFixed(2)),
       };
     });
-  }, [initialFullHistoricalData]);
+  }, [initialFullHistoricalData, openingBalance]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -147,17 +146,14 @@ const WorkingCapital = ({
       }
     }
     return eachDayOfInterval({ start: vS, end: vE });
-  }, [isCustomDateRangeActive, startDate, endDate, selectedTimeRange, today, fullHistoricalWorkingCapitalData]);
-
-  if (isLoadingData) {
-    return (
-      <Card style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </Card>
-    );
-  }
-
-  const totalPages = Math.ceil(currentIntervalDates.length / ITEMS_PER_PAGE);
+  }, [
+    isCustomDateRangeActive,
+    startDate,
+    endDate,
+    selectedTimeRange,
+    today,
+    fullHistoricalWorkingCapitalData,
+  ]);
 
   const chartData = useMemo(() => {
     const startIndex = currentPage * ITEMS_PER_PAGE;
@@ -183,7 +179,17 @@ const WorkingCapital = ({
         },
       ],
     };
-  }, [currentIntervalDates, currentPage]);
+  }, [currentIntervalDates, currentPage, fullHistoricalWorkingCapitalData]);
+
+  if (isLoadingData) {
+    return (
+      <Card style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </Card>
+    );
+  }
+
+  const totalPages = Math.ceil(currentIntervalDates.length / ITEMS_PER_PAGE);
 
   const chartConfig = {
     backgroundColor: theme.colors.surface,

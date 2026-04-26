@@ -123,7 +123,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>(
     TIME_RANGE_OPTIONS[0]
   );
-  const [dateOffset, setDateOffset] = useState(0);
+  const [dateOffset] = useState(0);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [allHoneyRecords, setAllHoneyRecords] = useState<
@@ -169,7 +169,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
         })
       );
       setAllHoneyRecords(processedRecords);
-    } catch (error) {
+    } catch {
       setAllHoneyRecords([]);
     } finally {
       setIsLoading(false);
@@ -232,7 +232,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
       await fetchHoneyData();
       setEditingRecord(null);
       setActiveView("table");
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to save harvest.");
     } finally {
       setIsSubmitting(false);

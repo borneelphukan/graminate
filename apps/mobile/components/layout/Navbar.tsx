@@ -31,11 +31,6 @@ type User = {
   business?: string;
 };
 
-type Notification = {
-  title: string;
-  description: string;
-};
-
 type NavbarProps = {
   toggleSidebar: () => void;
   toggleChat: () => void;

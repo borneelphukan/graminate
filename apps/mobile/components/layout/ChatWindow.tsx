@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import Sparkles from "@/assets/icon/Sparkles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axiosInstance, { axios } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,

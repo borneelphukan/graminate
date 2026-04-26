@@ -79,7 +79,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           ? response.data
           : response.data.tasks || [];
         setTaskList(sortTasks(tasks, prioritySortAsc));
-      } catch (err) {
+      } catch {
         setError("Failed to load tasks. Please try again later.");
       } finally {
         setIsLoading(false);
@@ -104,7 +104,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
         )
       );
       setEditingPriority(null);
-    } catch (err) {
+    } catch {
       setError("Failed to update task priority. Please try again.");
     }
   };
@@ -123,7 +123,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           prioritySortAsc
         )
       );
-    } catch (err) {
+    } catch {
       setError("Failed to update task status. Please try again.");
     }
   };
@@ -145,7 +145,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       setNewTaskText("");
       setNewTaskPriority("Medium");
       setError(null);
-    } catch (err) {
+    } catch {
       setError("Failed to create new task. Please try again.");
     }
   };
@@ -155,7 +155,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       await axiosInstance.delete(`/tasks/delete/${taskId}`);
       setTaskList((prev) => prev.filter((task) => task.task_id !== taskId));
       setError(null);
-    } catch (err) {
+    } catch {
       setError("Failed to delete task. Please try again.");
     }
   };

@@ -10,10 +10,8 @@ import {
   Pressable,
   FlatList,
   ScrollView,
-  Platform,
 } from "react-native";
 import {
-  Appbar,
   Text,
   IconButton,
   Button,
@@ -21,15 +19,12 @@ import {
   useTheme,
   ActivityIndicator,
   Checkbox,
-  Chip,
   SegmentedButtons,
   Divider,
-  Portal,
-  Modal,
 } from "react-native-paper";
 import { Icon } from "@/components/ui/Icon";
 import axiosInstance from "@/lib/axiosInstance";
-import { format, parseISO, isToday, isPast, addDays, startOfDay } from "date-fns";
+import { format, parseISO, isToday, isPast, startOfDay } from "date-fns";
 
 export type RawBackendTask = {
   task_id: number;
@@ -473,7 +468,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
         time: t.deadline ? format(parseISO(t.deadline), "hh:mm a") : "No time set",
       }));
       setDisplayedTasks(processed);
-    } catch (error) {
+    } catch {
       setDisplayedTasks([]);
     } finally {
       setIsLoadingTasks(false);
@@ -493,7 +488,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
         }
       });
       setTasksForGrid(presence);
-    } catch (error) {}
+    } catch {}
   }, [userId]);
 
   useEffect(() => {
@@ -503,7 +498,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
         const response = await axiosInstance.get(`/user/${userId}`);
         const user = response.data?.data?.user;
         setSubTypes(user?.sub_type || []);
-      } catch (error) {}
+      } catch {}
     };
     fetchMeta();
     fetchGridPresence();
@@ -522,7 +517,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
     try {
       await axiosInstance.put(`/tasks/update/${taskId}`, { status: newStatus });
       setDisplayedTasks(prev => prev.map(t => t.task_id === taskId ? { ...t, status: newStatus } : t));
-    } catch (error) {}
+    } catch {}
   };
 
   const removeTask = async (taskId: number) => {
@@ -530,7 +525,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
       await axiosInstance.delete(`/tasks/delete/${taskId}`);
       fetchTasksForDate(selectedDate);
       fetchGridPresence();
-    } catch (error) {}
+    } catch {}
   };
 
   const generateCalendarDays = (month: number, year: number) => {

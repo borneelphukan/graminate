@@ -96,11 +96,11 @@ interface PoultryFeedRecord {
 }
 type ChartData = {
   labels: string[];
-  datasets: Array<{
+  datasets: {
     data: number[];
     color?: (opacity: number) => string;
     strokeWidth?: number;
-  }>;
+  }[];
   legend?: string[];
 };
 interface PoultryEggCardStats {

@@ -13,8 +13,8 @@ import {
 } from "@/constants/formConfigs";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import PlatformLayout from "@/components/layout/PlatformLayout";
+import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axiosInstance, { axios } from "@/lib/axiosInstance";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -27,9 +27,7 @@ import {
   Divider,
   FAB,
   Menu,
-  Searchbar,
   Text,
-  TouchableRipple,
   useTheme,
 } from "react-native-paper";
 
@@ -281,7 +279,6 @@ const CRM = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isViewMenuVisible, setViewMenuVisible] = useState(false);
   const [isContactFormVisible, setContactFormVisible] = useState(false);
   const [isCompanyFormVisible, setCompanyFormVisible] = useState(false);
   const [isContractFormVisible, setContractFormVisible] = useState(false);
@@ -400,13 +397,12 @@ const CRM = () => {
       setSortOrder("desc");
       setSelectedProjectTitle(null);
     }
-    setViewMenuVisible(false);
   };
 
   useEffect(() => {
     if (viewFromParams && viewFromParams !== view)
       handleSelectView(viewFromParams);
-  }, [viewFromParams]);
+  }, [viewFromParams, handleSelectView, view]);
 
   const fetchData = useCallback(
     async (currentView: ViewType) => {
@@ -559,7 +555,7 @@ const CRM = () => {
       Alert.alert("Success", "Receipt created successfully.");
       setReceiptFormVisible(false);
       await fetchData("receipts");
-    } catch (err) {
+    } catch {
       const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
     }

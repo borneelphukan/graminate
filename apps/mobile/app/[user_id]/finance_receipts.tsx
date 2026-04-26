@@ -1,8 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
-import { RECEIPT_FIELDS_WITH_ITEMS, ReceiptFormData } from "@/constants/formConfigs";
+import { RECEIPT_FIELDS_WITH_ITEMS } from "@/constants/formConfigs";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
-import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState, useMemo } from "react";

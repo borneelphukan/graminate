@@ -170,7 +170,7 @@ const PoultryFeedsModal = ({
       setInventoryFeedObjects(
         (response.data.items || []).filter((item) => item.feed === true)
       );
-    } catch (error) {
+    } catch {
       setInventoryFeedObjects([]);
     } finally {
       setLoadingInventory(false);

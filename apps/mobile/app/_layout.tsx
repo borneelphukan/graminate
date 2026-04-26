@@ -8,8 +8,6 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
   Provider as PaperProvider,
-  MD3DarkTheme,
-  MD3LightTheme,
 } from "react-native-paper";
 import "react-native-reanimated";
 

@@ -106,7 +106,7 @@ const ReceiptDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [, setDeleting] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
 
@@ -192,7 +192,7 @@ const ReceiptDetails = () => {
     if (!receipt) return;
     setSaving(true);
     try {
-      const token = await AsyncStorage.getItem("accessToken");
+      await AsyncStorage.getItem("accessToken");
       const payload = {
         invoice_id: receipt.invoice_id,
         title: formData.title,
@@ -242,7 +242,7 @@ const ReceiptDetails = () => {
           onPress: async () => {
             setDeleting(true);
             try {
-              const token = await AsyncStorage.getItem("accessToken");
+              await AsyncStorage.getItem("accessToken");
               await axiosInstance.delete(`/receipts/delete/${receipt.invoice_id}`);
               Alert.alert("Success", "Receipt deleted.");
               router.replace(

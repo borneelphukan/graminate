@@ -19,7 +19,6 @@ import {
   Button,
   Divider,
   HelperText,
-  Icon,
   IconButton,
   Modal,
   Portal,
@@ -275,7 +274,7 @@ const AuthScreen = () => {
         Sign In
       </Button>
       <View style={styles.toggleViewContainer}>
-        <Text variant="bodyMedium">Don't have an account?</Text>
+        <Text variant="bodyMedium">Don&apos;t have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Sign Up
         </Button>

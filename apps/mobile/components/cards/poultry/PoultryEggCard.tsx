@@ -44,12 +44,12 @@ type ViewOption = "graphs" | "metrics";
 
 type ChartData = {
   labels: string[];
-  datasets: Array<{
+  datasets: {
     data: number[];
     label?: string;
     color?: (opacity: number) => string;
     strokeWidth?: number;
-  }>;
+  }[];
   legend?: string[];
 };
 

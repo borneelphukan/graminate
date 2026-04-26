@@ -242,7 +242,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
         month: "short",
         day: "numeric",
       });
-    } catch (e) {
+    } catch {
       return dateString;
     }
   };
