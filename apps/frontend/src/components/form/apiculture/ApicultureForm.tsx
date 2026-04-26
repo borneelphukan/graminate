@@ -1,7 +1,6 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import TextField from "@/components/ui/TextField";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -220,71 +219,77 @@ const ApicultureForm = ({
               onSubmit={handleSubmitApiary}
               noValidate
             >
-              <TextField
+              <Input
+                id="apiary-name"
                 label="Bee Yard"
                 placeholder="e.g. Main Field Bee Yard"
                 value={apiaryData.apiary_name}
-                onChange={(val: string) => {
+                onChange={(e) => {
+                  const val = e.target.value;
                   setApiaryData({ ...apiaryData, apiary_name: val });
                   setApiaryErrors({ ...apiaryErrors, apiary_name: undefined });
                 }}
-                type={apiaryErrors.apiary_name ? "error" : ""}
-                errorMessage={apiaryErrors.apiary_name}
+                error={apiaryErrors.apiary_name}
               />
 
-              <TextField
+              <Input
+                id="address-line-1"
                 label="Address Line 1"
                 placeholder="e.g. 123 Bee Lane"
                 value={apiaryData.address_line_1}
-                onChange={(val: string) => {
-                  setApiaryData({ ...apiaryData, address_line_1: val });
+                onChange={(e) => {
+                  setApiaryData({ ...apiaryData, address_line_1: e.target.value });
                 }}
               />
-              <TextField
+              <Input
+                id="address-line-2"
                 label="Address Line 2 (Optional)"
                 placeholder="e.g. Ward No."
                 value={apiaryData.address_line_2}
-                onChange={(val: string) => {
-                  setApiaryData({ ...apiaryData, address_line_2: val });
+                onChange={(e) => {
+                  setApiaryData({ ...apiaryData, address_line_2: e.target.value });
                 }}
               />
-              <TextField
+              <Input
+                id="city"
                 label="City"
                 placeholder="e.g. Digboi"
                 value={apiaryData.city}
-                onChange={(val: string) => {
-                  setApiaryData({ ...apiaryData, city: val });
+                onChange={(e) => {
+                  setApiaryData({ ...apiaryData, city: e.target.value });
                 }}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TextField
+                <Input
+                  id="state"
                   label="State"
                   placeholder="e.g. Assam"
                   value={apiaryData.state}
-                  onChange={(val: string) => {
-                    setApiaryData({ ...apiaryData, state: val });
+                  onChange={(e) => {
+                    setApiaryData({ ...apiaryData, state: e.target.value });
                   }}
                 />
-                <TextField
+                <Input
+                  id="postal-code"
                   label="Postal Code"
                   placeholder="e.g. 12345"
                   value={apiaryData.postal_code}
-                  onChange={(val: string) => {
-                    setApiaryData({ ...apiaryData, postal_code: val });
+                  onChange={(e) => {
+                    setApiaryData({ ...apiaryData, postal_code: e.target.value });
                   }}
                 />
               </div>
-              <TextField
-                number
+              <Input
+                id="area"
+                type="number"
                 label="Area (Optional, in m²)"
                 placeholder="e.g. 150.5"
                 value={String(apiaryData.area)}
-                onChange={(val: string) => {
-                  setApiaryData({ ...apiaryData, area: val });
+                onChange={(e) => {
+                  setApiaryData({ ...apiaryData, area: e.target.value });
                   setApiaryErrors({ ...apiaryErrors, area: undefined });
                 }}
-                type={apiaryErrors.area ? "error" : ""}
-                errorMessage={apiaryErrors.area}
+                error={apiaryErrors.area}
               />
               <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
                 <Button

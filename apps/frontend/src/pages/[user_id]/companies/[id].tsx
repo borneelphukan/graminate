@@ -2,7 +2,7 @@ import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import { COMPANY_TYPES, INDUSTRY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";

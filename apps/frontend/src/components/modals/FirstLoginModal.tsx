@@ -1,4 +1,4 @@
-import { Icon, Button, RadioGroup, RadioGroupItem, Input, Dropdown } from "@graminate/ui";
+import { Icon, Button, RadioGroup, RadioGroupItem, Input, Dropdown, IconType } from "@graminate/ui";
 import React, { useState, useCallback, useEffect, JSX } from "react";
 import { useRouter } from "next/router";
 import { triggerToast } from "@/stores/toast";
@@ -59,9 +59,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
     return () => clearTimeout(timer);
   }, [step]);
 
-  const handleBusinessNameChange = useCallback((value: string) => {
-    setBusinessName(value);
-  }, []);
+
 
   const goToNextStep = useCallback(() => {
     if (step === "entitySelection") {
@@ -122,6 +120,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
     state,
     postalCode,
     country,
+    isDarkMode,
     userType,
     businessSize,
   ]);
@@ -180,7 +179,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
         return [...prev, value];
       });
     },
-    [plan, selectedSubTypes, userId, router]
+    [plan, selectedSubTypes, userId]
   );
 
   if (!isOpen) {
@@ -359,7 +358,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
                         className="sr-only"
                       />
                       <Icon
-                        type={theme.icon as any}
+                        type={theme.icon as IconType}
                         className={`size-6 mb-2 ${
                           isSelected
                             ? "text-brand-mute-green"

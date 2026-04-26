@@ -1,8 +1,7 @@
-import { Dropdown, Icon, Button, TextArea } from "@graminate/ui";
+import { Dropdown, Icon, Button, TextArea, Input } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent, useMemo } from "react";
 
 import Swal from "sweetalert2";
-import TextField from "@/components/ui/TextField";
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -36,7 +35,6 @@ const TaskModal = ({
   taskDetails,
   projectName,
   columns = [],
-  availableLabels,
   onClose,
   deleteTask,
   updateTask,
@@ -276,9 +274,12 @@ const TaskModal = ({
             <div>
               {isEditingTitle ? (
                 <div className="animate-slideIn">
-                  <TextField
+                  <Input
+                    id="task-title-input"
+                    label="Title"
+                    hideLabel
                     value={editedTitle}
-                    onChange={setEditedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
                     onBlur={saveTitleLocal}
                     onKeyDown={handleTitleKeyDown}
                   />

@@ -5,11 +5,9 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import axios, { AxiosError } from "axios";
 import ChatWindow from "@/layout/ChatWindow";
-import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "@/components/modals/InfoModal";
 import CookieDisclaimer from "@/components/ui/CookieDisclaimer";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import Head from "next/head";
 import { getTranslator } from "@/translations";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
@@ -39,7 +37,7 @@ const PlatformLayout = ({ children }: Props) => {
   const searchParams = useSearchParams();
   const { user_id } = router.query;
 
-  const { isFirstLogin, fetchUserSubTypes, language, userType, subTypes, plan, entityType } = useUserPreferences();
+  const { fetchUserSubTypes, language, userType, subTypes, plan, entityType } = useUserPreferences();
 
   const t = useMemo(() => getTranslator(language), [language]);
 
@@ -205,7 +203,6 @@ const PlatformLayout = ({ children }: Props) => {
   });
 
   useEffect(() => {
-    const sidebarWidth = window.innerWidth > 1024 ? 260 : 0;
     const margin = 16;
     const buttonSize = 56;
 
@@ -254,7 +251,7 @@ const PlatformLayout = ({ children }: Props) => {
 
       setChatPos((prev) => {
         let finalX;
-        let finalY = Math.max(72, Math.min(window.innerHeight - buttonSize - margin, prev.y));
+        const finalY = Math.max(72, Math.min(window.innerHeight - buttonSize - margin, prev.y));
         
         if (prev.x > window.innerWidth - buttonSize - 5) {
           setIsDocked(true);
@@ -385,7 +382,7 @@ const PlatformLayout = ({ children }: Props) => {
         setIsLoadingAuth(false);
       }
     },
-    [fetchUserSubTypes]
+    [fetchUserSubTypes, router]
   );
 
   useEffect(() => {

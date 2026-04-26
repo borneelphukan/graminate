@@ -12,7 +12,6 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import CattleForm from "@/components/form/CattleForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
-import InventoryStockCard from "@/components/cards/InventoryStock";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
 type View = "cattle";

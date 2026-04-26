@@ -1,6 +1,5 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Input } from "@graminate/ui";
 import React, { useState } from "react";
-import TextField from "@/components/ui/TextField";
 import InfoModal from "./InfoModal";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
@@ -72,12 +71,13 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
 
             <form onSubmit={handleResetPassword}>
               <div className="mb-4 text-left">
-                <TextField
+                <Input
+                  id="forgot-password-email"
                   label="Email"
+                  type="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={setEmail}
-                  width="large"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-4">

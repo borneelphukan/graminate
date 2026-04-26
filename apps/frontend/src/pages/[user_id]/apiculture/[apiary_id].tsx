@@ -16,7 +16,6 @@ import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import HiveForm, {
   HiveData,
-  SavedHiveData,
 } from "@/components/form/apiculture/HiveForm";
 
 type ApicultureDetail = {
@@ -315,7 +314,7 @@ const ApicultureDetailPage = () => {
     };
   }, [hives, hiveSearchQuery, formatDateForTable]);
 
-  const handleHiveFormSuccess = (_addedHive: SavedHiveData) => {
+  const handleHiveFormSuccess = () => {
     setShowHiveForm(false);
     fetchApiaryDetails();
     fetchHives();

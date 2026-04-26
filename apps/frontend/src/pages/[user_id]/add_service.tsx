@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useMemo, JSX } from "react";
+import React, { useState, useEffect, JSX } from "react";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import { getTranslator } from "@/translations";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Button } from "@graminate/ui";
+import { Button, Input } from "@graminate/ui";
 import { showToast, toastMessage } from "@/stores/toast";
-import TextField from "@/components/ui/TextField";
+import axios from "axios";
 import PasswordModal from "@/components/modals/PasswordModal";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
@@ -45,8 +44,7 @@ const AddServicePage = () => {
   const router = useRouter();
   const { user_id } = router.query;
 
-  const { language, subTypes, setUserSubTypes, plan } = useUserPreferences();
-  const t = useMemo(() => getTranslator(language), [language]);
+  const { subTypes, setUserSubTypes, plan } = useUserPreferences();
 
   const [availableSubTypes, setAvailableSubTypes] = useState<string[]>([]);
   const [selectedSubTypes, setSelectedSubTypes] = useState<Set<string>>(
@@ -58,7 +56,6 @@ const AddServicePage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
   const [isRemoving, setIsRemoving] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +78,7 @@ const AddServicePage = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [availableResponse, userResponse] = await Promise.all([
+        const [availableResponse] = await Promise.all([
           axiosInstance.get(`/user/${user_id}/available-sub-types`),
           axiosInstance.get(`/user/${user_id}`),
         ]);
@@ -89,8 +86,7 @@ const AddServicePage = () => {
         if (!Array.isArray(available)) {
           throw new Error("Available sub-types not found.");
         }
-        const user = userResponse.data?.data?.user ?? userResponse.data?.user;
-        setUserData(user);
+        // userData not used, so we don't need to set it
         setAvailableSubTypes(available);
       } catch (error) {
         console.error("Failed to fetch available service data:", error);
@@ -172,8 +168,9 @@ const AddServicePage = () => {
         
         if (failures.length > 0) {
           console.error("Some warehouse creations failed:", failures);
-          const firstFailure: any = failures[0];
-          const serverMessage = firstFailure.reason?.response?.data?.message || firstFailure.reason?.message;
+          const firstFailure = failures[0] as PromiseRejectedResult;
+          const errorData = firstFailure.reason as { response?: { data?: { message?: string } }; message?: string };
+          const serverMessage = errorData.response?.data?.message || errorData.message;
           throw new Error(serverMessage || "Failed to create some warehouses.");
         }
       }
@@ -185,9 +182,14 @@ const AddServicePage = () => {
       showToast.set(true);
       setUserSubTypes(newSubTypes);
       setSelectedSubTypes(new Set());
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to add user services or create warehouses:", error);
-      const errorMessage = error.response?.data?.message || error.message || "Failed to add services. Please try again.";
+      let errorMessage = "Failed to add services. Please try again.";
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message || errorMessage;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       toastMessage.set({
         message: errorMessage,
         type: "error",
@@ -344,16 +346,15 @@ const AddServicePage = () => {
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
           Enter password to remove selected service(s) and all related data.
         </p>
-        <TextField
+        <Input
+          id="confirm-password-input"
           label="Password"
           placeholder="Enter your password"
-          password={true}
+          type="password"
           value={password}
-          onChange={setPassword}
-          width="large"
-          type={modalError ? "error" : ""}
-          errorMessage={modalError || ""}
-          isDisabled={isVerifyingPassword}
+          onChange={(e) => setPassword(e.target.value)}
+          error={modalError || ""}
+          disabled={isVerifyingPassword}
         />
       </PasswordModal>
 

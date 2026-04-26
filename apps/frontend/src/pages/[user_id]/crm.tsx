@@ -1,7 +1,6 @@
-import { Icon, Button, SearchBar, Table } from "@graminate/ui";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { Button, Table } from "@graminate/ui";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import SearchDropdown from "@/components/ui/SearchDropdown";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -62,26 +61,7 @@ type Contract = {
   created_at: string;
 };
 
-type Receipt = {
-  invoice_id: number;
-  title: string;
-  bill_to: string;
-  due_date: string;
-  receipt_date: string;
-  payment_terms?: string;
-  notes?: string;
-  tax?: number;
-  discount?: number;
-  shipping?: number;
-  receipt_number?: string;
-  issued_date?: string;
-  bill_to_address_line1?: string;
-  bill_to_address_line2?: string;
-  bill_to_city?: string;
-  bill_to_state?: string;
-  bill_to_postal_code?: string;
-  bill_to_country?: string;
-};
+// Removed unused Receipt type
 
 type Task = {
   task_id: number;
@@ -137,7 +117,6 @@ const CRM = () => {
   const [contractsData, setContractsData] = useState<Contract[]>([]);
   const [tasksData, setTasksData] = useState<Task[]>([]);
   const [fetchedData, setFetchedData] = useState<FetchedDataItem[]>([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dropdownItems = [
@@ -417,19 +396,6 @@ const CRM = () => {
 
   const totalRecordCount = filteredRows.length;
 
-  const navigateTo = (newView: string) => {
-    if (
-      ["contacts", "companies", "contracts", "tasks"].includes(
-        newView
-      )
-    ) {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set("view", newView);
-      router.push(currentUrl.toString());
-      setDropdownOpen(false);
-    }
-  };
-
   const handleRowClick = (item: FetchedDataItem | AggregatedTaskProject) => {
     const userIdString = Array.isArray(user_id) ? user_id[0] : user_id;
 
@@ -477,21 +443,6 @@ const CRM = () => {
       },
     });
   };
-
-  const sidebarTitle = useMemo(() => {
-    switch (view) {
-      case "contacts":
-        return "Create Contact";
-      case "companies":
-        return "Create Company";
-      case "contracts":
-        return "Create Contract";
-      case "tasks":
-        return "Create Project";
-      default:
-        return "Create Item";
-    }
-  }, [view]);
 
   const getButtonText = (view: View) => {
     switch (view) {

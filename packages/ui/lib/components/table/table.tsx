@@ -11,7 +11,7 @@ import { Button } from "../button/button";
 import { SearchBar } from "../searchbar/searchbar";
 import { TableSkeleton } from "./table-skeleton";
 
-type RowType = unknown[];
+export type RowType = unknown[];
 
 type TableData = {
   columns: string[];

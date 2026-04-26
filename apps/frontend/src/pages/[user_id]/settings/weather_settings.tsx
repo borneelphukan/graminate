@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
-import TextField from "@/components/ui/TextField";
-import { Dropdown, Checkbox, Button } from "@graminate/ui";
+import { Dropdown, Checkbox, Button, Input } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -146,17 +145,17 @@ const WeatherSettings = () => {
                     </div>
 
                     <div className="flex flex-col gap-4 max-w-lg">
-                      <TextField
+                      <Input
+                        id="weather-location"
                         label={t("setLocation" as TranslationKey)}
                         placeholder={t("enterLocation" as TranslationKey)}
                         value={weatherSettings.location}
-                        onChange={(val) =>
+                        onChange={(e) =>
                           setWeatherSettings((prev) => ({
                             ...prev,
-                            location: val,
+                            location: e.target.value,
                           }))
                         }
-                        width="large"
                       />
                       <Dropdown
                         label={t("scale" as TranslationKey)}

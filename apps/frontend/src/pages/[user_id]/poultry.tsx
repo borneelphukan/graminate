@@ -1,4 +1,4 @@
-import { Icon, Button, Table, SegmentedControl } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -10,7 +10,6 @@ import Loader from "@/components/ui/Loader";
 import FlockForm from "@/components/form/poultry/FlockForm";
 import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import InventoryStockCard from "@/components/cards/InventoryStock";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 

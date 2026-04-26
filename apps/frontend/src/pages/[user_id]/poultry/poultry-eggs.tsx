@@ -106,14 +106,6 @@ const PoultryEggCollection = () => {
     setShowEggModal(true);
   };
 
-  const handleRowClick = (rowData: unknown[]) => {
-    const recordId = rowData[0] as number;
-    const recordToEdit = eggRecords.find((r) => r.egg_id === recordId);
-    if (recordToEdit) {
-      handleEditRecord(recordToEdit);
-    }
-  };
-
   const tableData = useMemo(() => {
     const columns = [
       "#",
@@ -201,10 +193,7 @@ const PoultryEggCollection = () => {
           onRowClick={(row) => {
             const recordId = row[0] as number;
             const record = eggRecords.find((r) => r.egg_id === recordId);
-            if (record) {
-              setEditingRecord(record);
-              setShowEggModal(true);
-            }
+            if (record) handleEditRecord(record);
           }}
           view="poultry_eggs"
           loading={loading}

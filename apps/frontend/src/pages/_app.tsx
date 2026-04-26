@@ -12,16 +12,16 @@ function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     // Basic mobile/tablet detection
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+    const userAgent = (navigator.userAgent || navigator.vendor || (window as Window & { opera?: string }).opera || "").toLowerCase();
+    const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
     
     // Check for tablets specifically if needed, or if isMobile covers it
-    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent.toLowerCase());
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
 
     if ((isMobile || isTablet) && router.pathname !== "/mobile-redirect") {
       router.replace("/mobile-redirect");
     }
-  }, [router.pathname]);
+  }, [router, router.pathname]);
 
   return (
     <UserPreferencesProvider>

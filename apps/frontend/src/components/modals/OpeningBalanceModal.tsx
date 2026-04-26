@@ -1,6 +1,5 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "./InfoModal";
 
@@ -99,15 +98,14 @@ const OpeningBalanceModal = ({
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <TextField
+              <Input
+                id="opening-balance"
                 label="Opening Balance (INR)"
-                number
+                type="number"
                 value={balance}
-                onChange={(v) => setBalance(v)}
+                onChange={(e) => setBalance(e.target.value)}
                 placeholder="0.00"
-                errorMessage={error}
-                type={error ? "error" : ""}
-                width="large"
+                error={error}
               />
 
               <div className="flex justify-end gap-4 pt-6 border-t border-gray-400 dark:border-gray-600">

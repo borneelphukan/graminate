@@ -1,5 +1,4 @@
-import { Dropdown, Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -348,17 +347,17 @@ const LabourDetails = () => {
                 Personal Data
               </h2>
               <div className="grid grid-cols-2 gap-4">
-                <TextField
+                <Input
+                  id="full-name"
                   label="Full Name"
                   value={fullName}
-                  onChange={(val) => setFullName(val)}
-                  width="large"
+                  onChange={(e) => setFullName(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="dob"
                   label="Date of Birth"
                   value={dateOfBirth}
-                  onChange={(val) => setDateOfBirth(val)}
-                  width="large"
+                  onChange={(e) => setDateOfBirth(e.target.value)}
                 />
                 <Dropdown
                   items={GENDER}
@@ -368,56 +367,56 @@ const LabourDetails = () => {
                   label="Gender"
                   width="full"
                 />
-                <TextField
+                <Input
+                  id="role"
                   label="Role"
                   value={role}
-                  onChange={(val) => setRole(val)}
-                  width="large"
+                  onChange={(e) => setRole(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="contact-number"
                   label="Contact Number"
                   value={contactNumber}
-                  onChange={(val) => setContactNumber(val)}
-                  width="large"
+                  onChange={(e) => setContactNumber(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="aadhar-card"
                   label="Aadhar Card"
                   value={aadharCardNumber}
-                  onChange={(val) => setAadharCardNumber(val)}
-                  width="large"
+                  onChange={(e) => setAadharCardNumber(e.target.value)}
                 />
 
-                <TextField
+                <Input
+                  id="address-line-1"
                   label="Address Line 1"
                   value={addressLine1}
-                  onChange={(val) => setAddressLine1(val)}
-                  width="large"
+                  onChange={(e) => setAddressLine1(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="address-line-2"
                   label="Address Line 2"
                   value={addressLine2}
-                  onChange={(val) => setAddressLine2(val)}
-                  width="large"
+                  onChange={(e) => setAddressLine2(e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-3 mt-4 gap-4 w-full">
-                <TextField
+                <Input
+                  id="city"
                   label="City"
                   value={city}
-                  onChange={(val) => setCity(val)}
-                  width="large"
+                  onChange={(e) => setCity(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="state"
                   label="State"
                   value={state}
-                  onChange={(val) => setState(val)}
-                  width="large"
+                  onChange={(e) => setState(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="postal-code"
                   label="Postal Code"
                   value={postalCode}
-                  onChange={(val) => setPostalCode(val)}
-                  width="large"
+                  onChange={(e) => setPostalCode(e.target.value)}
                 />
               </div>
             </div>
@@ -428,11 +427,12 @@ const LabourDetails = () => {
                 Salary Data
               </h2>
               <div className="grid grid-cols-2 gap-4">
-                <TextField
+                <Input
+                  id="base-salary"
                   label="Basic Salary (₹)"
+                  type="number"
                   value={baseSalary}
-                  onChange={setBaseSalary}
-                  width="large"
+                  onChange={(e) => setBaseSalary(e.target.value)}
                 />
                 <Dropdown
                   label="Payment Frequency"
@@ -442,37 +442,42 @@ const LabourDetails = () => {
                   
                   width="full"
                 />
-                <TextField
+                <Input
+                  id="bonus-salary"
                   label="Bonus (₹)"
+                  type="number"
                   value={bonus}
-                  onChange={setBonus}
-                  width="large"
+                  onChange={(e) => setBonus(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="overtime-pay-salary"
                   label="Overtime Pay (₹)"
+                  type="number"
                   value={overtimePay}
-                  onChange={setOvertimePay}
-                  width="large"
+                  onChange={(e) => setOvertimePay(e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-3 mt-4 gap-4 w-full">
-                <TextField
+                <Input
+                  id="housing-allowance-salary"
                   label="Housing Allowance (Optional) (₹)"
+                  type="number"
                   value={housingAllowance}
-                  onChange={setHousingAllowance}
-                  width="large"
+                  onChange={(e) => setHousingAllowance(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="travel-allowance-salary"
                   label="Travel Allowance (Optional) (₹)"
+                  type="number"
                   value={travelAllowance}
-                  onChange={setTravelAllowance}
-                  width="large"
+                  onChange={(e) => setTravelAllowance(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="meal-allowance-salary"
                   label="Meal Allowance (Optional) (₹)"
+                  type="number"
                   value={mealAllowance}
-                  onChange={setMealAllowance}
-                  width="large"
+                  onChange={(e) => setMealAllowance(e.target.value)}
                 />
               </div>
             </div>
@@ -483,32 +488,32 @@ const LabourDetails = () => {
                 Government Compliance Data
               </h2>
               <div className="grid grid-cols-2 gap-4">
-                <TextField
+                <Input
+                  id="ration-card"
                   label="Ration Card"
                   value={rationCard}
-                  onChange={(val) => setRationCard(val)}
-                  width="large"
+                  onChange={(e) => setRationCard(e.target.value)}
                 />
 
-                <TextField
+                <Input
+                  id="pan-card"
                   label="PAN Card"
                   value={panCard}
-                  onChange={(val) => setPanCard(val)}
-                  width="large"
+                  onChange={(e) => setPanCard(e.target.value)}
                 />
 
-                <TextField
+                <Input
+                  id="driving-license"
                   label="Driving License"
                   value={drivingLicense}
-                  onChange={(val) => setDrivingLicense(val)}
-                  width="large"
+                  onChange={(e) => setDrivingLicense(e.target.value)}
                 />
 
-                <TextField
+                <Input
+                  id="mnrega-job-card"
                   label="MNREGA Job Card Number"
                   value={mnregaJobCardNumber}
-                  onChange={(val) => setMnregaJobCardNumber(val)}
-                  width="large"
+                  onChange={(e) => setMnregaJobCardNumber(e.target.value)}
                 />
 
                 <Dropdown
@@ -520,18 +525,18 @@ const LabourDetails = () => {
                   width="full"
                 />
 
-                <TextField
+                <Input
+                  id="epfo"
                   label="EPFO"
                   value={epfo}
-                  onChange={(val) => setEpfo(val)}
-                  width="large"
+                  onChange={(e) => setEpfo(e.target.value)}
                 />
 
-                <TextField
+                <Input
+                  id="esic"
                   label="ESIC"
                   value={esic}
-                  onChange={(val) => setEsic(val)}
-                  width="large"
+                  onChange={(e) => setEsic(e.target.value)}
                 />
 
                 <Dropdown
@@ -551,29 +556,29 @@ const LabourDetails = () => {
                 Bank Data
               </h2>
               <div className="grid grid-cols-2 gap-4">
-                <TextField
+                <Input
+                  id="bank-account-number"
                   label="Bank Account Number"
                   value={bankAccountNumber}
-                  onChange={(val) => setBankAccountNumber(val)}
-                  width="large"
+                  onChange={(e) => setBankAccountNumber(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="ifsc-code"
                   label="IFSC Code"
                   value={ifscCode}
-                  onChange={(val) => setIfscCode(val)}
-                  width="large"
+                  onChange={(e) => setIfscCode(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="bank-name"
                   label="Bank Name"
                   value={bankName}
-                  onChange={(val) => setBankName(val)}
-                  width="large"
+                  onChange={(e) => setBankName(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="bank-branch"
                   label="Bank Branch"
                   value={bankBranch}
-                  onChange={(val) => setBankBranch(val)}
-                  width="large"
+                  onChange={(e) => setBankBranch(e.target.value)}
                 />
               </div>
             </div>

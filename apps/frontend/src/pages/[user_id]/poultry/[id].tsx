@@ -26,8 +26,6 @@ import {
   endOfWeek,
   eachDayOfInterval,
   min as minDateFn,
-  subDays,
-  differenceInDays,
 } from "date-fns";
 
 import VeterinaryCard from "@/components/cards/poultry/VeterinaryCard";
@@ -224,9 +222,6 @@ const PoultryDetail = () => {
 
   const [allFeedRecords, setAllFeedRecords] = useState<PoultryFeedRecord[]>([]);
   const [loadingAllFeedRecords, setLoadingAllFeedRecords] = useState(true);
-  const [feedInventoryDays, setFeedInventoryDays] = useState<number>(0);
-  const [avgDailyConsumptionKg, setAvgDailyConsumptionKg] = useState<number>(0);
-  const [avgDailyConsumptionDisplay, setAvgDailyConsumptionDisplay] = useState<string>("N/A");
   const [timesFedToday, setTimesFedToday] = useState<number>(0);
   const [targetFeedingsPerDay] = useState<number>(7);
   const [loadingCalculatedFeedData, setLoadingCalculatedFeedData] =
@@ -241,15 +236,7 @@ const PoultryDetail = () => {
     return "text-green-200";
   }, []);
 
-  const convertAmountToKg = (amount: number, unit: string): number => {
-    const unitLower = unit ? unit.toLowerCase() : "";
-    if (unitLower === "kg") return amount;
-    if (unitLower === "g" || unitLower === "grams") return amount / 1000;
-    if (unitLower === "lbs" || unitLower === "pounds") return amount * 0.453592;
-    if (unitLower && unitLower !== "") {
-    }
-    return 0;
-  };
+
 
   const fetchAllPoultryFeedData = useCallback(async () => {
     if (!parsedUserId || !parsedFlockId) {
@@ -279,31 +266,6 @@ const PoultryDetail = () => {
       return;
     }
     const today = startOfDay(new Date());
-    const thirtyDaysAgo = startOfDay(subDays(today, 29));
-    let totalKgConsumedLast30Days = 0;
-    const recordsInLast30Days = allFeedRecords.filter((record) => {
-      const recordDate = startOfDay(parseISO(record.feed_date));
-      return recordDate >= thirtyDaysAgo && recordDate <= today;
-    });
-    recordsInLast30Days.forEach((record) => {
-      totalKgConsumedLast30Days += convertAmountToKg(
-        record.amount_given,
-        record.units
-      );
-    });
-    const earliestRecordDateInPeriod =
-      recordsInLast30Days.length > 0
-        ? minDateFn(recordsInLast30Days.map((r) => parseISO(r.feed_date)))
-        : thirtyDaysAgo;
-    const daysInPeriodWithData = Math.max(
-      1,
-      differenceInDays(today, earliestRecordDateInPeriod) + 1
-    );
-    const calculatedAvgDailyKg =
-      recordsInLast30Days.length > 0
-        ? totalKgConsumedLast30Days / Math.min(30, daysInPeriodWithData)
-        : 0;
-    setAvgDailyConsumptionKg(calculatedAvgDailyKg);
     const fedTodayCount = allFeedRecords.filter(
       (record) =>
         startOfDay(parseISO(record.feed_date)).getTime() === today.getTime()
@@ -312,38 +274,7 @@ const PoultryDetail = () => {
     setLoadingCalculatedFeedData(false);
   }, [allFeedRecords, loadingAllFeedRecords]);
 
-  useEffect(() => {
-    if (
-      loadingFlockData ||
-      loadingPoultryInventory ||
-      loadingCalculatedFeedData
-    ) {
-      return;
-    }
-    const actualFeedItems = poultryInventoryItems.filter(
-      (item) => item.feed === true && item.item_group === "Poultry"
-    );
 
-    const totalFeedQuantityKgForConsumption = actualFeedItems.reduce(
-      (sum, item) => sum + convertAmountToKg(item.quantity, item.units),
-      0
-    );
-    if (avgDailyConsumptionKg > 0 && isFinite(avgDailyConsumptionKg)) {
-      const days = totalFeedQuantityKgForConsumption / avgDailyConsumptionKg;
-      setFeedInventoryDays(days);
-    } else {
-      setFeedInventoryDays(
-        totalFeedQuantityKgForConsumption > 0 ? Infinity : 0
-      );
-    }
-  }, [
-    selectedFlockData,
-    poultryInventoryItems,
-    loadingFlockData,
-    loadingPoultryInventory,
-    avgDailyConsumptionKg,
-    loadingCalculatedFeedData,
-  ]);
 
   const convertToFahrenheit = useCallback((celsius: number): number => {
     return Math.round(celsius * (9 / 5) + 32);
@@ -635,7 +566,7 @@ const PoultryDetail = () => {
       const initialStartDate = startOfWeek(today, { weekStartsOn: 1 });
       const initialEndDate = endOfWeek(today, { weekStartsOn: 1 });
       processEggDataForGraph(fetchedRecords, initialStartDate, initialEndDate);
-    } catch (error) {
+    } catch {
       setPoultryEggCardStats((prev) => ({
         ...prev,
         loading: false,
@@ -710,7 +641,7 @@ const PoultryDetail = () => {
         loading: false,
         error: null,
       });
-    } catch (error) {
+    } catch {
       setLatestPoultryHealthData({
         birds_vaccinated: null,
         total_birds_at_event: null,
@@ -1096,8 +1027,6 @@ const PoultryDetail = () => {
               targetFeedingsPerDay={targetFeedingsPerDay}
               userId={parsedUserId}
               flockId={parsedFlockId}
-              feedInventoryDays={feedInventoryDays}
-              avgDailyConsumptionDisplay={avgDailyConsumptionDisplay[0]}
             />
           )}
         </div>

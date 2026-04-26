@@ -82,9 +82,10 @@ const SubscriptionBillingPage = () => {
       if (billingData.data?.payments) {
         setPayments(billingData.data.payments);
       }
-    } catch (err: any) {
-      console.error("Fetch error:", err);
-      setError(err.message);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error("Fetch error:", error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }

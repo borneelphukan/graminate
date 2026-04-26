@@ -1,8 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
-import TextField from "@/components/ui/TextField";
-import { Button } from "@graminate/ui";
+import { Button, Input } from "@graminate/ui";
 import DefaultLayout from "@/layout/LoginLayout";
 import Head from "next/head";
 
@@ -197,23 +196,23 @@ const AuthPage = () => {
                   Admin Login
                 </h2>
                 <div>
-                  <TextField
+                  <Input
+                    id="admin-login-email"
                     label="Email"
                     placeholder="Enter your email"
                     value={loginEmail}
-                    onChange={(val) => setLoginEmail(val)}
-                    width="large"
+                    onChange={(e) => setLoginEmail(e.target.value)}
                   />
                 </div>
                 <div>
-                  <TextField
+                  <Input
+                    id="admin-login-password"
                     label="Password"
                     placeholder="Enter your password"
-                    password
+                    type="password"
                     value={loginPassword}
-                    onChange={(val) => setLoginPassword(val)}
-                    width="large"
-                    isDisabled={isLoading}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
@@ -234,53 +233,53 @@ const AuthPage = () => {
                   Admin Registration
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <TextField
+                  <Input
+                    id="admin-reg-first-name"
                     label="First Name"
                     placeholder="Your First Name"
                     value={regFirstName}
-                    onChange={(val) => setRegFirstName(val)}
-                    isDisabled={isLoading}
-                    width="large"
+                    onChange={(e) => setRegFirstName(e.target.value)}
+                    disabled={isLoading}
                   />
-                  <TextField
+                  <Input
+                    id="admin-reg-last-name"
                     label="Last Name"
                     placeholder="Your Last Name"
                     value={regLastName}
-                    onChange={(val) => setRegLastName(val)}
-                    isDisabled={isLoading}
-                    width="large"
+                    onChange={(e) => setRegLastName(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
-                  <TextField
+                  <Input
+                    id="admin-reg-email"
                     label="Email"
                     placeholder="e.g. john.doe@graminate.com"
                     value={regEmail}
-                    onChange={(val) => setRegEmail(val)}
-                    isDisabled={isLoading}
-                    width="large"
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
-                  <TextField
+                  <Input
+                    id="admin-reg-password"
                     label="Password"
                     placeholder="Enter your password"
-                    password
+                    type="password"
                     value={regPassword}
-                    onChange={(val) => setRegPassword(val)}
-                    width="large"
-                    isDisabled={isLoading}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>
-                  <TextField
+                  <Input
+                    id="admin-reg-confirm-password"
                     label="Confirm Password"
                     placeholder="Re-enter your password"
-                    password
+                    type="password"
                     value={regConfirmPassword}
-                    onChange={(val) => setRegConfirmPassword(val)}
-                    width="large"
-                    isDisabled={isLoading}
+                    onChange={(e) => setRegConfirmPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div>

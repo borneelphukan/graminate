@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import { Avatar, AvatarFallback, Button } from "@graminate/ui";
+import { Button } from "@graminate/ui";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 

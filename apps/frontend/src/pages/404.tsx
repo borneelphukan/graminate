@@ -30,7 +30,7 @@ const Custom404 = () => {
               Lost in the field?
             </h1>
             <p className="text-dark dark:text-light mb-10 leading-relaxed">
-              We couldn't find the page you're looking for. It might have been moved or doesn't exist anymore.
+              We couldn&apos;t find the page you&apos;re looking for. It might have been moved or doesn&apos;t exist anymore.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

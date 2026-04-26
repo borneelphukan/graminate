@@ -1,4 +1,4 @@
-import { Icon, Button, Table, SegmentedControl } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,7 +7,6 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskBoard from "@/components/tasks/TaskBoard";
-import InventoryStockCard from "@/components/cards/InventoryStock";
 import { useTableActions } from "@/hooks/useTableActions";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { PAGINATION_ITEMS } from "@/constants/options";

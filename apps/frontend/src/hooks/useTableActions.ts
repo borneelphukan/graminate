@@ -1,13 +1,13 @@
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 
-export type RowType = unknown[];
+import { RowType } from "@graminate/ui";
 
 export const useTableActions = (view: string) => {
   const handleDeleteRows = async (selectedRows: RowType[]) => {
     const rowsToDelete: number[] = [];
     selectedRows.forEach((row) => {
-      const id = (row as any[])[0];
+      const id = row[0];
       if (typeof id === "number") rowsToDelete.push(id);
     });
 

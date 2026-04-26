@@ -11,8 +11,6 @@ import SalesTable, {
 } from "@/components/tables/SalesTable";
 import LoanModal from "@/components/modals/LoanModal";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import { useSubTypeFinancialData } from "@/hooks/finance";
-import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import Swal from "sweetalert2";
 
 type LoanRecord = {

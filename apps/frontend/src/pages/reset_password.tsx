@@ -1,9 +1,8 @@
-import { Icon, Button } from "@graminate/ui";
+import { Button, Input } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Swal from "sweetalert2";
-import TextField from "@/components/ui/TextField";
 import HomeNavbar from "@/components/layout/Navbar/HomeNavbar";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
@@ -104,23 +103,23 @@ const ResetPasswordPage = () => {
             Enter your new password twice to remember it well
           </p>
           <div className="mb-4 text-left">
-            <TextField
+            <Input
+              id="new-password"
               label="New Password"
               placeholder="Enter New Password"
-              password
+              type="password"
               value={newPassword}
-              onChange={(val: string) => setNewPassword(val)}
-              width="large"
+              onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
           <div className="mb-4 text-left">
-            <TextField
+            <Input
+              id="confirm-password"
               label="Confirm Password"
               placeholder="Confirm New Password"
-              password
+              type="password"
               value={confirmPassword}
-              onChange={(val: string) => setConfirmPassword(val)}
-              width="large"
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
           <div className="mt-4">

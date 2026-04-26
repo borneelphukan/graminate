@@ -98,7 +98,7 @@ const Expenses = () => {
     fetchExpensesData();
   }, [currentUserId, fetchExpensesData]);
 
-  const { fullHistoricalData, isLoadingFinancials: isFinancialLoading } = useSubTypeFinancialData({
+  const { fullHistoricalData } = useSubTypeFinancialData({
     userId: currentUserId,
     targetSubType: "All", // We want global data
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,

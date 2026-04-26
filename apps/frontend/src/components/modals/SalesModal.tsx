@@ -1,6 +1,5 @@
-import { Icon, Dropdown, Button } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
@@ -252,21 +251,20 @@ const SalesModal = ({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
+              <Input
+                id="sales-title"
                 label="Sales Title"
                 placeholder="e.g., Weekly Farm Stand Sales"
                 value={salesName}
-                onChange={(val) => setSalesName(val)}
-                width="large"
+                onChange={(e) => setSalesName(e.target.value)}
               />
-              <TextField
+              <Input
+                id="sales-date"
                 label="Sales Date"
-                calendar={true}
+                type="date"
                 value={salesDate}
-                onChange={(val) => setSalesDate(val)}
-                errorMessage={errors.salesDate}
-                type={errors.salesDate ? "error" : ""}
-                width="large"
+                onChange={(e) => setSalesDate(e.target.value)}
+                error={errors.salesDate}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -307,35 +305,36 @@ const SalesModal = ({
                   key={index}
                   className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-x-3 gap-y-2 items-end mb-3"
                 >
-                  <TextField
+                  <Input
+                    id={`item-name-${index}`}
                     label="Item Name"
                     placeholder="e.g., Organic Eggs"
                     value={item.name}
-                    onChange={(val) => handleItemChange(index, "name", val)}
+                    onChange={(e) => handleItemChange(index, "name", e.target.value)}
                   />
-
-                  <TextField
+                  <Input
+                    id={`item-quantity-${index}`}
                     label="Quantity Sold"
-                    number={true}
+                    type="number"
                     placeholder="e.g., 12"
                     value={item.quantity}
-                    onChange={(val) => handleItemChange(index, "quantity", val)}
+                    onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
                   />
-                  <TextField
-                    label={index === 0 ? "Price/Unit" : undefined}
-                    number={true}
+                  <Input
+                    id={`item-price-${index}`}
+                    label={index === 0 ? "Price/Unit" : "Price/Unit"}
+                    type="number"
                     placeholder="e.g., 4.50"
                     value={item.price_per_unit}
-                    onChange={(val) =>
-                      handleItemChange(index, "price_per_unit", val)
-                    }
+                    onChange={(e) => handleItemChange(index, "price_per_unit", e.target.value)}
                   />
                   <div className="relative">
-                    <TextField
+                    <Input
+                      id={`item-unit-${index}`}
                       label="Measurement Unit"
                       placeholder="e.g., dozen"
                       value={item.unit}
-                      onChange={(val) => handleItemChange(index, "unit", val)}
+                      onChange={(e) => handleItemChange(index, "unit", e.target.value)}
                       onFocus={() => handleUnitInputFocus(index)}
                     />
                     {showUnitSuggestionsFor === index &&

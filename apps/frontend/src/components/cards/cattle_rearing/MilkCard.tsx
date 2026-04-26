@@ -19,8 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import TextField from "@/components/ui/TextField";
-import { Dropdown, Button, Table } from "@graminate/ui";
+import { Dropdown, Button, Table, Input } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -752,30 +751,33 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             </h3>
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TextField
-                  calendar
+                <Input
+                  id="date-collected"
+                  type="date"
                   label="Date Collected"
                   value={formData.date_collected}
-                  onChange={(val) => handleFormChange("date_collected", val)}
+                  onChange={(e) => handleFormChange("date_collected", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="milk-produced"
                   label="Milk Produced (Liters)"
+                  type="number"
                   value={formData.milk_produced}
-                  onChange={(val) => handleFormChange("milk_produced", val)}
+                  onChange={(e) => handleFormChange("milk_produced", e.target.value)}
                   placeholder="e.g., 10.5"
                 />
               </div>
               <div className="relative">
-                <TextField
+                <Input
+                  id="animal-name"
                   label="Animal Name / Number (Optional)"
                   value={formData.animal_name}
-                  onChange={(val) => handleFormChange("animal_name", val)}
+                  onChange={(e) => handleFormChange("animal_name", e.target.value)}
                   onFocus={() =>
                     animalNameSuggestions.length > 0 &&
                     setShowAnimalNameSuggestions(true)
                   }
                   placeholder="e.g. Daisy, Tag #123"
-                  isLoading={isLoadingAnimalNameSuggestions}
                 />
                 {showAnimalNameSuggestions &&
                   filteredAnimalNameSuggestions.length > 0 && (
@@ -852,28 +854,30 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 my-4">
               <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                <TextField
+                <Input
+                  id="start-date"
                   label="Start Date"
-                  calendar
+                  type="date"
                   value={
                     startDate && isValidDate(startDate)
                       ? format(startDate, "yyyy-MM-dd")
                       : ""
                   }
-                  onChange={handleStartDateChange}
+                  onChange={(e) => handleStartDateChange(e.target.value)}
                   placeholder="YYYY-MM-DD"
                 />
               </div>
               <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                <TextField
+                <Input
+                  id="end-date"
                   label="End Date"
-                  calendar
+                  type="date"
                   value={
                     endDate && isValidDate(endDate)
                       ? format(endDate, "yyyy-MM-dd")
                       : ""
                   }
-                  onChange={handleEndDateChange}
+                  onChange={(e) => handleEndDateChange(e.target.value)}
                   placeholder="YYYY-MM-DD"
                   disabled={!startDate || !isValidDate(startDate)}
                 />

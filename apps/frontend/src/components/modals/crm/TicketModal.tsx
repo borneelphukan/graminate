@@ -1,5 +1,4 @@
-import { Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Button, Input } from "@graminate/ui";
 import React, { useState } from "react";
 
 
@@ -48,12 +47,12 @@ const TicketModal = ({
           </p>
 
           <div className="mt-4 flex flex-1 flex-row items-center gap-1">
-            <TextField
+            <Input
+              id="max-tasks-limit"
               label="Maximum tasks"
               placeholder="Set Limit"
-              width="medium"
               value={newLimit}
-              onChange={(val) => setNewLimit(val)}
+              onChange={(e) => setNewLimit(e.target.value)}
             />
 
             {newLimit.trim() && (

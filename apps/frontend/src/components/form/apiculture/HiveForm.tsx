@@ -1,6 +1,5 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import TextField from "@/components/ui/TextField";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -258,13 +257,13 @@ const HiveForm = ({
               onSubmit={handleSubmit}
               className="flex flex-col gap-4 flex-grow"
             >
-            <TextField
+            <Input
+              id="hive-name"
               label="Hive Name / Identifier Number"
               placeholder="Enter Hive Name or Identifier"
               value={hiveData.hive_name}
-              onChange={(val) => handleInputChange("hive_name", val)}
-              errorMessage={errors.hive_name}
-              type={errors.hive_name ? "error" : ""}
+              onChange={(e) => handleInputChange("hive_name", e.target.value)}
+              error={errors.hive_name}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Dropdown
@@ -286,21 +285,24 @@ const HiveForm = ({
               />
             </div>
 
-            <TextField
-              calendar
+            <Input
+              id="installation-date"
+              type="date"
               label="Installation Date"
               value={hiveData.installation_date}
-              onChange={(val) => handleInputChange("installation_date", val)}
+              onChange={(e) => handleInputChange("installation_date", e.target.value)}
             />
 
             {/* REMOVED latitude and longitude TextFields */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
+              <Input
+                id="honey-capacity"
                 label="Honey Capacity"
+                type="number"
                 placeholder="e.g., 25.5"
                 value={hiveData.honey_capacity}
-                onChange={(val) => handleInputChange("honey_capacity", val)}
+                onChange={(e) => handleInputChange("honey_capacity", e.target.value)}
               />
               <Dropdown
                 label="Unit"

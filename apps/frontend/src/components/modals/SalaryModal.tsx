@@ -1,9 +1,8 @@
-import { Dropdown, Button } from "@graminate/ui";
-import { useState } from "react";
-import { showToast, toastMessage } from "@/stores/toast";
-import TextField from "@/components/ui/TextField";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import { useSalaryModalPrefill } from "@/hooks/modals";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useState } from "react";
+import { showToast, toastMessage } from "@/stores/toast";
 
 type PaymentData = {
   payment_id: number;
@@ -127,64 +126,64 @@ const SalaryModal = ({
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
+              <Input
+                id="payment-date"
                 label="Payment Date *"
-                calendar
+                type="date"
                 value={paymentDate}
-                onChange={setPaymentDate}
-                width="large"
+                onChange={(e) => setPaymentDate(e.target.value)}
               />
-              <TextField
+              <Input
+                id="salary-paid"
                 label="Salary to Pay / Paid *"
-                number
+                type="number"
                 value={salaryPaid}
-                onChange={setSalaryPaid}
-                width="large"
+                onChange={(e) => setSalaryPaid(e.target.value)}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
+              <Input
+                id="bonus"
                 label="Bonus"
-                number
+                type="number"
                 value={bonus}
-                onChange={setBonus}
-                width="large"
+                onChange={(e) => setBonus(e.target.value)}
                 placeholder="0.00"
               />
-              <TextField
+              <Input
+                id="overtime-pay"
                 label="Overtime Pay"
-                number
+                type="number"
                 value={overtimePay}
-                onChange={setOvertimePay}
-                width="large"
+                onChange={(e) => setOvertimePay(e.target.value)}
                 placeholder="0.00"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <TextField
+              <Input
+                id="housing-allowance"
                 label="Housing Allowance"
-                number
+                type="number"
                 value={housingAllowance}
-                onChange={setHousingAllowance}
-                width="large"
+                onChange={(e) => setHousingAllowance(e.target.value)}
                 placeholder="0.00"
               />
-              <TextField
+              <Input
+                id="travel-allowance"
                 label="Travel Allowance"
-                number
+                type="number"
                 value={travelAllowance}
-                onChange={setTravelAllowance}
-                width="large"
+                onChange={(e) => setTravelAllowance(e.target.value)}
                 placeholder="0.00"
               />
-              <TextField
+              <Input
+                id="meal-allowance"
                 label="Meal Allowance"
-                number
+                type="number"
                 value={mealAllowance}
-                onChange={setMealAllowance}
-                width="large"
+                onChange={(e) => setMealAllowance(e.target.value)}
                 placeholder="0.00"
               />
             </div>

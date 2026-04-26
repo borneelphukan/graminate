@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import TextField from "@/components/ui/TextField";
 import TextArea from "@/components/ui/TextArea";
-import { Button } from "@graminate/ui";
+import { ContactInfo, ContactErrors } from "@/lib/types";
+import DefaultLayout from "@/layout/DefaultLayout";
+import { Button, Input, Dropdown } from "@graminate/ui";
 import emailjs from "@emailjs/browser";
 import Toast from "@/components/ui/Toast";
 import { triggerToast } from "@/stores/toast";
 import CurrentLocation from "@/components/others/CurrentLocation";
-import DropdownSmall from "@/components/ui/Dropdown/DropdownSmall";
 import { services } from "@/lib/constants";
-import { ContactInfo, ContactErrors } from "@/lib/types";
-import DefaultLayout from "@/layout/DefaultLayout";
 
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
@@ -137,64 +135,68 @@ export default function ContactUs() {
             <div className="w-full lg:w-1/2">
               <form onSubmit={handleSubmit} className="w-full px-6 py-8">
                 <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <TextField
+                  <Input
+                    id="contact-first-name"
                     label="First Name"
                     placeholder="First Name"
                     value={contactInfo.firstName}
-                    onChange={(val: string) =>
+                    onChange={(e) =>
                       setContactInfo({
                         ...contactInfo,
-                        firstName: val,
+                        firstName: e.target.value,
                       })
                     }
+                    error={errors.firstName}
                   />
 
-                  <TextField
+                  <Input
+                    id="contact-last-name"
                     label="Last Name"
                     placeholder="Last Name"
                     value={contactInfo.lastName}
-                    onChange={(val: string) =>
-                      setContactInfo({ ...contactInfo, lastName: val })
+                    onChange={(e) =>
+                      setContactInfo({ ...contactInfo, lastName: e.target.value })
                     }
+                    error={errors.lastName}
                   />
                 </div>
 
                 <div className="mb-6">
-                  <TextField
+                  <Input
+                    id="contact-email"
                     label="Email"
                     placeholder="Email Address"
                     value={contactInfo.email}
-                    onChange={(val: string) =>
-                      setContactInfo({ ...contactInfo, email: val })
+                    onChange={(e) =>
+                      setContactInfo({ ...contactInfo, email: e.target.value })
                     }
+                    error={errors.email}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-red-500">{errors.email}</p>
-                  )}
+
                 </div>
 
                 <div className="mb-6">
-                  <DropdownSmall
+                  <Dropdown
                     label="Select Service"
                     items={services}
-                    selected={contactInfo.service}
+                    selectedItem={contactInfo.service}
                     onSelect={(val: string) =>
                       setContactInfo({ ...contactInfo, service: val })
                     }
                     placeholder="Choose a service"
+                    errorMessage={errors.service}
+                    width="full"
                   />
-                  {errors.service && (
-                    <p className="text-sm text-red-500">{errors.service}</p>
-                  )}
                 </div>
 
                 <div className="mb-6">
-                  <TextField
+                  <Input
+                    id="contact-service-specify"
                     label="If not listed, specify request"
                     placeholder="Specify Service Request"
                     value={contactInfo.service}
-                    onChange={(val: string) =>
-                      setContactInfo({ ...contactInfo, service: val })
+                    onChange={(e) =>
+                      setContactInfo({ ...contactInfo, service: e.target.value })
                     }
                   />
                 </div>

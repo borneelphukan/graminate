@@ -3,7 +3,6 @@ import DefaultLayout from "@/layout/DefaultLayout";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { Icon } from "@graminate/ui";
-import { useTranslation } from "@/contexts/I18nContext";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -59,7 +58,6 @@ const docCategories = [
 ];
 
 export default function Docs() {
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = React.useState("");
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -209,7 +207,7 @@ export default function Docs() {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">No matching documentation</h3>
                 <p className="text-dark mb-8 max-w-sm mx-auto">
-                  We couldn't find anything matching "{searchQuery}". Try using broader terms or check our core modules.
+                  We couldn&apos;t find anything matching &quot;{searchQuery}&quot;. Try using broader terms or check our core modules.
                 </p>
                 <button 
                   onClick={() => setSearchQuery("")}

@@ -46,10 +46,8 @@ type FeedItemMetrics = {
 
 type Props = {
   feedItems: ItemRecord[];
-  feedInventoryDays: number;
   getFeedLevelColor: (days: number) => string;
   loadingFeedItems: boolean;
-  avgDailyConsumptionDisplay: string;
   timesFedToday: number;
   targetFeedingsPerDay: number;
   userId: string;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Button, Input } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "@/components/modals/InfoModal";
 import Loader from "@/components/ui/Loader";
@@ -64,12 +64,16 @@ const FinanceSettings = () => {
         text: "Finance settings updated successfully.",
         variant: "success",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating finance settings:", error);
+      let text = "Failed to update settings.";
+      if (axios.isAxiosError(error)) {
+        text = error.response?.data?.message || text;
+      }
       setInfoModalState({
         isOpen: true,
         title: "Error",
-        text: error.response?.data?.message || "Failed to update settings.",
+        text,
         variant: "error",
       });
     } finally {
@@ -111,13 +115,13 @@ const FinanceSettings = () => {
                         </p>
                         
                         <div className="max-w-xs">
-                            <TextField
+                            <Input
+                                id="opening-balance-input"
                                 label="Initial Capital (INR)"
-                                number
+                                type="number"
                                 value={openingBalance}
-                                onChange={(v) => setOpeningBalance(v)}
+                                onChange={(e) => setOpeningBalance(e.target.value)}
                                 placeholder="0.00"
-                                width="large"
                             />
                         </div>
                     </div>

@@ -53,7 +53,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     try {
       const response = await axios.get("/api/weather", { params: { lat, lon } });
       setData(response.data);
-    } catch (err: unknown) {
+    } catch (_err: unknown) {
       setError("Failed to fetch weather details");
     } finally {
       setLoading(false);
@@ -151,7 +151,9 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     const getMins = (timeStr: string) => {
       const isPM = timeStr.toLowerCase().includes("pm");
       const isAM = timeStr.toLowerCase().includes("am");
-      let [h, m] = timeStr.replace(/[ap]m/i, "").trim().split(":").map(Number);
+      const [hStr, mStr] = timeStr.replace(/[ap]m/i, "").trim().split(":");
+      let h = Number(hStr);
+      const m = Number(mStr);
       if (isPM && h < 12) h += 12;
       if (isAM && h === 12) h = 0;
       return h * 60 + m;

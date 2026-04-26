@@ -1,5 +1,5 @@
 import { Icon, Button, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@graminate/ui";
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
@@ -68,7 +68,7 @@ const Pricing = () => {
         name: "Graminate",
         description: `${planType.charAt(0) + planType.slice(1).toLowerCase()} Plan Subscription`,
         order_id: order.id,
-        handler: async (response: any) => {
+        handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           Swal.fire({
             title: "Processing Payment...",
             allowOutsideClick: false,
@@ -110,7 +110,7 @@ const Pricing = () => {
         }
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new (window as unknown as { Razorpay: new (options: unknown) => { open: () => void } }).Razorpay(options);
       rzp.open();
     } catch (error) {
       console.error("Payment initiation error:", error);
@@ -155,9 +155,10 @@ const Pricing = () => {
           });
           
           if (user_id) fetchUserSubTypes(user_id as string);
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error("Downgrade error:", error);
-          Swal.fire("Error", error.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.", "error");
+          const errorMessage = (error as { response?: { data?: { data?: { error?: string } } } })?.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.";
+          Swal.fire("Error", errorMessage, "error");
         }
       }
       return;
@@ -345,7 +346,7 @@ const Pricing = () => {
                       { name: "Document Storage", free: "100 MB", standard: "5 GB", pro: "Unlimited" },
                       { name: "Advanced Analytics", free: false, standard: "Basic", pro: "AI-Powered" },
                       { name: "Priority Support", free: false, standard: false, pro: true },
-                    ].map((feature) => (
+                    ].map((feature: { name: string; free: boolean | string; standard: boolean | string; pro: boolean | string }) => (
                       <tr key={feature.name} className="hover:bg-gray-50 transition-colors">
                         <td className="p-4 text-sm text-dark">{feature.name}</td>
                         <td className="p-4 text-center">
@@ -362,15 +363,15 @@ const Pricing = () => {
                           )}
                         </td>
                         <td className="p-4 text-center">
-                          {typeof (feature as any).standard === "boolean" ? (
-                            (feature as any).standard ? (
+                          {typeof feature.standard === "boolean" ? (
+                            feature.standard ? (
                               <div className="flex justify-center"><Icon type="check_circle" className="text-green-200" /></div>
                             ) : (
                               <div className="flex justify-center"><Icon type="cancel" className="text-red-200" /></div>
                             )
                           ) : (
                             <span className="text-sm font-medium text-dark">
-                              {(feature as any).standard}
+                              {feature.standard}
                             </span>
                           )}
                         </td>

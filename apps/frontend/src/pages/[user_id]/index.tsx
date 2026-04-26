@@ -250,7 +250,7 @@ const Dashboard = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
-  const [loans, setLoans] = useState<any[]>([]);
+  const [loans, setLoans] = useState<unknown[]>([]);
   const [openingBalance, setOpeningBalance] = useState<number>(0);
 
   useEffect(() => {
@@ -377,7 +377,7 @@ const Dashboard = () => {
         const expenseAmount = Number(expense.expense) || 0;
         const occupation = expense.occupation || "Uncategorized";
         const mainCategoryGroup = categoryToMainGroup[expense.category];
-        let expenseType: "cogs" | "expenses" | null =
+        const expenseType: "cogs" | "expenses" | null =
           mainCategoryGroup === EXPENSE_TYPE_MAP.COGS
             ? "cogs"
             : mainCategoryGroup === EXPENSE_TYPE_MAP.OPERATING_EXPENSES

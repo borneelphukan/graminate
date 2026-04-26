@@ -101,7 +101,7 @@ const Sales = () => {
     fetchSalesData();
   }, [currentUserId, fetchSalesData]);
 
-  const { fullHistoricalData, isLoadingFinancials: isFinancialLoading } = useSubTypeFinancialData({
+  const { fullHistoricalData } = useSubTypeFinancialData({
     userId: currentUserId,
     targetSubType: "All",
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,

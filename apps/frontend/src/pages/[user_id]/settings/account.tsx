@@ -4,8 +4,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PasswordModal from "@/components/modals/PasswordModal";
 import { useRouter } from "next/router";
-import { Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Button, Input } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, translations } from "@/translations";
@@ -204,19 +203,18 @@ const Account = () => {
               </>
             }
           >
-            <TextField
+            <Input
+              id="password-input"
               label={t("passwordLabel")}
               placeholder={t("enterPasswordPlaceholder")}
               value={password}
-              onChange={(val) => {
-                setPassword(val);
+              onChange={(e) => {
+                setPassword(e.target.value);
                 setPasswordErrorKey(null);
               }}
-              password={true}
-              type={passwordErrorKey ? "error" : ""}
-              errorMessage={passwordErrorKey ? t(passwordErrorKey) : ""}
-              isDisabled={isVerifying}
-              width="large"
+              type="password"
+              error={passwordErrorKey ? t(passwordErrorKey) : ""}
+              disabled={isVerifying}
             />
           </PasswordModal>
         );

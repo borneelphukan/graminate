@@ -38,10 +38,9 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import { Dropdown, Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
-import Loader from "@/components/ui/Loader";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import { DailyFinancialEntry } from "@/pages/[user_id]/finance_dashboard";
+import Loader from "@/components/ui/Loader";
 
 ChartJS.register(
   LineController,
@@ -825,30 +824,32 @@ const TrendGraph = ({
             />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-            <TextField
+            <Input
+              id="start-date"
               label="Start Date"
-              calendar
+              type="date"
               value={
                 startDate && isValidDate(startDate)
                   ? format(startDate, "yyyy-MM-dd")
                   : ""
               }
-              onChange={handleStartDateChange}
+              onChange={(e) => handleStartDateChange(e.target.value)}
               placeholder="YYYY-MM-DD"
             />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-            <TextField
+            <Input
+              id="end-date"
               label="End Date"
-              calendar
+              type="date"
               value={
                 endDate && isValidDate(endDate)
                   ? format(endDate, "yyyy-MM-dd")
                   : ""
               }
-              onChange={handleEndDateChange}
+              onChange={(e) => handleEndDateChange(e.target.value)}
               placeholder="YYYY-MM-DD"
-              isDisabled={!startDate || !isValidDate(startDate)}
+              disabled={!startDate || !isValidDate(startDate)}
             />
           </div>
           {!isCustomDateRangeActive && (

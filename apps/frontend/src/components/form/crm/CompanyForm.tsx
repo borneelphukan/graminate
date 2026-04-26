@@ -1,5 +1,5 @@
 import { Dropdown, Button, Input, Icon } from "@graminate/ui";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 import { INDUSTRY_OPTIONS } from "@/constants/options";

@@ -30,7 +30,6 @@ const Floriculture = () => {
   const router = useRouter();
   const { user_id } = router.query;
   const parsedUserId = Array.isArray(user_id) ? user_id[0] : user_id;
-  const numericUserId = parsedUserId ? parseInt(parsedUserId, 10) : undefined;
   const currentView: View | "tasks" = router.query.view === "floriculture" ? "floriculture" : "tasks";
 
   const [records, setRecords] = useState<FloricultureData[]>([]);

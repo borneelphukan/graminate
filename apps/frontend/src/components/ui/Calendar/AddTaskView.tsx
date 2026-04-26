@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import TextField from "../TextField";
-import { Dropdown, Button } from "@graminate/ui";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../Loader";
 
@@ -103,11 +102,12 @@ const AddTaskView = ({
 
       <div className="space-y-5">
         <div className="relative">
-          <TextField
+          <Input
+            id="task-category"
             label="Category"
             placeholder="Enter or select task category"
             value={projectInput}
-            onChange={handleProjectInputChange}
+            onChange={(e) => handleProjectInputChange(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
           />
           {showSuggestions &&
@@ -135,15 +135,17 @@ const AddTaskView = ({
               )
             ))}
         </div>
-        <TextField
+        <Input
+          id="task-name"
           label="Task"
           placeholder="Enter task name..."
           value={newTask}
-          onChange={(val) => {
+          onChange={(e) => {
+            const val = e.target.value;
             setNewTask(val);
             if (val.trim()) setIsTaskNameValid(true);
           }}
-          errorMessage={
+          error={
             !isTaskNameValid && !newTask.trim()
               ? "Task name cannot be empty"
               : ""

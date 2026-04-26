@@ -18,14 +18,12 @@ import type {
   ChartData,
   ChartOptions,
   Chart,
-  CartesianScaleOptions,
 } from "chart.js";
-import { format, isValid as isValidDate } from "date-fns";
-import { Dropdown, Button as GraminateButton } from "@graminate/ui";
-import { DailyFinancialEntry } from "@/pages/[user_id]/finance_dashboard";
-import Loader from "@/components/ui/Loader";
-import TextField from "@/components/ui/TextField";
+import { format } from "date-fns";
+import { Dropdown, Input } from "@graminate/ui";
 import LoanModal from "@/components/modals/LoanModal";
+import { DailyFinancialEntry } from "@/hooks/finance";
+import Loader from "@/components/ui/Loader";
 
 ChartJS.register(
   BarController,
@@ -261,11 +259,13 @@ const DebtAnalysis = ({
 
       <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 my-4">
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-            <TextField
+            <Input
+              id="start-date"
               label="Start Date"
-              calendar
+              type="date"
               value={startDate && isValidDate(startDate) ? format(startDate, "yyyy-MM-dd") : ""}
-              onChange={(v: string) => {
+              onChange={(e) => {
+                const v = e.target.value;
                 const d = new Date(v);
                 if (isValidDate(d)) setStartDate(d);
                 else setStartDate(null);
@@ -274,17 +274,19 @@ const DebtAnalysis = ({
             />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-            <TextField
+            <Input
+              id="end-date"
               label="End Date"
-              calendar
+              type="date"
               value={endDate && isValidDate(endDate) ? format(endDate, "yyyy-MM-dd") : ""}
-              onChange={(v: string) => {
+              onChange={(e) => {
+                const v = e.target.value;
                 const d = new Date(v);
                 if (isValidDate(d)) setEndDate(d);
                 else setEndDate(null);
               }}
               placeholder="YYYY-MM-DD"
-              isDisabled={!startDate || !isValidDate(startDate)}
+              disabled={!startDate || !isValidDate(startDate)}
             />
           </div>
           <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">

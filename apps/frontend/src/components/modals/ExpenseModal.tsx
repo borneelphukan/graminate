@@ -1,6 +1,5 @@
-import { Icon, Dropdown, Button } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import InfoModal from "./InfoModal";
@@ -190,36 +189,33 @@ const ExpenseModal = ({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <TextField
+              <Input
+                id="expense-title"
                 label="Expense Title"
                 placeholder="e.g., Purchase of Animal Feed"
                 value={title}
-                onChange={(val) => setTitle(val)}
-                errorMessage={errors.title}
-                type={errors.title ? "error" : ""}
-                width="large"
+                onChange={(e) => setTitle(e.target.value)}
+                error={errors.title}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <TextField
+                <Input
+                  id="date-logging"
                   label="Date of Logging Expense"
-                  calendar={true}
+                  type="date"
                   value={dateCreated}
-                  onChange={(val) => setDateCreated(val)}
-                  errorMessage={errors.dateCreated}
-                  type={errors.dateCreated ? "error" : ""}
-                  width="large"
+                  onChange={(e) => setDateCreated(e.target.value)}
+                  error={errors.dateCreated}
                 />
-                <TextField
+                <Input
+                  id="expense-amount"
                   label="Amount (₹)"
-                  number={true}
+                  type="number"
                   value={expenseAmount}
-                  onChange={(val) =>
-                    setExpenseAmount(val.replace(/[^0-9.]/g, ""))
+                  onChange={(e) =>
+                    setExpenseAmount(e.target.value.replace(/[^0-9.]/g, ""))
                   }
-                  errorMessage={errors.expenseAmount}
-                  type={errors.expenseAmount ? "error" : ""}
-                  width="large"
+                  error={errors.expenseAmount}
                 />
               </div>
 

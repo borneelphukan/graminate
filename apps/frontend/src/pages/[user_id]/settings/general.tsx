@@ -1,12 +1,11 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Image from "next/image";
 import NavPanel from "@/components/layout/NavPanel";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
-import TextField from "@/components/ui/TextField";
+
 import { LANGUAGES, TIME_FORMAT, UNITS } from "@/constants/options";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -265,25 +264,25 @@ const General = () => {
                       </div>
 
                       <div className="flex flex-col gap-4 max-w-lg">
-                        <TextField
+                        <Input
+                          id="first-name-input"
                           label={t("firstName")}
                           placeholder={t("enterFirstName")}
                           value={user.firstName}
-                          onChange={(val) =>
-                            setUser((prev) => ({ ...prev, firstName: val }))
+                          onChange={(e) =>
+                            setUser((prev) => ({ ...prev, firstName: e.target.value }))
                           }
-                          width="large"
-                          isDisabled={true}
+                          disabled={true}
                         />
-                        <TextField
+                        <Input
+                          id="last-name-input"
                           label={t("lastName")}
                           placeholder={t("enterLastName")}
                           value={user.lastName}
-                          onChange={(val) =>
-                            setUser((prev) => ({ ...prev, lastName: val }))
+                          onChange={(e) =>
+                            setUser((prev) => ({ ...prev, lastName: e.target.value }))
                           }
-                          width="large"
-                          isDisabled={true}
+                          disabled={true}
                         />
                         <div className="flex gap-4">
                           <Dropdown
@@ -304,14 +303,14 @@ const General = () => {
                             }
                           />
                         </div>
-                        <TextField
+                        <Input
+                          id="phone-number-input"
                           label={t("phoneNumber")}
                           placeholder={t("enterPhoneNumber")}
                           value={user.phoneNumber}
-                          onChange={(val) =>
-                            setUser((prev) => ({ ...prev, phoneNumber: val }))
+                          onChange={(e) =>
+                            setUser((prev) => ({ ...prev, phoneNumber: e.target.value }))
                           }
-                          width="large"
                         />
                       </div>
 
@@ -321,7 +320,8 @@ const General = () => {
                             "Address Details"}
                         </h3>
                         <div className="flex flex-col gap-4 max-w-lg">
-                          <TextField
+                          <Input
+                            id="address-line-1"
                             label={
                               t("addressLine1" as NavPanelTranslationKey) ||
                               "Address Line 1"
@@ -332,15 +332,15 @@ const General = () => {
                               ) || "Enter Address Line 1"
                             }
                             value={user.addressLine1}
-                            onChange={(val) =>
+                            onChange={(e) =>
                               setUser((prev) => ({
                                 ...prev,
-                                addressLine1: val,
+                                addressLine1: e.target.value,
                               }))
                             }
-                            width="large"
                           />
-                          <TextField
+                          <Input
+                            id="address-line-2"
                             label={
                               t("addressLine2" as NavPanelTranslationKey) ||
                               "Address Line 2 (Optional)"
@@ -351,16 +351,16 @@ const General = () => {
                               ) || "Enter Address Line 2"
                             }
                             value={user.addressLine2}
-                            onChange={(val) =>
+                            onChange={(e) =>
                               setUser((prev) => ({
                                 ...prev,
-                                addressLine2: val,
+                                addressLine2: e.target.value,
                               }))
                             }
-                            width="large"
                           />
                           <div className="flex gap-4">
-                            <TextField
+                            <Input
+                              id="city-input"
                               label={
                                 t("city" as NavPanelTranslationKey) || "City"
                               }
@@ -369,12 +369,12 @@ const General = () => {
                                 "Enter City"
                               }
                               value={user.city}
-                              onChange={(val) =>
-                                setUser((prev) => ({ ...prev, city: val }))
+                              onChange={(e) =>
+                                setUser((prev) => ({ ...prev, city: e.target.value }))
                               }
-                              width="medium"
                             />
-                            <TextField
+                            <Input
+                              id="state-input"
                               label={
                                 t("state" as NavPanelTranslationKey) ||
                                 "State/Province"
@@ -384,13 +384,13 @@ const General = () => {
                                 "Enter State/Province"
                               }
                               value={user.state}
-                              onChange={(val) =>
-                                setUser((prev) => ({ ...prev, state: val }))
+                              onChange={(e) =>
+                                setUser((prev) => ({ ...prev, state: e.target.value }))
                               }
-                              width="medium"
                             />
                           </div>
-                          <TextField
+                          <Input
+                            id="postal-code-input"
                             label={
                               t("postalCode" as NavPanelTranslationKey) ||
                               "Postal Code"
@@ -400,12 +400,12 @@ const General = () => {
                               "Enter Postal Code"
                             }
                             value={user.postalCode}
-                            onChange={(val) =>
-                              setUser((prev) => ({ ...prev, postalCode: val }))
+                            onChange={(e) =>
+                              setUser((prev) => ({ ...prev, postalCode: e.target.value }))
                             }
-                            width="medium"
                           />
-                          <TextField
+                          <Input
+                            id="country-input"
                             label={
                               t("country" as NavPanelTranslationKey) ||
                               "Country"
@@ -415,11 +415,10 @@ const General = () => {
                               "Enter Country"
                             }
                             value={user.country}
-                            onChange={(val) =>
-                              setUser((prev) => ({ ...prev, country: val }))
+                            onChange={(e) =>
+                              setUser((prev) => ({ ...prev, country: e.target.value }))
                             }
-                            width="medium"
-                            isDisabled={true}
+                            disabled={true}
                           />
                         </div>
                       </div>
@@ -495,13 +494,13 @@ const General = () => {
                               onSelect={(val) => setStorageSettings(prev => ({ ...prev, defaultInventoryUnit: val }))}
                             />
 
-                            <TextField
+                            <Input
+                              id="low-stock-threshold"
                               label={t("globalLowStockThreshold" as NavPanelTranslationKey) || "Global Low Stock Threshold"}
                               placeholder="5"
-                              number
+                              type="number"
                               value={storageSettings.globalLowStockThreshold}
-                              onChange={(val) => setStorageSettings(prev => ({ ...prev, globalLowStockThreshold: val }))}
-                              width="medium"
+                              onChange={(e) => setStorageSettings(prev => ({ ...prev, globalLowStockThreshold: e.target.value }))}
                             />
 
                             <div className="flex items-center gap-3 py-2">

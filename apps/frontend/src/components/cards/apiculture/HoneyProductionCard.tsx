@@ -19,8 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import TextField from "@/components/ui/TextField";
-import { Dropdown, Button, Table } from "@graminate/ui";
+import { Dropdown, Button, Table, Input } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
@@ -37,7 +36,6 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
-import { useRouter } from "next/router";
 import {
   useUserPreferences,
   SupportedLanguage,
@@ -739,28 +737,34 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
             </h3>
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TextField
-                  calendar
+                <Input
+                  id="harvest-date"
+                  type="date"
                   label="Harvest Date"
                   value={formData.harvest_date}
-                  onChange={(val) => handleFormChange("harvest_date", val)}
+                  onChange={(e) => handleFormChange("harvest_date", e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="honey-weight"
+                  type="number"
                   label="Honey Weight (kg)"
                   value={formData.honey_weight}
-                  onChange={(val) => handleFormChange("honey_weight", val)}
+                  onChange={(e) => handleFormChange("honey_weight", e.target.value)}
                   placeholder="e.g., 15.5"
                 />
-                <TextField
+                <Input
+                  id="frames-harvested"
+                  type="number"
                   label="Frames Harvested"
                   value={formData.frames_harvested}
-                  onChange={(val) => handleFormChange("frames_harvested", val)}
+                  onChange={(e) => handleFormChange("frames_harvested", e.target.value)}
                   placeholder="e.g., 8"
                 />
-                <TextField
+                <Input
+                  id="honey-type"
                   label="Honey Type"
                   value={formData.honey_type}
-                  onChange={(val) => handleFormChange("honey_type", val)}
+                  onChange={(e) => handleFormChange("honey_type", e.target.value)}
                   placeholder="e.g., Wildflower"
                 />
               </div>
@@ -819,28 +823,30 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
             </p>
             <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 my-4">
               <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                <TextField
+                <Input
+                  id="start-date-filter"
+                  type="date"
                   label="Start Date"
-                  calendar
                   value={
                     startDate && isValidDate(startDate)
                       ? format(startDate, "yyyy-MM-dd")
                       : ""
                   }
-                  onChange={handleStartDateChange}
+                  onChange={(e) => handleStartDateChange(e.target.value)}
                   placeholder="YYYY-MM-DD"
                 />
               </div>
               <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
-                <TextField
+                <Input
+                  id="end-date-filter"
+                  type="date"
                   label="End Date"
-                  calendar
                   value={
                     endDate && isValidDate(endDate)
                       ? format(endDate, "yyyy-MM-dd")
                       : ""
                   }
-                  onChange={handleEndDateChange}
+                  onChange={(e) => handleEndDateChange(e.target.value)}
                   placeholder="YYYY-MM-DD"
                   disabled={!startDate || !isValidDate(startDate)}
                 />

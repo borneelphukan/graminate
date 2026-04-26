@@ -1,6 +1,5 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Swal from "sweetalert2";
 import Loader from "@/components/ui/Loader";
@@ -276,14 +275,13 @@ const PoultryFeedsModal = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <TextField
+          <Input
+            id="feed-date"
             label="Feed Date"
-            calendar
+            type="date"
             value={feedDate}
-            onChange={(val) => setFeedDate(val)}
-            errorMessage={errors.feed_date}
-            type={errors.feed_date ? "error" : ""}
-            width="large"
+            onChange={(e) => setFeedDate(e.target.value)}
+            error={errors.feed_date}
           />
 
           {loadingInventoryFeedItems ? (
@@ -309,15 +307,14 @@ const PoultryFeedsModal = ({
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TextField
+            <Input
+              id="amount-given"
               label="Amount Given"
-              number
+              type="number"
               placeholder="e.g., 10.5"
               value={String(amountGiven)}
-              onChange={(val) => setAmountGiven(val)}
-              errorMessage={errors.amount_given}
-              type={errors.amount_given ? "error" : ""}
-              width="large"
+              onChange={(e) => setAmountGiven(e.target.value)}
+              error={errors.amount_given}
             />
             <div>
               <Dropdown

@@ -76,7 +76,7 @@ const TrainingServices = () => {
                   className="bg-white rounded-xl shadow-md border border-gray-400 p-8 flex flex-col h-full hover:shadow-lg transition-all duration-300"
                 >
                   <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6">
-                    <Icon type={course.icon as any} className="text-2xl text-gray-600" />
+                    <Icon type={course.icon as string} className="text-2xl text-gray-600" />
                   </div>
                   <div className="mb-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-green-200 mb-2 block">{course.level}</span>

@@ -1,4 +1,4 @@
-import { Icon, Button, SearchBar, Table } from "@graminate/ui";
+import { Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";

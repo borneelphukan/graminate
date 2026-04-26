@@ -1,6 +1,5 @@
-import { Dropdown, Icon, Checkbox, Button } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox, Button, Input } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
-import TextField from "@/components/ui/TextField";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "../ui/Loader";
@@ -183,10 +182,13 @@ const TaskManager = ({ userId, projectType }: Props) => {
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 mb-4">
-        <TextField
+        <Input
+          id="new-task-input"
+          label="New Task"
+          hideLabel
           placeholder={`Add new ${projectType.toLowerCase()} task`}
           value={newTaskText}
-          onChange={(val: string) => setNewTaskText(val)}
+          onChange={(e) => setNewTaskText(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === "Enter") {
               addNewTask();

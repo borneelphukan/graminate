@@ -1,6 +1,5 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import InfoModal from "../InfoModal";
 
@@ -191,61 +190,60 @@ const EggModal = ({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <TextField
+            <Input
+              id="date-collected"
               label="Date Collected"
-              calendar
+              type="date"
               value={dateCollected}
-              onChange={(val) => setDateCollected(val)}
-              errorMessage={errors.date_collected}
-              type={errors.date_collected ? "error" : ""}
-              width="large"
+              onChange={(e) => setDateCollected(e.target.value)}
+              error={errors.date_collected}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <TextField
+              <Input
+                id="small-eggs"
                 label="Small Eggs"
-                number
+                type="number"
                 placeholder="e.g., 10"
                 value={smallEggs === 0 ? "" : String(smallEggs)}
-                onChange={(val) => setSmallEggs(val)}
-                type={errors.small_eggs ? "error" : ""}
-                width="large"
+                onChange={(e) => setSmallEggs(e.target.value)}
+                error={errors.small_eggs}
               />
-              <TextField
+              <Input
+                id="medium-eggs"
                 label="Medium Eggs"
-                number
+                type="number"
                 placeholder="e.g., 20"
                 value={mediumEggs === 0 ? "" : String(mediumEggs)}
-                onChange={(val) => setMediumEggs(val)}
-                type={errors.medium_eggs ? "error" : ""}
-                width="large"
+                onChange={(e) => setMediumEggs(e.target.value)}
+                error={errors.medium_eggs}
               />
-              <TextField
+              <Input
+                id="large-eggs"
                 label="Large Eggs"
-                number
+                type="number"
                 placeholder="e.g., 15"
                 value={largeEggs === 0 ? "" : String(largeEggs)}
-                onChange={(val) => setLargeEggs(val)}
-                type={errors.large_eggs ? "error" : ""}
-                width="large"
+                onChange={(e) => setLargeEggs(e.target.value)}
+                error={errors.large_eggs}
               />
-              <TextField
+              <Input
+                id="extra-large-eggs"
                 label="Extra Large Eggs"
-                number
+                type="number"
                 placeholder="e.g., 5"
                 value={extraLargeEggs === 0 ? "" : String(extraLargeEggs)}
-                onChange={(val) => setExtraLargeEggs(val)}
-                type={errors.extra_large_eggs ? "error" : ""}
-                width="large"
+                onChange={(e) => setExtraLargeEggs(e.target.value)}
+                error={errors.extra_large_eggs}
               />
             </div>
-            <TextField
+            <Input
+              id="broken-eggs"
               label="Broken Eggs"
-              number
+              type="number"
               placeholder="e.g., 2"
               value={brokenEggs === 0 ? "" : String(brokenEggs)}
-              onChange={(val) => setBrokenEggs(val)}
-              type={errors.broken_eggs ? "error" : ""}
-              width="large"
+              onChange={(e) => setBrokenEggs(e.target.value)}
+              error={errors.broken_eggs}
             />
 
             <div className="flex justify-end gap-4 pt-6 mt-8 border-t border-gray-400 dark:border-gray-600">

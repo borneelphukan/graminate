@@ -112,7 +112,6 @@ const Warehouse = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { handleDeleteRows } = useTableActions("inventory");
   const [loadingInventory, setLoadingInventory] = useState(true);
-  const [loadingWarehouseDetails, setLoadingWarehouseDetails] = useState(true);
   const { darkMode } = useUserPreferences();
 
   const [chartThemeColors, setChartThemeColors] = useState({
@@ -130,11 +129,9 @@ const Warehouse = () => {
   const fetchWarehouseData = useCallback(async () => {
     if (!parsedUserId || !parsedId) {
       setLoadingInventory(false);
-      setLoadingWarehouseDetails(false);
       return;
     }
     setLoadingInventory(true);
-    setLoadingWarehouseDetails(true);
     try {
       const [inventoryResponse, warehouseDetailsResponse] = await Promise.all([
         axiosInstance.get(`/inventory/${parsedUserId}`, {
@@ -157,9 +154,8 @@ const Warehouse = () => {
       setCurrentWarehouseDetails(null);
     } finally {
       setLoadingInventory(false);
-      setLoadingWarehouseDetails(false);
     }
-  }, [parsedUserId, parsedId]);
+  }, [parsedUserId, parsedId, setLoadingInventory]);
 
   useEffect(() => {
     if (router.isReady) {

@@ -1,6 +1,5 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
-import TextField from "@/components/ui/TextField";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useRouter } from "next/router";
 import InfoModal from "./InfoModal";
@@ -131,64 +130,59 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <TextField
+              <Input
+                id="loan-name"
                 label="Loan Name"
                 placeholder="e.g. Agricultural Expansion Loan"
                 value={formData.loan_name}
-                onChange={(v) => setFormData({ ...formData, loan_name: v })}
-                errorMessage={errors.loan_name}
-                type={errors.loan_name ? "error" : ""}
-                width="large"
+                onChange={(e) => setFormData({ ...formData, loan_name: e.target.value })}
+                error={errors.loan_name}
               />
-              <TextField
+              <Input
+                id="lender"
                 label="Lender"
                 placeholder="e.g. State Bank of India"
                 value={formData.lender}
-                onChange={(v) => setFormData({ ...formData, lender: v })}
-                errorMessage={errors.lender}
-                type={errors.lender ? "error" : ""}
-                width="large"
+                onChange={(e) => setFormData({ ...formData, lender: e.target.value })}
+                error={errors.lender}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <TextField
+                <Input
+                  id="loan-amount"
                   label="Amount (INR)"
-                  number
+                  type="number"
                   value={formData.amount}
-                  onChange={(v) => setFormData({ ...formData, amount: v })}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                   placeholder="0.00"
-                  errorMessage={errors.amount}
-                  type={errors.amount ? "error" : ""}
-                  width="large"
+                  error={errors.amount}
                 />
-                <TextField
+                <Input
+                  id="interest-rate"
                   label="Interest Rate (%)"
-                  number
+                  type="number"
                   value={formData.interest_rate}
-                  onChange={(v) => setFormData({ ...formData, interest_rate: v })}
+                  onChange={(e) => setFormData({ ...formData, interest_rate: e.target.value })}
                   placeholder="0.00"
-                  errorMessage={errors.interest_rate}
-                  type={errors.interest_rate ? "error" : ""}
-                  width="large"
+                  error={errors.interest_rate}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <TextField
+                <Input
+                  id="loan-start-date"
                   label="Start Date"
-                  calendar
+                  type="date"
                   value={formData.start_date}
-                  onChange={(v) => setFormData({ ...formData, start_date: v })}
-                  errorMessage={errors.start_date}
-                  type={errors.start_date ? "error" : ""}
-                  width="large"
+                  onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                  error={errors.start_date}
                 />
-                <TextField
+                <Input
+                  id="loan-end-date"
                   label="End Date (Optional)"
-                  calendar
+                  type="date"
                   value={formData.end_date}
-                  onChange={(v) => setFormData({ ...formData, end_date: v })}
-                  width="large"
+                  onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                 />
               </div>
 

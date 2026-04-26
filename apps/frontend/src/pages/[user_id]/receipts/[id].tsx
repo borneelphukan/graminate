@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button } from "@graminate/ui";
-import TextField from "@/components/ui/TextField";
+import { Button, Input } from "@graminate/ui";
 import TextArea from "@/components/ui/TextArea";
 import CustomTable from "@/components/tables/CustomTable";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -431,25 +430,25 @@ const ReceiptDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
-                <TextField
+                <Input
+                  id="invoice-title"
                   label="Invoice Purpose / Title"
                   value={editableReceiptTitle}
-                  onChange={setEditableReceiptTitle}
-                  width="large"
+                  onChange={(e) => setEditableReceiptTitle(e.target.value)}
                   placeholder="e.g. Website Design Services"
                 />
-                <TextField
+                <Input
+                  id="payment-terms"
                   label="Payment Terms"
                   value={paymentTerms}
-                  onChange={setPaymentTerms}
-                  width="large"
+                  onChange={(e) => setPaymentTerms(e.target.value)}
                   placeholder="e.g. Net 30, Due on Receipt"
                 />
-                <TextField
+                <Input
+                  id="invoice-number"
                   label="Invoice Number (Optional)"
                   value={receiptNumber || ""}
-                  onChange={(val) => setReceiptNumber(val || null)}
-                  width="large"
+                  onChange={(e) => setReceiptNumber(e.target.value || null)}
                   placeholder="e.g. INV-001 (Optional)"
                 />
               </div>
@@ -465,46 +464,50 @@ const ReceiptDetails = () => {
               <h3 className="text-sm font-semibold uppercase text-dark dark:text-light">
                 Bill To:
               </h3>
-              <TextField
+              <Input
+                id="customer-name"
                 label="Customer Name"
                 value={customerName}
-                onChange={setCustomerName}
-                width="large"
+                onChange={(e) => setCustomerName(e.target.value)}
               />
-              <TextField
+              <Input
+                id="address-line-1"
                 label="Address Line 1"
                 value={billToAddressLine1}
-                onChange={setBillToAddressLine1}
-                width="large"
+                onChange={(e) => setBillToAddressLine1(e.target.value)}
               />
-              <TextField
+              <Input
+                id="address-line-2"
                 label="Address Line 2"
                 value={billToAddressLine2}
-                onChange={setBillToAddressLine2}
-                width="large"
+                onChange={(e) => setBillToAddressLine2(e.target.value)}
               />
               <div className="flex space-x-3">
-                <TextField
+                <Input
+                  id="city-input"
                   label="City"
                   value={billToCity}
-                  onChange={setBillToCity}
+                  onChange={(e) => setBillToCity(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="state-input"
                   label="State"
                   value={billToState}
-                  onChange={setBillToState}
+                  onChange={(e) => setBillToState(e.target.value)}
                 />
               </div>
               <div className="flex space-x-3">
-                <TextField
+                <Input
+                  id="postal-code"
                   label="Postal Code"
                   value={billToPostalCode}
-                  onChange={setBillToPostalCode}
+                  onChange={(e) => setBillToPostalCode(e.target.value)}
                 />
-                <TextField
+                <Input
+                  id="country"
                   label="Country"
                   value={billToCountry}
-                  onChange={setBillToCountry}
+                  onChange={(e) => setBillToCountry(e.target.value)}
                 />
               </div>
             </div>
@@ -525,12 +528,14 @@ const ReceiptDetails = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="mr-2">Tax (%):</span>
-                  <TextField
+                  <Input
+                    id="tax-input"
+                    label="Tax (%)"
+                    hideLabel
                     value={tax.toString()}
-                    onChange={(val) =>
-                      setTax(Number(val.replace(/[^0-9.]/g, "")) || 0)
+                    onChange={(e) =>
+                      setTax(Number(e.target.value.replace(/[^0-9.]/g, "")) || 0)
                     }
-                    width="small"
                   />
                   <span className="font-semibold ml-auto">
                     ₹{currentCalculatedAmounts.taxAmount.toFixed(2)}
@@ -538,22 +543,26 @@ const ReceiptDetails = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="mr-2">Discount (₹):</span>
-                  <TextField
+                  <Input
+                    id="discount-input"
+                    label="Discount (₹)"
+                    hideLabel
                     value={discount.toString()}
-                    onChange={(val) =>
-                      setDiscount(Number(val.replace(/[^0-9.]/g, "")) || 0)
+                    onChange={(e) =>
+                      setDiscount(Number(e.target.value.replace(/[^0-9.]/g, "")) || 0)
                     }
-                    width="small"
                   />
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="mr-2">Shipping (₹):</span>
-                  <TextField
+                  <Input
+                    id="shipping-input"
+                    label="Shipping (₹)"
+                    hideLabel
                     value={shipping.toString()}
-                    onChange={(val) =>
-                      setShipping(Number(val.replace(/[^0-9.]/g, "")) || 0)
+                    onChange={(e) =>
+                      setShipping(Number(e.target.value.replace(/[^0-9.]/g, "")) || 0)
                     }
-                    width="small"
                   />
                 </div>
                 <div className="border-t dark:border-gray-700 my-2"></div>

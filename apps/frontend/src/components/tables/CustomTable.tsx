@@ -1,5 +1,4 @@
-import { Button } from "@graminate/ui";
-import TextField from "../ui/TextField";
+import { Button, Input } from "@graminate/ui";
 
 type Item = {
   description: string;
@@ -95,32 +94,36 @@ const CustomTable = ({ items, onItemsChange, loading }: CustomTableProps) => {
                     className="hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     <td className="border border-gray-300 dark:border-gray-600 p-2 min-w-[200px] sm:min-w-[250px]">
-                      <TextField
+                      <Input
+                        id={`item-desc-${index}`}
+                        label=""
                         value={item.description}
-                        onChange={(val) =>
-                          updateItem(index, "description", val)
+                        onChange={(e) =>
+                          updateItem(index, "description", e.target.value)
                         }
                         placeholder="Item or service"
                       />
                     </td>
                     <td className="border border-gray-300 dark:border-gray-600 p-2 text-center min-w-[80px] sm:min-w-[100px]">
-                      <TextField
+                      <Input
+                        id={`item-qty-${index}`}
+                        label=""
                         value={item.quantity.toString()}
-                        onChange={(val) =>
-                          updateItem(index, "quantity", parseFloat(val) || 0)
+                        onChange={(e) =>
+                          updateItem(index, "quantity", parseFloat(e.target.value) || 0)
                         }
-                        number={true}
-                        width="small"
+                        type="number"
                       />
                     </td>
                     <td className="border border-gray-300 dark:border-gray-600 p-2 text-center min-w-[100px] sm:min-w-[120px]">
-                      <TextField
+                      <Input
+                        id={`item-rate-${index}`}
+                        label=""
                         value={item.rate.toString()}
-                        onChange={(val) =>
-                          updateItem(index, "rate", parseFloat(val) || 0)
+                        onChange={(e) =>
+                          updateItem(index, "rate", parseFloat(e.target.value) || 0)
                         }
-                        number={true}
-                        width="small"
+                        type="number"
                       />
                     </td>
                     <td className="border border-gray-300 dark:border-gray-600 p-2 text-right dark:text-light min-w-[100px] sm:min-w-[120px] whitespace-nowrap">

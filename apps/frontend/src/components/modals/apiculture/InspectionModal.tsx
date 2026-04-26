@@ -1,10 +1,9 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import TextArea from "@/components/ui/TextArea";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { format } from "date-fns";
-import TextField from "@/components/ui/TextField";
 
 export type InspectionData = {
   inspection_id?: number;
@@ -298,13 +297,13 @@ const InspectionModal = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <TextField
-            calendar
+          <Input
+            id="inspection-date"
+            type="date"
             label="Inspection Date"
             value={formData.inspection_date}
-            onChange={(val) => handleInputChange("inspection_date", val)}
-            errorMessage={errors.inspection_date}
-            type={errors.inspection_date ? "error" : ""}
+            onChange={(e) => handleInputChange("inspection_date", e.target.value)}
+            error={errors.inspection_date}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Dropdown
@@ -314,12 +313,13 @@ const InspectionModal = ({
               onSelect={(val) => handleInputChange("queen_status", val)}
               placeholder="Select Queen Status"
             />
-            <TextField
-              calendar
+            <Input
+              id="queen-introduced-date"
+              type="date"
               label="Queen Introduced Date"
               value={formData.queen_introduced_date}
-              onChange={(val) =>
-                handleInputChange("queen_introduced_date", val)
+              onChange={(e) =>
+                handleInputChange("queen_introduced_date", e.target.value)
               }
             />
           </div>
@@ -345,25 +345,31 @@ const InspectionModal = ({
               Frame Estimates
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg border-gray-300 dark:border-gray-600">
-              <TextField
+              <Input
+                id="frames-of-brood"
                 label="Brood"
+                type="number"
                 value={formData.frames_of_brood}
-                onChange={(val: string) =>
-                  handleInputChange("frames_of_brood", val)
+                onChange={(e) =>
+                  handleInputChange("frames_of_brood", e.target.value)
                 }
               />
-              <TextField
+              <Input
+                id="frames-of-nectar-honey"
                 label="Nectar/Honey"
+                type="number"
                 value={formData.frames_of_nectar_honey}
-                onChange={(val: string) =>
-                  handleInputChange("frames_of_nectar_honey", val)
+                onChange={(e) =>
+                  handleInputChange("frames_of_nectar_honey", e.target.value)
                 }
               />
-              <TextField
+              <Input
+                id="frames-of-pollen"
                 label="Pollen"
+                type="number"
                 value={formData.frames_of_pollen}
-                onChange={(val: string) =>
-                  handleInputChange("frames_of_pollen", val)
+                onChange={(e) =>
+                  handleInputChange("frames_of_pollen", e.target.value)
                 }
               />
             </div>
@@ -385,13 +391,15 @@ const InspectionModal = ({
               onSelect={(val) => handleInputChange("queen_cells_observed", val)}
               placeholder="Select Yes or No"
             />
-            <TextField
+            <Input
+              id="queen-cells-count"
               label="Count"
+              type="number"
               value={formData.queen_cells_count}
-              onChange={(val: string) =>
-                handleInputChange("queen_cells_count", val)
+              onChange={(e) =>
+                handleInputChange("queen_cells_count", e.target.value)
               }
-              isDisabled={formData.queen_cells_observed !== "Yes"}
+              disabled={formData.queen_cells_observed !== "Yes"}
             />
           </div>
 
@@ -403,13 +411,15 @@ const InspectionModal = ({
               onSelect={(val) => handleInputChange("varroa_mite_method", val)}
               placeholder="Select Test Method"
             />
-            <TextField
+            <Input
+              id="varroa-mite-count"
               label="Count"
+              type="number"
               value={formData.varroa_mite_count}
-              onChange={(val: string) =>
-                handleInputChange("varroa_mite_count", val)
+              onChange={(e) =>
+                handleInputChange("varroa_mite_count", e.target.value)
               }
-              isDisabled={!formData.varroa_mite_method}
+              disabled={!formData.varroa_mite_method}
             />
           </div>
 
@@ -418,11 +428,13 @@ const InspectionModal = ({
               Symptoms Observed
             </p>
             <div className="flex items-center gap-2">
-              <TextField
+              <Input
+                id="current-symptom"
                 value={currentSymptom}
-                onChange={(val: string) => setCurrentSymptom(val)}
+                onChange={(e) => setCurrentSymptom(e.target.value)}
                 placeholder="e.g., Varroa mites, chalkbrood"
                 onKeyDown={handleSymptomKeyDown}
+                label=""
               />
               <Button
                 label="Add"

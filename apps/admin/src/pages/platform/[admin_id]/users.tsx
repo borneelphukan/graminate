@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Table, TableData } from "@graminate/ui";
+import { Table, TableData, RowType } from "@graminate/ui";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -102,9 +102,10 @@ const AdminUsersPage = () => {
         if (usersResult.data?.users) {
           setUsers(usersResult.data.users);
         }
-      } catch (err: any) {
-        console.error("Fetch error:", err);
-        setError(err.message);
+      } catch (err: unknown) {
+        const error = err as Error;
+        console.error("Fetch error:", error);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -234,9 +235,10 @@ const AdminUsersPage = () => {
     }
   };
 
-  const handleAction = (row: any[], action: string) => {
+  const handleAction = (row: RowType, action: string) => {
     if (action === "DELETE") {
-      handleDeleteUser(row[0], row[2]); // # is index 0, Contact Email is index 2
+      const rowData = row as string[];
+      handleDeleteUser(rowData[0], rowData[2]); // # is index 0, Contact Email is index 2
     }
   };
 

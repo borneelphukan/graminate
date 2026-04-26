@@ -181,14 +181,6 @@ const PoultryFeedsPage = () => {
     setShowFeedModal(true);
   };
 
-  const handleRowClick = (rowData: unknown[]) => {
-    const recordId = rowData[0] as number;
-    const recordToEdit = feedRecords.find((r) => r.feed_id === recordId);
-    if (recordToEdit) {
-      handleEditRecord(recordToEdit);
-    }
-  };
-
   const tableData = useMemo(() => {
     const columns = [
       "#",
@@ -275,8 +267,7 @@ const PoultryFeedsPage = () => {
             const recordId = row[0] as number;
             const record = feedRecords.find((r) => r.feed_id === recordId);
             if (record) {
-              setEditingRecord(record);
-              setShowFeedModal(true);
+              handleEditRecord(record);
             }
           }}
           view="poultry_feeds"

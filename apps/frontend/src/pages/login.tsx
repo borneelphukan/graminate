@@ -2,8 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import LoginLayout from "@/layout/LoginLayout";
-import TextField from "@/components/ui/TextField";
-import { Button } from "@graminate/ui";
+import { Button, Input } from "@graminate/ui";
 import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 import OTPModal from "@/components/modals/OTPModal";
 import axios from "axios";
@@ -374,29 +373,29 @@ const SignIn = () => {
               >
                 <form onSubmit={handleLogin} className="px-1">
                   <div className="mb-4">
-                    <TextField
+                    <Input
+                      id="login-email"
                       label="Email"
                       placeholder="Enter your email"
                       value={loginData.email}
-                      onChange={(val) =>
-                        setLoginData({ ...loginData, email: val })
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, email: e.target.value })
                       }
-                      width="large"
                     />
                   </div>
                   <div className="mb-6">
-                    <TextField
+                    <Input
+                      id="login-password"
                       label="Password"
                       placeholder="Enter your password"
-                      password
+                      type="password"
                       value={loginData.password}
-                      onChange={(val) =>
+                      onChange={(e) =>
                         setLoginData({
                           ...loginData,
-                          password: val,
+                          password: e.target.value,
                         })
                       }
-                      width="large"
                     />
                   </div>
                   {loginErrorMessage && (
@@ -432,99 +431,96 @@ const SignIn = () => {
                 <form onSubmit={handleRegister} className="px-1">
                   <div className="flex flex-row gap-2">
                     <div className="mb-4 flex-1">
-                      <TextField
+                      <Input
+                        id="reg-first-name"
                         label="First Name"
                         placeholder="Enter your First Name"
-                        type={fieldErrors.first_name ? "error" : ""}
                         value={registerData.first_name}
-                        onChange={(val) =>
+                        onChange={(e) =>
                           setRegisterData({
                             ...registerData,
-                            first_name: val,
+                            first_name: e.target.value,
                           })
                         }
-                        width="large"
+                        error={fieldErrors.first_name ? "First name is required" : ""}
                       />
                     </div>
                     <div className="mb-4 flex-1">
-                      <TextField
+                      <Input
+                        id="reg-last-name"
                         label="Last Name"
                         placeholder="Enter your Last Name"
-                        type={fieldErrors.last_name ? "error" : ""}
                         value={registerData.last_name}
-                        onChange={(val) =>
+                        onChange={(e) =>
                           setRegisterData({
                             ...registerData,
-                            last_name: val,
+                            last_name: e.target.value,
                           })
                         }
-                        width="large"
+                        error={fieldErrors.last_name ? "Last name is required" : ""}
                       />
                     </div>
                   </div>
                   <div className="mb-4">
-                    <TextField
+                    <Input
+                      id="reg-email"
                       label="Email"
                       placeholder="Enter your Email"
-                      type={fieldErrors.email ? "error" : ""}
                       value={registerData.email}
-                      onChange={(val) =>
+                      onChange={(e) =>
                         setRegisterData({
                           ...registerData,
-                          email: val,
+                          email: e.target.value,
                         })
                       }
-                      errorMessage={emailErrorMessage}
-                      width="large"
+                      error={fieldErrors.email ? emailErrorMessage : ""}
                     />
                   </div>
                   <div className="mb-4">
-                    <TextField
+                    <Input
+                      id="reg-phone"
                       label="Phone Number"
                       placeholder="Enter your Phone Number"
-                      type={fieldErrors.phone_number ? "error" : ""}
                       value={registerData.phone_number}
-                      onChange={(val) =>
+                      onChange={(e) =>
                         setRegisterData({
                           ...registerData,
-                          phone_number: val,
+                          phone_number: e.target.value,
                         })
                       }
-                      errorMessage={phoneErrorMessage}
-                      width="large"
+                      error={fieldErrors.phone_number ? phoneErrorMessage : ""}
                     />
                   </div>
                   <div className="mb-4">
-                    <TextField
+                    <Input
+                      id="reg-dob"
                       label="Date of Birth"
                       placeholder="YYYY-MM-DD"
-                      type={fieldErrors.date_of_birth ? "error" : ""}
+                      type="date"
                       value={registerData.date_of_birth}
-                      onChange={(val) =>
+                      onChange={(e) =>
                         setRegisterData({
                           ...registerData,
-                          date_of_birth: val,
+                          date_of_birth: e.target.value,
                         })
                       }
-                      width="large"
-                      calendar
+                      error={fieldErrors.date_of_birth ? "Date of birth is required" : ""}
                     />
                   </div>
                   <div className="mb-6">
-                    <TextField
+                    <Input
+                      id="reg-password"
                       label="Password"
                       placeholder="Enter your password"
-                      password
-                      type={fieldErrors.password ? "error" : ""}
+                      type="password"
                       value={registerData.password}
-                      onChange={(val) =>
+                      onChange={(e) =>
                         setRegisterData({
                           ...registerData,
-                          password: val,
+                          password: e.target.value,
                         })
                       }
-                      errorMessage={passwordErrorMessage}
-                      width="large"
+                      error={fieldErrors.password ? passwordErrorMessage : ""}
                     />
                   </div>
                   <Button

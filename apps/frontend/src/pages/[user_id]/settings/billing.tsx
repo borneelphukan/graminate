@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import axios from "axios";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -105,14 +106,13 @@ const Billing = () => {
         fetchUserSubTypes(userId);
         fetchBillingData();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Cancel subscription error:", error);
-      Swal.fire(
-        "Error",
-        error.response?.data?.data?.error ||
-          "Failed to cancel subscription. Please try again.",
-        "error"
-      );
+      let message = "Failed to cancel subscription. Please try again.";
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.data?.error || message;
+      }
+      Swal.fire("Error", message, "error");
     } finally {
       setIsCancelling(false);
     }

@@ -34,7 +34,7 @@ const SubscriptionsPage = () => {
   // Modal state
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [pendingAction, setPendingAction] = useState<{ row: any[]; action: string } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ row: (string | React.ReactNode)[]; action: string } | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!admin_id) return;
@@ -65,9 +65,10 @@ const SubscriptionsPage = () => {
       if (usersResult.data?.users) {
         setUsers(usersResult.data.users);
       }
-    } catch (err: any) {
-      console.error("Fetch error:", err);
-      setError(err.message);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error("Fetch error:", error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +78,7 @@ const SubscriptionsPage = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAction = (row: any[], action: string) => {
+  const handleAction = (row: (string | React.ReactNode)[], action: string) => {
     setPendingAction({ row, action });
     setIsReasonModalOpen(true);
   };
@@ -86,7 +87,7 @@ const SubscriptionsPage = () => {
     if (!pendingAction) return;
 
     const { row, action } = pendingAction;
-    const userId = row[0];
+    const userId = row[0] as string;
     const token = localStorage.getItem("admin_token");
     
     let newPlan = "";
@@ -131,8 +132,9 @@ const SubscriptionsPage = () => {
       } else {
         throw new Error("Failed to update plan");
       }
-    } catch (err: any) {
-      console.error("Error updating user plan:", err);
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error("Error updating user plan:", error);
       Swal.fire("Error", "Failed to update user plan", "error");
     } finally {
       setIsActionLoading(false);
@@ -236,7 +238,7 @@ const SubscriptionsPage = () => {
                   download={false}
                   onAction={handleAction}
                   onRowClick={(row) => {
-                    const userId = (row as any[])[0];
+                    const userId = row[0] as string;
                     router.push(`/platform/${admin_id}/subscription/${userId}`);
                   }}
                 />
