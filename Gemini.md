@@ -21,5 +21,5 @@ This file serves as the core context for Gemini when navigating and assisting wi
 
 ## 🚨 Strict Rules for Gemini (Repository-Specific)
 When working on the Graminate repository, Gemini **MUST** always adhere to the following guidelines without exception:
-1. **No Documentation**: Do not write or generate any code documentations (e.g., JSDoc, inline comments explaining the code, etc.).
+1. **No Documentation**: Do not write or generate any code documentations (e.g., JSDoc, .txt files, inline comments explaining the code, etc.).
 2. **No Browser Execution**: Do not attempt to run or open the browser for testing or validation purposes.

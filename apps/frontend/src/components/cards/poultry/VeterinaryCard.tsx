@@ -17,7 +17,7 @@ type MetricItemProps = {
 };
 
 const MetricItem = ({ icon, value, label }: MetricItemProps) => (
-  <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
+  <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-600 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
     <Icon
       type={icon}
       className="h-6 w-6 text-blue-200 dark:text-blue-300 mb-2"
@@ -51,7 +51,7 @@ const VeterinaryCard = ({
       : `${birdsVaccinated} / ${totalBirdsInvolvedInRecord}`;
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md flex flex-col h-full">
+    <div className="relative bg-white dark:bg-gray-700 p-6 rounded-xl shadow-md flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-xl font-semibold">
           Veterinary Status

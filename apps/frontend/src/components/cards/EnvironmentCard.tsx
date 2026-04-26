@@ -20,7 +20,7 @@ const MetricItem = ({ icon, value, label, valueClassName, onClick }: Metric & { 
   <div 
     onClick={onClick}
     className={cn(
-      "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-700",
+      "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-600",
       onClick && "cursor-pointer active:scale-95"
     )}
   >
@@ -48,7 +48,7 @@ const EnvironmentCard = ({
   onMetricClick,
 }: EnvironmentCardProps & { onMetricClick?: (metric: Metric) => void }) => {
   return (
-    <div className="relative flex h-full flex-col rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
+    <div className="relative flex h-full flex-col rounded-xl bg-white p-6 shadow-md dark:bg-gray-700">
       <div className="mb-4 flex items-start justify-between">
         <h2 className="text-xl font-semibold">
           {title}

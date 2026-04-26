@@ -75,6 +75,7 @@ type MetricItemProps = {
   label: string;
   isLoading?: boolean;
   isLatest?: boolean;
+  className?: string;
 };
 
 const MetricItem = ({
@@ -83,8 +84,13 @@ const MetricItem = ({
   label,
   isLoading,
   isLatest,
+  className,
 }: MetricItemProps) => (
-  <div className="flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-700 rounded-lg space-y-1 shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
+  <div
+    className={`flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-600 rounded-lg space-y-1 shadow-sm hover:shadow-md transition duration-200 h-full ${
+      className || ""
+    }`}
+  >
     <Icon
       type={icon}
       className="h-6 w-6 text-blue-200 dark:text-blue-300 mb-2"
@@ -116,8 +122,6 @@ const PoultryEggCard = ({
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<PeriodOption>("Weekly");
   const [dateOffset, setDateOffset] = useState(0);
-
-
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
@@ -202,7 +206,7 @@ const PoultryEggCard = ({
   const handlePrev = () => setDateOffset((prev) => prev - 1);
   const handleNext = () => setDateOffset((prev) => prev + 1);
 
-  const textColor = isDarkTheme ? "#e5e7eb" : "#374151";
+  const textColor = isDarkTheme ? "#e5e7eb" : "#111827";
   const gridColor = isDarkTheme
     ? "rgba(255, 255, 255, 0.1)"
     : "rgba(0, 0, 0, 0.1)";
@@ -392,6 +396,7 @@ const PoultryEggCard = ({
               value={"Log & View Data"}
               label="Manage Egg Records"
               isLoading={loading}
+              className="border border-transparent hover:border-green-200"
             />
           </div>
         </div>
@@ -414,7 +419,7 @@ const PoultryEggCard = ({
             <p className="text-dark dark:text-light font-semibold">
               No egg collection data available for the selected period.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-300">
+            <p className="text-sm text-dark dark:text-gray-300">
               Try logging some egg collections or adjusting filters.
             </p>
           </div>
@@ -462,7 +467,7 @@ const PoultryEggCard = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg flex flex-col h-full">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
         <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
           Egg Collection

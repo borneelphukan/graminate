@@ -191,7 +191,7 @@ function CarouselPrevious({
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      icon={{ left: "arrow_left" }}
+      icon={{ left: "chevron_left" }}
       {...props}
     />
   );
@@ -220,7 +220,7 @@ function CarouselNext({
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
-      icon={{ right: "arrow_right" }}
+      icon={{ right: "chevron_right" }}
       {...props}
     />
   );

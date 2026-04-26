@@ -934,14 +934,14 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
                 <div className="flex justify-center items-center gap-x-3 mt-4">
                   <Button
                     label="Previous"
-                    icon={{ left: "arrow_back" }}
+                    icon={{ left: "chevron_left" }}
                     variant="ghost"
                     disabled={isPrevDisabled}
                     onClick={handlePrev}
                   />
                   <Button
                     label="Next"
-                    icon={{ right: "arrow_forward" }}
+                    icon={{ right: "chevron_right" }}
                     variant="ghost"
                     disabled={isNextDisabled}
                     onClick={handleNext}
@@ -954,7 +954,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-xl shadow-lg flex flex-col h-full">
       <div className="mb-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
           <div className="flex items-center text-lg font-semibold text-dark dark:text-light">

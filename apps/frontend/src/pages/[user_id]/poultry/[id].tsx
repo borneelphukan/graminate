@@ -832,7 +832,7 @@ const PoultryDetail = () => {
           }
         />
 
-        <div className="mb-6 mt-2 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+        <div className="mb-6 mt-2 p-4 bg-white dark:bg-gray-700 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-4 md:mb-0">
               {loadingFlockData ? (
@@ -910,11 +910,11 @@ const PoultryDetail = () => {
           </div>
 
           {loadingFlockData ? (
-            <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700 flex justify-center items-center h-full min-h-[150px]">
+            <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-600 flex justify-center items-center h-full min-h-[150px]">
               <Loader />
             </div>
           ) : selectedFlockData ? (
-            <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700">
+            <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-600">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-gray-300">
                 <div className="flex items-center">
               

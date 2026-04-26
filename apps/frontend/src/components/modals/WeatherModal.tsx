@@ -46,6 +46,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
   const { temperatureScale, timeFormat } = useUserPreferences();
   const { locationName } = useLocationName({ lat: lat || 0, lon: lon || 0 });
   const [activeView, setActiveView] = useState<"summary" | "detailed">("summary");
+  const [lastFetched, setLastFetched] = useState<Date | null>(null);
 
   const fetchFullWeather = useCallback(async () => {
     if (!lat || !lon) return;
@@ -53,6 +54,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     try {
       const response = await axios.get("/api/weather", { params: { lat, lon } });
       setData(response.data);
+      setLastFetched(new Date());
     } catch {
       setError("Failed to fetch weather details");
     } finally {
@@ -87,12 +89,18 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
 
@@ -192,16 +200,15 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl relative"
+        className="bg-white dark:bg-gray-800 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col rounded-3xl relative"
       >
         {/* FIXED HEADER */}
-        <div className="sticky top-0 z-[60] bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl px-6 lg:px-10 py-4 border-b border-gray-400 dark:border-gray-700 flex items-center justify-between shrink-0">
+        <div className="sticky top-0 z-[60] bg-white/80 dark:bg-gray-700 px-6 lg:px-10 py-4 flex items-center justify-between shrink-0 border-b border-gray-400 dark:border-gray-700">
           <div className="flex items-center gap-4">
             {activeView === "detailed" && (
               <Button 
                 onClick={() => setActiveView("summary")}
-                variant="secondary"
-                shape="circle"
+                variant="ghost"
                 icon={{ left: "chevron_left" }}
                 className="shrink-0"
               />
@@ -210,24 +217,46 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
               <p className="text-sm text-dark dark:text-light font-bold tracking-tight uppercase leading-none opacity-60">
                 {activeView === "summary" ? "Local Weather" : "Forecast Report"}
               </p>
-              <h2 className="text-xl font-black text-dark dark:text-light mt-1">
+              <h2 className="text-xl font-black text-dark dark:text-light mt-1 flex items-center gap-2">
                 {locationName || "Detecting..."}
+                {lastFetched && (
+                  <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest bg-gray-400/10 px-2 py-0.5 rounded-full">
+                    Updated {lastFetched.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
               </h2>
             </div>
           </div>
-          <div className="text-right flex flex-col items-end">
-             <p className="text-sm font-bold text-dark dark:text-light leading-none">{currentMonthDay}</p>
-             <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-40 mt-1 tracking-widest">Environmental Insights</p>
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:flex flex-col items-end border-r border-gray-400 dark:border-gray-700 pr-4 mr-1">
+               <p className="text-sm font-bold text-dark dark:text-light leading-none">{currentMonthDay}</p>
+               <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-40 mt-1 tracking-widest">Environmental Insights</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={fetchFullWeather}
+                variant="ghost"
+                icon={{ left: "refresh" }}
+                className={cn("text-dark dark:text-light opacity-60 hover:opacity-100 transition-opacity", loading && "animate-spin")}
+                disabled={loading}
+              />
+              <Button 
+                onClick={onClose}
+                variant="ghost"
+                icon={{ left: "close" }}
+                className="text-dark dark:text-light opacity-60 hover:opacity-100 transition-opacity"
+              />
+            </div>
           </div>
         </div>
 
-        {loading ? (
+        {loading && !data ? (
           <div className="flex-1 flex items-center justify-center p-20">
             <Loader />
           </div>
         ) : error || !data ? (
           <div className="flex-1 flex items-center justify-center p-20 text-red-500 text-center">
-            {error || "No data available"}
+            {error || (!loading ? "No data available" : "Loading...")}
           </div>
         ) : (
           <div className="flex-1 overflow-hidden flex flex-col relative">
@@ -250,29 +279,29 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                   {/* Left Section: Main Highlights */}
                   <div className="lg:w-2/5 p-6 lg:p-10 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-gray-400 dark:border-gray-700">
                     <div className="flex items-center gap-6 mb-6 mt-1">
-                      <h1 className="text-4xl lg:text-6xl text-dark dark:text-light font-black tracking-tighter drop-shadow-2xl">
+                      <h1 className="text-4xl lg:text-6xl text-dark dark:text-light font-black tracking-tighter">
                         {formatTemp(data.current.temperature2m)}
                       </h1>
                       <div className="flex flex-col gap-2">
-                        <Icon type={isDay ? "light_mode" : "dark_mode"} className="size-12 text-yellow-200 drop-shadow-glow" />
+                        <Icon type={isDay ? "light_mode" : "dark_mode"} className="size-12 text-yellow-200" />
                         <p className="text-2xl text-dark dark:text-light font-black uppercase tracking-widest leading-none">
                           {data.current.cloudCover > 50 ? "Cloudy" : "Clear Sky"}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-5 bg-white/5 w-fit px-6 py-4 rounded-3xl border border-gray-400 dark:border-gray-700 backdrop-blur-sm shadow-xl">
+                    <div className="flex items-center gap-5 bg-white/5 w-fit px-6 py-4 rounded-3xl border border-gray-400 dark:border-gray-700">
                       <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
-                          <Icon type="arrow_upward" className="size-5 text-red-400" />
+                          <Icon type="arrow_upward" className="size-5 text-red-200" />
                           <span className="text-xl font-black text-dark dark:text-light leading-none">{formatTemp(data.daily.temperature2mMax[0])}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Icon type="arrow_downward" className="size-5 text-blue-300" />
+                          <Icon type="arrow_downward" className="size-5 text-blue-200" />
                           <span className="text-xl font-black text-dark dark:text-light leading-none">{formatTemp(data.daily.temperature2mMin[0])}</span>
                         </div>
                       </div>
-                      <div className="w-px h-8 bg-gray-400/30 dark:bg-gray-700/30" />
+                      <div className="w-px h-8 bg-gray-400 dark:bg-gray-700" />
                       <div className="flex items-center gap-3">
                         <span className="text-[10px] uppercase font-bold tracking-widest opacity-40 text-dark dark:text-light">Feels like</span>
                         <span className="text-xl font-black text-dark dark:text-light leading-none">{formatTemp(data.current.apparentTemperature)}</span>
@@ -280,10 +309,10 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                     </div>
 
                     <div className="space-y-3 mt-8">
-                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
+                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl border border-gray-400 dark:border-gray-700">
                         <div className="flex items-center gap-3">
-                          <div className="p-1.5 bg-blue-500/20 rounded-lg">
-                            <Icon type="water_drop" className="text-blue-400 size-4" />
+                          <div className="p-1.5 bg-gray-500 rounded-lg">
+                            <Icon type="water_drop" className="text-dark size-4" />
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-50 leading-none mb-1">Humidity</p>
@@ -292,10 +321,10 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl backdrop-blur-md border border-gray-400 dark:border-gray-700">
+                      <div className="flex items-center justify-between p-3.5 bg-white/10 rounded-2xl border border-gray-400 dark:border-gray-700">
                         <div className="flex items-center gap-3">
-                          <div className="p-1.5 bg-blue-500/20 rounded-lg">
-                            <Icon type="air" className="size-4" />
+                          <div className="p-1.5 bg-gray-500 rounded-lg">
+                            <Icon type="air" className="text-dark size-4" />
                           </div>
                           <div>
                             <p className="text-[10px] uppercase font-bold text-dark dark:text-light opacity-50 leading-none mb-1">Wind Speed</p>
@@ -376,7 +405,6 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                       <div className="bg-white/10 p-6 rounded-3xl border border-gray-400 dark:border-gray-700 flex flex-col justify-between hover:bg-white/15 transition-colors">
                         <div className="flex items-center justify-between mb-4">
                           <span className="text-sm font-bold text-dark dark:text-light uppercase tracking-widest opacity-70">Precipitation</span>
-                          <Icon type="umbrella" className="text-purple-300" />
                         </div>
                         <div>
                           <p className="text-4xl font-black text-dark dark:text-light">{data.daily.precipitationSum[0].toFixed(1)} <span className="text-xl font-medium opacity-60">mm</span></p>
@@ -388,10 +416,12 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                       </div>
 
                       {/* Weekly Forecast Summary */}
-                      <div className="bg-white/10 p-6 rounded-3xl border border-gray-400 dark:border-gray-700 flex flex-col justify-between hover:bg-white/15 transition-colors">
+                      <div 
+                        onClick={() => setActiveView("detailed")}
+                        className="bg-white/10 p-6 rounded-3xl border border-gray-400 dark:border-gray-700 flex flex-col justify-between hover:bg-white/15 transition-all cursor-pointer group hover:scale-[1.02] active:scale-[0.98]"
+                      >
                         <div className="flex items-center justify-between mb-4">
                           <span className="text-sm font-bold text-dark dark:text-light uppercase tracking-widest opacity-70">Forecast</span>
-                          <Icon type="calendar_month" className="text-green-300" />
                         </div>
                         <div className="flex justify-between items-center px-1">
                           {data.daily.time.slice(1, 5).map((time, i) => (
@@ -405,13 +435,13 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                           ))}
                         </div>
                         <div className="mt-4 text-center">
-                          <button 
-                            onClick={() => setActiveView("detailed")}
-                            className="w-full text-[10px] font-black uppercase tracking-widest text-white bg-brand-green hover:bg-brand-green/90 px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-brand-green/20 flex items-center justify-center gap-2 group"
+                          <Button 
+                            variant="outline"
+                            className="w-full text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:bg-brand-green/10"
                           >
-                            View full report
-                            <Icon type="arrow_forward" className="size-3.5 transition-transform group-hover:translate-x-1" />
-                          </button>
+                            View Forecast
+                            <Icon type="chevron_right" className="size-3.5 transition-transform group-hover:translate-x-1" />
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -419,7 +449,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                 </div>
 
                 {/* VIEW 2: Detailed Forecast View */}
-                <div className="w-1/2 p-6 lg:p-10 flex flex-col bg-black/5 dark:bg-black/20 backdrop-blur-3xl h-full">
+                <div className="w-1/2 p-6 lg:p-10 flex flex-col h-full">
                   <div className="flex-1 space-y-8 pr-2">
                     {/* Hourly Forecast */}
                     <section className="relative overflow-hidden">
@@ -428,7 +458,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                         {data.hourly.time.slice(0, 24).map((time, i) => (
                           <div key={i} className="flex flex-col items-center min-w-[72px] shrink-0 p-4 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-700 hover:bg-white/10 transition-colors">
                             <p className="text-[10px] font-bold opacity-60 mb-2 whitespace-nowrap text-dark dark:text-light">{getTimeString(time)}</p>
-                            <Icon type={data.hourly.uvIndexHourly[i] > 3 ? "wb_sunny" : "cloud"} className="size-6 text-yellow-300 my-2" />
+                            <Icon type={data.hourly.uvIndexHourly[i] > 3 ? "wb_sunny" : "cloud"} className="size-6 text-yellow-200 my-2" />
                             <p className="text-lg font-black text-dark dark:text-light">{Math.round(data.hourly.temperature2m[i])}°</p>
                           </div>
                         ))}
@@ -437,7 +467,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
 
                     {/* 10 Day Forecast */}
                     <section>
-                      <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-4 opacity-50 text-dark dark:text-light">10-Day Forecast</h3>
+                      <h3 className="text-xs font-black uppercase tracking-widest mb-4 opacity-50 text-dark dark:text-light">7-Day Forecast</h3>
                       <div className="space-y-2 pb-4">
                         {data.daily.time.slice(0, 10).map((time, i) => (
                           <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-700 hover:bg-white/10 transition-colors">
@@ -453,9 +483,9 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                             </div>
                             <div className="w-2/4 flex items-center justify-end gap-4">
                               <span className="opacity-40 font-bold text-dark dark:text-light">{Math.round(data.daily.temperature2mMin[i])}°</span>
-                              <div className="w-24 h-1.5 bg-white/10 rounded-full relative overflow-hidden">
+                              <div className="w-24 h-1.5 bg-white rounded-full relative overflow-hidden">
                                 <div 
-                                  className="absolute h-full bg-gradient-to-r from-blue-400 to-yellow-400 rounded-full"
+                                  className="absolute h-full bg-green-200 rounded-full"
                                   style={{ left: "20%", right: "20%" }} 
                                 />
                               </div>
