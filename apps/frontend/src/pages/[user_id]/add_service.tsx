@@ -161,13 +161,6 @@ const AddServicePage = () => {
         const payload = {
           user_id: parseInt(user_id as string, 10),
           name: `${subType} Warehouse`,
-          type: "Ambient Storage",
-          address_line_1: userData?.address_line_1 || "",
-          address_line_2: userData?.address_line_2 || "",
-          city: userData?.city || "",
-          state: userData?.state || "",
-          postal_code: userData?.postal_code || "",
-          country: userData?.country || "India",
           category: subType,
         };
         return axiosInstance.post("/warehouse/add", payload);

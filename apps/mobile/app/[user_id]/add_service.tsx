@@ -6,7 +6,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
-import axios from "axios";
+import axiosInstance from "@/lib/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -26,9 +26,8 @@ import Toast from "react-native-toast-message";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-const api = axios.create({
-  baseURL: API_URL,
-});
+// Using the centralized axiosInstance from @/lib/axiosInstance
+const api = axiosInstance;
 
 type ServiceConfig = {
   [key: string]: {
@@ -176,13 +175,6 @@ const AddServiceScreen = () => {
         const payload = {
           user_id: parseInt(user_id as string, 10),
           name: `${subType} Warehouse`,
-          type: "Ambient Storage",
-          address_line_1: userData?.address_line_1 || "",
-          address_line_2: userData?.address_line_2 || "",
-          city: userData?.city || "",
-          state: userData?.state || "",
-          postal_code: userData?.postal_code || "",
-          country: userData?.country || "India",
           category: subType,
         };
         return api.post("/warehouse/add", payload, authHeaders);

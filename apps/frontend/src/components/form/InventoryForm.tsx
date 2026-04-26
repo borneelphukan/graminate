@@ -5,7 +5,6 @@ import { UNITS } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../ui/Loader";
 
 interface InventoryFormProps extends SidebarProp {
   warehouseId?: number;
@@ -15,7 +14,6 @@ interface InventoryFormProps extends SidebarProp {
 
 type InventoryItemData = {
   itemName: string;
-  itemGroup: string;
   units: string;
   quantity: string;
   pricePerUnit: string;
@@ -25,7 +23,6 @@ type InventoryItemData = {
 
 type InventoryFormErrors = {
   itemName?: string;
-  itemGroup?: string;
   units?: string;
   quantity?: string;
   pricePerUnit?: string;
@@ -60,7 +57,6 @@ const InventoryForm = ({
   const [animate, setAnimate] = useState(false);
   const [inventoryItem, setInventoryItem] = useState<InventoryItemData>({
     itemName: initialData?.item_name || "",
-    itemGroup: initialData?.item_group || "",
     units: initialData?.units || "",
     quantity: initialData?.quantity?.toString() || "",
     pricePerUnit: initialData?.price_per_unit?.toString() || "",
@@ -72,12 +68,7 @@ const InventoryForm = ({
   );
 
   const panelRef = useRef<HTMLDivElement>(null);
-  const suggestionsRef = useRef<HTMLDivElement>(null);
-
-  const [subTypes, setSubTypes] = useState<string[]>([]);
-  const [isLoadingSubTypes, setIsLoadingSubTypes] = useState(true);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [warehouseCategory, setWarehouseCategory] = useState<string>("");
 
   useAnimatePanel(setAnimate);
 
@@ -95,47 +86,24 @@ const InventoryForm = ({
   useClickOutside(panelRef, handleClose);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(event.target as Node)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchUserSubTypes = async () => {
-      if (!parsedUserId) {
-        setIsLoadingSubTypes(false);
-        setSubTypes([]);
-        return;
-      }
-      setIsLoadingSubTypes(true);
+    const fetchWarehouseCategory = async () => {
+      if (!parsedUserId || !warehouseId) return;
       try {
-        const response = await axiosInstance.get(`/user/${parsedUserId}`);
-        const user = response.data?.data?.user ?? response.data?.user;
-        if (!user) {
-          setSubTypes([]);
-        } else {
-          setSubTypes(Array.isArray(user.sub_type) ? user.sub_type : []);
+        const response = await axiosInstance.get(`/warehouse/user/${parsedUserId}`);
+        const warehouses = response.data?.warehouses || [];
+        const currentWarehouse = warehouses.find(
+          (wh: any) => wh.warehouse_id === warehouseId
+        );
+        if (currentWarehouse?.category) {
+          setWarehouseCategory(currentWarehouse.category);
         }
       } catch (error) {
-        console.error("Error fetching user sub_types:", error);
-        setSubTypes([]);
-      } finally {
-        setIsLoadingSubTypes(false);
+        console.error("Error fetching warehouse category:", error);
       }
     };
 
-    fetchUserSubTypes();
-  }, [parsedUserId]);
+    fetchWarehouseCategory();
+  }, [parsedUserId, warehouseId]);
 
   const validateForm = (): boolean => {
     const errors: InventoryFormErrors = {};
@@ -143,10 +111,6 @@ const InventoryForm = ({
 
     if (!inventoryItem.itemName.trim()) {
       errors.itemName = "Item Name is required.";
-      isValid = false;
-    }
-    if (!inventoryItem.itemGroup.trim()) {
-      errors.itemGroup = "Item Occupation is required.";
       isValid = false;
     }
     if (!inventoryItem.units) {
@@ -193,42 +157,6 @@ const InventoryForm = ({
     return isValid;
   };
 
-  const handleItemCategoryInputChange = (val: string) => {
-    setInventoryItem({ ...inventoryItem, itemGroup: val });
-    setInventoryErrors({ ...inventoryErrors, itemGroup: undefined });
-
-    if (val.length > 0) {
-      const filtered = subTypes.filter((subType) =>
-        subType.toLowerCase().includes(val.toLowerCase())
-      );
-      setSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setSuggestions(subTypes);
-      setShowSuggestions(true);
-    }
-  };
-
-  const selectCategorySuggestion = (suggestion: string) => {
-    setInventoryItem({ ...inventoryItem, itemGroup: suggestion });
-    setInventoryErrors({ ...inventoryErrors, itemGroup: undefined });
-    setShowSuggestions(false);
-  };
-
-  const handleItemCategoryInputFocus = () => {
-    if (subTypes.length > 0) {
-      if (!inventoryItem.itemGroup) {
-        setSuggestions(subTypes);
-      } else {
-        const filtered = subTypes.filter((subType) =>
-          subType.toLowerCase().includes(inventoryItem.itemGroup.toLowerCase())
-        );
-        setSuggestions(filtered);
-      }
-      setShowSuggestions(true);
-    }
-  };
-
   const handleSubmitInventoryItem = async (e?: React.FormEvent | React.MouseEvent) => {
     if (e) e.preventDefault();
 
@@ -248,7 +176,7 @@ const InventoryForm = ({
     const payload: InventoryItemPayload = {
       user_id: Number(parsedUserId),
       item_name: inventoryItem.itemName,
-      item_group: inventoryItem.itemGroup,
+      item_group: warehouseCategory || initialData?.item_group || "",
       units: inventoryItem.units,
       quantity: Number(inventoryItem.quantity),
       price_per_unit: Number(inventoryItem.pricePerUnit),
@@ -272,7 +200,6 @@ const InventoryForm = ({
 
       setInventoryItem({
         itemName: "",
-        itemGroup: "",
         units: "",
         quantity: "",
         pricePerUnit: "",
@@ -363,44 +290,6 @@ const InventoryForm = ({
                       className="font-medium"
                     />
                 )}
-
-                <div className="relative">
-                  <Input
-                    id="itemGroup"
-                    label="Item Category / Occupation"
-                    placeholder="e.g. Raw Coffee, Packaging"
-                    value={inventoryItem.itemGroup}
-                    onChange={(e) => handleItemCategoryInputChange(e.target.value)}
-                    onFocus={handleItemCategoryInputFocus}
-                    error={inventoryErrors.itemGroup}
-                  />
-                  {showSuggestions && (
-                    <div
-                      ref={suggestionsRef}
-                      className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
-                    >
-                      {isLoadingSubTypes ? (
-                        <div className="p-4 flex justify-center items-center">
-                          <Loader />
-                        </div>
-                      ) : suggestions.length > 0 ? (
-                        suggestions.map((suggestion, index) => (
-                          <div
-                            key={index}
-                            className="px-4 py-3 hover:bg-gray-400 dark:hover:bg-white/5 text-sm cursor-pointer text-gray-900 dark:text-white transition-colors"
-                            onClick={() => selectCategorySuggestion(suggestion)}
-                          >
-                            {suggestion}
-                          </div>
-                        ))
-                      ) : (
-                        <p className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 italic">
-                          No categories found.
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
 
                 <Dropdown
                   items={UNITS}

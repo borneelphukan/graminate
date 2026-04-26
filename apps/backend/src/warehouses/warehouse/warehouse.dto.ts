@@ -1,7 +1,7 @@
 export class CreateWarehouseDto {
   user_id: number;
   name: string;
-  type: string;
+  type?: string;
   address_line_1?: string;
   address_line_2?: string;
   city?: string;

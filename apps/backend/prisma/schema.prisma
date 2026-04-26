@@ -547,7 +547,7 @@ model warehouse {
   warehouse_id     Int         @id @default(autoincrement())
   user_id          Int?
   name             String      @db.VarChar(100)
-  type             String      @db.VarChar(50)
+  type             String?     @db.VarChar(50)
   address_line_1   String?     @db.VarChar(255)
   address_line_2   String?     @db.VarChar(255)
   city             String?     @db.VarChar(100)

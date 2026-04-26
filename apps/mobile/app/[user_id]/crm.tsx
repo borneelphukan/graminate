@@ -14,8 +14,7 @@ import {
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axiosInstance from "@/lib/axiosInstance";
-import axios from "axios";
+import axiosInstance, { axios } from "@/lib/axiosInstance";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";

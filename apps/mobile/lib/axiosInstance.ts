@@ -27,4 +27,5 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+export { axios };
 export default axiosInstance;
