@@ -11,6 +11,7 @@ import {
   Text,
   useTheme,
 } from "react-native-paper";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import ChatWindow from "./ChatWindow";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -35,6 +36,7 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const theme = useTheme();
+  const { fetchUserSubTypes } = useUserPreferences();
 
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -79,6 +81,8 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
         const user = JSON.parse(userString);
         if (user.user_id.toString() === user_id) {
           setIsAuthorized(true);
+          // Fetch global user preferences/plan
+          await fetchUserSubTypes(user_id);
         }
       }
       setIsLoadingAuth(false);

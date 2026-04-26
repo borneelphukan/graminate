@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import Sparkles from "@/assets/icon/Sparkles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import axiosInstance, { axios } from "@/lib/axiosInstance";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -23,17 +23,6 @@ import {
   useTheme,
 } from "react-native-paper";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-const axiosInstance = axios.create({ baseURL: API_URL });
-
-axiosInstance.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem("accessToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 type Message = {
   sender: "user" | "bot";
@@ -134,7 +123,45 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           sender === "user" ? theme.colors.onPrimary : theme.colors.onSurface,
         fontSize: 16,
       },
+      table: {
+        borderWidth: 1,
+        borderColor: "rgba(0,0,0,0.1)",
+        borderRadius: 12,
+        backgroundColor: theme.colors.surface,
+        marginVertical: 10,
+        overflow: "hidden",
+      },
+      thead: {
+        backgroundColor: theme.colors.elevation.level1,
+      },
+      th: {
+        padding: 12,
+        fontWeight: "bold",
+        fontSize: 12,
+        color: theme.colors.onSurface,
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(0,0,0,0.1)",
+        minWidth: 100,
+      },
+      tr: {
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(0,0,0,0.05)",
+      },
+      td: {
+        padding: 12,
+        fontSize: 14,
+        color: theme.colors.onSurface,
+        minWidth: 100,
+      },
     });
+
+  const markdownRules = {
+    table: (node: any, children: any, parent: any, styles: any) => (
+      <ScrollView horizontal key={node.key} showsHorizontalScrollIndicator={false}>
+        <View style={styles.table}>{children}</View>
+      </ScrollView>
+    ),
+  };
 
   const styles = StyleSheet.create({
     flex: { flex: 1 },
@@ -367,7 +394,10 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
                     ]}
                     elevation={1}
                   >
-                    <MarkdownDisplay style={markdownStyle(msg.sender)}>
+                    <MarkdownDisplay 
+                      style={markdownStyle(msg.sender)}
+                      rules={markdownRules}
+                    >
                       {msg.text}
                     </MarkdownDisplay>
                   </Surface>

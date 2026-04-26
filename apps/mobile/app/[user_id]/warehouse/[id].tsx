@@ -53,6 +53,8 @@ type WarehouseDetails = {
 };
 
 const screenWidth = Dimensions.get("window").width;
+const isTablet = screenWidth >= 768;
+const statBoxWidth = isTablet ? (screenWidth - 68) / 4 : (screenWidth - 44) / 2;
 
 const getBarColor = (quantity: number, max: number): string => {
   if (max === 0) return "#9ca3af";
@@ -327,18 +329,39 @@ const WarehouseDetailScreen = () => {
         </View>
 
         {/* Stats Summary Grid */}
-        <View style={styles.statsGrid}>
-          <View style={[styles.statBox, { borderLeftColor: theme.colors.primary }]}>
-            <Text variant="labelSmall" style={styles.statLabel}>Total Items</Text>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.statsScroll}
+          contentContainerStyle={styles.statsGrid}
+        >
+          <View style={styles.statBox}>
+            <Text variant="labelSmall" style={styles.statLabel}>TOTAL ITEMS</Text>
             <Text variant="titleLarge" style={styles.statValue}>{inventory.length}</Text>
+            <Text variant="bodySmall" style={styles.statSub}>In storage</Text>
           </View>
-          <View style={[styles.statBox, { borderLeftColor: "#22c55e" }]}>
-            <Text variant="labelSmall" style={styles.statLabel}>Asset Value</Text>
+          <View style={styles.statBox}>
+            <Text variant="labelSmall" style={styles.statLabel}>ASSET VALUE</Text>
             <Text variant="titleLarge" style={styles.statValue}>
               ₹{(totalAssetValue / 1000).toFixed(1)}k
             </Text>
+            <Text variant="bodySmall" style={styles.statSub}>Estimated total</Text>
           </View>
-        </View>
+          <View style={styles.statBox}>
+            <Text variant="labelSmall" style={styles.statLabel}>LOW STOCK</Text>
+            <Text variant="titleLarge" style={[styles.statValue, lowStockItems.length > 0 && { color: theme.colors.error }]}>
+              {lowStockItems.length}
+            </Text>
+            <Text variant="bodySmall" style={styles.statSub}>Need attention</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text variant="labelSmall" style={styles.statLabel}>CAPACITY</Text>
+            <Text variant="titleLarge" style={styles.statValue}>
+              {warehouseDetails?.storage_capacity || "N/A"}
+            </Text>
+            <Text variant="bodySmall" style={styles.statSub}>sq. ft. area</Text>
+          </View>
+        </ScrollView>
 
         {/* Facility Info Card */}
         {warehouseDetails && (
@@ -525,25 +548,35 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 12,
   },
+  statsScroll: {
+    marginBottom: 16,
+  },
   statsGrid: {
     flexDirection: "row",
     gap: 12,
     paddingHorizontal: 16,
-    marginBottom: 16,
   },
   statBox: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.02)",
-    padding: 12,
-    borderRadius: 12,
-    borderLeftWidth: 4,
+    width: statBoxWidth,
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
   },
   statLabel: {
     opacity: 0.6,
-    marginBottom: 4,
+    marginBottom: 8,
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
   statValue: {
     fontWeight: "bold",
+    marginBottom: 4,
+  },
+  statSub: {
+    opacity: 0.5,
+    fontSize: 10,
   },
   infoCard: {
     marginHorizontal: 16,
