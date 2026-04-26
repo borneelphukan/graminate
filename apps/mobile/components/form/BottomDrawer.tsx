@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Alert, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import {
   HelperText,
@@ -377,49 +377,7 @@ export const BottomDrawer = ({
     }
   };
 
-  const renderedFields = useMemo(() => {
-    const rows: React.ReactNode[] = [];
-    let currentRow: { field: FormField; index: number }[] = [];
-
-    (fields || []).forEach((field, index) => {
-      if (field.halfWidth) {
-        currentRow.push({ field, index });
-        if (currentRow.length === 2) {
-          const rowData = [...currentRow];
-          rows.push(
-            <View key={`row-${index}`} style={styles.row}>
-              {rowData.map((item) => renderField(item.field, item.index, true))}
-            </View>
-          );
-          currentRow = [];
-        }
-      } else {
-        if (currentRow.length === 1) {
-          rows.push(
-            <View key={`row-single-${index}`} style={styles.row}>
-              {renderField(currentRow[0].field, currentRow[0].index, true)}
-              <View style={styles.halfWidth} />
-            </View>
-          );
-          currentRow = [];
-        }
-        rows.push(renderField(field, index, false));
-      }
-    });
-
-    if (currentRow.length === 1) {
-      rows.push(
-        <View key="row-last" style={styles.row}>
-          {renderField(currentRow[0].field, currentRow[0].index, true)}
-          <View style={styles.halfWidth} />
-        </View>
-      );
-    }
-
-    return rows;
-  }, [fields, formData, errors, theme, tagInput]);
-
-  function renderField(field: FormField, index: number, isHalf: boolean) {
+  const renderField = useCallback((field: FormField, index: number, isHalf: boolean) => {
     const containerStyle = isHalf ? styles.halfWidth : styles.fullWidth;
 
     if (field.type === "dynamic-list") {
@@ -698,7 +656,63 @@ export const BottomDrawer = ({
         </HelperText>
       </View>
     );
-  }
+  }, [
+    formData,
+    theme,
+    handleRemoveDynamicListItem,
+    handleDynamicListChange,
+    handleAddDynamicListItem,
+    tagInput,
+    setTagInput,
+    handleAddTag,
+    handleRemoveTag,
+    handleInputChange,
+    errors,
+    setActiveDateField,
+    setDatePickerVisible,
+  ]);
+
+  const renderedFields = useMemo(() => {
+    const rows: React.ReactNode[] = [];
+    let currentRow: { field: FormField; index: number }[] = [];
+
+    (fields || []).forEach((field, index) => {
+      if (field.halfWidth) {
+        currentRow.push({ field, index });
+        if (currentRow.length === 2) {
+          const rowData = [...currentRow];
+          rows.push(
+            <View key={`row-${index}`} style={styles.row}>
+              {rowData.map((item) => renderField(item.field, item.index, true))}
+            </View>
+          );
+          currentRow = [];
+        }
+      } else {
+        if (currentRow.length === 1) {
+          rows.push(
+            <View key={`row-single-${index}`} style={styles.row}>
+              {renderField(currentRow[0].field, currentRow[0].index, true)}
+              <View style={styles.halfWidth} />
+            </View>
+          );
+          currentRow = [];
+        }
+        rows.push(renderField(field, index, false));
+      }
+    });
+
+    if (currentRow.length === 1) {
+      rows.push(
+        <View key="row-last" style={styles.row}>
+          {renderField(currentRow[0].field, currentRow[0].index, true)}
+          <View style={styles.halfWidth} />
+        </View>
+      );
+    }
+
+    return rows;
+  }, [fields, formData, errors, theme, tagInput, renderField]);
 
   const handleDayPress = (day: DateData) => {
     if (activeDateField) {

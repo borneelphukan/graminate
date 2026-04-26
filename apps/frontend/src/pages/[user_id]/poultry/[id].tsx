@@ -1054,6 +1054,14 @@ const PoultryDetail = () => {
         onClose={() => setIsWeatherModalOpen(false)}
         lat={coords?.lat ?? null}
         lon={coords?.lon ?? null}
+        module="poultry"
+        userId={parsedUserId}
+        contextData={{
+          flock: selectedFlockData,
+          health: latestPoultryHealthData,
+          eggs: poultryEggCardStats.latestMetrics,
+          fedToday: timesFedToday
+        }}
       />
     </PlatformLayout>
   );

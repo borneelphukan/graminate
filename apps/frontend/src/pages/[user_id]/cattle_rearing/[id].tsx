@@ -431,6 +431,9 @@ const CattleDetailPage = () => {
         onClose={() => setIsWeatherModalOpen(false)}
         lat={coords?.lat || null}
         lon={coords?.lon || null}
+        module="cattle_rearing"
+        userId={parsedUserId}
+        contextData={{ cattle: selectedCattleData }}
       />
     </PlatformLayout>
   );

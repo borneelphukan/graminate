@@ -1,7 +1,8 @@
-import { Icon, cn, Button } from "@graminate/ui";
+import { Icon, cn, Button, type IconType } from "@graminate/ui";
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
 import Loader from "@/components/ui/Loader";
+import ReactMarkdown from 'react-markdown';
 import { useLocationName } from "@/hooks/weather";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import UVScale from "./UVScale";
@@ -11,6 +12,9 @@ interface WeatherModalProps {
   onClose: () => void;
   lat: number | null;
   lon: number | null;
+  module?: "poultry" | "cattle_rearing";
+  contextData?: Record<string, unknown>;
+  userId?: string;
 }
 
 type WeatherData = {
@@ -38,21 +42,69 @@ type WeatherData = {
   };
 };
 
-const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
+const WeatherModal = ({ 
+  isOpen, 
+  onClose, 
+  lat, 
+  lon, 
+  module, 
+  contextData,
+  userId
+}: WeatherModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { temperatureScale, timeFormat } = useUserPreferences();
-  const { locationName } = useLocationName({ lat: lat || 0, lon: lon || 0 });
+  const { temperatureScale, timeFormat, plan, language } = useUserPreferences();
+  const [internalCoords, setInternalCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+  useEffect(() => {
+    if ((!lat || !lon) && isOpen) {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            setInternalCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+          },
+          (err) => {
+            console.error("Internal geolocation error:", err);
+            setError("Location access denied. Please enable location to see weather.");
+          }
+        );
+      }
+    }
+  }, [lat, lon, isOpen]);
+
+  const effectiveLat = lat || internalCoords?.lat;
+  const effectiveLon = lon || internalCoords?.lon;
+
+  const { locationName } = useLocationName({ lat: effectiveLat || 0, lon: effectiveLon || 0 });
   const [activeView, setActiveView] = useState<"summary" | "detailed">("summary");
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
+  const [aiSuggestions, setAiSuggestions] = useState<string | null>(null);
+  const [loadingAI, setLoadingAI] = useState(false);
+  const [lastFetchedAI, setLastFetchedAI] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (userId && module && isOpen) {
+      const cached = localStorage.getItem(`ai_weather_${userId}_${module}`);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          setAiSuggestions(parsed.text);
+          setLastFetchedAI(new Date(parsed.timestamp));
+        } catch (e) {
+          console.error("Failed to parse cached AI suggestions:", e);
+        }
+      }
+    }
+  }, [userId, module, isOpen]);
 
   const fetchFullWeather = useCallback(async () => {
-    if (!lat || !lon) return;
+    if (!effectiveLat || !effectiveLon) return;
     setLoading(true);
+    setError(null);
     try {
-      const response = await axios.get("/api/weather", { params: { lat, lon } });
+      const response = await axios.get("/api/weather", { params: { lat: effectiveLat, lon: effectiveLon } });
       setData(response.data);
       setLastFetched(new Date());
     } catch {
@@ -60,13 +112,52 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     } finally {
       setLoading(false);
     }
-  }, [lat, lon]);
+  }, [effectiveLat, effectiveLon]);
+
+  const fetchAISuggestions = useCallback(async () => {
+    if (!data || !module || !contextData || plan !== "PRO") return;
+    setLoadingAI(true);
+    try {
+      const prompt = `Weather: ${data.current.temperature2m}°C, ${data.current.relativeHumidity2m}% humidity. 
+      Farm Context: ${JSON.stringify(contextData)}. 
+      For this ${module.replace("_", " ")} farm, provide brief "things to do" to maintain productivity under current conditions.
+      
+      Structure:
+      1. Use these exact headers in bold: **Temperature (${data.current.temperature2m}°C)**, **Humidity (${data.current.relativeHumidity2m}%)**, **Daylight (${data.daily.daylightDuration[0]/60} hours)**, **Precipitation (${data.daily.precipitationSum[0]} mm)**, and **Wind (${data.current.windSpeed10m} km/h)**.
+      2. Under each header, provide 1-2 very brief, concise, and direct action points using **unordered bullet points** (- or *).
+      3. Use available inventory/data from the context if relevant.
+      4. Do NOT list the weather values or farm data points themselves.
+      5. Response ONLY in ${language} language.
+      6. Start directly with the first header. No intro or titles.
+      7. Use very simple language for a farmer.`;
+      
+      const response = await axios.post("/api/llm", {
+        history: [{ sender: "user", text: prompt }],
+        userId: userId || "1",
+        token: "internal",
+      });
+      setAiSuggestions(response.data.answer);
+      const now = new Date();
+      setLastFetchedAI(now);
+      if (userId && module) {
+        localStorage.setItem(`ai_weather_${userId}_${module}`, JSON.stringify({
+          text: response.data.answer,
+          timestamp: now.getTime()
+        }));
+      }
+    } catch (err) {
+      console.error("AI fetch error:", err);
+      setAiSuggestions("Unable to load AI suggestions at this time.");
+    } finally {
+      setLoadingAI(false);
+    }
+  }, [data, module, contextData, plan, userId, language]);
 
   useEffect(() => {
-    if (isOpen && lat && lon) {
+    if (isOpen && effectiveLat && effectiveLon) {
       fetchFullWeather();
     }
-  }, [isOpen, lat, lon, fetchFullWeather]);
+  }, [isOpen, effectiveLat, effectiveLon, fetchFullWeather]);
 
   useEffect(() => {
     if (isOpen) {
@@ -234,13 +325,6 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
             </div>
             <div className="flex items-center gap-2">
               <Button 
-                onClick={fetchFullWeather}
-                variant="ghost"
-                icon={{ left: "refresh" }}
-                className={cn("text-dark dark:text-light opacity-60 hover:opacity-100 transition-opacity", loading && "animate-spin")}
-                disabled={loading}
-              />
-              <Button 
                 onClick={onClose}
                 variant="ghost"
                 icon={{ left: "close" }}
@@ -254,9 +338,24 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
           <div className="flex-1 flex items-center justify-center p-20">
             <Loader />
           </div>
-        ) : error || !data ? (
-          <div className="flex-1 flex items-center justify-center p-20 text-red-500 text-center">
-            {error || (!loading ? "No data available" : "Loading...")}
+        ) : error ? (
+          <div className="flex-1 flex items-center justify-center p-20 text-red-500 text-center flex-col gap-4">
+            <Icon type="location_off" className="size-12 opacity-50" />
+            <p className="font-bold">{error}</p>
+          </div>
+        ) : !data && (!effectiveLat || !effectiveLon) ? (
+          <div className="flex-1 flex items-center justify-center p-20 text-dark dark:text-light opacity-60 text-center">
+            <div className="flex flex-col items-center gap-6">
+              <Loader />
+              <div className="space-y-2">
+                <p className="text-xs font-black uppercase tracking-[0.2em] animate-pulse">Detecting Location...</p>
+                <p className="text-[10px] opacity-50">Please ensure GPS is enabled for weather insights.</p>
+              </div>
+            </div>
+          </div>
+        ) : !data ? (
+          <div className="flex-1 flex items-center justify-center p-20">
+            <Loader />
           </div>
         ) : (
           <div className="flex-1 overflow-hidden flex flex-col relative">
@@ -333,6 +432,93 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                         </div>
                       </div>
                     </div>
+
+                    {module && (
+                      <div className="mt-8 relative overflow-hidden rounded-[2rem] border border-gray-400 dark:border-gray-700 group flex flex-col max-h-[400px]">
+                        <div className="absolute -top-6 -right-6 opacity-20 pointer-events-none transform rotate-12 transition-transform duration-700 group-hover:rotate-45">
+                          <Icon type="auto_awesome" className="size-32 text-green-400 blur-[2px]" />
+                        </div>
+                        <div className="relative z-10 p-6 flex flex-col h-full">
+                          <div className="flex items-center justify-between mb-5 shrink-0">
+                            <div className="flex items-center gap-3">
+                               <div className="p-2 bg-gradient-to-br from-green-400/30 to-green-600/10 rounded-xl shadow-inner border border-green-400/20">
+                                 <Icon type="auto_awesome" className="text-green-600 dark:text-green-300 size-5" />
+                               </div>
+                              <div className="flex flex-col">
+                                <h3 className="text-green-100 dark:text-green-300 text-xs uppercase tracking-widest">AI Recommendations</h3>
+                                {lastFetchedAI && (
+                                  <span className="text-[8px] text-dark dark:text-light uppercase leading-none mt-1">
+                                    Last updated: {lastFetchedAI.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            {plan === "PRO" && (
+                                <Button
+                                  onClick={fetchAISuggestions}
+                                  disabled={loadingAI}
+                                  variant="ghost"
+                                  title={!aiSuggestions ? "Generate Recommendations" : "Refresh Recommendations"}
+                                  icon={{
+                                    left: "auto_awesome" as IconType
+                                  }}
+                                />
+                            )}
+                          </div>
+                          
+                          <div className={cn("overflow-y-auto pr-2 flex-1 relative", aiSuggestions || loadingAI ? "min-h-[120px]" : "min-h-0")}>
+                            {plan !== "PRO" ? (
+                              <div className="flex flex-col items-center justify-center h-full text-center space-y-4 py-4 animate-in zoom-in duration-500">
+                                <div className="relative">
+                                  <div className="absolute inset-0 bg-yellow-400 blur-2xl rounded-full animate-pulse" />
+                                  <Icon type="workspace_premium" className="size-12 text-yellow-500 relative z-10" />
+                                </div>
+                                <div className="space-y-1">
+                                  <h4 className="text-sm font-black uppercase tracking-widest text-dark dark:text-light">Pro Feature</h4>
+                                  <p className="text-[11px] text-dark dark:text-light opacity-60 max-w-[200px] leading-relaxed mx-auto">
+                                    Upgrade to Graminate Pro to unlock hyper-local AI farming advice.
+                                  </p>
+                                </div>
+                                <Button 
+                                  label="Upgrade Now"
+                                  variant="primary" 
+                                  size="sm" 
+                                  onClick={() => window.location.href = `/${userId}/pricing`}
+                                />
+                              </div>
+                            ) : loadingAI ? (
+                              <div className="space-y-4 py-2 animate-in fade-in duration-500">
+                                <div className="h-4 w-1/3 bg-gray-300 rounded mb-4 animate-pulse" />
+                                <div className="flex gap-3 items-center">
+                                  <div className="size-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                  <div className="h-1.5 w-full bg-gray-300 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gray-300 w-1/2 animate-pulse" />
+                                  </div>
+                                </div>
+                                <div className="flex gap-3 items-center">
+                                  <div className="size-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                  <div className="h-1.5 w-4/5 bg-gray-300 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gray-300 w-2/3 animate-pulse delay-75" />
+                                  </div>
+                                </div>
+                                <div className="flex gap-3 items-center">
+                                  <div className="size-1.5 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '300ms' }} />
+                                  <div className="h-1.5 w-5/6 bg-gray-300 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gray-300 w-3/4 animate-pulse delay-150" />
+                                  </div>
+                                </div>
+                              </div>
+                            ) : aiSuggestions ? (
+                              <div className="animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-1000 ease-out fill-mode-both prose prose-invert prose-green max-w-none text-dark dark:text-light/90 prose-headings:text-[8px] prose-headings:font-black prose-headings:uppercase prose-headings:tracking-[0.15em] prose-headings:text-green-600 dark:prose-headings:text-green-400 prose-headings:mt-4 prose-headings:mb-1 prose-p:text-[5px] prose-p:leading-relaxed prose-p:mb-2 prose-li:text-[5px] prose-li:my-0.5 prose-li:marker:text-[7px] prose-li:marker:text-green-500 prose-ul:list-inside prose-ul:pl-0 prose-strong:font-black prose-strong:text-green-600 dark:prose-strong:text-green-400 font-medium selection:bg-green-500/30">
+                                <ReactMarkdown>
+                                  {aiSuggestions}
+                                </ReactMarkdown>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Right Section: Detailed Metrics Grid */}
@@ -436,12 +622,10 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                         </div>
                         <div className="mt-4 text-center">
                           <Button 
+                            label="View Forecast"
+                            icon={{right: "chevron_right"}}
                             variant="outline"
-                            className="w-full text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:bg-brand-green/10"
-                          >
-                            View Forecast
-                            <Icon type="chevron_right" className="size-3.5 transition-transform group-hover:translate-x-1" />
-                          </Button>
+                            />
                         </div>
                       </div>
                     </div>
@@ -465,13 +649,12 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
                       </div>
                     </section>
 
-                    {/* 10 Day Forecast */}
+                    {/* 7 Day Forecast */}
                     <section>
                       <h3 className="text-xs font-black uppercase tracking-widest mb-4 opacity-50 text-dark dark:text-light">7-Day Forecast</h3>
                       <div className="space-y-2 pb-4">
-                        {data.daily.time.slice(0, 10).map((time, i) => (
+                        {data.daily.time.slice(0, 7).map((time, i) => (
                           <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-700 hover:bg-white/10 transition-colors">
-
                             <div className="w-1/4">
                               <p className="font-bold text-dark dark:text-light">
                                 {i === 0 ? "Today" : new Date(time).toLocaleDateString("en-US", { weekday: "long" })}
