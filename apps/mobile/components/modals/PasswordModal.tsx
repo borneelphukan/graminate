@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
-  Button,
   Card,
   Divider,
   IconButton,
@@ -27,7 +26,6 @@ const PasswordModal = ({
   children,
   footerContent,
 }: PasswordModalProps) => {
-  const theme = useTheme();
 
   if (!isOpen) {
     return null;

@@ -72,7 +72,7 @@ const PoultryHealthDetailsScreen = () => {
         );
         setFlockData(flockResponse.data);
       }
-    } catch (error) {
+    } catch {
       setRecord(null);
       setFlockData(null);
     } finally {
@@ -118,8 +118,8 @@ const PoultryHealthDetailsScreen = () => {
           record.symptoms
         )}\n\nView more details on the app.`,
       });
-    } catch (error: any) {
-      alert(error.message);
+    } catch {
+      alert("An error occurred");
     }
   };
 

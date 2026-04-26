@@ -4,7 +4,7 @@ import BeeHiveIcon from "@/assets/icon/BeeHiveIcon";
 import BeeIcon from "@/assets/icon/BeeIcon";
 import HoneyProductionCard from "@/components/cards/apiculture/HoneyProductionCard";
 import { HIVE_FIELDS, HiveFormData, INSPECTION_FIELDS, InspectionFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -33,7 +33,6 @@ const HiveDetailsPage = () => {
     hive_id: string;
   }>();
   const numericHiveId = hive_id ? parseInt(hive_id, 10) : 0;
-  const numericApiaryId = apiary_id ? parseInt(apiary_id, 10) : 0;
   const theme = useTheme();
 
   const [hiveData, setHiveData] = useState<HiveData | null>(null);
@@ -53,7 +52,7 @@ const HiveDetailsPage = () => {
     try {
       const response = await axiosInstance.get(`/bee-hives/${numericHiveId}`);
       setHiveData(response.data);
-    } catch (error) {
+    } catch {
       setHiveData(null);
     } finally {
       setLoading(false);
@@ -68,7 +67,7 @@ const HiveDetailsPage = () => {
         `/hive-inspections/hive/${numericHiveId}`
       );
       setInspections(response.data.inspections || []);
-    } catch (error) {
+    } catch {
       setInspections([]);
     } finally {
       setLoadingInspections(false);
@@ -96,7 +95,7 @@ const HiveDetailsPage = () => {
             try {
               await axiosInstance.delete(`/bee-hives/delete/${numericHiveId}`);
               router.replace(`/${user_id}/apiculture/${apiary_id}`);
-            } catch (error) {
+            } catch {
               Alert.alert("Error", "Failed to delete the hive.");
             }
           },

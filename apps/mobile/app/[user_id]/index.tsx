@@ -3,7 +3,7 @@ import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import TaskManager from "@/components/cards/TaskManager";
 import TrendGraph from "@/components/cards/TrendGraph";
 import { ALL_AVAILABLE_WIDGETS } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -331,7 +331,7 @@ const DashboardScreen = () => {
         } else if (isMounted) {
           throw new Error("User not found");
         }
-      } catch (error) {
+      } catch {
         if (isMounted)
           setFetchErrorModal({
             isOpen: true,
@@ -543,7 +543,7 @@ const DashboardScreen = () => {
           processedExpenses
         );
         setFullHistoricalData(generatedData);
-      } catch (error) {
+      } catch {
         Alert.alert("Error", "Could not load financial widget data.");
       } finally {
         setIsFinanceLoading(false);
@@ -602,7 +602,7 @@ const DashboardScreen = () => {
           : prev
       );
       setIsSetupModalOpen(false);
-    } catch (error) {
+    } catch {
       setErrorModal({
         isOpen: true,
         title: "Error",
@@ -614,14 +614,14 @@ const DashboardScreen = () => {
   const handleSaveWidgets = async (newWidgets: string[]) => {
     if (!user_id) return;
     try {
-      await updateUserWidgets(user_id, newWidgets);
+      setWidgets(newWidgets);
       setIsWidgetModalOpen(false);
       setSuccessModal({
         isOpen: true,
         title: "Success",
         text: "Your widget preferences have been saved.",
       });
-    } catch (error) {
+    } catch {
       setErrorModal({
         isOpen: true,
         title: "Error",

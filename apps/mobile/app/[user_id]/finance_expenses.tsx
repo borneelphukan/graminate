@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { EXPENSE_FIELDS, ExpenseFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -33,7 +33,7 @@ const formatDate = (dateString: string) => {
       month: "short",
       year: "numeric",
     });
-  } catch (e) {
+  } catch {
     return dateString;
   }
 };
@@ -88,8 +88,8 @@ const FinanceExpenses = () => {
       const response = await axiosInstance.get(`/user/${user_id}`);
       const user = response.data?.data?.user ?? response.data?.user;
       setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
-    } catch (err) {
-      console.error("Error fetching user sub_types:", err);
+    } catch {
+      console.error("Error fetching user sub_types:");
     }
   }, [user_id]);
 
@@ -103,8 +103,8 @@ const FinanceExpenses = () => {
     try {
       const response = await axiosInstance.get(`/expenses/user/${user_id}`);
       setData(response.data.expenses || []);
-    } catch (err) {
-      console.error("Error fetching expenses:", err);
+    } catch {
+      console.error("Error fetching expenses:");
       Alert.alert("Error", "Failed to load expense records.");
     } finally {
       setLoading(false);
@@ -135,8 +135,8 @@ const FinanceExpenses = () => {
       Alert.alert("Success", "Expense logged successfully.");
       setFormVisible(false);
       fetchData();
-    } catch (err) {
-      console.error("Error creating expense:", err);
+    } catch {
+      console.error("Error creating expense:");
       Alert.alert("Error", "Failed to log expense.");
     } finally {
       setSubmitting(false);

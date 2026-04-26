@@ -254,7 +254,7 @@ const PoultryFeedCard = ({
             variant="bodyMedium"
             style={{ color: theme.colors.onSurfaceDisabled }}
           >
-            Mark items as "Feed" in your inventory.
+            Mark items as &quot;Feed&quot; in your inventory.
           </Text>
         </View>
       );

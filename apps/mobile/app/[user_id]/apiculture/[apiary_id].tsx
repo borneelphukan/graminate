@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { APICULTURE_FIELDS, ApicultureFormData, HIVE_FIELDS, HiveFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 
@@ -68,7 +68,7 @@ const ApicultureDetailPage = () => {
         `/apiculture/${numericApiaryId}`
       );
       setApiaryData(response.data);
-    } catch (error) {
+    } catch {
       setApiaryData(null);
     } finally {
       setLoadingApiary(false);
@@ -83,7 +83,7 @@ const ApicultureDetailPage = () => {
         `/bee-hives/apiary/${numericApiaryId}`
       );
       setHives(response.data.hives || []);
-    } catch (error) {
+    } catch {
       setHives([]);
     } finally {
       setLoadingHives(false);

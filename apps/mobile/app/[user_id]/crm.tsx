@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import {
   COMPANY_FIELDS,
   CONTACT_FIELDS,
@@ -87,7 +87,7 @@ const formatDate = (dateString: string) => {
       month: "short",
       year: "numeric",
     });
-  } catch (e) {
+  } catch {
     return "Invalid Date";
   }
 };
@@ -296,8 +296,8 @@ const CRM = () => {
     try {
       const response = await axiosInstance.get(`/sales/user/${user_id}`);
       setAllSales(response.data.sales || []);
-    } catch (err) {
-      console.error("Error fetching sales:", err);
+    } catch {
+      console.error("Error fetching sales:");
     }
   }, [user_id]);
 
@@ -307,8 +307,8 @@ const CRM = () => {
       const response = await axiosInstance.get(`/user/${user_id}`);
       const user = response.data?.data?.user ?? response.data?.user;
       setUserProjects(Array.isArray(user?.sub_type) ? user.sub_type : []);
-    } catch (err) {
-      console.error("Error fetching user projects:", err);
+    } catch {
+      console.error("Error fetching user projects:");
     }
   }, [user_id]);
   const [sortCriterion, setSortCriterion] = useState<string>("created_at");
@@ -423,12 +423,8 @@ const CRM = () => {
             ? response.data[config.dataKey]
             : []
         );
-      } catch (err: any) {
-        setError(
-          axios.isAxiosError(err)
-            ? err.response?.data?.message || `Failed to connect`
-            : err.message || "An error occurred."
-        );
+      } catch {
+        setError("An error occurred.");
         setData([]);
       } finally {
         setLoading(false);
@@ -456,9 +452,7 @@ const CRM = () => {
       Alert.alert("Success", "Contact created successfully.");
       await fetchData("contacts");
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
+      const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
       throw err;
     }
@@ -487,9 +481,7 @@ const CRM = () => {
       Alert.alert("Success", "Company created successfully.");
       await fetchData("companies");
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
+      const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
       throw err;
     }
@@ -514,9 +506,7 @@ const CRM = () => {
       Alert.alert("Success", "Contract created successfully.");
       await fetchData("contracts");
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
+      const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
       throw err;
     }
@@ -531,9 +521,7 @@ const CRM = () => {
       Alert.alert("Success", "Project created successfully.");
       await fetchData("tasks");
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
+      const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
       throw err;
     }
@@ -572,9 +560,7 @@ const CRM = () => {
       setReceiptFormVisible(false);
       await fetchData("receipts");
     } catch (err) {
-      const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.message || "An API error occurred."
-        : "An unexpected error occurred.";
+      const errorMessage = "An unexpected error occurred.";
       Alert.alert("Creation Failed", errorMessage);
     }
   };

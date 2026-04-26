@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { SALES_FIELDS_WITH_ITEMS } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -33,7 +33,7 @@ const formatDate = (dateString: string) => {
       month: "short",
       year: "numeric",
     });
-  } catch (e) {
+  } catch {
     return dateString;
   }
 };
@@ -94,8 +94,8 @@ const FinanceSales = () => {
       const response = await axiosInstance.get(`/user/${user_id}`);
       const user = response.data?.data?.user ?? response.data?.user;
       setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
-    } catch (err) {
-      console.error("Error fetching user sub_types:", err);
+    } catch {
+      console.error("Error fetching user sub_types:");
     }
   }, [user_id]);
 
@@ -109,8 +109,8 @@ const FinanceSales = () => {
     try {
       const response = await axiosInstance.get(`/sales/user/${user_id}`);
       setData(response.data.sales || []);
-    } catch (err) {
-      console.error("Error fetching sales:", err);
+    } catch {
+      console.error("Error fetching sales:");
       Alert.alert("Error", "Failed to load sales records.");
     } finally {
       setLoading(false);
@@ -150,8 +150,8 @@ const FinanceSales = () => {
       Alert.alert("Success", "Sale logged successfully.");
       setFormVisible(false);
       fetchData();
-    } catch (err) {
-      console.error("Error creating sale:", err);
+    } catch {
+      console.error("Error creating sale:");
       Alert.alert("Error", "Failed to log sale.");
     } finally {
       setSubmitting(false);

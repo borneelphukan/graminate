@@ -64,7 +64,7 @@ const PoultryFeedsScreen = () => {
     try {
       const response = await axiosInstance.get<FlockData>(`/flock/${flock_id}`);
       setFlockData(response.data);
-    } catch (error) {
+    } catch {
       setFlockData(null);
     }
   }, [flock_id]);
@@ -77,7 +77,7 @@ const PoultryFeedsScreen = () => {
         `/poultry-feeds/${user_id}?flockId=${flock_id}`
       );
       setFeedRecords(response.data.records || []);
-    } catch (error) {
+    } catch {
       setFeedRecords([]);
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ const PoultryFeedsScreen = () => {
       setAvailableFeedItems(
         (response.data.items || []).filter((item) => item.feed === true)
       );
-    } catch (error) {
+    } catch {
       setAvailableFeedItems([]);
     } finally {
       setLoadingFeedItems(false);

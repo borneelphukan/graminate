@@ -5,7 +5,6 @@ import {
   Text,
   Searchbar,
   ActivityIndicator,
-  IconButton,
   useTheme,
 } from "react-native-paper";
 

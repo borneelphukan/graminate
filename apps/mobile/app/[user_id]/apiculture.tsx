@@ -3,7 +3,7 @@ import BudgetCard from "@/components/cards/BudgetCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { APICULTURE_FIELDS, ApicultureFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -148,7 +148,7 @@ const ApicultureScreen = () => {
         expenses: { total: expensesTotal, breakdown: [] },
         netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
       } as any]);
-    } catch (error) {
+    } catch {
       setFullHistoricalData([]);
     } finally {
       setIsLoadingFinancials(false);
@@ -164,7 +164,7 @@ const ApicultureScreen = () => {
     try {
       const response = await axiosInstance.get(`/apiculture/user/${user_id}`);
       setApicultureRecords(response.data.apiaries || []);
-    } catch (error) {
+    } catch {
       setApicultureRecords([]);
     } finally {
       setLoadingApiculture(false);
@@ -358,7 +358,7 @@ const ApicultureScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No bee yards found. Tap '+' to add your first yard.</Text>
+            <Text style={styles.emptyText}>No bee yards found. Tap &apos;+&apos; to add your first yard.</Text>
           )}
         </View>
 

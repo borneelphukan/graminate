@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import {
   FLORICULTURE_FIELDS,
   FloricultureFormData,
@@ -10,12 +10,9 @@ import {
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
-  addDays as addDaysDateFns,
   endOfMonth,
-  format as formatDateFns,
   isWithinInterval,
   startOfMonth,
-  subDays as subDaysDateFns,
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -154,7 +151,7 @@ const FloricultureScreen = () => {
         netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
       } as any]);
 
-    } catch (error) {
+    } catch {
       setFullHistoricalData([]);
     } finally {
       setIsLoadingFinancials(false);
@@ -170,7 +167,7 @@ const FloricultureScreen = () => {
     try {
       const response = await axiosInstance.get(`/floriculture/user/${user_id}`);
       setRecords(response.data.floricultures || []);
-    } catch (error) {
+    } catch {
       setRecords([]);
     } finally {
       setLoading(false);
@@ -363,7 +360,7 @@ const FloricultureScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No records found. Tap '+' to add your first crop.</Text>
+            <Text style={styles.emptyText}>No records found. Tap &apos;+&apos; to add your first crop.</Text>
           )}
         </View>
 

@@ -62,7 +62,6 @@ const AddServiceScreen = () => {
   const { subTypes, setUserSubTypes, plan } = useUserPreferences();
 
   const [availableSubTypes, setAvailableSubTypes] = useState<string[]>([]);
-  const [userData, setUserData] = useState<any>(null);
   const [selectedSubTypes, setSelectedSubTypes] = useState<Set<string>>(
     new Set()
   );
@@ -105,8 +104,6 @@ const AddServiceScreen = () => {
           throw new Error("User's current sub-types not found.");
         }
 
-        const user = userResponse.data?.data?.user;
-        setUserData(user);
         setAvailableSubTypes(available);
         setUserSubTypes(currentUserSubTypes);
       } catch (err) {

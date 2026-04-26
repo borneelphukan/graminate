@@ -8,12 +8,10 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
-  Avatar,
   Button,
   Card,
   HelperText,
   Menu,
-  Text,
   TextInput,
   TouchableRipple,
   useTheme,

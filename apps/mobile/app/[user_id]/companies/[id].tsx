@@ -3,7 +3,6 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { COMPANY_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -85,7 +84,6 @@ const CompanyDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [isTypeMenuVisible, setTypeMenuVisible] = useState(false);
   const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
 
@@ -110,7 +108,7 @@ const CompanyDetails = () => {
         };
         setFormData(newFormValues);
         setInitialFormData(newFormValues);
-      } catch (error) {
+      } catch {
         Alert.alert("Error", "Invalid company data.");
         router.back();
       }
@@ -131,7 +129,6 @@ const CompanyDetails = () => {
     if (!company) return;
     setSaving(true);
     try {
-      const token = await AsyncStorage.getItem("accessToken");
       const payload = {
         id: company.company_id,
         company_name: formData.companyName,
@@ -152,7 +149,7 @@ const CompanyDetails = () => {
       router.replace(
         `/${user_id}/crm?view=companies&refresh=${new Date().getTime()}`
       );
-    } catch (error: any) {
+    } catch {
       Alert.alert("Error", "Failed to update company.");
     } finally {
       setSaving(false);
@@ -170,18 +167,15 @@ const CompanyDetails = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            setDeleting(true);
             try {
-              const token = await AsyncStorage.getItem("accessToken");
               await axiosInstance.delete(`/companies/delete/${company.company_id}`);
               Alert.alert("Success", "Company deleted.");
               router.replace(
                 `/${user_id}/crm?view=companies&refresh=${new Date().getTime()}`
               );
-            } catch (error: any) {
+            } catch {
               Alert.alert("Error", "Failed to delete company.");
             } finally {
-              setDeleting(false);
             }
           },
         },
@@ -199,7 +193,7 @@ Phone: ${formData.phoneNumber || "N/A"}
 Email: ${formData.email || "N/A"}
     `.trim();
       await Share.share({ message });
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to share company.");
     }
   };

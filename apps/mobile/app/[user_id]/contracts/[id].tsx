@@ -3,7 +3,6 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -83,7 +82,6 @@ const ContractDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [isStageMenuVisible, setStageMenuVisible] = useState(false);
   const [isPriorityMenuVisible, setPriorityMenuVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -109,7 +107,7 @@ const ContractDetails = () => {
         };
         setFormData(newFormValues);
         setInitialFormData(newFormValues);
-      } catch (error) {
+      } catch {
         Alert.alert("Error", "Invalid contract data.");
         router.back();
       }
@@ -150,7 +148,6 @@ const ContractDetails = () => {
     }
     setSaving(true);
     try {
-      const token = await AsyncStorage.getItem("accessToken");
       const payload = {
         id: contract.deal_id,
         deal_name: formData.dealName,
@@ -188,9 +185,7 @@ const ContractDetails = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            setDeleting(true);
             try {
-              const token = await AsyncStorage.getItem("accessToken");
               await axiosInstance.delete(`/contracts/delete/${contract.deal_id}`);
               Alert.alert("Success", "Contract deleted successfully.");
               router.replace(
@@ -202,7 +197,6 @@ const ContractDetails = () => {
                 error.response?.data?.error || "Failed to delete contract."
               );
             } finally {
-              setDeleting(false);
             }
           },
         },
@@ -220,7 +214,7 @@ Amount: ₹${formData.amount || "0"}
 Stage: ${formData.stage || "N/A"}
     `.trim();
       await Share.share({ message });
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to share contract.");
     }
   };

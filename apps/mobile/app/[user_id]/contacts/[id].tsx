@@ -3,7 +3,6 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { CONTACT_TYPES } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -19,11 +18,8 @@ import {
 import {
   ActivityIndicator,
   Appbar,
-  Avatar,
   Button,
   Card,
-  Divider,
-  List,
   Menu,
   Text,
   TextInput,
@@ -71,14 +67,6 @@ const initialFormState: Form = {
   postalCode: "",
 };
 
-const getInitials = (firstName?: string, lastName?: string): string => {
-  return (
-    `${firstName?.[0]?.toUpperCase() || ""}${
-      lastName?.[0]?.toUpperCase() || ""
-    }` || "?"
-  );
-};
-
 const ContactDetails = () => {
   const { user_id, data } = useLocalSearchParams<{
     user_id: string;
@@ -90,7 +78,6 @@ const ContactDetails = () => {
   const [initialFormData, setInitialFormData] =
     useState<Form>(initialFormState);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [isTypeMenuVisible, setTypeMenuVisible] = useState(false);
   const [isMoreMenuVisible, setMoreMenuVisible] = useState(false);
 
@@ -113,7 +100,7 @@ const ContactDetails = () => {
         };
         setFormData(newFormValues);
         setInitialFormData(newFormValues);
-      } catch (error) {
+      } catch {
         Alert.alert("Error", "Invalid contact data.");
         router.back();
       }
@@ -153,7 +140,7 @@ const ContactDetails = () => {
       router.replace(
         `/${user_id}/crm?view=contacts&refresh=${new Date().getTime()}`
       );
-    } catch (error: any) {
+    } catch {
       Alert.alert("Error", "Failed to update contact.");
     } finally {
       setSaving(false);
@@ -171,7 +158,6 @@ const ContactDetails = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            setDeleting(true);
             try {
               const token = await AsyncStorage.getItem("accessToken");
               await axiosInstance.delete(
@@ -184,10 +170,9 @@ const ContactDetails = () => {
               router.replace(
                 `/${user_id}/crm?view=contacts&refresh=${new Date().getTime()}`
               );
-            } catch (error: any) {
+            } catch {
               Alert.alert("Error", "Failed to delete contact.");
             } finally {
-              setDeleting(false);
             }
           },
         },
@@ -204,7 +189,7 @@ Phone: ${formData.phoneNumber || "N/A"}
 Email: ${formData.email || "N/A"}
     `.trim();
       await Share.share({ message });
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to share contact.");
     }
   };

@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { WAREHOUSE_FIELDS, WarehouseFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -140,8 +140,8 @@ const StoragePage = () => {
       });
       const user = response.data?.data?.user ?? response.data?.user;
       setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
-    } catch (err) {
-      console.error("Error fetching user sub_types:", err);
+    } catch {
+      console.error("Error fetching user sub_types:");
     }
   }, [user_id]);
 
@@ -284,7 +284,7 @@ const StoragePage = () => {
           <Text style={{ color: theme.colors.onSurfaceDisabled }}>
             {searchQuery
               ? `No warehouses found for "${searchQuery}"`
-              : "No warehouses found. Tap '+' to add one."}
+              : "No warehouses found. Tap &apos;+&apos; to add one."}
           </Text>
         </View>
       );

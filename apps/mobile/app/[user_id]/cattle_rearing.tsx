@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import BudgetCard from "@/components/cards/BudgetCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import {
   CATTLE_FIELDS,
   CattleFormData,
@@ -10,16 +10,13 @@ import {
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
-  addDays as addDaysDateFns,
   endOfMonth,
-  format as formatDateFns,
   isWithinInterval,
-  startOfMonth,
-  subDays as subDaysDateFns,
+  startOfMonth
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -50,34 +47,10 @@ type CattleApiData = {
   created_at: string;
 };
 
-const TOTAL_DAYS_FOR_HISTORICAL_DATA = 180;
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 const TARGET_CATTLE_SUB_TYPE = "Cattle Rearing";
-
-const generateDailyFinancialData = (
-  count: number,
-  baseSubTypes: string[]
-): DailyFinancialEntry[] => {
-  const data: DailyFinancialEntry[] = [];
-  let loopDate = subDaysDateFns(today, count - 1);
-  const finalOccupationsList = baseSubTypes;
-
-  for (let i = 0; i < count; i++) {
-    const dailyEntry: DailyFinancialEntry = {
-      date: new Date(loopDate),
-      revenue: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
-      cogs: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
-      grossProfit: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
-      expenses: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
-      netProfit: { total: 0, breakdown: finalOccupationsList.map(name => ({ name, value: 0 })) },
-    };
-    data.push(dailyEntry);
-    loopDate = addDaysDateFns(loopDate, 1);
-  }
-  return data;
-};
 
 const CattleRearingScreen = () => {
   const router = useRouter();
@@ -176,7 +149,7 @@ const CattleRearingScreen = () => {
         netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
       } as any]);
 
-    } catch (error) {
+    } catch {
       setFullHistoricalData([]);
     } finally {
       setIsLoadingFinancials(false);
@@ -192,7 +165,7 @@ const CattleRearingScreen = () => {
     try {
       const response = await axiosInstance.get(`/cattle-rearing/user/${user_id}`);
       setCattleRecords(response.data.cattleRearings || []);
-    } catch (error) {
+    } catch {
       setCattleRecords([]);
     } finally {
       setLoadingCattle(false);
@@ -385,7 +358,7 @@ const CattleRearingScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No records found. Tap '+' to add your first herd.</Text>
+            <Text style={styles.emptyText}>No records found. Tap &apos;+&apos; to add your first herd.</Text>
           )}
         </View>
 

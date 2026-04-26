@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { RECEIPT_FIELDS_WITH_ITEMS, ReceiptFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { FormModal } from "@/components/modals/FormModal";
 import axiosInstance from "@/lib/axiosInstance";
@@ -35,7 +35,7 @@ const formatDate = (dateString: string) => {
       month: "short",
       year: "numeric",
     });
-  } catch (e) {
+  } catch {
     return "Invalid Date";
   }
 };
@@ -91,8 +91,8 @@ const FinanceReceipts = () => {
     try {
       const response = await axiosInstance.get(`/sales/user/${user_id}`);
       setAllSales(response.data.sales || []);
-    } catch (err) {
-      console.error("Error fetching sales:", err);
+    } catch {
+      console.error("Error fetching sales:");
     }
   }, [user_id]);
 
@@ -102,8 +102,8 @@ const FinanceReceipts = () => {
     try {
       const response = await axiosInstance.get(`/receipts/${user_id}`);
       setData(response.data.receipts || []);
-    } catch (err) {
-      console.error("Error fetching receipts:", err);
+    } catch {
+      console.error("Error fetching receipts:");
       Alert.alert("Error", "Failed to load receipts.");
     } finally {
       setLoading(false);
@@ -163,8 +163,8 @@ const FinanceReceipts = () => {
       Alert.alert("Success", "Receipt created successfully.");
       setFormVisible(false);
       fetchData();
-    } catch (err) {
-      console.error("Error creating receipt:", err);
+    } catch {
+      console.error("Error creating receipt:");
       Alert.alert("Error", "Failed to create receipt.");
     } finally {
       setSubmitting(false);

@@ -2,7 +2,7 @@ import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import PoultryFeedCard from "@/components/cards/poultry/PoultryFeedCard";
 import VeterinaryCard from "@/components/cards/poultry/VeterinaryCard";
 import { FLOCK_FIELDS, FlockFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -169,7 +169,7 @@ const PoultryDetailScreen = () => {
     try {
       const response = await axiosInstance.get<FlockData>(`/flock/${id}`);
       setSelectedFlockData(response.data);
-    } catch (error) {
+    } catch {
       setSelectedFlockData(null);
     } finally {
       setLoadingFlockData(false);
@@ -182,8 +182,7 @@ const PoultryDetailScreen = () => {
       const payload = { ...formData, quantity: Number(formData.quantity) };
       await axiosInstance.put(`/flock/${id}`, payload);
       await fetchFlockData();
-    } catch (error) {
-      throw error;
+    } catch {
     }
   };
 
@@ -225,7 +224,7 @@ const PoultryDetailScreen = () => {
         loading: false,
         error: null,
       });
-    } catch (error) {
+    } catch {
       setLatestPoultryHealthData({
         birds_vaccinated: null,
         total_birds_at_event: null,
@@ -244,7 +243,7 @@ const PoultryDetailScreen = () => {
         params: { item_group: "Poultry" },
       });
       setPoultryInventoryItems(response.data.items || []);
-    } catch (err) {
+    } catch {
       setPoultryInventoryItems([]);
     } finally {
       setLoadingPoultryInventory(false);
@@ -321,7 +320,7 @@ const PoultryDetailScreen = () => {
         startOfWeek(today, { weekStartsOn: 1 }),
         endOfWeek(today, { weekStartsOn: 1 })
       );
-    } catch (error) {
+    } catch {
       setPoultryEggCardStats((prev) => ({
         ...prev,
         loading: false,
@@ -338,7 +337,7 @@ const PoultryDetailScreen = () => {
         records: PoultryFeedRecord[];
       }>(`/poultry-feeds/${user_id}?flockId=${id}&limit=10000`);
       setAllFeedRecords(response.data.records || []);
-    } catch (error) {
+    } catch {
       setAllFeedRecords([]);
     } finally {
       setLoadingAllFeedRecords(false);

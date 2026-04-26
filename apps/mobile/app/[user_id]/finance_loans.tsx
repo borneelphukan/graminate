@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { LOAN_FIELDS, LoanFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -34,7 +34,7 @@ const formatDate = (dateString: string) => {
       month: "short",
       year: "numeric",
     });
-  } catch (e) {
+  } catch {
     return dateString;
   }
 };
@@ -96,8 +96,8 @@ const FinanceLoans = () => {
     try {
       const response = await axiosInstance.get(`/loans/user/${user_id}`);
       setData(response.data || []);
-    } catch (err) {
-      console.error("Error fetching loans:", err);
+    } catch {
+      console.error("Error fetching loans:");
       Alert.alert("Error", "Failed to load loan records.");
     } finally {
       setLoading(false);
@@ -115,8 +115,8 @@ const FinanceLoans = () => {
       Alert.alert("Success", "Loan logged successfully.");
       setFormVisible(false);
       fetchData();
-    } catch (err) {
-      console.error("Error creating loan:", err);
+    } catch {
+      console.error("Error creating loan:");
       Alert.alert("Error", "Failed to log loan.");
     } finally {
       setSubmitting(false);

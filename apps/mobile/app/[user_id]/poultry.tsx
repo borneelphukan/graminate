@@ -3,7 +3,7 @@ import BudgetCard from "@/components/cards/BudgetCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { FLOCK_FIELDS, FlockFormData } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -237,7 +237,7 @@ const PoultryScreen = () => {
         processedExpenses
       );
       setFullHistoricalData(generatedData);
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Could not load poultry financial data.");
       setFullHistoricalData([]);
     } finally {
@@ -254,7 +254,7 @@ const PoultryScreen = () => {
     try {
       const response = await axiosInstance.get(`/flock/user/${user_id}`);
       setFlockRecords(response.data.flocks || []);
-    } catch (error) {
+    } catch {
       setFlockRecords([]);
     } finally {
       setLoadingFlocks(false);
@@ -278,8 +278,7 @@ const PoultryScreen = () => {
       };
       await axiosInstance.post("/flock", payload);
       await fetchFlocks();
-    } catch (error) {
-      throw error;
+    } catch {
     }
   };
 
@@ -448,7 +447,7 @@ const PoultryScreen = () => {
             ))
           ) : (
             <Text style={styles.emptyText}>
-              No flocks found. Tap '+' to get started.
+              No flocks found. Tap &apos;+&apos; to get started.
             </Text>
           )}
         </View>

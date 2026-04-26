@@ -5,7 +5,7 @@ import {
   WAREHOUSE_FIELDS,
   WarehouseFormData,
 } from "@/constants/formConfigs";
-import BottomDrawer from "@/components/form/BottomDrawer";
+import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -92,8 +92,8 @@ const WarehouseDetailScreen = () => {
       const response = await axiosInstance.get(`/user/${user_id}`);
       const user = response.data?.data?.user ?? response.data?.user;
       setUserSubTypes(Array.isArray(user?.sub_type) ? user.sub_type : []);
-    } catch (err) {
-      console.error("Error fetching user sub_types:", err);
+    } catch {
+      console.error("Error fetching user sub_types:");
     }
   }, [user_id]);
 
@@ -116,8 +116,8 @@ const WarehouseDetailScreen = () => {
         (wh: WarehouseDetails) => wh.warehouse_id === parseInt(id, 10)
       );
       setWarehouseDetails(foundWarehouse || null);
-    } catch (error) {
-      console.error("Error fetching warehouse-specific data:", error);
+    } catch {
+      console.error("Error fetching warehouse-specific data:");
     } finally {
       setLoading(false);
     }
@@ -161,9 +161,8 @@ const WarehouseDetailScreen = () => {
       await axiosInstance.put(`/warehouse/update/${id}`, payload);
       Alert.alert("Success", "Warehouse updated successfully!");
       await fetchWarehouseData();
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to update warehouse.");
-      throw error;
     }
   };
 
@@ -187,9 +186,8 @@ const WarehouseDetailScreen = () => {
       await axiosInstance.post(`/inventory/add`, payload);
       Alert.alert("Success", "Item added to warehouse successfully!");
       await fetchWarehouseData();
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to add item.");
-      throw error;
     }
   };
 

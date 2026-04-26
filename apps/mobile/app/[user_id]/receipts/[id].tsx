@@ -2,7 +2,6 @@ import { Icon } from "@/components/ui/Icon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -131,7 +130,7 @@ const ReceiptDetails = () => {
         };
         setFormData(newFormValues);
         setInitialFormData(newFormValues);
-      } catch (error) {
+      } catch {
         Alert.alert("Error", "Invalid receipt data.");
         router.back();
       }
@@ -244,7 +243,7 @@ const ReceiptDetails = () => {
             setDeleting(true);
             try {
               const token = await AsyncStorage.getItem("accessToken");
-               await axiosInstance.delete(`/receipts/delete/${receipt.invoice_id}`);
+              await axiosInstance.delete(`/receipts/delete/${receipt.invoice_id}`);
               Alert.alert("Success", "Receipt deleted.");
               router.replace(
                 `/${user_id}/crm?view=receipts&refresh=${new Date().getTime()}`
@@ -272,7 +271,7 @@ Billed To: ${formData.billTo}
 Total Amount: ₹${total.toFixed(2)}
     `.trim();
       await Share.share({ message });
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to share receipt.");
     }
   };
