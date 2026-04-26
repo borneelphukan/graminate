@@ -22,7 +22,7 @@ import {
 
 @Controller('apiculture')
 export class ApicultureController {
-  constructor(private readonly apicultureService: ApicultureService) { }
+  constructor(private readonly apicultureService: ApicultureService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')

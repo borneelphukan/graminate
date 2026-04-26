@@ -20,7 +20,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
-  ) { }
+  ) {}
 
   @Post('register')
   async register(@Body() body: any) {
@@ -90,7 +90,11 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/schedule-downgrade')
-  async scheduleDowngrade(@Param('id') userId: string, @Body('plan') plan: string, @Request() req) {
+  async scheduleDowngrade(
+    @Param('id') userId: string,
+    @Body('plan') plan: string,
+    @Request() req,
+  ) {
     if (String(req.user.userId) !== userId) throw new UnauthorizedException();
     return this.userService.scheduleDowngrade(userId, plan);
   }
@@ -114,7 +118,7 @@ export class UserController {
   async markNotificationsRead(
     @Param('id') id: string,
     @Body('notificationId') notificationId: number | undefined,
-    @Request() req
+    @Request() req,
   ) {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.markNotificationsRead(id, notificationId);
@@ -133,10 +137,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/notifications')
-  async clearAllNotifications(
-    @Param('id') id: string,
-    @Request() req,
-  ) {
+  async clearAllNotifications(@Param('id') id: string, @Request() req) {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.clearAllNotifications(id);
   }

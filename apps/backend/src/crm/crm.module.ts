@@ -6,6 +6,12 @@ import { ReceiptsModule } from './receipts/receipts.module';
 import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [ContactsModule, CompaniesModule, ContractsModule, ReceiptsModule, TasksModule],
+  imports: [
+    ContactsModule,
+    CompaniesModule,
+    ContractsModule,
+    ReceiptsModule,
+    TasksModule,
+  ],
 })
 export class CRMModule {}

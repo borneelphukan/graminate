@@ -19,24 +19,24 @@ export class PoultryHealthService {
     filters: PoultryHealthFilters,
   ): Promise<any[]> {
     const { limit, offset, flockId } = filters;
-    
+
     try {
       const where: any = { user_id: userId };
       if (flockId !== undefined) where.flock_id = flockId;
 
       const records = await this.prisma.poultry_health.findMany({
         where,
-        orderBy: [
-          { created_at: 'desc' },
-          { poultry_health_id: 'desc' },
-        ],
+        orderBy: [{ created_at: 'desc' }, { poultry_health_id: 'desc' }],
         take: limit,
         skip: offset,
       });
 
       return records;
     } catch (error) {
-       console.error('Error executing query in findByUserIdWithFilters (PoultryHealth):', error);
+      console.error(
+        'Error executing query in findByUserIdWithFilters (PoultryHealth):',
+        error,
+      );
       throw new InternalServerErrorException(
         `Database query failed: ${error.message}`,
       );
@@ -83,8 +83,10 @@ export class PoultryHealthService {
           symptoms,
           medicine_approved,
           remarks,
-          next_appointment: next_appointment ? new Date(next_appointment) : null,
-        }
+          next_appointment: next_appointment
+            ? new Date(next_appointment)
+            : null,
+        },
       });
       return newRecord;
     } catch (error) {
@@ -106,14 +108,21 @@ export class PoultryHealthService {
     } = updateDto;
     try {
       const updateData: any = {};
-      if (veterinary_name !== undefined) updateData.veterinary_name = veterinary_name;
+      if (veterinary_name !== undefined)
+        updateData.veterinary_name = veterinary_name;
       if (total_birds !== undefined) updateData.total_birds = total_birds;
-      if (birds_vaccinated !== undefined) updateData.birds_vaccinated = birds_vaccinated;
-      if (vaccines_given !== undefined) updateData.vaccines_given = vaccines_given;
+      if (birds_vaccinated !== undefined)
+        updateData.birds_vaccinated = birds_vaccinated;
+      if (vaccines_given !== undefined)
+        updateData.vaccines_given = vaccines_given;
       if (symptoms !== undefined) updateData.symptoms = symptoms;
-      if (medicine_approved !== undefined) updateData.medicine_approved = medicine_approved;
+      if (medicine_approved !== undefined)
+        updateData.medicine_approved = medicine_approved;
       if (remarks !== undefined) updateData.remarks = remarks;
-      if (next_appointment !== undefined) updateData.next_appointment = next_appointment ? new Date(next_appointment) : null;
+      if (next_appointment !== undefined)
+        updateData.next_appointment = next_appointment
+          ? new Date(next_appointment)
+          : null;
 
       if (Object.keys(updateData).length === 0) {
         return this.findById(id);
@@ -133,8 +142,10 @@ export class PoultryHealthService {
 
   async delete(id: number): Promise<boolean> {
     try {
-        await this.prisma.poultry_health.delete({ where: { poultry_health_id: id } }); 
-        return true;
+      await this.prisma.poultry_health.delete({
+        where: { poultry_health_id: id },
+      });
+      return true;
     } catch (error) {
       console.error('Error executing query in delete (PoultryHealth):', error);
       throw new InternalServerErrorException(error.message);

@@ -70,7 +70,9 @@ export class HiveInspectionService {
           hive_id,
           inspection_date: new Date(inspection_date),
           queen_status: queen_status || null,
-          queen_introduced_date: queen_introduced_date ? new Date(queen_introduced_date) : null,
+          queen_introduced_date: queen_introduced_date
+            ? new Date(queen_introduced_date)
+            : null,
           brood_pattern: brood_pattern || null,
           notes: notes || null,
           symptoms: symptoms || [],
@@ -84,7 +86,7 @@ export class HiveInspectionService {
           varroa_mite_method: varroa_mite_method || null,
           varroa_mite_count: varroa_mite_count || null,
           actions_taken: actions_taken || null,
-        }
+        },
       });
       return newInspection;
     } catch (error) {
@@ -98,11 +100,11 @@ export class HiveInspectionService {
       const updateData: any = {};
       Object.entries(updateDto).forEach(([key, value]) => {
         if (value !== undefined) {
-             if (key === 'inspection_date' || key === 'queen_introduced_date') {
-                 updateData[key] = new Date(value as string);
-             } else {
-                 updateData[key] = value;
-             }
+          if (key === 'inspection_date' || key === 'queen_introduced_date') {
+            updateData[key] = new Date(value as string);
+          } else {
+            updateData[key] = value;
+          }
         }
       });
 
@@ -127,10 +129,12 @@ export class HiveInspectionService {
 
   async delete(id: number): Promise<boolean> {
     try {
-      await this.prisma.hive_inspection.delete({ where: { inspection_id: id } });
+      await this.prisma.hive_inspection.delete({
+        where: { inspection_id: id },
+      });
       return true;
     } catch (error) {
-       return false;
+      return false;
     }
   }
 

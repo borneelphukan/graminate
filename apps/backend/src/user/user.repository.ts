@@ -51,8 +51,9 @@ export class UserRepository {
 
       const users = usersList.map((user) => {
         const isSubscriptionActive =
-          (user.plan !== 'FREE' || 
-           (user.subscription_expires_at && new Date(user.subscription_expires_at) > new Date()));
+          user.plan !== 'FREE' ||
+          (user.subscription_expires_at &&
+            new Date(user.subscription_expires_at) > new Date());
 
         return {
           ...user,
@@ -63,7 +64,9 @@ export class UserRepository {
       return { status: 200, data: { users } };
     } catch (err: any) {
       console.error('Error fetching all users:', err);
-      throw new InternalServerErrorException(err.message || 'Failed to fetch all users');
+      throw new InternalServerErrorException(
+        err.message || 'Failed to fetch all users',
+      );
     }
   }
 
@@ -120,7 +123,8 @@ export class UserRepository {
         currentExpiry = updatedUser.subscription_expires_at;
       }
 
-      const isSubscriptionActive = currentPlan !== 'FREE' && (!currentExpiry || now <= currentExpiry);
+      const isSubscriptionActive =
+        currentPlan !== 'FREE' && (!currentExpiry || now <= currentExpiry);
 
       return {
         status: 200,
@@ -165,7 +169,9 @@ export class UserRepository {
       };
     } catch (err: any) {
       console.error('Error fetching user:', err);
-      throw new InternalServerErrorException(err.message || 'Failed to fetch user');
+      throw new InternalServerErrorException(
+        err.message || 'Failed to fetch user',
+      );
     }
   }
 
@@ -212,24 +218,30 @@ export class UserRepository {
       if (phone_number !== undefined) updateData.phone_number = phone_number;
       if (language !== undefined) updateData.language = language;
       if (time_format !== undefined) updateData.time_format = time_format;
-      if (temperature_scale !== undefined) updateData.temperature_scale = temperature_scale;
+      if (temperature_scale !== undefined)
+        updateData.temperature_scale = temperature_scale;
       if (type !== undefined) updateData.type = type;
       if (business_name !== undefined) updateData.business_name = business_name;
-      if (address_line_1 !== undefined) updateData.address_line_1 = address_line_1;
-      if (address_line_2 !== undefined) updateData.address_line_2 = address_line_2;
+      if (address_line_1 !== undefined)
+        updateData.address_line_1 = address_line_1;
+      if (address_line_2 !== undefined)
+        updateData.address_line_2 = address_line_2;
       if (city !== undefined) updateData.city = city;
       if (state !== undefined) updateData.state = state;
       if (postal_code !== undefined) updateData.postal_code = postal_code;
       if (country !== undefined) updateData.country = country;
       if (darkMode !== undefined) updateData.darkMode = darkMode;
       if (widgets !== undefined) updateData.widgets = widgets;
-      if (opening_balance !== undefined) updateData.opening_balance = Number(opening_balance);
+      if (opening_balance !== undefined)
+        updateData.opening_balance = Number(opening_balance);
       if (entity_type !== undefined) updateData.entity_type = entity_type;
       if (business_size !== undefined) updateData.business_size = business_size;
       if (plan !== undefined) updateData.plan = plan;
       if (pending_plan !== undefined) updateData.pending_plan = pending_plan;
-      if (pending_plan_source !== undefined) updateData.pending_plan_source = pending_plan_source;
-      if (subscription_expires_at !== undefined) updateData.subscription_expires_at = new Date(subscription_expires_at);
+      if (pending_plan_source !== undefined)
+        updateData.pending_plan_source = pending_plan_source;
+      if (subscription_expires_at !== undefined)
+        updateData.subscription_expires_at = new Date(subscription_expires_at);
 
       if (sub_type !== undefined) {
         const validSubTypes = [
@@ -436,7 +448,9 @@ export class UserRepository {
       };
     } catch (err: any) {
       console.error('Error registering user:', err);
-      throw new InternalServerErrorException(err.message || 'Failed to register user');
+      throw new InternalServerErrorException(
+        err.message || 'Failed to register user',
+      );
     }
   }
 
@@ -483,17 +497,25 @@ export class UserRepository {
     try {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(userId) },
-        select: { plan: true, subscription_expires_at: true }
+        select: { plan: true, subscription_expires_at: true },
       });
 
       if (!user) return { status: 404, data: { error: 'User not found' } };
 
-      const planHierarchy = { 'FREE': 0, 'BASIC': 1, 'PRO': 2 };
-      const currentLevel = planHierarchy[user.plan as keyof typeof planHierarchy] || 0;
-      const targetLevel = planHierarchy[targetPlan as keyof typeof planHierarchy] || 0;
+      const planHierarchy = { FREE: 0, BASIC: 1, PRO: 2 };
+      const currentLevel =
+        planHierarchy[user.plan as keyof typeof planHierarchy] || 0;
+      const targetLevel =
+        planHierarchy[targetPlan as keyof typeof planHierarchy] || 0;
 
       if (targetLevel >= currentLevel) {
-        return { status: 400, data: { error: 'Cannot schedule upgrade or same-level plan. Please use the subscribe flow for upgrades.' } };
+        return {
+          status: 400,
+          data: {
+            error:
+              'Cannot schedule upgrade or same-level plan. Please use the subscribe flow for upgrades.',
+          },
+        };
       }
 
       await (this.prisma.users as any).update({
@@ -504,14 +526,22 @@ export class UserRepository {
         },
       });
 
-      const expiryStr = user.subscription_expires_at 
-        ? new Date(user.subscription_expires_at).toLocaleDateString() 
-        : "the end of your billing cycle";
+      const expiryStr = user.subscription_expires_at
+        ? new Date(user.subscription_expires_at).toLocaleDateString()
+        : 'the end of your billing cycle';
 
-      return { status: 200, data: { message: `Your plan will be changed to ${targetPlan.charAt(0) + targetPlan.slice(1).toLowerCase()} at the end of your current billing cycle (${expiryStr}).` } };
+      return {
+        status: 200,
+        data: {
+          message: `Your plan will be changed to ${targetPlan.charAt(0) + targetPlan.slice(1).toLowerCase()} at the end of your current billing cycle (${expiryStr}).`,
+        },
+      };
     } catch (err) {
       console.error('Error scheduling plan downgrade:', err);
-      return { status: 500, data: { error: 'Failed to schedule plan downgrade' } };
+      return {
+        status: 500,
+        data: { error: 'Failed to schedule plan downgrade' },
+      };
     }
   }
 
@@ -537,7 +567,10 @@ export class UserRepository {
       return { status: 200, data: { payments } };
     } catch (err) {
       console.error('Error fetching billing history:', err);
-      return { status: 500, data: { error: 'Failed to fetch billing history' } };
+      return {
+        status: 500,
+        data: { error: 'Failed to fetch billing history' },
+      };
     }
   }
 
@@ -579,7 +612,10 @@ export class UserRepository {
       return { status: 200, data: { message: 'Notifications marked as read' } };
     } catch (err) {
       console.error('Error marking notifications as read:', err);
-      return { status: 500, data: { error: 'Failed to mark notifications as read' } };
+      return {
+        status: 500,
+        data: { error: 'Failed to mark notifications as read' },
+      };
     }
   }
 
@@ -591,7 +627,10 @@ export class UserRepository {
           user_id: Number(userId),
         },
       });
-      return { status: 200, data: { message: 'Notification deleted successfully' } };
+      return {
+        status: 200,
+        data: { message: 'Notification deleted successfully' },
+      };
     } catch (err) {
       console.error('Error deleting notification:', err);
       return { status: 500, data: { error: 'Failed to delete notification' } };
@@ -605,7 +644,10 @@ export class UserRepository {
           user_id: Number(userId),
         },
       });
-      return { status: 200, data: { message: 'All notifications cleared successfully' } };
+      return {
+        status: 200,
+        data: { message: 'All notifications cleared successfully' },
+      };
     } catch (err) {
       console.error('Error clearing notifications:', err);
       return { status: 500, data: { error: 'Failed to clear notifications' } };

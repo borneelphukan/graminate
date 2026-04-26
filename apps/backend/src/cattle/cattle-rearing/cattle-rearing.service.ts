@@ -12,10 +12,7 @@ export class CattleRearingService {
     try {
       const records = await this.prisma.cattle_rearing.findMany({
         where: { user_id: userId },
-        orderBy: [
-          { created_at: 'desc' },
-          { cattle_id: 'desc' },
-        ],
+        orderBy: [{ created_at: 'desc' }, { cattle_id: 'desc' }],
       });
       return records;
     } catch (error) {
@@ -47,7 +44,7 @@ export class CattleRearingService {
           cattle_type,
           number_of_animals,
           purpose,
-        }
+        },
       });
       return newRecord;
     } catch (error) {
@@ -62,7 +59,8 @@ export class CattleRearingService {
       const updateData: any = {};
       if (cattle_name !== undefined) updateData.cattle_name = cattle_name;
       if (cattle_type !== undefined) updateData.cattle_type = cattle_type;
-      if (number_of_animals !== undefined) updateData.number_of_animals = number_of_animals;
+      if (number_of_animals !== undefined)
+        updateData.number_of_animals = number_of_animals;
       if (purpose !== undefined) updateData.purpose = purpose;
 
       if (Object.keys(updateData).length === 0) {
@@ -93,7 +91,9 @@ export class CattleRearingService {
 
   async resetForUser(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.cattle_rearing.deleteMany({ where: { user_id: userId } });
+      await this.prisma.cattle_rearing.deleteMany({
+        where: { user_id: userId },
+      });
       return { message: `Cattle Rearing data reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(error.message);

@@ -21,7 +21,7 @@ import {
 
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) { }
+  constructor(private readonly warehouseService: WarehouseService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
@@ -34,7 +34,10 @@ export class WarehouseController {
   @Post('add')
   async addWarehouse(@Body() createDto: CreateWarehouseDto) {
     const warehouse = await this.warehouseService.create(createDto);
-    return { message: 'Warehouse created successfully', id: warehouse.warehouse_id };
+    return {
+      message: 'Warehouse created successfully',
+      id: warehouse.warehouse_id,
+    };
   }
 
   @UseGuards(JwtAuthGuard)

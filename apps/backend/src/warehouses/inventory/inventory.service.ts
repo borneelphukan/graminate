@@ -17,7 +17,7 @@ export class InventoryService {
     filters: InventoryFilters,
   ): Promise<any[]> {
     const { limit, offset, itemGroup, warehouseId } = filters;
-    
+
     try {
       const where: any = { user_id: userId };
       if (warehouseId !== undefined) where.warehouse_id = warehouseId;
@@ -25,10 +25,7 @@ export class InventoryService {
 
       const inventory = await this.prisma.inventory.findMany({
         where,
-        orderBy: [
-          { created_at: 'desc' },
-          { inventory_id: 'desc' },
-        ],
+        orderBy: [{ created_at: 'desc' }, { inventory_id: 'desc' }],
         take: limit,
         skip: offset,
         // Prisma doesn't support selecting specific columns alias like "COALESCE(minimum_limit, 0) as minimum_limit" easily in top level
@@ -38,11 +35,10 @@ export class InventoryService {
         // Given return type any[], I can map.
       });
 
-      return inventory.map(item => ({
+      return inventory.map((item) => ({
         ...item,
-        minimum_limit: item.minimum_limit ?? 0
+        minimum_limit: item.minimum_limit ?? 0,
       }));
-
     } catch (error) {
       console.error('Error executing query in findByUserIdWithFilters:', error);
       throw new InternalServerErrorException(
@@ -75,7 +71,7 @@ export class InventoryService {
           warehouse_id,
           minimum_limit,
           feed,
-        }
+        },
       });
       return newItem;
     } catch (error) {
@@ -99,13 +95,14 @@ export class InventoryService {
       if (item_group !== undefined) updateData.item_group = item_group;
       if (units !== undefined) updateData.units = units;
       if (quantity !== undefined) updateData.quantity = quantity;
-      if (price_per_unit !== undefined) updateData.price_per_unit = price_per_unit;
+      if (price_per_unit !== undefined)
+        updateData.price_per_unit = price_per_unit;
       if (minimum_limit !== undefined) updateData.minimum_limit = minimum_limit;
       if (feed !== undefined) updateData.feed = feed;
-      
+
       const updatedItem = await this.prisma.inventory.update({
         where: { inventory_id: id },
-        data: updateData
+        data: updateData,
       });
       return updatedItem;
     } catch (error) {
@@ -130,6 +127,4 @@ export class InventoryService {
       throw new InternalServerErrorException(error.message);
     }
   }
-
-
 }

@@ -12,15 +12,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
-import {
-  CreateInventoryDto,
-  UpdateInventoryDto,
-} from './inventory.dto';
+import { CreateInventoryDto, UpdateInventoryDto } from './inventory.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('inventory')
 export class InventoryController {
-  constructor(private readonly inventoryService: InventoryService) { }
+  constructor(private readonly inventoryService: InventoryService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':userId')

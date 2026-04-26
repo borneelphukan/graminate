@@ -14,7 +14,9 @@ export class LoansService {
         amount: createLoanDto.amount,
         interest_rate: createLoanDto.interest_rate,
         start_date: new Date(createLoanDto.start_date),
-        end_date: createLoanDto.end_date ? new Date(createLoanDto.end_date) : null,
+        end_date: createLoanDto.end_date
+          ? new Date(createLoanDto.end_date)
+          : null,
       },
     });
   }
@@ -38,8 +40,10 @@ export class LoansService {
 
   async update(loanId: number, updateLoanDto: UpdateLoanDto) {
     const data: any = { ...updateLoanDto };
-    if (updateLoanDto.start_date) data.start_date = new Date(updateLoanDto.start_date);
-    if (updateLoanDto.end_date) data.end_date = new Date(updateLoanDto.end_date);
+    if (updateLoanDto.start_date)
+      data.start_date = new Date(updateLoanDto.start_date);
+    if (updateLoanDto.end_date)
+      data.end_date = new Date(updateLoanDto.end_date);
 
     return this.prisma.loans.update({
       where: { loan_id: loanId },

@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -15,7 +19,12 @@ export class AdminRepository {
   async getAdminProfile(adminId: string) {
     const admin = await this.prisma.admin.findUnique({
       where: { admin_id: adminId },
-      select: { admin_id: true, first_name: true, last_name: true, email: true },
+      select: {
+        admin_id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
     });
     if (!admin) {
       throw new UnauthorizedException('Admin not found');
@@ -113,7 +122,8 @@ export class AdminRepository {
       const formattedHistory = history.map((entry) => {
         let session_duration: string | null = null;
         if (entry.logged_out_at && entry.logged_in_at) {
-          const diffMs = entry.logged_out_at.getTime() - entry.logged_in_at.getTime();
+          const diffMs =
+            entry.logged_out_at.getTime() - entry.logged_in_at.getTime();
           const diffSec = Math.floor(diffMs / 1000);
           const hours = Math.floor(diffSec / 3600);
           const mins = Math.floor((diffSec % 3600) / 60);

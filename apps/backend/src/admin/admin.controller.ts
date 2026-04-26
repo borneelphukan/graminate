@@ -15,7 +15,7 @@ import { CreateAdminDto } from './admin.dto';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -79,7 +79,11 @@ export class AdminController {
 
   @UseGuards(JwtAuthGuard)
   @Post('users/:id')
-  async updateUser(@Param('id') userId: string, @Body() body: any, @Request() req) {
+  async updateUser(
+    @Param('id') userId: string,
+    @Body() body: any,
+    @Request() req,
+  ) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.updateUser(userId, body);
   }

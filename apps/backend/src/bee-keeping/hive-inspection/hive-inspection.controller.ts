@@ -20,7 +20,7 @@ import {
 @Controller('hive-inspections')
 @UseGuards(JwtAuthGuard)
 export class HiveInspectionController {
-  constructor(private readonly inspectionService: HiveInspectionService) { }
+  constructor(private readonly inspectionService: HiveInspectionService) {}
 
   @Get('hive/:hiveId')
   async getByHiveId(@Param('hiveId', ParseIntPipe) hiveId: number) {

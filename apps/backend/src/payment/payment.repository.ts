@@ -73,8 +73,12 @@ export class PaymentRepository {
   }
 
   async verifyPayment(verifyPaymentDto: VerifyPaymentDto) {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planType } =
-      verifyPaymentDto;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      planType,
+    } = verifyPaymentDto;
 
     const body = razorpay_order_id + '|' + razorpay_payment_id;
 

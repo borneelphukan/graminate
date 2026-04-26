@@ -22,7 +22,7 @@ import {
 
 @Controller('cattle-milk')
 export class CattleMilkController {
-  constructor(private readonly cattleMilkService: CattleMilkService) { }
+  constructor(private readonly cattleMilkService: CattleMilkService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')

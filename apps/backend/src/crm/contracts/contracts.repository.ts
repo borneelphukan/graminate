@@ -150,13 +150,14 @@ export class ContractsRepository {
       }
 
       const updateData: any = {};
-      
+
       if (deal_name !== undefined) updateData.deal_name = deal_name;
       if (partner !== undefined) updateData.partner = partner;
       if (amount !== undefined) updateData.amount = amount;
       if (stage !== undefined) updateData.stage = stage;
       if (start_date !== undefined) updateData.start_date = start_date;
-      if (end_date !== undefined) updateData.end_date = end_date ? new Date(end_date) : null;
+      if (end_date !== undefined)
+        updateData.end_date = end_date ? new Date(end_date) : null;
       if (category !== undefined) updateData.category = category;
       if (priority !== undefined) updateData.priority = priority;
 

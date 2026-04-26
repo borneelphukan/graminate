@@ -5,7 +5,7 @@ import { CreateReceiptDto, UpdateReceiptDto } from './receipts.dto';
 
 @Injectable()
 export class ReceiptsRepository {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
   async getReceipts(userId: number) {
     try {
       const invoices = await this.prisma.invoices.findMany({
@@ -26,7 +26,7 @@ export class ReceiptsRepository {
       // Transform result to match expected format (items as json-like structure or just array)
       const receipts = invoices.map((inv) => ({
         ...inv,
-        // Prisma returns Decimal for quantity/rate, which might need conversion to number/string if DTO expects it. 
+        // Prisma returns Decimal for quantity/rate, which might need conversion to number/string if DTO expects it.
         // Or if previous `json_agg` returned them as numbers/strings properly.
         // Assuming default behavior is fine or frontend handles it.
         items: inv.invoice_items,
@@ -109,11 +109,12 @@ export class ReceiptsRepository {
             payment_terms,
             sales_id: linked_sale_id || null,
             invoice_items: {
-              create: items?.map((item) => ({
-                description: item.description,
-                quantity: item.quantity,
-                rate: item.rate,
-              })) || [],
+              create:
+                items?.map((item) => ({
+                  description: item.description,
+                  quantity: item.quantity,
+                  rate: item.rate,
+                })) || [],
             },
           },
         });
@@ -140,14 +141,25 @@ export class ReceiptsRepository {
           if (err.meta?.target) {
             const target = err.meta.target as string[];
             if (target.includes('receipt_number')) {
-              return { status: 409, data: { error: 'Receipt number already exists.' } };
+              return {
+                status: 409,
+                data: { error: 'Receipt number already exists.' },
+              };
             }
             if (target.includes('sales_id')) {
-              return { status: 409, data: { error: 'This sale is already linked to another invoice.' } };
+              return {
+                status: 409,
+                data: {
+                  error: 'This sale is already linked to another invoice.',
+                },
+              };
             }
           }
           // Fallback if meta target is not clear
-          return { status: 409, data: { error: 'Unique constraint violation.' } };
+          return {
+            status: 409,
+            data: { error: 'Unique constraint violation.' },
+          };
         }
       }
       return { status: 500, data: { error: 'Internal Server Error' } };
@@ -230,7 +242,10 @@ export class ReceiptsRepository {
 
         const targetInvoiceOwnerId = user_id ?? original_invoice_owner_id;
 
-        if (linked_sale_id !== undefined && linked_sale_id !== old_linked_sale_id) {
+        if (
+          linked_sale_id !== undefined &&
+          linked_sale_id !== old_linked_sale_id
+        ) {
           if (old_linked_sale_id) {
             await tx.sales.update({
               where: { sales_id: old_linked_sale_id },
@@ -244,14 +259,18 @@ export class ReceiptsRepository {
             });
 
             if (!newSale) {
-              return { status: 404, data: { error: 'New linked sale not found.' } };
+              return {
+                status: 404,
+                data: { error: 'New linked sale not found.' },
+              };
             }
 
             if (newSale.user_id !== targetInvoiceOwnerId) {
               return {
                 status: 403,
                 data: {
-                  error: 'New linked sale belongs to a different user than the invoice owner.',
+                  error:
+                    'New linked sale belongs to a different user than the invoice owner.',
                 },
               };
             }
@@ -284,14 +303,16 @@ export class ReceiptsRepository {
             bill_to_postal_code: bill_to_postal_code,
             bill_to_country: bill_to_country,
             sales_id: linked_sale_id,
-            invoice_items: items ? {
-              deleteMany: {},
-              create: items.map((item) => ({
-                description: item.description,
-                quantity: item.quantity,
-                rate: item.rate,
-              }))
-            } : undefined,
+            invoice_items: items
+              ? {
+                  deleteMany: {},
+                  create: items.map((item) => ({
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                  })),
+                }
+              : undefined,
           },
           include: {
             invoice_items: {
@@ -300,9 +321,9 @@ export class ReceiptsRepository {
                 description: true,
                 quantity: true,
                 rate: true,
-              }
-            }
-          }
+              },
+            },
+          },
         });
 
         return {
@@ -316,10 +337,18 @@ export class ReceiptsRepository {
         if (err.code === 'P2002') {
           const target = err.meta?.target as string[];
           if (target && target.includes('receipt_number')) {
-            return { status: 409, data: { error: 'Receipt number already exists.' } };
+            return {
+              status: 409,
+              data: { error: 'Receipt number already exists.' },
+            };
           }
           if (target && target.includes('sales_id')) {
-            return { status: 409, data: { error: 'This sale is already linked to another invoice.' } };
+            return {
+              status: 409,
+              data: {
+                error: 'This sale is already linked to another invoice.',
+              },
+            };
           }
         }
       }
@@ -337,7 +366,7 @@ export class ReceiptsRepository {
         });
         const salesIds = userInvoices
           .map((inv) => inv.sales_id)
-          .filter((id) => id !== null) as number[];
+          .filter((id) => id !== null);
 
         if (salesIds.length > 0) {
           await tx.sales.updateMany({

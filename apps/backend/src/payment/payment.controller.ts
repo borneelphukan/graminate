@@ -4,7 +4,7 @@ import { CreatePaymentDto, VerifyPaymentDto } from './payment.dto';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) { }
+  constructor(private readonly paymentService: PaymentService) {}
 
   @Post('create-order')
   @HttpCode(HttpStatus.CREATED)

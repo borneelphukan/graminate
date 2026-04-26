@@ -21,7 +21,7 @@ export class HoneyProductionService {
       });
       return harvest;
     } catch (error) {
-       console.error('Error in HoneyProductionService.findByHiveId:', error);
+      console.error('Error in HoneyProductionService.findByHiveId:', error);
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -59,7 +59,7 @@ export class HoneyProductionService {
           frames_harvested,
           honey_type,
           harvest_notes,
-        }
+        },
       });
       return newHarvest;
     } catch (error) {
@@ -73,11 +73,11 @@ export class HoneyProductionService {
       const updateData: any = {};
       Object.entries(updateDto).forEach(([key, value]) => {
         if (value !== undefined) {
-             if (key === 'harvest_date') {
-                 updateData[key] = new Date(value as string);
-             } else {
-                 updateData[key] = value;
-             }
+          if (key === 'harvest_date') {
+            updateData[key] = new Date(value as string);
+          } else {
+            updateData[key] = value;
+          }
         }
       });
 
@@ -102,10 +102,10 @@ export class HoneyProductionService {
 
   async delete(id: number): Promise<boolean> {
     try {
-        await this.prisma.honey_production.delete({ where: { harvest_id: id } });
-        return true;
+      await this.prisma.honey_production.delete({ where: { harvest_id: id } });
+      return true;
     } catch (error) {
-        return false;
+      return false;
     }
   }
 

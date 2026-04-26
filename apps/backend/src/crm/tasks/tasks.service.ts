@@ -34,11 +34,25 @@ export class TasksService {
     return this.tasksRepository.getKanbanColumns(userId, project);
   }
 
-  async addKanbanColumn(userId: number, project: string, title: string, position: number) {
-    return this.tasksRepository.addKanbanColumn(userId, project, title, position);
+  async addKanbanColumn(
+    userId: number,
+    project: string,
+    title: string,
+    position: number,
+  ) {
+    return this.tasksRepository.addKanbanColumn(
+      userId,
+      project,
+      title,
+      position,
+    );
   }
 
-  async updateKanbanColumn(columnId: number, title?: string, position?: number) {
+  async updateKanbanColumn(
+    columnId: number,
+    title?: string,
+    position?: number,
+  ) {
     return this.tasksRepository.updateKanbanColumn(columnId, title, position);
   }
 

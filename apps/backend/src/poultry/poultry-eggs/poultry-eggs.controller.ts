@@ -20,7 +20,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('poultry-eggs')
 export class PoultryEggsController {
-  constructor(private readonly poultryEggsService: PoultryEggsService) { }
+  constructor(private readonly poultryEggsService: PoultryEggsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':userId')

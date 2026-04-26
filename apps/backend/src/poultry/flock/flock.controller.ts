@@ -19,7 +19,7 @@ import { CreateFlockDto, UpdateFlockDto, ResetFlockDto } from './flock.dto';
 
 @Controller('flock')
 export class FlockController {
-  constructor(private readonly flockService: FlockService) { }
+  constructor(private readonly flockService: FlockService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')

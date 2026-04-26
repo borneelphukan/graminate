@@ -49,11 +49,11 @@ export class TasksRepository {
       const tasks = await this.prisma.tasks.findMany({
         where,
         orderBy: [
-          { deadline: 'asc' }, // NULLS LAST is default in Prisma for asc? No, strictly it puts nulls last usually or first depending on DB. 
-          // Prisma doesn't support NULLS LAST directly in API easily without explicit sort logic or raw query, 
+          { deadline: 'asc' }, // NULLS LAST is default in Prisma for asc? No, strictly it puts nulls last usually or first depending on DB.
+          // Prisma doesn't support NULLS LAST directly in API easily without explicit sort logic or raw query,
           // but for now simple asc is close enough or I can use raw if user complains.
           // Actually, Prisma 5+ supports NULLS FIRST/LAST. Let's check if we can use it.
-          // Since I am on a recent Prisma version (generated client), let's try standard sort. 
+          // Since I am on a recent Prisma version (generated client), let's try standard sort.
           // If strict compatibility is needed, I might need to adjust.
           { created_on: 'desc' },
         ],
@@ -76,8 +76,9 @@ export class TasksRepository {
     if (dto.status !== undefined) data.status = dto.status;
     if (dto.description !== undefined) data.description = dto.description;
     if (dto.priority !== undefined) data.priority = dto.priority;
-    if (dto.deadline !== undefined) data.deadline = dto.deadline ? new Date(dto.deadline) : null;
-    
+    if (dto.deadline !== undefined)
+      data.deadline = dto.deadline ? new Date(dto.deadline) : null;
+
     // Check if empty is handled by DTO or service. The original code checked for empty "fields".
     if (Object.keys(data).length === 0) {
       throw new BadRequestException('No fields to update');
@@ -87,7 +88,7 @@ export class TasksRepository {
       const existing = await this.prisma.tasks.findUnique({
         where: { task_id: taskId },
       });
-      
+
       if (!existing) {
         throw new NotFoundException(`Task with ID ${taskId} not found`);
       }
@@ -162,7 +163,12 @@ export class TasksRepository {
     }
   }
 
-  async addKanbanColumn(userId: number, project: string, title: string, position: number) {
+  async addKanbanColumn(
+    userId: number,
+    project: string,
+    title: string,
+    position: number,
+  ) {
     try {
       return await this.prisma.kanban_columns.create({
         data: {
@@ -178,7 +184,11 @@ export class TasksRepository {
     }
   }
 
-  async updateKanbanColumn(columnId: number, title?: string, position?: number) {
+  async updateKanbanColumn(
+    columnId: number,
+    title?: string,
+    position?: number,
+  ) {
     try {
       const data: any = {};
       if (title !== undefined) data.title = title;

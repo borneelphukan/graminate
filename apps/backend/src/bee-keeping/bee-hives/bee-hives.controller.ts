@@ -17,7 +17,7 @@ import { CreateHiveDto, UpdateHiveDto, ResetHivesDto } from './bee-hives.dto';
 @Controller('bee-hives')
 @UseGuards(JwtAuthGuard)
 export class BeeHivesController {
-  constructor(private readonly hivesService: BeeHivesService) { }
+  constructor(private readonly hivesService: BeeHivesService) {}
 
   @Get('apiary/:apiaryId')
   async getByApiaryId(@Param('apiaryId', ParseIntPipe) apiaryId: number) {

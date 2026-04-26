@@ -40,7 +40,8 @@ export class ExpensesService {
   }
 
   async create(createDto: CreateExpenseDto): Promise<any> {
-    const { user_id, title, occupation, category, expense, date_created } = createDto;
+    const { user_id, title, occupation, category, expense, date_created } =
+      createDto;
 
     try {
       const newExpense = await this.prisma.expenses.create({
@@ -69,12 +70,16 @@ export class ExpensesService {
 
     try {
       const updateData: any = {};
-      
+
       if (updateDto.title !== undefined) updateData.title = updateDto.title;
-      if (updateDto.occupation !== undefined) updateData.occupation = updateDto.occupation;
-      if (updateDto.category !== undefined) updateData.category = updateDto.category;
-      if (updateDto.expense !== undefined) updateData.expense = updateDto.expense;
-      if (updateDto.date_created !== undefined) updateData.date_created = new Date(updateDto.date_created);
+      if (updateDto.occupation !== undefined)
+        updateData.occupation = updateDto.occupation;
+      if (updateDto.category !== undefined)
+        updateData.category = updateDto.category;
+      if (updateDto.expense !== undefined)
+        updateData.expense = updateDto.expense;
+      if (updateDto.date_created !== undefined)
+        updateData.date_created = new Date(updateDto.date_created);
 
       if (Object.keys(updateData).length === 0) {
         return currentExpense;

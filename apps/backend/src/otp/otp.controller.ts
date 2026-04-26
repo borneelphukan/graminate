@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 @Controller('otp')
 export class OtpController {
-  constructor(private readonly otpService: OtpService) { }
+  constructor(private readonly otpService: OtpService) {}
 
   @Post('send-otp')
   async sendOtp(@Body() body: any, @Res() res: Response) {

@@ -18,7 +18,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('contacts')
 export class ContactsController {
-  constructor(private readonly contactsService: ContactsService) { }
+  constructor(private readonly contactsService: ContactsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')

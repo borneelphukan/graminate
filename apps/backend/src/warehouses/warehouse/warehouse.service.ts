@@ -10,9 +10,11 @@ export class WarehouseService {
       const warehouses = await this.prisma.warehouse.findMany({
         where: { user_id: userId },
       });
-      return warehouses.map(w => ({
+      return warehouses.map((w) => ({
         ...w,
-        storage_capacity: w.storage_capacity ? Number(w.storage_capacity) : null,
+        storage_capacity: w.storage_capacity
+          ? Number(w.storage_capacity)
+          : null,
       }));
     } catch (error) {
       console.error('Error in WarehouseService.findByUserId:', error);
@@ -61,15 +63,19 @@ export class WarehouseService {
       }
 
       const newWarehouse = await this.prisma.warehouse.create({ data });
-      
+
       // Convert Decimal to number for serialization safety
       return {
         ...newWarehouse,
-        storage_capacity: newWarehouse.storage_capacity ? Number(newWarehouse.storage_capacity) : null,
+        storage_capacity: newWarehouse.storage_capacity
+          ? Number(newWarehouse.storage_capacity)
+          : null,
       };
     } catch (error) {
       console.error('Error in WarehouseService.create:', error);
-      throw new InternalServerErrorException(`Warehouse creation failed: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Warehouse creation failed: ${error.message}`,
+      );
     }
   }
 
@@ -93,15 +99,20 @@ export class WarehouseService {
       const updateData: any = {};
       if (name !== undefined) updateData.name = name;
       if (type !== undefined) updateData.type = type;
-      if (address_line_1 !== undefined) updateData.address_line_1 = address_line_1;
-      if (address_line_2 !== undefined) updateData.address_line_2 = address_line_2;
+      if (address_line_1 !== undefined)
+        updateData.address_line_1 = address_line_1;
+      if (address_line_2 !== undefined)
+        updateData.address_line_2 = address_line_2;
       if (city !== undefined) updateData.city = city;
       if (state !== undefined) updateData.state = state;
       if (postal_code !== undefined) updateData.postal_code = postal_code;
       if (country !== undefined) updateData.country = country;
-      if (contact_person !== undefined) updateData.contact_person = contact_person;
+      if (contact_person !== undefined)
+        updateData.contact_person = contact_person;
       if (phone !== undefined) updateData.phone = phone;
-      if (storage_capacity !== undefined) updateData.storage_capacity = storage_capacity !== null ? Number(storage_capacity) : null;
+      if (storage_capacity !== undefined)
+        updateData.storage_capacity =
+          storage_capacity !== null ? Number(storage_capacity) : null;
       if (category !== undefined) updateData.category = category;
 
       const updatedWarehouse = await this.prisma.warehouse.update({
@@ -111,7 +122,9 @@ export class WarehouseService {
 
       return {
         ...updatedWarehouse,
-        storage_capacity: updatedWarehouse.storage_capacity ? Number(updatedWarehouse.storage_capacity) : null,
+        storage_capacity: updatedWarehouse.storage_capacity
+          ? Number(updatedWarehouse.storage_capacity)
+          : null,
       };
     } catch (error) {
       console.error('Error in WarehouseService.update:', error);
@@ -131,7 +144,9 @@ export class WarehouseService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.warehouse.deleteMany({ where: { user_id: userId ? Number(userId) : undefined } });
+      await this.prisma.warehouse.deleteMany({
+        where: { user_id: userId ? Number(userId) : undefined },
+      });
       return { message: `Warehouse table reset for user ${userId}` };
     } catch (error) {
       console.error('Error in WarehouseService.resetTable:', error);
@@ -139,11 +154,17 @@ export class WarehouseService {
     }
   }
 
-  async deleteByUserIdAndCategory(userId: number, category: string): Promise<boolean> {
+  async deleteByUserIdAndCategory(
+    userId: number,
+    category: string,
+  ): Promise<boolean> {
     try {
       await this.prisma.warehouse.deleteMany({
         where: {
-          user_id: (userId !== undefined && userId !== null) ? Number(userId) : undefined,
+          user_id:
+            userId !== undefined && userId !== null
+              ? Number(userId)
+              : undefined,
           category: category,
         },
       });

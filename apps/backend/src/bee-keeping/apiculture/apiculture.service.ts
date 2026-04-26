@@ -14,13 +14,10 @@ export class ApicultureService {
             select: { bee_hives: true },
           },
         },
-        orderBy: [
-          { created_at: 'desc' },
-          { apiary_id: 'desc' },
-        ],
+        orderBy: [{ created_at: 'desc' }, { apiary_id: 'desc' }],
       });
-      
-      return apiaries.map(apiary => ({
+
+      return apiaries.map((apiary) => ({
         ...apiary,
         number_of_hives: apiary._count.bee_hives,
       }));
@@ -75,7 +72,7 @@ export class ApicultureService {
           city,
           state,
           postal_code,
-        }
+        },
       });
       return { ...newApiary, number_of_hives: 0 };
     } catch (error) {
@@ -98,9 +95,9 @@ export class ApicultureService {
       ];
 
       fields.forEach((field) => {
-         if (updateDto[field] !== undefined) {
-           updateData[field] = updateDto[field];
-         }
+        if (updateDto[field] !== undefined) {
+          updateData[field] = updateDto[field];
+        }
       });
 
       if (Object.keys(updateData).length === 0) {
@@ -111,9 +108,9 @@ export class ApicultureService {
         where: { apiary_id: id },
         data: updateData,
         include: {
-            _count: {
-                select: { bee_hives: true },
-            },
+          _count: {
+            select: { bee_hives: true },
+          },
         },
       });
 
@@ -121,7 +118,6 @@ export class ApicultureService {
         ...updatedApiary,
         number_of_hives: updatedApiary._count.bee_hives,
       };
-
     } catch (error) {
       console.error('Error in ApicultureService.update:', error);
       throw new InternalServerErrorException(error.message);

@@ -9,10 +9,7 @@ export class FlockService {
     try {
       const flocks = await this.prisma.poultry_flock.findMany({
         where: { user_id: userId },
-        orderBy: [
-          { created_at: 'desc' },
-          { flock_id: 'desc' },
-        ],
+        orderBy: [{ created_at: 'desc' }, { flock_id: 'desc' }],
       });
       return flocks;
     } catch (error) {
@@ -118,10 +115,12 @@ export class FlockService {
       throw new InternalServerErrorException(error.message);
     }
   }
-  
+
   async resetForUser(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.poultry_flock.deleteMany({ where: { user_id: userId } });
+      await this.prisma.poultry_flock.deleteMany({
+        where: { user_id: userId },
+      });
       return { message: `Poultry flock data reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(error.message);

@@ -89,8 +89,6 @@ export class SalesService {
   }
 
   async update(id: number, updateDto: UpdateSaleDto): Promise<any> {
-
-
     const currentSale = await this.findById(id);
     if (!currentSale) {
       throw new NotFoundException(`Sale with ID ${id} not found.`);
@@ -100,9 +98,18 @@ export class SalesService {
       // Logic for invoice_created handled in updateData construction later
     }
 
-    const finalItemsSold = updateDto.items_sold !== undefined ? updateDto.items_sold : currentSale.items_sold;
-    const finalQuantitiesSold = updateDto.quantities_sold !== undefined ? updateDto.quantities_sold : currentSale.quantities_sold;
-    const finalPricesPerUnit = updateDto.prices_per_unit !== undefined ? updateDto.prices_per_unit : currentSale.prices_per_unit;
+    const finalItemsSold =
+      updateDto.items_sold !== undefined
+        ? updateDto.items_sold
+        : currentSale.items_sold;
+    const finalQuantitiesSold =
+      updateDto.quantities_sold !== undefined
+        ? updateDto.quantities_sold
+        : currentSale.quantities_sold;
+    const finalPricesPerUnit =
+      updateDto.prices_per_unit !== undefined
+        ? updateDto.prices_per_unit
+        : currentSale.prices_per_unit;
 
     if (finalItemsSold.length !== finalQuantitiesSold.length) {
       throw new BadRequestException(
@@ -120,14 +127,22 @@ export class SalesService {
 
     try {
       const updateData: any = {};
-      if (updateDto.sales_name !== undefined) updateData.sales_name = updateDto.sales_name;
-      if (updateDto.sales_date !== undefined) updateData.sales_date = new Date(updateDto.sales_date);
-      if (updateDto.occupation !== undefined) updateData.occupation = updateDto.occupation;
-      if (updateDto.items_sold !== undefined) updateData.items_sold = updateDto.items_sold;
-      if (updateDto.quantities_sold !== undefined) updateData.quantities_sold = updateDto.quantities_sold;
-      if (updateDto.prices_per_unit !== undefined) updateData.prices_per_unit = updateDto.prices_per_unit;
-      if (updateDto.quantity_unit !== undefined) updateData.quantity_unit = updateDto.quantity_unit;
-      if (updateDto.invoice_created !== undefined) updateData.invoice_created = updateDto.invoice_created;
+      if (updateDto.sales_name !== undefined)
+        updateData.sales_name = updateDto.sales_name;
+      if (updateDto.sales_date !== undefined)
+        updateData.sales_date = new Date(updateDto.sales_date);
+      if (updateDto.occupation !== undefined)
+        updateData.occupation = updateDto.occupation;
+      if (updateDto.items_sold !== undefined)
+        updateData.items_sold = updateDto.items_sold;
+      if (updateDto.quantities_sold !== undefined)
+        updateData.quantities_sold = updateDto.quantities_sold;
+      if (updateDto.prices_per_unit !== undefined)
+        updateData.prices_per_unit = updateDto.prices_per_unit;
+      if (updateDto.quantity_unit !== undefined)
+        updateData.quantity_unit = updateDto.quantity_unit;
+      if (updateDto.invoice_created !== undefined)
+        updateData.invoice_created = updateDto.invoice_created;
 
       if (Object.keys(updateData).length === 0) {
         return currentSale;

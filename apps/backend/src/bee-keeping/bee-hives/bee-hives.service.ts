@@ -15,10 +15,7 @@ export class BeeHivesService {
         where: { apiary_id: apiaryId },
         include: {
           hive_inspection: {
-            orderBy: [
-              { inspection_date: 'desc' },
-              { inspection_id: 'desc' },
-            ],
+            orderBy: [{ inspection_date: 'desc' }, { inspection_id: 'desc' }],
             take: 1,
           },
         },
@@ -47,40 +44,37 @@ export class BeeHivesService {
 
   async findById(hiveId: number): Promise<any> {
     try {
-        const hive = await this.prisma.bee_hives.findUnique({
-            where: { hive_id: hiveId },
-            include: {
-            hive_inspection: {
-                orderBy: [
-                { inspection_date: 'desc' },
-                { inspection_id: 'desc' },
-                ],
-                take: 1,
-            },
-            },
-        });
+      const hive = await this.prisma.bee_hives.findUnique({
+        where: { hive_id: hiveId },
+        include: {
+          hive_inspection: {
+            orderBy: [{ inspection_date: 'desc' }, { inspection_id: 'desc' }],
+            take: 1,
+          },
+        },
+      });
 
-        if (!hive) {
-            throw new NotFoundException(`Hive with ID ${hiveId} not found`);
-        }
+      if (!hive) {
+        throw new NotFoundException(`Hive with ID ${hiveId} not found`);
+      }
 
-        const lastInspection = hive.hive_inspection[0];
-        const { hive_inspection, ...rest } = hive;
-        
-        return {
-            ...rest,
-            last_inspection_id: lastInspection?.inspection_id || null,
-            last_inspection_date: lastInspection?.inspection_date || null,
-            queen_status: lastInspection?.queen_status || null,
-            queen_introduced_date: lastInspection?.queen_introduced_date || null,
-            brood_pattern: lastInspection?.brood_pattern || null,
-            last_inspection_notes: lastInspection?.notes || null, // notes mapped to last_inspection_notes
-            symptoms: lastInspection?.symptoms || null,
-        };
+      const lastInspection = hive.hive_inspection[0];
+      const { hive_inspection, ...rest } = hive;
+
+      return {
+        ...rest,
+        last_inspection_id: lastInspection?.inspection_id || null,
+        last_inspection_date: lastInspection?.inspection_date || null,
+        queen_status: lastInspection?.queen_status || null,
+        queen_introduced_date: lastInspection?.queen_introduced_date || null,
+        brood_pattern: lastInspection?.brood_pattern || null,
+        last_inspection_notes: lastInspection?.notes || null, // notes mapped to last_inspection_notes
+        symptoms: lastInspection?.symptoms || null,
+      };
     } catch (error) {
-        if (error instanceof NotFoundException) throw error;
-        console.error('Error in BeeHivesService.findById:', error);
-        throw new InternalServerErrorException(error.message);
+      if (error instanceof NotFoundException) throw error;
+      console.error('Error in BeeHivesService.findById:', error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -103,12 +97,14 @@ export class BeeHivesService {
           hive_name,
           hive_type,
           bee_species,
-          installation_date: installation_date ? new Date(installation_date as string | number | Date) : new Date(),
+          installation_date: installation_date
+            ? new Date(installation_date as string | number | Date)
+            : new Date(),
           honey_capacity,
           unit,
           ventilation_status,
           notes,
-        }
+        },
       });
       return newHive;
     } catch (error) {
@@ -122,11 +118,11 @@ export class BeeHivesService {
       const updateData: any = {};
       Object.entries(updateDto).forEach(([key, value]) => {
         if (value !== undefined) {
-             if (key === 'installation_date') {
-                 updateData[key] = new Date(value as string);
-             } else {
-                 updateData[key] = value;
-             }
+          if (key === 'installation_date') {
+            updateData[key] = new Date(value as string);
+          } else {
+            updateData[key] = value;
+          }
         }
       });
 
@@ -140,10 +136,10 @@ export class BeeHivesService {
       });
 
       return updatedHive;
-
     } catch (error) {
-      if (error.code === 'P2025') { // Prisma record not found
-         throw new NotFoundException(`Hive with ID ${id} not found`);
+      if (error.code === 'P2025') {
+        // Prisma record not found
+        throw new NotFoundException(`Hive with ID ${id} not found`);
       }
       console.error('Error in BeeHivesService.update:', error);
       throw new InternalServerErrorException(error.message);
@@ -152,10 +148,10 @@ export class BeeHivesService {
 
   async delete(id: number): Promise<boolean> {
     try {
-        await this.prisma.bee_hives.delete({ where: { hive_id: id } });
-        return true;
+      await this.prisma.bee_hives.delete({ where: { hive_id: id } });
+      return true;
     } catch (error) {
-        return false; 
+      return false;
     }
   }
 

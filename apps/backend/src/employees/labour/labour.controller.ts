@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('labour')
 export class LabourController {
-  constructor(private readonly labourService: LabourService) { }
+  constructor(private readonly labourService: LabourService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')

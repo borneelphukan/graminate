@@ -22,7 +22,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('poultry-health')
 export class PoultryHealthController {
-  constructor(private readonly poultryHealthService: PoultryHealthService) { }
+  constructor(private readonly poultryHealthService: PoultryHealthService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':userId')

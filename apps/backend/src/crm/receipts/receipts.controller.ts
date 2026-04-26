@@ -19,7 +19,7 @@ import { ReceiptsService } from './receipts.service';
 
 @Controller('receipts')
 export class ReceiptsController {
-  constructor(private readonly receiptsService: ReceiptsService) { }
+  constructor(private readonly receiptsService: ReceiptsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')

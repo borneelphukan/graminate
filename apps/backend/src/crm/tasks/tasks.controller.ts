@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':userId')
@@ -76,7 +76,13 @@ export class TasksController {
   @UseGuards(JwtAuthGuard)
   @Post('column/add')
   async addKanbanColumn(
-    @Body() body: { userId: number; project: string; title: string; position: number },
+    @Body()
+    body: {
+      userId: number;
+      project: string;
+      title: string;
+      position: number;
+    },
   ) {
     const column = await this.tasksService.addKanbanColumn(
       body.userId,

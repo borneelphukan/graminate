@@ -20,7 +20,7 @@ import {
 @Controller('honey-production')
 @UseGuards(JwtAuthGuard)
 export class HoneyProductionController {
-  constructor(private readonly productionService: HoneyProductionService) { }
+  constructor(private readonly productionService: HoneyProductionService) {}
 
   @Get('hive/:hiveId')
   async getByHiveId(@Param('hiveId', ParseIntPipe) hiveId: number) {

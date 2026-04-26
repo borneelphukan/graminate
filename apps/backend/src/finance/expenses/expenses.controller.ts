@@ -24,7 +24,7 @@ import {
 
 @Controller('expenses')
 export class ExpensesController {
-  constructor(private readonly expensesService: ExpensesService) { }
+  constructor(private readonly expensesService: ExpensesService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')

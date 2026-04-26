@@ -74,7 +74,7 @@ export class LabourService {
         if (parts.length === 3) {
           dob = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
         } else {
-             dob = new Date(date_of_birth);
+          dob = new Date(date_of_birth);
         }
       } else {
         dob = new Date(date_of_birth);
@@ -82,26 +82,26 @@ export class LabourService {
 
       const newLabour = await this.prisma.labours.create({
         data: {
-            user_id,
-            full_name,
-            date_of_birth: dob,
-            gender,
-            address_line_1,
-            address_line_2,
-            city,
-            state,
-            postal_code,
-            contact_number,
-            aadhar_card_number,
-            role: body.role,
-            base_salary: body.base_salary ?? 0.0,
-            bonus: body.bonus ?? 0.0,
-            overtime_pay: body.overtime_pay ?? 0.0,
-            housing_allowance: body.housing_allowance ?? 0.0,
-            travel_allowance: body.travel_allowance ?? 0.0,
-            meal_allowance: body.meal_allowance ?? 0.0,
-            payment_frequency: body.payment_frequency ?? 'Monthly',
-        }
+          user_id,
+          full_name,
+          date_of_birth: dob,
+          gender,
+          address_line_1,
+          address_line_2,
+          city,
+          state,
+          postal_code,
+          contact_number,
+          aadhar_card_number,
+          role: body.role,
+          base_salary: body.base_salary ?? 0.0,
+          bonus: body.bonus ?? 0.0,
+          overtime_pay: body.overtime_pay ?? 0.0,
+          housing_allowance: body.housing_allowance ?? 0.0,
+          travel_allowance: body.travel_allowance ?? 0.0,
+          meal_allowance: body.meal_allowance ?? 0.0,
+          payment_frequency: body.payment_frequency ?? 'Monthly',
+        },
       });
 
       return {
@@ -157,25 +157,32 @@ export class LabourService {
       });
 
       if (!existing) {
-         return { status: 404, data: { error: 'Labour not found' } };
+        return { status: 404, data: { error: 'Labour not found' } };
       }
 
       const updateData: any = {};
-      
+
       if (body.full_name) updateData.full_name = body.full_name;
       if (body.date_of_birth) {
-         if (typeof body.date_of_birth === 'string' && body.date_of_birth.includes('/')) {
-             const parts = body.date_of_birth.split('/');
-             if (parts.length === 3) updateData.date_of_birth = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-             else updateData.date_of_birth = new Date(body.date_of_birth);
-         } else {
-             updateData.date_of_birth = new Date(body.date_of_birth);
-         }
+        if (
+          typeof body.date_of_birth === 'string' &&
+          body.date_of_birth.includes('/')
+        ) {
+          const parts = body.date_of_birth.split('/');
+          if (parts.length === 3)
+            updateData.date_of_birth = new Date(
+              `${parts[2]}-${parts[1]}-${parts[0]}`,
+            );
+          else updateData.date_of_birth = new Date(body.date_of_birth);
+        } else {
+          updateData.date_of_birth = new Date(body.date_of_birth);
+        }
       }
       if (body.gender) updateData.gender = body.gender;
       if (body.role) updateData.role = body.role;
       if (body.contact_number) updateData.contact_number = body.contact_number;
-      if (body.aadhar_card_number) updateData.aadhar_card_number = body.aadhar_card_number;
+      if (body.aadhar_card_number)
+        updateData.aadhar_card_number = body.aadhar_card_number;
       if (body.address_line_1) updateData.address_line_1 = body.address_line_1;
       if (body.address_line_2) updateData.address_line_2 = body.address_line_2;
       if (body.city) updateData.city = body.city;
@@ -183,26 +190,36 @@ export class LabourService {
       if (body.postal_code) updateData.postal_code = body.postal_code;
       if (body.ration_card) updateData.ration_card = body.ration_card;
       if (body.pan_card) updateData.pan_card = body.pan_card;
-      if (body.driving_license) updateData.driving_license = body.driving_license;
-      if (body.mnrega_job_card_number) updateData.mnrega_job_card_number = body.mnrega_job_card_number;
-      if (body.bank_account_number) updateData.bank_account_number = body.bank_account_number;
+      if (body.driving_license)
+        updateData.driving_license = body.driving_license;
+      if (body.mnrega_job_card_number)
+        updateData.mnrega_job_card_number = body.mnrega_job_card_number;
+      if (body.bank_account_number)
+        updateData.bank_account_number = body.bank_account_number;
       if (body.ifsc_code) updateData.ifsc_code = body.ifsc_code;
       if (body.bank_name) updateData.bank_name = body.bank_name;
       if (body.bank_branch) updateData.bank_branch = body.bank_branch;
-      if (body.disability_status !== undefined) updateData.disability_status = body.disability_status;
+      if (body.disability_status !== undefined)
+        updateData.disability_status = body.disability_status;
       if (body.epfo) updateData.epfo = body.epfo;
       if (body.esic) updateData.esic = body.esic;
       if (body.pm_kisan !== undefined) updateData.pm_kisan = body.pm_kisan;
-      if (body.base_salary !== undefined) updateData.base_salary = body.base_salary;
+      if (body.base_salary !== undefined)
+        updateData.base_salary = body.base_salary;
       if (body.bonus !== undefined) updateData.bonus = body.bonus;
-      if (body.overtime_pay !== undefined) updateData.overtime_pay = body.overtime_pay;
-      if (body.housing_allowance !== undefined) updateData.housing_allowance = body.housing_allowance;
-      if (body.travel_allowance !== undefined) updateData.travel_allowance = body.travel_allowance;
-      if (body.meal_allowance !== undefined) updateData.meal_allowance = body.meal_allowance;
-      if (body.payment_frequency) updateData.payment_frequency = body.payment_frequency;
+      if (body.overtime_pay !== undefined)
+        updateData.overtime_pay = body.overtime_pay;
+      if (body.housing_allowance !== undefined)
+        updateData.housing_allowance = body.housing_allowance;
+      if (body.travel_allowance !== undefined)
+        updateData.travel_allowance = body.travel_allowance;
+      if (body.meal_allowance !== undefined)
+        updateData.meal_allowance = body.meal_allowance;
+      if (body.payment_frequency)
+        updateData.payment_frequency = body.payment_frequency;
 
       if (Object.keys(updateData).length === 0) {
-         return { status: 400, data: { error: 'No fields provided to update' } };
+        return { status: 400, data: { error: 'No fields provided to update' } };
       }
 
       const updatedLabour = await this.prisma.labours.update({

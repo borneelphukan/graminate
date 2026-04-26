@@ -16,7 +16,6 @@ import {
   Menu,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "react-native-paper";
 
 const PaperFormDropdown = ({

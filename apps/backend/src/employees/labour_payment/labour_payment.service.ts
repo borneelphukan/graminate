@@ -66,7 +66,7 @@ export class LabourPaymentService {
         Number(housing_allowance) +
         Number(travel_allowance) +
         Number(meal_allowance);
-      
+
       const newPayment = await this.prisma.labour_payments.create({
         data: {
           labour_id,
@@ -79,7 +79,7 @@ export class LabourPaymentService {
           meal_allowance,
           total_amount,
           payment_status: payment_status || 'Pending',
-        }
+        },
       });
 
       return {
@@ -108,36 +108,52 @@ export class LabourPaymentService {
       }
 
       const updateData: any = {};
-      if (body.payment_date) updateData.payment_date = new Date(body.payment_date);
-      if (body.salary_paid !== undefined) updateData.salary_paid = body.salary_paid;
+      if (body.payment_date)
+        updateData.payment_date = new Date(body.payment_date);
+      if (body.salary_paid !== undefined)
+        updateData.salary_paid = body.salary_paid;
       if (body.bonus !== undefined) updateData.bonus = body.bonus;
-      if (body.overtime_pay !== undefined) updateData.overtime_pay = body.overtime_pay;
-      if (body.housing_allowance !== undefined) updateData.housing_allowance = body.housing_allowance;
-      if (body.travel_allowance !== undefined) updateData.travel_allowance = body.travel_allowance;
-      if (body.meal_allowance !== undefined) updateData.meal_allowance = body.meal_allowance;
+      if (body.overtime_pay !== undefined)
+        updateData.overtime_pay = body.overtime_pay;
+      if (body.housing_allowance !== undefined)
+        updateData.housing_allowance = body.housing_allowance;
+      if (body.travel_allowance !== undefined)
+        updateData.travel_allowance = body.travel_allowance;
+      if (body.meal_allowance !== undefined)
+        updateData.meal_allowance = body.meal_allowance;
       if (body.payment_status) updateData.payment_status = body.payment_status;
 
-      if (Object.keys(updateData).length === 0 && !body.payment_date && Object.keys(body).length === 1) { 
+      if (
+        Object.keys(updateData).length === 0 &&
+        !body.payment_date &&
+        Object.keys(body).length === 1
+      ) {
         // Logic check: if nothing updated. But simpler:
         // Recalculate total if any money field changed
       }
 
       // Helper to get value
-      const getVal = (val: any, oldVal: any) => Number(val !== undefined ? val : oldVal);
+      const getVal = (val: any, oldVal: any) =>
+        Number(val !== undefined ? val : oldVal);
 
       // We need to recalculate total if any component changed
       const salary = getVal(body.salary_paid, existing.salary_paid);
       const bonusVal = getVal(body.bonus, existing.bonus);
       const overtime = getVal(body.overtime_pay, existing.overtime_pay);
-      const housing = getVal(body.housing_allowance, existing.housing_allowance);
+      const housing = getVal(
+        body.housing_allowance,
+        existing.housing_allowance,
+      );
       const travel = getVal(body.travel_allowance, existing.travel_allowance);
       const meal = getVal(body.meal_allowance, existing.meal_allowance);
-      
-      const total_amount = salary + bonusVal + overtime + housing + travel + meal;
+
+      const total_amount =
+        salary + bonusVal + overtime + housing + travel + meal;
       updateData.total_amount = total_amount;
 
-      if (Object.keys(updateData).length === 0) { // Should include total_amount now
-           return { status: 400, data: { error: 'No fields provided to update' } };
+      if (Object.keys(updateData).length === 0) {
+        // Should include total_amount now
+        return { status: 400, data: { error: 'No fields provided to update' } };
       }
 
       const updatedPayment = await this.prisma.labour_payments.update({

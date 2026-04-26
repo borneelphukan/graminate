@@ -25,7 +25,7 @@ import {
 
 @Controller('sales')
 export class SalesController {
-  constructor(private readonly salesService: SalesService) { }
+  constructor(private readonly salesService: SalesService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')

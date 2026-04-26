@@ -9,10 +9,7 @@ export class CattleMilkService {
     try {
       const records = await this.prisma.cattle_milk.findMany({
         where: { user_id: userId },
-        orderBy: [
-          { date_collected: 'desc' },
-          { milk_id: 'desc' },
-        ],
+        orderBy: [{ date_collected: 'desc' }, { milk_id: 'desc' }],
       });
       return records;
     } catch (error) {
@@ -25,10 +22,7 @@ export class CattleMilkService {
     try {
       const records = await this.prisma.cattle_milk.findMany({
         where: { cattle_id: cattleId },
-        orderBy: [
-          { date_collected: 'desc' },
-          { milk_id: 'desc' },
-        ],
+        orderBy: [{ date_collected: 'desc' }, { milk_id: 'desc' }],
       });
       return records;
     } catch (error) {
@@ -60,7 +54,7 @@ export class CattleMilkService {
           date_collected: new Date(date_collected),
           animal_name,
           milk_produced,
-        }
+        },
       });
       return newRecord;
     } catch (error) {
@@ -71,10 +65,11 @@ export class CattleMilkService {
 
   async update(id: number, updateDto: UpdateCattleMilkDto): Promise<any> {
     const { date_collected, animal_name, milk_produced } = updateDto;
-    
+
     try {
       const updateData: any = {};
-      if (date_collected !== undefined) updateData.date_collected = new Date(date_collected);
+      if (date_collected !== undefined)
+        updateData.date_collected = new Date(date_collected);
       if (animal_name !== undefined) updateData.animal_name = animal_name;
       if (milk_produced !== undefined) updateData.milk_produced = milk_produced;
 
@@ -109,10 +104,10 @@ export class CattleMilkService {
       // Find distinct animal names, not null, not empty, ordered ASC
       const result = await this.prisma.cattle_milk.findMany({
         where: {
-            cattle_id: cattleId,
-            animal_name: {
-                not: null, // Prisma specific: cannot chain checks easily in 'where' for <> ''
-            },
+          cattle_id: cattleId,
+          animal_name: {
+            not: null, // Prisma specific: cannot chain checks easily in 'where' for <> ''
+          },
         },
         distinct: ['animal_name'],
         orderBy: { animal_name: 'asc' },
@@ -122,9 +117,9 @@ export class CattleMilkService {
       // Filter empty strings manually or use where NOT if schema allows
       // Prisma: not: ''
       const names = result
-        .map(r => r.animal_name)
-        .filter(n => n !== null && n !== '');
-      
+        .map((r) => r.animal_name)
+        .filter((n) => n !== null && n !== '');
+
       return names as string[];
     } catch (error) {
       console.error(

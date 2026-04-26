@@ -16,7 +16,7 @@ export class PoultryEggsService {
     filters: PoultryEggFilters,
   ): Promise<any[]> {
     const { limit, offset, flockId } = filters;
-    
+
     try {
       const where: any = { user_id: userId };
       if (flockId !== undefined) where.flock_id = flockId;
@@ -24,7 +24,7 @@ export class PoultryEggsService {
       const eggs = await this.prisma.poultry_eggs.findMany({
         where,
         orderBy: [
-          { date_logged: 'desc' }, // schema has date_logged default now(), similar to created_at? Or maybe date_collected? 
+          { date_logged: 'desc' }, // schema has date_logged default now(), similar to created_at? Or maybe date_collected?
           // Original query: ORDER BY date_logged DESC, egg_id DESC
           // Check schema if date_logged exists. Assuming yes.
           { egg_id: 'desc' },
@@ -35,7 +35,10 @@ export class PoultryEggsService {
 
       return eggs;
     } catch (error) {
-       console.error('Error executing query in findByUserIdWithFilters (PoultryEggs):', error);
+      console.error(
+        'Error executing query in findByUserIdWithFilters (PoultryEggs):',
+        error,
+      );
       throw new InternalServerErrorException(
         `Database query failed: ${error.message}`,
       );
@@ -80,7 +83,7 @@ export class PoultryEggsService {
           extra_large_eggs,
           total_eggs,
           broken_eggs,
-        }
+        },
       });
       return newEgg;
     } catch (error) {
@@ -101,11 +104,13 @@ export class PoultryEggsService {
 
     try {
       const updateData: any = {};
-      if (date_collected !== undefined) updateData.date_collected = new Date(date_collected);
+      if (date_collected !== undefined)
+        updateData.date_collected = new Date(date_collected);
       if (small_eggs !== undefined) updateData.small_eggs = small_eggs;
       if (medium_eggs !== undefined) updateData.medium_eggs = medium_eggs;
       if (large_eggs !== undefined) updateData.large_eggs = large_eggs;
-      if (extra_large_eggs !== undefined) updateData.extra_large_eggs = extra_large_eggs;
+      if (extra_large_eggs !== undefined)
+        updateData.extra_large_eggs = extra_large_eggs;
       if (broken_eggs !== undefined) updateData.broken_eggs = broken_eggs;
 
       if (Object.keys(updateData).length === 0) {
@@ -127,12 +132,14 @@ export class PoultryEggsService {
 
         const newTotalEggs =
           (small_eggs !== undefined ? small_eggs : currentRecord.small_eggs) +
-          (medium_eggs !== undefined ? medium_eggs : currentRecord.medium_eggs) +
+          (medium_eggs !== undefined
+            ? medium_eggs
+            : currentRecord.medium_eggs) +
           (large_eggs !== undefined ? large_eggs : currentRecord.large_eggs) +
           (extra_large_eggs !== undefined
             ? extra_large_eggs
             : currentRecord.extra_large_eggs);
-        
+
         updateData.total_eggs = newTotalEggs;
       }
 
@@ -142,7 +149,6 @@ export class PoultryEggsService {
       });
 
       return updatedEgg;
-
     } catch (error) {
       console.error('Error executing query in update (PoultryEggs):', error);
       throw new InternalServerErrorException(error.message);

@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 @Controller('password')
 export class PasswordController {
-  constructor(private readonly passwordService: PasswordService) { }
+  constructor(private readonly passwordService: PasswordService) {}
 
   @Post('forgot')
   async forgotPassword(@Body() body: any, @Res() res: Response) {
