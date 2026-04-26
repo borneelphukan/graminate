@@ -258,7 +258,10 @@ const InspectionModal = ({
     }
   };
 
-  const handleInputChange = (field: keyof InspectionFormState, value: any) => {
+  const handleInputChange = (
+    field: keyof InspectionFormState,
+    value: string | string[]
+  ) => {
     setFormData((prev) => {
       const newState = { ...prev, [field]: value };
       if (field === "queen_cells_observed" && value !== "Yes") {

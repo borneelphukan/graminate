@@ -158,20 +158,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
     setIsBrowser(typeof document !== "undefined");
   }, []);
 
-  const mapStatusToColumnId = (status: string | null): Id => {
-    switch (status) {
-      case "To Do":
-        return "todo";
-      case "In Progress":
-        return "progress";
-      case "Checks":
-        return "check";
-      case "Completed":
-        return "done";
-      default:
-        return "todo";
-    }
-  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -206,7 +193,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         const mappedTasks: FrontendTaskType[] = actualApiTasks.map(
           (task: ApiTask): FrontendTaskType => {
             // Find column by ID or Title (case-insensitive)
-            let column = mappedColumns.find(
+            const column = mappedColumns.find(
               (c) =>
                 String(c.id) === String(task.status) ||
                 c.title.toLowerCase() === task.status?.toLowerCase()
@@ -727,7 +714,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
                 : t
             )
           );
-        } catch (error) {
+        } catch {
           console.error(
             "Failed to update task on drag end, reverting optimisitic update."
           );

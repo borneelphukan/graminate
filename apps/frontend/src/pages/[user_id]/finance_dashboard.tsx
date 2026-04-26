@@ -71,6 +71,19 @@ type ExpenseRecord = {
   created_at: string;
 };
 
+type Loan = {
+  loan_id: number;
+  user_id: number;
+  loan_name: string;
+  lender: string;
+  amount: number;
+  interest_rate: number;
+  start_date: string;
+  end_date: string;
+  status: string;
+  created_at: string;
+};
+
 const DETAILED_EXPENSE_CATEGORIES = {
   "Goods & Services": ["Farm Utilities", "Agricultural Feeds", "Consulting"],
   "Utility Expenses": [
@@ -203,7 +216,7 @@ const Finance = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
-  const [loans, setLoans] = useState<any[]>([]);
+  const [loans, setLoans] = useState<Loan[]>([]);
   const [openingBalance, setOpeningBalance] = useState<number>(0);
   const [isOpeningBalanceModalOpen, setIsOpeningBalanceModalOpen] = useState(false);
 

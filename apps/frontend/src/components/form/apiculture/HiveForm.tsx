@@ -181,7 +181,7 @@ const HiveForm = ({
     }
   };
 
-  const handleInputChange = (field: keyof HiveFormState, value: any) => {
+  const handleInputChange = (field: keyof HiveFormState, value: string) => {
     const newState = { ...hiveData, [field]: value };
 
     if (field === "hive_type") {

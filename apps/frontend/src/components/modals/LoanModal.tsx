@@ -97,12 +97,19 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
       });
       onSuccess();
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error logging loan:", error);
+      const errorMessage =
+        error && typeof error === "object" && "response" in error
+          ? (error as { response: { data: { message: string } } }).response.data
+              .message
+          : error instanceof Error
+          ? error.message
+          : "Could not log loan. Please try again.";
       setInfoModalState({
         isOpen: true,
         title: "Error",
-        text: error.response?.data?.message || "Could not log loan. Please try again.",
+        text: errorMessage,
         variant: "error",
       });
     } finally {

@@ -113,32 +113,35 @@ const ApicultureDetailPage = () => {
     [temperatureScale, convertToFahrenheit]
   );
 
-  const formattedDateOverview = (
-    dateString: string | undefined | null,
-    includeTime: boolean = true
-  ) => {
-    if (!dateString) return "N/A";
-    const locale = mapSupportedLanguageToLocale(currentLanguage);
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      ...(includeTime && {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: timeFormat === "12-hour",
-      }),
-    };
-    return new Date(dateString).toLocaleString(locale, options);
-  };
+  const formattedDateOverview = useCallback(
+    (dateString: string | undefined | null, includeTime: boolean = true) => {
+      if (!dateString) return "N/A";
+      const locale = mapSupportedLanguageToLocale(currentLanguage);
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        ...(includeTime && {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: timeFormat === "12-hour",
+        }),
+      };
+      return new Date(dateString).toLocaleString(locale, options);
+    },
+    [currentLanguage, timeFormat]
+  );
 
-  const formatDateForTable = (dateString: string | Date | null | undefined) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString(
-      mapSupportedLanguageToLocale(currentLanguage),
-      { year: "numeric", month: "short", day: "numeric" }
-    );
-  };
+  const formatDateForTable = useCallback(
+    (dateString: string | Date | null | undefined) => {
+      if (!dateString) return "N/A";
+      return new Date(dateString).toLocaleDateString(
+        mapSupportedLanguageToLocale(currentLanguage),
+        { year: "numeric", month: "short", day: "numeric" }
+      );
+    },
+    [currentLanguage]
+  );
 
   const fetchApiaryDetails = useCallback(async () => {
     if (!parsedApiaryId) return;

@@ -108,7 +108,7 @@ const CompanyDetails = () => {
         setInitialFormData(newFormValues);
         setInitialCompanyName(newFormValues.companyName);
         setAvatarInitials(getInitials(newFormValues.companyName));
-      } catch (error) {
+      } catch {
         triggerToast("Invalid company data format", "error");
       }
     }
@@ -242,7 +242,7 @@ const CompanyDetails = () => {
     const mailtoLink = `mailto:${recipientEmail.trim()}`;
     try {
       window.location.href = mailtoLink;
-    } catch (error) {
+    } catch {
       triggerToast("Could not open email client.", "error");
     }
   };

@@ -1,6 +1,5 @@
 import { Icon, Button, RadioGroup, RadioGroupItem, Input, Dropdown, IconType } from "@graminate/ui";
 import React, { useState, useCallback, useEffect, JSX } from "react";
-import { useRouter } from "next/router";
 import { triggerToast } from "@/stores/toast";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
@@ -33,7 +32,6 @@ const BUSINESS_TYPES = ["Producer", "Seller"];
 const AGRICULTURE_TYPES = ["Poultry", "Cattle Rearing", "Apiculture"];
 
 const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => {
-  const router = useRouter();
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState(BUSINESS_TYPES[0]);
   const [isDarkMode, setIsDarkMode] = useState(false);

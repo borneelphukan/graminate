@@ -219,13 +219,20 @@ const PoultryFeedsModal = ({
               "Feed record added and inventory updated!",
               "success"
             );
-          } catch (inventoryError: any) {
+          } catch (inventoryError: unknown) {
             console.error("Error updating inventory:", inventoryError);
+            const errorMessage =
+              inventoryError &&
+              typeof inventoryError === "object" &&
+              "response" in inventoryError
+                ? (inventoryError as { response: { data: { message: string } } })
+                    .response.data.message
+                : inventoryError instanceof Error
+                ? inventoryError.message
+                : "Unknown error";
             Swal.fire(
               "Partial Success",
-              `Feed record saved, but failed to update inventory: ${
-                inventoryError.response?.data?.message || inventoryError.message
-              }. Please adjust inventory manually.`,
+              `Feed record saved, but failed to update inventory: ${errorMessage}. Please adjust inventory manually.`,
               "warning"
             );
           }
@@ -239,13 +246,16 @@ const PoultryFeedsModal = ({
         onRecordSaved();
         onClose();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving feed record:", error);
-      Swal.fire(
-        "Error",
-        error.response?.data?.message || "Failed to save feed record.",
-        "error"
-      );
+      const errorMessage =
+        error && typeof error === "object" && "response" in error
+          ? (error as { response: { data: { message: string } } }).response.data
+              .message
+          : error instanceof Error
+          ? error.message
+          : "Failed to save feed record.";
+      Swal.fire("Error", errorMessage, "error");
     } finally {
       setIsSubmitting(false);
     }

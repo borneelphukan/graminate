@@ -4,7 +4,7 @@ import { Dropdown, Button, Input, Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { triggerToast } from "@/stores/toast";
 import Loader from "@/components/ui/Loader";
-import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
+import { useClickOutside } from "@/hooks/forms";
 
 type Item = {
   description: string;
@@ -39,13 +39,9 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
   const router = useRouter();
   const { saleId: querySaleId } = router.query;
 
-  const [animate, setAnimate] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  useAnimatePanel(setAnimate);
-
   const handleCloseAnimation = useCallback(() => {
-    setAnimate(false);
     setTimeout(() => {
       onClose();
     }, 300);
@@ -245,11 +241,14 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
       delete query.saleId;
       router.replace({ pathname, query }, undefined, { shallow: true });
       window.location.reload();
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage =
-        error.response?.data?.error ||
-        error.message ||
-        "An unexpected error occurred";
+        error && typeof error === "object" && "response" in error
+          ? (error as { response: { data: { error: string } } }).response.data
+              .error
+          : error instanceof Error
+          ? error.message
+          : "An unexpected error occurred";
       triggerToast(`Error: ${errorMessage}`, "error");
     } finally {
       setIsLoading(false);
@@ -358,7 +357,11 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
     return items;
   }, [allSalesForUser, receiptsValues.linked_sale_id]);
 
-  const updateItem = (index: number, field: keyof Item, value: any) => {
+  const updateItem = (
+    index: number,
+    field: keyof Item,
+    value: string | number
+  ) => {
     const newItems = [...receiptsValues.items];
     const item = { ...newItems[index], [field]: value };
     if (field === "quantity" || field === "rate") {

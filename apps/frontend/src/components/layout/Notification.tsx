@@ -8,7 +8,12 @@ export const Notification = ({
   onRemove,
 }: {
   id: number;
-  notification: { title: string; description: string; isRead?: boolean; _raw?: any };
+  notification: {
+    title: string;
+    description: string;
+    isRead?: boolean;
+    _raw?: { created_at?: string };
+  };
   onRemove?: (id: number) => void;
 }) => {
   const createMarkup = () => {

@@ -98,7 +98,7 @@ const ContractDetails = () => {
           category: initCategory,
           priority: initPriority,
         });
-      } catch (error) {
+      } catch {
         triggerToast("Failed to load contract data.", "error");
       }
     }

@@ -98,19 +98,20 @@ const HiveDetailsPage = () => {
     [temperatureScale, convertToFahrenheit]
   );
 
-  const formattedDate = (
-    dateString: string | Date | undefined | null
-  ): string => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString(
-      mapSupportedLanguageToLocale(currentLanguage),
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-    );
-  };
+  const formattedDate = useCallback(
+    (dateString: string | Date | undefined | null): string => {
+      if (!dateString) return "N/A";
+      return new Date(dateString).toLocaleDateString(
+        mapSupportedLanguageToLocale(currentLanguage),
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }
+      );
+    },
+    [currentLanguage]
+  );
 
   const fetchHiveDetails = useCallback(async () => {
     if (!hiveId) return;
@@ -440,12 +441,15 @@ const HiveDetailsPage = () => {
     }
   };
 
-  const displayValue = (value: number | null, unit: string = ""): string => {
-    if (value === null || value === undefined) return "N/A";
-    return `${Math.round(value)}${unit}`;
-  };
+  const displayValue = useCallback(
+    (value: number | null, unit: string = ""): string => {
+      if (value === null || value === undefined) return "N/A";
+      return `${Math.round(value)}${unit}`;
+    },
+    []
+  );
 
-  const getWindDirectionSymbol = (degrees: number | null): string => {
+  const getWindDirectionSymbol = useCallback((degrees: number | null): string => {
     if (degrees === null) return "";
     const directions = [
       "N",
@@ -467,7 +471,7 @@ const HiveDetailsPage = () => {
     ];
     const index = Math.round(degrees / 22.5) % 16;
     return directions[index];
-  };
+  }, []);
 
   const environmentMetrics = useMemo((): Metric[] => {
     const { temperature, humidity, precipitation, windSpeed, windDirection } =
@@ -515,7 +519,7 @@ const HiveDetailsPage = () => {
         label: "Wind",
       },
     ];
-  }, [weatherData, formatTemperature]);
+  }, [weatherData, formatTemperature, displayValue, getWindDirectionSymbol]);
 
   if (loading) {
     return (

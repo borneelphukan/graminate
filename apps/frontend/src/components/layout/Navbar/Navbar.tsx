@@ -5,17 +5,11 @@ import { useRouter } from "next/navigation";
 import NotificationBar from "../NotificationSideBar";
 import Image from "next/image";
 import type { User } from "@/types/card-props";
-import type { Navbar as NavbarType } from "@/types/card-props";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, TranslationKey } from "@/translations";
 import ThemeSwitch from "@/components/ui/Switch/ThemeSwitch";
 import { useClickOutside } from "@/hooks/forms";
-
-interface NavbarProps extends NavbarType {
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
-}
 
 type Notification = {
   id: number;
@@ -27,9 +21,10 @@ type Notification = {
 const Navbar = ({
   imageSrc = "/images/logo.png",
   userId,
-  isSidebarOpen,
-  toggleSidebar,
-}: NavbarProps) => {
+}: {
+  imageSrc?: string;
+  userId: string | string[] | undefined;
+}) => {
   const router = useRouter();
   const {
     language: currentLanguage,
@@ -78,7 +73,13 @@ const Navbar = ({
       const data = response.data?.data?.notifications;
       if (Array.isArray(data)) {
         setNotifications(
-          data.map((n: any) => ({
+          data.map(
+            (n: {
+              id: number;
+              title: string;
+              message: string;
+              is_read: boolean;
+            }) => ({
             id: n.id,
             titleKey: n.title as TranslationKey,
             description: n.message,

@@ -61,12 +61,19 @@ const OpeningBalanceModal = ({
       });
       onSuccess(Number(balance));
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating opening balance:", err);
+      const errorMessage =
+        err && typeof err === "object" && "response" in err
+          ? (err as { response: { data: { message: string } } }).response.data
+              .message
+          : err instanceof Error
+          ? err.message
+          : "Could not update opening balance.";
       setInfoModalState({
         isOpen: true,
         title: "Error",
-        text: err.response?.data?.message || "Could not update opening balance.",
+        text: errorMessage,
         variant: "error",
       });
     } finally {

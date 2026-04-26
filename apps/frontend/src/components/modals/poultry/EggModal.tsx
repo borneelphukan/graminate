@@ -154,12 +154,19 @@ const EggModal = ({
       }
       onRecordSaved();
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving egg record:", error);
+      const errorMessage =
+        error && typeof error === "object" && "response" in error
+          ? (error as { response: { data: { message: string } } }).response.data
+              .message
+          : error instanceof Error
+          ? error.message
+          : "Failed to save egg record.";
       setInfoModalState({
         isOpen: true,
         title: "Error",
-        text: error.response?.data?.message || "Failed to save egg record.",
+        text: errorMessage,
         variant: "error",
       });
     } finally {

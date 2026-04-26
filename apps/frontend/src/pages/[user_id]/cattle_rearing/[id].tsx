@@ -139,24 +139,24 @@ const CattleDetailPage = () => {
     }
   }, [parsedCattleId, fetchCattleDetails]);
 
-  const formattedDateOverview = (
-    dateString: string | undefined | null,
-    includeTime: boolean = true
-  ) => {
-    if (!dateString) return "N/A";
-    const locale = mapSupportedLanguageToLocale(currentLanguage);
-    const dateTimeOptions: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      ...(includeTime && {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: timeFormat === "12-hour",
-      }),
-    };
-    return new Date(dateString).toLocaleString(locale, dateTimeOptions);
-  };
+  const formattedDateOverview = useCallback(
+    (dateString: string | undefined | null, includeTime: boolean = true) => {
+      if (!dateString) return "N/A";
+      const locale = mapSupportedLanguageToLocale(currentLanguage);
+      const dateTimeOptions: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        ...(includeTime && {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: timeFormat === "12-hour",
+        }),
+      };
+      return new Date(dateString).toLocaleString(locale, dateTimeOptions);
+    },
+    [currentLanguage, timeFormat]
+  );
 
   useEffect(() => {
     if (!parsedUserId) {
@@ -254,18 +254,21 @@ const CattleDetailPage = () => {
     ];
   }, [selectedCattleData, formattedDateOverview]);
 
-  const displayValue = (
-    value: number | null | undefined,
-    unit: string = "",
-    toFixedPlaces?: number
-  ): string => {
-    if (value === null || value === undefined) return "N/A";
-    const numericValue =
-      typeof toFixedPlaces === "number"
-        ? value.toFixed(toFixedPlaces)
-        : Math.round(value);
-    return `${numericValue}${unit}`;
-  };
+  const displayValue = useCallback(
+    (
+      value: number | null | undefined,
+      unit: string = "",
+      toFixedPlaces?: number
+    ): string => {
+      if (value === null || value === undefined) return "N/A";
+      const numericValue =
+        typeof toFixedPlaces === "number"
+          ? value.toFixed(toFixedPlaces)
+          : Math.round(value);
+      return `${numericValue}${unit}`;
+    },
+    []
+  );
 
   const environmentMetrics: Metric[] = useMemo(
     () => [
@@ -295,7 +298,7 @@ const CattleDetailPage = () => {
         value: displayValue(weatherData.uvIndex, "", 1),
       },
     ],
-    [weatherData, formatTemperature]
+    [weatherData, formatTemperature, displayValue]
   );
 
   return (

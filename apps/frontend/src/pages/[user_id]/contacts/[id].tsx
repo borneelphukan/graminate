@@ -1,7 +1,7 @@
 import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import { CONTACT_TYPES } from "@/constants/options";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
@@ -120,7 +120,7 @@ const ContactDetails = () => {
         setAvatarInitials(
           getInitials(newFormValues.firstName, newFormValues.lastName)
         );
-      } catch (error) {
+      } catch {
         triggerToast("Invalid contact data format", "error");
       }
     }
@@ -142,7 +142,7 @@ const ContactDetails = () => {
           } else {
             triggerToast("Could not retrieve your email address.");
           }
-        } catch (error) {
+        } catch {
           triggerToast("Error retrieving your email information.", "error");
         }
       }
@@ -280,7 +280,7 @@ const ContactDetails = () => {
     const mailtoLink = `mailto:${recipientEmail.trim()}`;
     try {
       window.location.href = mailtoLink;
-    } catch (error) {
+    } catch {
       triggerToast("Could not open email client.", "error");
     }
   };

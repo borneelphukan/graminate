@@ -96,7 +96,7 @@ const AlertDisplay = ({
           });
         }
       } catch (error) {
-        console.error("Error parsing nextVisit date for alert:", e);
+        console.error("Error parsing nextVisit date for alert:", error);
       }
     }
 

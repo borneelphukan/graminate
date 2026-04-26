@@ -1,4 +1,4 @@
-import { Icon, Button, Input } from "@graminate/ui";
+import { Button, Input } from "@graminate/ui";
 import React, { useState } from "react";
 import InfoModal from "./InfoModal";
 import axios from "axios";
@@ -42,9 +42,13 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
         variant: "success",
         onClose: closeModal,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Forgot password error:", error);
-      const errorMessage = error.response?.data?.error || "Failed to send reset link. Please try again later.";
+      const errorMessage =
+        error && typeof error === "object" && "response" in error
+          ? (error as { response: { data: { error: string } } }).response.data
+              .error
+          : "Failed to send reset link. Please try again later.";
       setInfoModalState({
         isOpen: true,
         title: "Error",

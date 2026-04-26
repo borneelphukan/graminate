@@ -30,7 +30,6 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
 
   const [projectValue, setProjectValue] = useState("");
   const [subTypes, setSubTypes] = useState<string[]>([]);
-  const [isLoadingSubTypes, setIsLoadingSubTypes] = useState(true);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -53,7 +52,6 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
 
   useEffect(() => {
     const fetchUserSubTypes = async () => {
-      setIsLoadingSubTypes(true);
       try {
         const response = await axiosInstance.get(`/user/${userId}`);
         const user = response.data?.data?.user ?? response.data?.user;
@@ -62,8 +60,6 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
       } catch (error) {
         console.error("Error fetching user sub_types:", error);
         setSubTypes([]);
-      } finally {
-        setIsLoadingSubTypes(false);
       }
     };
     if (userId) {

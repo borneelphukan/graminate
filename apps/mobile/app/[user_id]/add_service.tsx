@@ -24,8 +24,6 @@ import {
 } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
 // Using the centralized axiosInstance from @/lib/axiosInstance
 const api = axiosInstance;
 

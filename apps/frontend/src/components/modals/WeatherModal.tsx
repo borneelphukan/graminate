@@ -53,7 +53,7 @@ const WeatherModal = ({ isOpen, onClose, lat, lon }: WeatherModalProps) => {
     try {
       const response = await axios.get("/api/weather", { params: { lat, lon } });
       setData(response.data);
-    } catch (_err: unknown) {
+    } catch {
       setError("Failed to fetch weather details");
     } finally {
       setLoading(false);

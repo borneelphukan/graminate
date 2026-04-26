@@ -59,14 +59,11 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
   });
 
   const [categorySubTypes, setCategorySubTypes] = useState<string[]>([]);
-  const [isLoadingCategorySubTypes, setIsLoadingCategorySubTypes] =
-    useState(true);
   const [categorySuggestions, setCategorySuggestions] = useState<string[]>([]);
   const [showCategorySuggestions, setShowCategorySuggestions] = useState(false);
   const categorySuggestionsRef = useRef<HTMLDivElement>(null);
 
   const [companyNamesList, setCompanyNamesList] = useState<string[]>([]);
-  const [isLoadingCompanyNames, setIsLoadingCompanyNames] = useState(true);
   const [dealPartnerSuggestions, setDealPartnerSuggestions] = useState<
     string[]
   >([]);
@@ -98,7 +95,6 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
 
   useEffect(() => {
     const fetchUserSubTypes = async () => {
-      setIsLoadingCategorySubTypes(true);
       const response = await axiosInstance.get(`/user/${userId}`);
       const user = response.data?.data?.user ?? response.data?.user;
       if (!user) throw new Error("User payload missing");
@@ -112,7 +108,6 @@ const ContractForm = ({ userId, onClose }: ContractFormProps) => {
   useEffect(() => {
     const fetchCompanyNames = async () => {
       if (!userId) return;
-      setIsLoadingCompanyNames(true);
       const response = await axiosInstance.get<{ companies: Company[] }>(
         `/companies/${userId}`
       );

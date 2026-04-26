@@ -6,9 +6,25 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
+type Warehouse = {
+  warehouse_id: number;
+  category: string;
+};
+
+type InventoryItem = {
+  inventory_id?: number;
+  item_name?: string;
+  item_group?: string;
+  units?: string;
+  quantity?: number;
+  price_per_unit?: number;
+  minimum_limit?: number;
+  feed?: boolean;
+};
+
 interface InventoryFormProps extends SidebarProp {
   warehouseId?: number;
-  initialData?: any;
+  initialData?: InventoryItem;
   onSuccess?: () => void;
 }
 
@@ -90,9 +106,9 @@ const InventoryForm = ({
       if (!parsedUserId || !warehouseId) return;
       try {
         const response = await axiosInstance.get(`/warehouse/user/${parsedUserId}`);
-        const warehouses = response.data?.warehouses || [];
+        const warehouses = (response.data?.warehouses as Warehouse[]) || [];
         const currentWarehouse = warehouses.find(
-          (wh: any) => wh.warehouse_id === warehouseId
+          (wh) => wh.warehouse_id === warehouseId
         );
         if (currentWarehouse?.category) {
           setWarehouseCategory(currentWarehouse.category);

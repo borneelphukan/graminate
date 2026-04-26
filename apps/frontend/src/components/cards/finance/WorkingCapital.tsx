@@ -99,7 +99,7 @@ const WorkingCapital = ({
         netWorkingCapital: parseFloat(cumulativeBalance.toFixed(2)),
       };
     });
-  }, [initialFullHistoricalData]);
+  }, [initialFullHistoricalData, openingBalance]);
 
   const earliestDataPointDate = useMemo(
     () =>
@@ -394,6 +394,8 @@ const WorkingCapital = ({
     endDate,
     isCustomDateRangeActive,
     currentIntervalDates,
+    fullHistoricalWorkingCapitalData,
+    today,
   ]);
 
   useEffect(() => {

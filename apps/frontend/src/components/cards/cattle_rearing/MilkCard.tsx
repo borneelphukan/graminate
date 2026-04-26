@@ -128,9 +128,9 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const [animalNameSuggestions, setAnimalNameSuggestions] = useState<string[]>(
     []
   );
-  const [isLoadingAnimalNameSuggestions, setIsLoadingAnimalNameSuggestions] =
-    useState(false);
   const [showAnimalNameSuggestions, setShowAnimalNameSuggestions] =
+    useState(false);
+  const [isLoadingAnimalNameSuggestions, setIsLoadingAnimalNameSuggestions] =
     useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -786,7 +786,9 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
                       className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto border border-gray-300 dark:border-gray-600"
                     >
                       <p className="text-xs p-2 text-gray-400 dark:text-gray-500">
-                        Suggestions...
+                        {isLoadingAnimalNameSuggestions
+                          ? "Loading suggestions..."
+                          : "Suggestions..."}
                       </p>
                       {filteredAnimalNameSuggestions.map(
                         (suggestion, index) => (

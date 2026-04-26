@@ -379,23 +379,26 @@ const PoultryDetail = () => {
     }
   }, [selectedFlockData]);
 
-  const formattedDateOverview = (dateString: string | undefined) => {
-    if (!dateString) return "N/A";
-    try {
-      const locale = mapSupportedLanguageToLocale(currentLanguage);
-      const dateTimeOptions: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: timeFormat === "12-hour",
-      };
-      return new Date(dateString).toLocaleString(locale, dateTimeOptions);
-    } catch {
-      return "Invalid Date";
-    }
-  };
+  const formattedDateOverview = useCallback(
+    (dateString: string | undefined) => {
+      if (!dateString) return "N/A";
+      try {
+        const locale = mapSupportedLanguageToLocale(currentLanguage);
+        const dateTimeOptions: Intl.DateTimeFormatOptions = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: timeFormat === "12-hour",
+        };
+        return new Date(dateString).toLocaleString(locale, dateTimeOptions);
+      } catch {
+        return "Invalid Date";
+      }
+    },
+    [currentLanguage, timeFormat]
+  );
 
   const processEggDataForGraph = useCallback(
     (
@@ -771,18 +774,21 @@ const PoultryDetail = () => {
   const isLoadingEnvironment =
     temperature === null || humidity === null || lightHours === null;
 
-  const displayValue = (
-    value: number | null | undefined,
-    unit: string = "",
-    toFixedPlaces?: number
-  ): string => {
-    if (value === null || value === undefined) return "N/A";
-    const numericValue =
-      typeof toFixedPlaces === "number"
-        ? value.toFixed(toFixedPlaces)
-        : Math.round(value);
-    return `${numericValue}${unit}`;
-  };
+  const displayValue = useCallback(
+    (
+      value: number | null | undefined,
+      unit: string = "",
+      toFixedPlaces?: number
+    ): string => {
+      if (value === null || value === undefined) return "N/A";
+      const numericValue =
+        typeof toFixedPlaces === "number"
+          ? value.toFixed(toFixedPlaces)
+          : Math.round(value);
+      return `${numericValue}${unit}`;
+    },
+    []
+  );
 
   const environmentMetrics: Metric[] = useMemo(
     () => [
@@ -802,7 +808,7 @@ const PoultryDetail = () => {
         value: displayValue(lightHours, " Hrs", 1),
       },
     ],
-    [temperature, humidity, lightHours, formatTemperature]
+    [temperature, humidity, lightHours, formatTemperature, displayValue]
   );
 
   const handleMetricClick = () => {

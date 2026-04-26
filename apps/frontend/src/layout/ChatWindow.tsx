@@ -244,22 +244,22 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        table: ({ node: _node, ...props }) => (
+                        table: (props) => (
                           <div className="my-4 overflow-x-auto border border-gray-400 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900">
                             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...props} />
                           </div>
                         ),
-                        thead: ({ node: _node, ...props }) => <thead className="bg-gray-50 dark:bg-gray-800/50" {...props} />,
-                        th: ({ node: _node, ...props }) => (
+                        thead: (props) => <thead className="bg-gray-50 dark:bg-gray-800/50" {...props} />,
+                        th: (props) => (
                           <th
                             className="px-4 py-3 text-left text-xs font-bold text-dark dark:text-light uppercase tracking-wider border-b border-gray-400 dark:border-gray-700"
                             {...props}
                           />
                         ),
-                        td: ({ node: _node, ...props }) => (
+                        td: (props) => (
                           <td className="px-4 py-3 text-sm text-dark dark:text-light whitespace-normal overflow-hidden break-words" {...props} />
                         ),
-                        tr: ({ node: _node, ...props }) => (
+                        tr: (props) => (
                           <tr className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors border-b border-gray-400 dark:border-gray-700 last:border-0" {...props} />
                         ),
                       }}

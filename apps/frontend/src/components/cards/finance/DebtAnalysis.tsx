@@ -25,6 +25,18 @@ import LoanModal from "@/components/modals/LoanModal";
 import { DailyFinancialEntry } from "@/hooks/finance";
 import Loader from "@/components/ui/Loader";
 
+type Loan = {
+  loan_id: number;
+  user_id: number;
+  loan_name: string;
+  lender: string;
+  amount: number;
+  interest_rate: number;
+  start_date: string;
+  end_date: string | null;
+  status: string;
+};
+
 ChartJS.register(
   BarController,
   LineController,
@@ -54,7 +66,7 @@ const formatCurrency = (amount: number) => {
 
 type DebtAnalysisProps = {
   initialFullHistoricalData: DailyFinancialEntry[];
-  loans: any[];
+  loans: Loan[];
   isLoadingData: boolean;
   onRefresh: () => void;
 };
@@ -95,7 +107,8 @@ const DebtAnalysis = ({
     return data;
   }, [initialFullHistoricalData, selectedTimeRange, startDate, endDate]);
 
-  const isValidDate = (d: any) => d instanceof Date && !isNaN(d.getTime());
+  const isValidDate = (d: unknown): d is Date =>
+    d instanceof Date && !isNaN(d.getTime());
 
   const isDarkMode = useMemo(() => {
     if (typeof document !== "undefined") {
@@ -110,8 +123,8 @@ const DebtAnalysis = ({
       if (ctx) {
         if (chartInstanceRef.current) chartInstanceRef.current.destroy();
 
-        let data: ChartData<any>;
-        let options: ChartOptions<any>;
+        let data: ChartData<"line" | "pie">;
+        let options: ChartOptions<"line" | "pie">;
 
         if (selectedChartType === "Debt Trend") {
           // Calculate trend based on historical dates
@@ -163,7 +176,7 @@ const DebtAnalysis = ({
               },
               tooltip: {
                 callbacks: {
-                  label: (c: any) => `Debt: ${formatCurrency(c.parsed.y)}`,
+                  label: (c) => `Debt: ${formatCurrency(c.parsed.y)}`,
                 },
               },
             },
@@ -177,7 +190,7 @@ const DebtAnalysis = ({
                 grid: { color: isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" },
                 ticks: {
                   color: isDarkMode ? "#D1D5DB" : "#4B5563",
-                  callback: (v: any) => formatCurrency(v),
+                  callback: (v) => formatCurrency(Number(v)),
                 },
               },
             },
@@ -222,7 +235,7 @@ const DebtAnalysis = ({
               },
               tooltip: {
                 callbacks: {
-                  label: (c: any) => `${c.label}: ${formatCurrency(c.parsed)}`,
+                  label: (c) => `${c.label}: ${formatCurrency(Number(c.parsed))}`,
                 },
               },
             },
