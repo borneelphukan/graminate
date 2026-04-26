@@ -44,7 +44,8 @@ export class FloricultureController {
   }
 
   @Post('reset-service')
-  reset(@Body('userId') userId: number): Promise<{ message: string }> {
-    return this.floricultureService.reset(userId);
+  async reset(@Body('userId') userId: number): Promise<{ message: string }> {
+    await this.floricultureService.reset(userId);
+    return { message: `Floriculture table reset for user ${userId}` };
   }
 }

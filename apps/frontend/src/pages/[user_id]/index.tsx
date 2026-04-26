@@ -18,7 +18,7 @@ import WidgetModal from "@/components/modals/WidgetModal";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
-import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
+import DebtAnalysis, { Loan } from "@/components/cards/finance/DebtAnalysis";
 import TaskManager from "@/components/cards/TaskManager";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
@@ -250,7 +250,7 @@ const Dashboard = () => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
   >([]);
-  const [loans, setLoans] = useState<unknown[]>([]);
+  const [loans, setLoans] = useState<Loan[]>([]);
   const [openingBalance, setOpeningBalance] = useState<number>(0);
 
   useEffect(() => {

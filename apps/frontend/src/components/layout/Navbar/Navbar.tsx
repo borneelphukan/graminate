@@ -21,9 +21,13 @@ type Notification = {
 const Navbar = ({
   imageSrc = "/images/logo.png",
   userId,
+  isSidebarOpen,
+  toggleSidebar,
 }: {
   imageSrc?: string;
   userId: string | string[] | undefined;
+  isSidebarOpen?: boolean;
+  toggleSidebar?: () => void;
 }) => {
   const router = useRouter();
   const {
@@ -199,6 +203,15 @@ const Navbar = ({
             <div className="relative z-10 flex px-2 lg:px-0">
               <div className="flex flex-shrink-0 items-center">
                 <div className="flex flex-row items-center gap-4">
+                  {toggleSidebar && (
+                    <button
+                      className="lg:hidden text-gray-400 hover:text-white focus:outline-none mr-2"
+                      onClick={toggleSidebar}
+                      aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+                    >
+                      <Icon type={isSidebarOpen ? "close" : "menu"} className="size-6" />
+                    </button>
+                  )}
                   <Image
                     src={imageSrc}
                     alt="Graminate Logo"
@@ -211,7 +224,6 @@ const Navbar = ({
                     {t("graminate")}
                   </span>
                 </div>
-
               </div>
             </div>
             <div className="relative z-10 ml-4 flex items-center">
@@ -344,7 +356,7 @@ const Navbar = ({
       </header>
 
       <NotificationBar
-        userId={userId}
+        userId={Array.isArray(userId) ? userId[0] : (userId || "")}
         notifications={notifications.map((n) => ({
           ...n,
           title: t(n.titleKey),

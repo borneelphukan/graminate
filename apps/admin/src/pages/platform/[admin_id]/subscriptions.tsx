@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Table, TableData } from "@graminate/ui";
+import { Table, TableData, RowType } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { format, addMonths, addDays } from "date-fns";
 import Swal from "sweetalert2";
@@ -34,7 +34,7 @@ const SubscriptionsPage = () => {
   // Modal state
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [pendingAction, setPendingAction] = useState<{ row: (string | React.ReactNode)[]; action: string } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ row: RowType; action: string } | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!admin_id) return;
@@ -78,7 +78,7 @@ const SubscriptionsPage = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleAction = (row: (string | React.ReactNode)[], action: string) => {
+  const handleAction = (row: RowType, action: string) => {
     setPendingAction({ row, action });
     setIsReasonModalOpen(true);
   };

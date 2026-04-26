@@ -12,7 +12,7 @@ export class FloricultureService {
         user_id: data.user_id as number,
         flower_name: data.flower_name as string,
         flower_type: data.flower_type as string,
-        area: data.area as string,
+        area: data.area as number,
         method: data.method as string,
         planting_date: data.planting_date ? new Date(data.planting_date) : null,
       },

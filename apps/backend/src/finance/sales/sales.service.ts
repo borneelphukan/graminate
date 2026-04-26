@@ -105,7 +105,7 @@ export class SalesService {
     const finalQuantitiesSold =
       updateDto.quantities_sold !== undefined
         ? updateDto.quantities_sold
-        : (currentSale.quantities_sold as Prisma.Decimal[]);
+        : (currentSale.quantities_sold as unknown as Prisma.Decimal[]);
     const finalPricesPerUnit =
       updateDto.prices_per_unit !== undefined
         ? updateDto.prices_per_unit

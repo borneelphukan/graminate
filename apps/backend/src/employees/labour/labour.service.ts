@@ -3,17 +3,17 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { Prisma, labours } from '@prisma/client';
 
 interface LabourBody {
-  user_id: number;
-  full_name: string;
-  date_of_birth: string | Date;
-  gender: string;
-  address_line_1: string;
+  user_id?: number;
+  full_name?: string;
+  date_of_birth?: string | Date;
+  gender?: string;
+  address_line_1?: string;
   address_line_2?: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  contact_number: string;
-  aadhar_card_number: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  contact_number?: string;
+  aadhar_card_number?: string;
   role?: string;
   base_salary?: number;
   bonus?: number;

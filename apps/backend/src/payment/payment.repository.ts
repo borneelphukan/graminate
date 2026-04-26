@@ -8,6 +8,7 @@ import {
 import { CreatePaymentDto, VerifyPaymentDto } from './payment.dto';
 import * as crypto from 'crypto';
 import { PrismaService } from '@/prisma/prisma.service';
+import { user_plan_type } from '@prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Razorpay = require('razorpay');
@@ -75,7 +76,7 @@ export class PaymentRepository {
           razorpay_order_id: razorpayOrder.id,
           amount,
           currency,
-          plan_type: planType,
+          plan_type: planType as user_plan_type,
           status: 'PENDING',
         },
       });

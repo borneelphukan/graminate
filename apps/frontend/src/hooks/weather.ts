@@ -64,7 +64,7 @@ export function useWeatherData<T>({
     try {
       const result = await fetchFunction(lat, lon);
       setData(result);
-    } catch {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to fetch data");
     } finally {
       setIsLoading(false);
@@ -96,7 +96,7 @@ export function useLocationName({ lat, lon }: UseLocationNameProps) {
     try {
       const city = await fetchCityNameUtil(lat, lon);
       setLocationName(city);
-    } catch {
+    } catch (err: unknown) {
       setError(
         err instanceof Error ? err.message : "Failed to fetch location name"
       );

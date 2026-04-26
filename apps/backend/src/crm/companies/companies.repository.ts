@@ -144,7 +144,7 @@ export class CompaniesRepository {
     data: {
       message?: string;
       error?: string;
-      company?: { company_id: number };
+      company?: companies;
     };
   }> {
     if (!id) {
@@ -170,7 +170,7 @@ export class CompaniesRepository {
         status: 200,
         data: {
           message: 'Company deleted successfully',
-          company: { company_id: companyId },
+          company: existing,
         },
       };
     } catch (error) {

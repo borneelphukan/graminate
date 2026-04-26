@@ -175,7 +175,7 @@ export class ContractsRepository {
       if (start_date !== undefined)
         updateData.start_date = new Date(start_date);
       if (end_date !== undefined)
-        updateData.end_date = end_date ? new Date(end_date) : null;
+        updateData.end_date = end_date ? new Date(end_date) : undefined;
       if (category !== undefined) updateData.category = category;
       if (priority !== undefined) updateData.priority = priority;
 

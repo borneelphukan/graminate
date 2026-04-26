@@ -30,9 +30,7 @@ export class UserController {
   }
 
   @Post('login')
-  async login(
-    @Body() body: { email: string; password: string },
-  ): Promise<{ user: any; token: string }> {
+  async login(@Body() body: { email: string; password: string }): Promise<any> {
     return this.authService.login(body.email, body.password);
   }
 

@@ -25,7 +25,7 @@ import LoanModal from "@/components/modals/LoanModal";
 import { DailyFinancialEntry } from "@/hooks/finance";
 import Loader from "@/components/ui/Loader";
 
-type Loan = {
+export type Loan = {
   loan_id: number;
   user_id: number;
   loan_name: string;
@@ -176,7 +176,7 @@ const DebtAnalysis = ({
               },
               tooltip: {
                 callbacks: {
-                  label: (c) => `Debt: ${formatCurrency(c.parsed.y)}`,
+                  label: (c) => `Debt: ${formatCurrency(Number(c.parsed.y))}`,
                 },
               },
             },
