@@ -32,11 +32,9 @@ const WeatherSettings = () => {
   const [weatherSettings, setWeatherSettings] = useState<{
     location: string;
     scale: TemperatureScaleOption;
-    aiSuggestions: boolean;
   }>({
     location: "",
     scale: "Celsius",
-    aiSuggestions: false,
   });
 
   const [isSavingWeather, setIsSavingWeather] = useState(false);
@@ -64,7 +62,6 @@ const WeatherSettings = () => {
           setWeatherSettings({
             location: userData.weather_location || "",
             scale: fetchedScale,
-            aiSuggestions: userData.weather_ai_suggestions || false,
           });
 
           if (userData.temperature_scale)
@@ -169,18 +166,6 @@ const WeatherSettings = () => {
                         }
                         variant="small"
                       />
-                        <Checkbox
-                          id="ai-suggestions"
-                          label={t("enableAISuggestions" as TranslationKey)}
-                          checked={weatherSettings.aiSuggestions}
-                          onCheckedChange={() =>
-                            setWeatherSettings((prev) => ({
-                              ...prev,
-                              aiSuggestions: !prev.aiSuggestions,
-                            }))
-                          }
-                          className="mt-2"
-                        />
                       <div className="mt-6">
                         <Button
                           variant="primary"

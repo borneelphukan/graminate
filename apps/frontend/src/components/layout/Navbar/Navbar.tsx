@@ -58,6 +58,7 @@ const Navbar = ({
       {
         nameKey: "pricing" as TranslationKey,
         href: `/${userId}/pricing`,
+        external: true,
       },
       {
         nameKey: "trainingAndServices" as TranslationKey,

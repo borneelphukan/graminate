@@ -129,14 +129,16 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
 
   if (isSubTypesLoading) {
     return (
-      <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col items-center justify-center relative">
-        <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
-          <h1 className="text-lg text-dark font-bold dark:text-light">
-            Graminate AI
-          </h1>
-        </header>
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="w-[80vw] h-[80vh] rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 overflow-hidden">
+        <div className="w-full h-full bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm flex flex-col items-center justify-center relative overflow-hidden text-gray-800 dark:text-gray-400">
+          <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
+            <h1 className="text-lg text-dark font-bold dark:text-light">
+              Graminate AI
+            </h1>
+          </header>
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         </div>
       </div>
     );
@@ -144,49 +146,52 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
 
   if (plan !== "PRO") {
     return (
-      <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col overflow-hidden items-center justify-center relative">
-        <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
-          <h1 className="text-lg text-dark font-bold dark:text-light">
-            Graminate AI
-          </h1>
-        </header>
-        <div className="text-center p-4">
-          <Sparkles
-            size={48}
-            className="text-green-200 dark:text-light mx-auto"
-          />
-          <h2 className="mt-4 text-2xl font-semibold text-dark dark:text-light">
-            Feature Locked
-          </h2>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Graminate AI is only available for Paid Users. Please upgrade your
-            plan to access this feature.
-          </p>
-          <Button
-            label="Upgrade"
-            variant="primary"
-            className="mt-6"
-            onClick={() => window.open("http://localhost:3003/pricing", "_blank")}
-          />
+      <div className="w-[80vw] h-[80vh] rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 overflow-hidden">
+        <div className="w-full h-full bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm flex flex-col items-center justify-center relative overflow-hidden text-gray-800 dark:text-gray-400">
+          <header className="absolute top-0 left-0 right-0 px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
+            <h1 className="text-lg text-dark font-bold dark:text-light">
+              Graminate AI
+            </h1>
+          </header>
+          <div className="text-center p-4">
+            <Sparkles
+              size={48}
+              className="text-green-200 dark:text-light mx-auto"
+            />
+            <h2 className="mt-4 text-2xl font-semibold text-dark dark:text-light">
+              Feature Locked
+            </h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              Graminate AI is only available for Paid Users. Please upgrade your
+              plan to access this feature.
+            </p>
+            <Button
+              label="Upgrade"
+              variant="primary"
+              className="mt-6"
+              onClick={() => window.open("http://localhost:3003/pricing", "_blank")}
+            />
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-[80vw] h-[80vh] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-400 shadow-2xl rounded-lg flex flex-col overflow-hidden">
+    <div className="w-[80vw] h-[80vh] rounded-2xl border border-gray-400/20 shadow-2xl bg-white/20 p-1 overflow-hidden">
+      <div className="w-full h-full bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm flex flex-col overflow-hidden text-gray-800 dark:text-gray-400">
       <header className="px-4 py-2 flex items-center justify-between bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">
         <h1 className="text-lg text-dark font-bold dark:text-light">
           Graminate AI
         </h1>
         <div className="flex items-center">
           {messages.length > 0 && (
-            <button
+            <Button
+              label="Clear Chat"
+              variant="destructive"
+              size="sm"
               onClick={handleClearChat}
-              className="flex items-center gap-2 text-sm text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium px-3 py-1.5 rounded-md"
-            >
-              Clear Chat
-            </button>
+            />
           )}
         </div>
       </header>
@@ -236,7 +241,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                 <div
                   className={`px-4 py-2.5 rounded-2xl shadow-sm ${
                     msg.sender === "user"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-green-200 text-light"
                       : "bg-white dark:bg-gray-800"
                   }`}
                 >
@@ -245,11 +250,11 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                       remarkPlugins={[remarkGfm]}
                       components={{
                         table: (props) => (
-                          <div className="my-4 overflow-x-auto border border-gray-400 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900">
+                          <div className="my-4 overflow-x-auto border border-gray-400 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800">
                             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700" {...props} />
                           </div>
                         ),
-                        thead: (props) => <thead className="bg-gray-50 dark:bg-gray-800/50" {...props} />,
+                        thead: (props) => <thead className="bg-gray-50 dark:bg-gray-600" {...props} />,
                         th: (props) => (
                           <th
                             className="px-4 py-3 text-left text-xs font-bold text-dark dark:text-light uppercase tracking-wider border-b border-gray-400 dark:border-gray-700"
@@ -260,7 +265,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
                           <td className="px-4 py-3 text-sm text-dark dark:text-light whitespace-normal overflow-hidden break-words" {...props} />
                         ),
                         tr: (props) => (
-                          <tr className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors border-b border-gray-400 dark:border-gray-700 last:border-0" {...props} />
+                          <tr className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-400 dark:border-gray-800 last:border-0" {...props} />
                         ),
                       }}
                     >
@@ -317,7 +322,8 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
         </div>
       </footer>
     </div>
-  );
+  </div>
+);
 };
 
 export default ChatWindow;

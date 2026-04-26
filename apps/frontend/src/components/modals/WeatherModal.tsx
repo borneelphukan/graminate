@@ -483,7 +483,7 @@ const WeatherModal = ({
                                   label="Upgrade Now"
                                   variant="primary" 
                                   size="sm" 
-                                  onClick={() => window.location.href = `/${userId}/pricing`}
+                                  onClick={() => window.open(`/${userId}/pricing`, '_blank')}
                                 />
                               </div>
                             ) : loadingAI ? (

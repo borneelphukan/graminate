@@ -73,11 +73,9 @@ const WeatherSettingsScreen = () => {
   const [weatherSettings, setWeatherSettings] = useState<{
     location: string;
     scale: TemperatureScaleOption;
-    aiSuggestions: boolean;
   }>({
     location: "",
     scale: "Celsius",
-    aiSuggestions: false,
   });
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -104,7 +102,6 @@ const WeatherSettingsScreen = () => {
           setWeatherSettings({
             location: userData.weather_location || "",
             scale: fetchedScale,
-            aiSuggestions: userData.weather_ai_suggestions || false,
           });
           if (userData.temperature_scale)
             setContextTemperatureScale(fetchedScale);
@@ -141,7 +138,6 @@ const WeatherSettingsScreen = () => {
       await axiosInstance.put(`/user/${user_id}`, {
         temperature_scale: weatherSettings.scale,
         weather_location: weatherSettings.location,
-        weather_ai_suggestions: weatherSettings.aiSuggestions,
       });
       setContextTemperatureScale(weatherSettings.scale);
       setSuccessMessage("Weather settings updated successfully!");
@@ -184,17 +180,6 @@ const WeatherSettingsScreen = () => {
               onSelect={(val: any) =>
                 setWeatherSettings((prev) => ({ ...prev, scale: val }))
               }
-            />
-            <Checkbox.Item
-              label="Enable AI Suggestions"
-              status={weatherSettings.aiSuggestions ? "checked" : "unchecked"}
-              onPress={() =>
-                setWeatherSettings((prev) => ({
-                  ...prev,
-                  aiSuggestions: !prev.aiSuggestions,
-                }))
-              }
-              mode="android"
             />
             <View style={styles.saveSection}>
               <Button
