@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
-import { ApicultureService } from './apiculture.service';
+import { ApicultureService, ApicultureWithCount } from './apiculture.service';
 import {
   CreateApiaryDto,
   UpdateApiaryDto,
@@ -26,14 +26,18 @@ export class ApicultureController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ apiaries: ApicultureWithCount[] }> {
     const apiaries = await this.apicultureService.findByUserId(userId);
     return { apiaries };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ApicultureWithCount> {
     const apiary = await this.apicultureService.findById(id);
     if (!apiary) {
       throw new HttpException('Apiary record not found', HttpStatus.NOT_FOUND);
@@ -43,7 +47,9 @@ export class ApicultureController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addApiary(@Body() createDto: CreateApiaryDto) {
+  async addApiary(
+    @Body() createDto: CreateApiaryDto,
+  ): Promise<ApicultureWithCount> {
     return this.apicultureService.create(createDto);
   }
 
@@ -52,7 +58,7 @@ export class ApicultureController {
   async updateApiary(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateApiaryDto,
-  ) {
+  ): Promise<ApicultureWithCount> {
     const updatedApiary = await this.apicultureService.update(id, updateDto);
     if (!updatedApiary) {
       throw new HttpException('Apiary record not found', HttpStatus.NOT_FOUND);
@@ -62,7 +68,9 @@ export class ApicultureController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteApiary(@Param('id', ParseIntPipe) id: number) {
+  async deleteApiary(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.apicultureService.delete(id);
     if (!deleted) {
       throw new HttpException(
@@ -75,13 +83,15 @@ export class ApicultureController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset-service')
-  async resetService(@Body() resetDto: ResetApicultureDto) {
+  async resetService(
+    @Body() resetDto: ResetApicultureDto,
+  ): Promise<{ message: string }> {
     return this.apicultureService.resetForUser(resetDto.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset() {
+  async reset(): Promise<{ message: string }> {
     return this.apicultureService.resetTable();
   }
 }

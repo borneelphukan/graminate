@@ -1,11 +1,16 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateApiaryDto, UpdateApiaryDto } from './apiculture.dto';
+import { Prisma, apiculture } from '@prisma/client';
+
+export interface ApicultureWithCount extends apiculture {
+  number_of_hives: number;
+}
 
 @Injectable()
 export class ApicultureService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByUserId(userId: number): Promise<any[]> {
+  async findByUserId(userId: number): Promise<ApicultureWithCount[]> {
     try {
       const apiaries = await this.prisma.apiculture.findMany({
         where: { user_id: userId },
@@ -23,11 +28,13 @@ export class ApicultureService {
       }));
     } catch (error) {
       console.error('Error in ApicultureService.findByUserId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(apiaryId: number): Promise<any> {
+  async findById(apiaryId: number): Promise<ApicultureWithCount | null> {
     try {
       const apiary = await this.prisma.apiculture.findUnique({
         where: { apiary_id: apiaryId },
@@ -46,11 +53,13 @@ export class ApicultureService {
       };
     } catch (error) {
       console.error('Error in ApicultureService.findById:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateApiaryDto): Promise<any> {
+  async create(createDto: CreateApiaryDto): Promise<ApicultureWithCount> {
     const {
       user_id,
       apiary_name,
@@ -77,28 +86,29 @@ export class ApicultureService {
       return { ...newApiary, number_of_hives: 0 };
     } catch (error) {
       console.error('Error in ApicultureService.create:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateApiaryDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdateApiaryDto,
+  ): Promise<ApicultureWithCount | null> {
     try {
-      const updateData: any = {};
-      const fields = [
-        'apiary_name',
-        'area',
-        'address_line_1',
-        'address_line_2',
-        'city',
-        'state',
-        'postal_code',
-      ];
-
-      fields.forEach((field) => {
-        if (updateDto[field] !== undefined) {
-          updateData[field] = updateDto[field];
-        }
-      });
+      const updateData: Prisma.apicultureUpdateInput = {};
+      if (updateDto.apiary_name !== undefined)
+        updateData.apiary_name = updateDto.apiary_name;
+      if (updateDto.area !== undefined) updateData.area = updateDto.area;
+      if (updateDto.address_line_1 !== undefined)
+        updateData.address_line_1 = updateDto.address_line_1;
+      if (updateDto.address_line_2 !== undefined)
+        updateData.address_line_2 = updateDto.address_line_2;
+      if (updateDto.city !== undefined) updateData.city = updateDto.city;
+      if (updateDto.state !== undefined) updateData.state = updateDto.state;
+      if (updateDto.postal_code !== undefined)
+        updateData.postal_code = updateDto.postal_code;
 
       if (Object.keys(updateData).length === 0) {
         return this.findById(id);
@@ -120,7 +130,9 @@ export class ApicultureService {
       };
     } catch (error) {
       console.error('Error in ApicultureService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -130,7 +142,9 @@ export class ApicultureService {
       return true;
     } catch (error) {
       console.error('Error in ApicultureService.delete:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -139,7 +153,9 @@ export class ApicultureService {
       await this.prisma.apiculture.deleteMany({ where: { user_id: userId } });
       return { message: `Apiculture data reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -148,7 +164,9 @@ export class ApicultureService {
       await this.prisma.apiculture.deleteMany({});
       return { message: 'Apiculture table has been completely reset.' };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

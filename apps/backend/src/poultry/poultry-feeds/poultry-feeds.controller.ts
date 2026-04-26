@@ -17,6 +17,7 @@ import {
   ResetPoultryFeedsDto,
 } from './poultry-feeds.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { poultry_feeds } from '@prisma/client';
 
 @Controller('poultry-feeds')
 export class PoultryFeedsController {
@@ -29,7 +30,7 @@ export class PoultryFeedsController {
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('flockId') flockId?: string,
-  ) {
+  ): Promise<{ records: poultry_feeds[] }> {
     const records = await this.poultryFeedsService.findByUserIdWithFilters(
       Number(userId),
       {
@@ -43,7 +44,9 @@ export class PoultryFeedsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('record/:id')
-  async getPoultryFeedRecordById(@Param('id') id: string) {
+  async getPoultryFeedRecordById(
+    @Param('id') id: string,
+  ): Promise<poultry_feeds> {
     const record = await this.poultryFeedsService.findById(Number(id));
     if (!record) {
       throw new NotFoundException('Poultry feed record not found');
@@ -53,7 +56,9 @@ export class PoultryFeedsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addPoultryFeedRecord(@Body() createDto: CreatePoultryFeedDto) {
+  async addPoultryFeedRecord(
+    @Body() createDto: CreatePoultryFeedDto,
+  ): Promise<poultry_feeds> {
     const newRecord = await this.poultryFeedsService.create(createDto);
     return newRecord;
   }
@@ -63,7 +68,7 @@ export class PoultryFeedsController {
   async updatePoultryFeedRecord(
     @Param('id') id: string,
     @Body() updateDto: UpdatePoultryFeedDto,
-  ) {
+  ): Promise<poultry_feeds> {
     const updatedRecord = await this.poultryFeedsService.update(
       Number(id),
       updateDto,
@@ -76,7 +81,9 @@ export class PoultryFeedsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deletePoultryFeedRecord(@Param('id') id: string) {
+  async deletePoultryFeedRecord(
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
     const deleted = await this.poultryFeedsService.delete(Number(id));
     if (!deleted) {
       throw new NotFoundException('Poultry feed record not found');
@@ -86,7 +93,9 @@ export class PoultryFeedsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetUserPoultryFeedRecords(@Body() resetDto: ResetPoultryFeedsDto) {
+  async resetUserPoultryFeedRecords(
+    @Body() resetDto: ResetPoultryFeedsDto,
+  ): Promise<{ message: string }> {
     return this.poultryFeedsService.resetTable(resetDto.userId);
   }
 }

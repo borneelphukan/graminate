@@ -7,6 +7,7 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
+import { users } from '@prisma/client';
 
 @Injectable()
 export class AdminRepository {
@@ -148,11 +149,25 @@ export class AdminRepository {
     }
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
     return this.userService.deleteUser(userId);
   }
 
-  async updateUser(userId: string, body: any) {
+  async updateUser(
+    userId: string,
+    body: Partial<users> & {
+      darkMode?: boolean;
+      widgets?: string[];
+      admin_reason?: string;
+      admin_action?: string;
+    },
+  ): Promise<{
+    status: number;
+    data: { message?: string; error?: string; user?: Partial<users> };
+  }> {
     return this.userService.updateUser(userId, body);
   }
 

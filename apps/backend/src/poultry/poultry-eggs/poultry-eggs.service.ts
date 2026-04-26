@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreatePoultryEggDto, UpdatePoultryEggDto } from './poultry-eggs.dto';
+import { Prisma, poultry_eggs } from '@prisma/client';
 
 interface PoultryEggFilters {
   limit?: number;
@@ -11,24 +12,20 @@ interface PoultryEggFilters {
 @Injectable()
 export class PoultryEggsService {
   constructor(private readonly prisma: PrismaService) {}
+
   async findByUserIdWithFilters(
     userId: number,
     filters: PoultryEggFilters,
-  ): Promise<any[]> {
+  ): Promise<poultry_eggs[]> {
     const { limit, offset, flockId } = filters;
 
     try {
-      const where: any = { user_id: userId };
+      const where: Prisma.poultry_eggsWhereInput = { user_id: userId };
       if (flockId !== undefined) where.flock_id = flockId;
 
       const eggs = await this.prisma.poultry_eggs.findMany({
         where,
-        orderBy: [
-          { date_logged: 'desc' }, // schema has date_logged default now(), similar to created_at? Or maybe date_collected?
-          // Original query: ORDER BY date_logged DESC, egg_id DESC
-          // Check schema if date_logged exists. Assuming yes.
-          { egg_id: 'desc' },
-        ],
+        orderBy: [{ date_logged: 'desc' }, { egg_id: 'desc' }],
         take: limit,
         skip: offset,
       });
@@ -40,12 +37,12 @@ export class PoultryEggsService {
         error,
       );
       throw new InternalServerErrorException(
-        `Database query failed: ${error.message}`,
+        `Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  async findById(id: number): Promise<any> {
+  async findById(id: number): Promise<poultry_eggs | null> {
     try {
       const egg = await this.prisma.poultry_eggs.findUnique({
         where: { egg_id: id },
@@ -53,11 +50,13 @@ export class PoultryEggsService {
       return egg || null;
     } catch (error) {
       console.error('Error executing query in findById (PoultryEggs):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreatePoultryEggDto): Promise<any> {
+  async create(createDto: CreatePoultryEggDto): Promise<poultry_eggs> {
     const {
       user_id,
       flock_id,
@@ -76,7 +75,7 @@ export class PoultryEggsService {
         data: {
           user_id,
           flock_id,
-          date_collected: new Date(date_collected), // ensure Date
+          date_collected: new Date(date_collected),
           small_eggs,
           medium_eggs,
           large_eggs,
@@ -88,11 +87,16 @@ export class PoultryEggsService {
       return newEgg;
     } catch (error) {
       console.error('Error executing query in create (PoultryEggs):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdatePoultryEggDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdatePoultryEggDto,
+  ): Promise<poultry_eggs | null> {
     const {
       date_collected,
       small_eggs,
@@ -103,7 +107,7 @@ export class PoultryEggsService {
     } = updateDto || {};
 
     try {
-      const updateData: any = {};
+      const updateData: Prisma.poultry_eggsUpdateInput = {};
       if (date_collected !== undefined)
         updateData.date_collected = new Date(date_collected);
       if (small_eggs !== undefined) updateData.small_eggs = small_eggs;
@@ -151,7 +155,9 @@ export class PoultryEggsService {
       return updatedEgg;
     } catch (error) {
       console.error('Error executing query in update (PoultryEggs):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -161,7 +167,9 @@ export class PoultryEggsService {
       return true;
     } catch (error) {
       console.error('Error executing query in delete (PoultryEggs):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -170,7 +178,9 @@ export class PoultryEggsService {
       await this.prisma.poultry_eggs.deleteMany({});
       return { message: `Poultry Eggs table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

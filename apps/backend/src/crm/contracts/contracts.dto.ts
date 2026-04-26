@@ -46,7 +46,7 @@ export class CreateContractDto {
   start_date: string;
 
   @IsOptional()
-  @ValidateIf((o) => o.end_date !== null)
+  @ValidateIf((o: CreateContractDto) => o.end_date !== null)
   @IsDateString(
     {},
     { message: 'End date must be a valid ISO 8601 date string or null' },
@@ -99,7 +99,7 @@ export class UpdateContractDto {
   start_date?: string;
 
   @IsOptional()
-  @ValidateIf((o) => o.end_date !== null)
+  @ValidateIf((o: UpdateContractDto) => o.end_date !== null)
   @IsDateString(
     {},
     { message: 'End date must be a valid ISO 8601 date string or null' },

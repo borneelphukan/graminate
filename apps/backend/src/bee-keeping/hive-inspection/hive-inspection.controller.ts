@@ -16,6 +16,7 @@ import {
   CreateInspectionDto,
   UpdateInspectionDto,
 } from './hive-inspection.dto';
+import { hive_inspection } from '@prisma/client';
 
 @Controller('hive-inspections')
 @UseGuards(JwtAuthGuard)
@@ -23,18 +24,24 @@ export class HiveInspectionController {
   constructor(private readonly inspectionService: HiveInspectionService) {}
 
   @Get('hive/:hiveId')
-  async getByHiveId(@Param('hiveId', ParseIntPipe) hiveId: number) {
+  async getByHiveId(
+    @Param('hiveId', ParseIntPipe) hiveId: number,
+  ): Promise<{ inspections: hive_inspection[] }> {
     const inspections = await this.inspectionService.findByHiveId(hiveId);
     return { inspections };
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<hive_inspection> {
     return this.inspectionService.findById(id);
   }
 
   @Post('add')
-  async addInspection(@Body() createDto: CreateInspectionDto) {
+  async addInspection(
+    @Body() createDto: CreateInspectionDto,
+  ): Promise<hive_inspection> {
     return this.inspectionService.create(createDto);
   }
 
@@ -42,12 +49,14 @@ export class HiveInspectionController {
   async updateInspection(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateInspectionDto,
-  ) {
+  ): Promise<hive_inspection> {
     return this.inspectionService.update(id, updateDto);
   }
 
   @Delete('delete/:id')
-  async deleteInspection(@Param('id', ParseIntPipe) id: number) {
+  async deleteInspection(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.inspectionService.delete(id);
     if (!deleted) {
       throw new NotFoundException(
@@ -58,7 +67,7 @@ export class HiveInspectionController {
   }
 
   @Post('reset')
-  async reset() {
+  async reset(): Promise<{ message: string }> {
     return this.inspectionService.resetTable();
   }
 }

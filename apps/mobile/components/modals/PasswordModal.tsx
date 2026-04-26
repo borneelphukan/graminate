@@ -7,7 +7,6 @@ import {
   Modal,
   Portal,
   Text,
-  useTheme,
 } from "react-native-paper";
 
 type PasswordModalProps = {

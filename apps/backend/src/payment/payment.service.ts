@@ -6,11 +6,11 @@ import { CreatePaymentDto, VerifyPaymentDto } from './payment.dto';
 export class PaymentService {
   constructor(private readonly paymentRepository: PaymentRepository) {}
 
-  async createOrder(createPaymentDto: CreatePaymentDto) {
+  async createOrder(createPaymentDto: CreatePaymentDto): Promise<any> {
     return this.paymentRepository.createOrder(createPaymentDto);
   }
 
-  async verifyPayment(verifyPaymentDto: VerifyPaymentDto) {
+  async verifyPayment(verifyPaymentDto: VerifyPaymentDto): Promise<any> {
     return this.paymentRepository.verifyPayment(verifyPaymentDto);
   }
 }

@@ -4,6 +4,7 @@ import {
   CreatePoultryFeedDto,
   UpdatePoultryFeedDto,
 } from './poultry-feeds.dto';
+import { Prisma, poultry_feeds } from '@prisma/client';
 
 interface PoultryFeedFilters {
   limit?: number;
@@ -14,14 +15,15 @@ interface PoultryFeedFilters {
 @Injectable()
 export class PoultryFeedsService {
   constructor(private readonly prisma: PrismaService) {}
+
   async findByUserIdWithFilters(
     userId: number,
     filters: PoultryFeedFilters,
-  ): Promise<any[]> {
+  ): Promise<poultry_feeds[]> {
     const { limit, offset, flockId } = filters;
 
     try {
-      const where: any = { user_id: userId };
+      const where: Prisma.poultry_feedsWhereInput = { user_id: userId };
       if (flockId !== undefined) where.flock_id = flockId;
 
       const feeds = await this.prisma.poultry_feeds.findMany({
@@ -42,12 +44,12 @@ export class PoultryFeedsService {
         error,
       );
       throw new InternalServerErrorException(
-        `Database query failed: ${error.message}`,
+        `Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  async findById(id: number): Promise<any> {
+  async findById(id: number): Promise<poultry_feeds | null> {
     try {
       const feed = await this.prisma.poultry_feeds.findUnique({
         where: { feed_id: id },
@@ -55,11 +57,13 @@ export class PoultryFeedsService {
       return feed || null;
     } catch (error) {
       console.error('Error executing query in findById (PoultryFeeds):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreatePoultryFeedDto): Promise<any> {
+  async create(createDto: CreatePoultryFeedDto): Promise<poultry_feeds> {
     const { user_id, flock_id, feed_given, amount_given, units, feed_date } =
       createDto;
     try {
@@ -76,14 +80,19 @@ export class PoultryFeedsService {
       return newFeed;
     } catch (error) {
       console.error('Error executing query in create (PoultryFeeds):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdatePoultryFeedDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdatePoultryFeedDto,
+  ): Promise<poultry_feeds | null> {
     const { feed_given, amount_given, units, feed_date } = updateDto || {};
     try {
-      const updateData: any = {};
+      const updateData: Prisma.poultry_feedsUpdateInput = {};
       if (feed_given !== undefined) updateData.feed_given = feed_given;
       if (amount_given !== undefined) updateData.amount_given = amount_given;
       if (units !== undefined) updateData.units = units;
@@ -101,7 +110,9 @@ export class PoultryFeedsService {
       return updatedFeed;
     } catch (error) {
       console.error('Error executing query in update (PoultryFeeds):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -111,7 +122,9 @@ export class PoultryFeedsService {
       return true;
     } catch (error) {
       console.error('Error executing query in delete (PoultryFeeds):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -120,7 +133,9 @@ export class PoultryFeedsService {
       await this.prisma.poultry_feeds.deleteMany({});
       return { message: `Poultry Feeds table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

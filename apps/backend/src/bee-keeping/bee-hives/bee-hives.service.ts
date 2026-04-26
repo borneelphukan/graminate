@@ -5,11 +5,22 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateHiveDto, UpdateHiveDto } from './bee-hives.dto';
+import { Prisma, bee_hives } from '@prisma/client';
+
+export interface HiveWithInspection extends bee_hives {
+  last_inspection_id: number | null;
+  last_inspection_date: Date | null;
+  queen_status: string | null;
+  queen_introduced_date: Date | null;
+  brood_pattern: string | null;
+  symptoms: string[] | null;
+  last_inspection_notes?: string | null;
+}
 
 @Injectable()
 export class BeeHivesService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByApiaryId(apiaryId: number): Promise<any[]> {
+  async findByApiaryId(apiaryId: number): Promise<HiveWithInspection[]> {
     try {
       const hives = await this.prisma.bee_hives.findMany({
         where: { apiary_id: apiaryId },
@@ -24,8 +35,8 @@ export class BeeHivesService {
 
       return hives.map((hive) => {
         const lastInspection = hive.hive_inspection[0];
-        // Remove the array from the object to match original structure style
-        const { hive_inspection, ...rest } = hive;
+        const { hive_inspection: _unused, ...rest } = hive;
+        void _unused;
         return {
           ...rest,
           last_inspection_id: lastInspection?.inspection_id || null,
@@ -34,15 +45,17 @@ export class BeeHivesService {
           queen_introduced_date: lastInspection?.queen_introduced_date || null,
           brood_pattern: lastInspection?.brood_pattern || null,
           symptoms: lastInspection?.symptoms || null,
-        };
+        } as HiveWithInspection;
       });
     } catch (error) {
       console.error('Error in BeeHivesService.findByApiaryId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(hiveId: number): Promise<any> {
+  async findById(hiveId: number): Promise<HiveWithInspection> {
     try {
       const hive = await this.prisma.bee_hives.findUnique({
         where: { hive_id: hiveId },
@@ -59,7 +72,8 @@ export class BeeHivesService {
       }
 
       const lastInspection = hive.hive_inspection[0];
-      const { hive_inspection, ...rest } = hive;
+      const { hive_inspection: _unused, ...rest } = hive;
+      void _unused;
 
       return {
         ...rest,
@@ -68,17 +82,19 @@ export class BeeHivesService {
         queen_status: lastInspection?.queen_status || null,
         queen_introduced_date: lastInspection?.queen_introduced_date || null,
         brood_pattern: lastInspection?.brood_pattern || null,
-        last_inspection_notes: lastInspection?.notes || null, // notes mapped to last_inspection_notes
+        last_inspection_notes: lastInspection?.notes || null,
         symptoms: lastInspection?.symptoms || null,
-      };
+      } as HiveWithInspection;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       console.error('Error in BeeHivesService.findById:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateHiveDto): Promise<any> {
+  async create(createDto: CreateHiveDto): Promise<bee_hives> {
     const {
       apiary_id,
       hive_name,
@@ -109,22 +125,31 @@ export class BeeHivesService {
       return newHive;
     } catch (error) {
       console.error('Error in BeeHivesService.create:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateHiveDto): Promise<any> {
+  async update(id: number, updateDto: UpdateHiveDto): Promise<bee_hives> {
     try {
-      const updateData: any = {};
-      Object.entries(updateDto).forEach(([key, value]) => {
-        if (value !== undefined) {
-          if (key === 'installation_date') {
-            updateData[key] = new Date(value as string);
-          } else {
-            updateData[key] = value;
-          }
-        }
-      });
+      const updateData: Prisma.bee_hivesUpdateInput = {};
+      if (updateDto.hive_name !== undefined)
+        updateData.hive_name = updateDto.hive_name;
+      if (updateDto.hive_type !== undefined)
+        updateData.hive_type = updateDto.hive_type;
+      if (updateDto.bee_species !== undefined)
+        updateData.bee_species = updateDto.bee_species;
+      if (updateDto.installation_date !== undefined)
+        updateData.installation_date = new Date(
+          updateDto.installation_date as string | number | Date,
+        );
+      if (updateDto.honey_capacity !== undefined)
+        updateData.honey_capacity = updateDto.honey_capacity;
+      if (updateDto.unit !== undefined) updateData.unit = updateDto.unit;
+      if (updateDto.ventilation_status !== undefined)
+        updateData.ventilation_status = updateDto.ventilation_status;
+      if (updateDto.notes !== undefined) updateData.notes = updateDto.notes;
 
       if (Object.keys(updateData).length === 0) {
         return this.findById(id);
@@ -137,12 +162,16 @@ export class BeeHivesService {
 
       return updatedHive;
     } catch (error) {
-      if (error.code === 'P2025') {
-        // Prisma record not found
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Hive with ID ${id} not found`);
       }
       console.error('Error in BeeHivesService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -150,7 +179,7 @@ export class BeeHivesService {
     try {
       await this.prisma.bee_hives.delete({ where: { hive_id: id } });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -159,8 +188,8 @@ export class BeeHivesService {
     try {
       await this.prisma.bee_hives.deleteMany({});
       return { message: `Bee Hives table reset for user ${userId}` };
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
+    } catch {
+      throw new InternalServerErrorException('Failed to reset bee hives table');
     }
   }
 }

@@ -15,6 +15,7 @@ import { CreateContactDto } from './contacts.dto';
 import { ContactsService } from './contacts.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { contacts } from '@prisma/client';
 
 @Controller('contacts')
 export class ContactsController {
@@ -51,7 +52,10 @@ export class ContactsController {
 
   @UseGuards(JwtAuthGuard)
   @Put('update')
-  async updateContact(@Body() body: any, @Res() res: Response) {
+  async updateContact(
+    @Body() body: Partial<contacts> & { contact_id: number },
+    @Res() res: Response,
+  ) {
     const result = await this.contactsService.updateContact(body);
     return res.status(result.status).json(result.data);
   }

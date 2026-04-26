@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
 import * as argon2 from 'argon2';
+import { Prisma, users, payments, user_plan_type } from '@prisma/client';
 
-const subTypeMapping = {
+const subTypeMapping: Record<string, string[]> = {
   Producer: ['Poultry', 'Cattle Rearing', 'Apiculture', 'Floriculture'],
 };
 
@@ -14,7 +15,10 @@ export class UserRepository {
     private readonly prisma: PrismaService,
   ) {}
 
-  async getUserCount() {
+  async getUserCount(): Promise<{
+    status: number;
+    data: { count?: number; error?: string };
+  }> {
     try {
       const count = await this.prisma.users.count();
       return { status: 200, data: { count } };
@@ -24,9 +28,12 @@ export class UserRepository {
     }
   }
 
-  async getAllUsers() {
+  async getAllUsers(): Promise<{
+    status: number;
+    data: { users: (Partial<users> & { is_subscription_active: boolean })[] };
+  }> {
     try {
-      const usersList = await (this.prisma.users as any).findMany({
+      const usersList = await this.prisma.users.findMany({
         orderBy: { created_at: 'desc' },
         select: {
           user_id: true,
@@ -42,10 +49,7 @@ export class UserRepository {
           subscription_expires_at: true,
           pending_plan: true,
           pending_plan_source: true,
-          // opening_balance: true,
           created_at: true,
-          // entity_type: true,
-          // business_size: true,
         },
       });
 
@@ -62,15 +66,18 @@ export class UserRepository {
       });
 
       return { status: 200, data: { users } };
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching all users:', err);
       throw new InternalServerErrorException(
-        err.message || 'Failed to fetch all users',
+        err instanceof Error ? err.message : 'Failed to fetch all users',
       );
     }
   }
 
-  async getAvailableSubTypes(userId: string) {
+  async getAvailableSubTypes(userId: string): Promise<{
+    status: number;
+    data: { subTypes?: string[]; error?: string };
+  }> {
     try {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(userId) },
@@ -94,7 +101,13 @@ export class UserRepository {
     }
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: string): Promise<{
+    status: number;
+    data: {
+      user?: Partial<users> & { is_subscription_active: boolean };
+      error?: string;
+    };
+  }> {
     try {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(id) },
@@ -104,16 +117,15 @@ export class UserRepository {
         return { status: 404, data: { error: 'User not found' } };
       }
 
-      // Check for pending plan transition
       const now = new Date();
       let currentPlan = user.plan;
       let currentExpiry = user.subscription_expires_at;
 
-      if (currentExpiry && now > currentExpiry && (user as any).pending_plan) {
-        const updatedUser = await (this.prisma.users as any).update({
+      if (currentExpiry && now > currentExpiry && user.pending_plan) {
+        const updatedUser = await this.prisma.users.update({
           where: { user_id: Number(id) },
           data: {
-            plan: (user as any).pending_plan,
+            plan: user.pending_plan,
             pending_plan: null,
             pending_plan_source: null,
             subscription_expires_at: null,
@@ -155,27 +167,35 @@ export class UserRepository {
             postal_code: user.postal_code || '',
             darkMode: user.darkMode,
             widgets: user.widgets || [],
-            plan: String(currentPlan),
-            country: String((user as any).country || ''),
+            plan: currentPlan,
+            country: user.country || '',
             subscription_expires_at: currentExpiry,
-            opening_balance: Number(user.opening_balance) || 0,
+            opening_balance: user.opening_balance,
             is_subscription_active: isSubscriptionActive,
-            entity_type: (user as any).entity_type,
-            business_size: (user as any).business_size,
-            pending_plan: (user as any).pending_plan,
-            pending_plan_source: (user as any).pending_plan_source,
+            entity_type: user.entity_type,
+            business_size: user.business_size,
+            pending_plan: user.pending_plan,
+            pending_plan_source: user.pending_plan_source,
           },
         },
       };
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching user:', err);
       throw new InternalServerErrorException(
-        err.message || 'Failed to fetch user',
+        err instanceof Error ? err.message : 'Failed to fetch user',
       );
     }
   }
 
-  async updateUser(id: string, body: any) {
+  async updateUser(
+    id: string,
+    body: Partial<users> & {
+      darkMode?: boolean;
+      widgets?: string[];
+      admin_reason?: string;
+      admin_action?: string;
+    },
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     const {
       first_name,
       last_name,
@@ -212,7 +232,7 @@ export class UserRepository {
         return { status: 404, data: { error: 'User not found' } };
       }
 
-      const updateData: any = {};
+      const updateData: Prisma.usersUpdateInput = {};
       if (first_name !== undefined) updateData.first_name = first_name;
       if (last_name !== undefined) updateData.last_name = last_name;
       if (phone_number !== undefined) updateData.phone_number = phone_number;
@@ -233,7 +253,7 @@ export class UserRepository {
       if (darkMode !== undefined) updateData.darkMode = darkMode;
       if (widgets !== undefined) updateData.widgets = widgets;
       if (opening_balance !== undefined)
-        updateData.opening_balance = Number(opening_balance);
+        updateData.opening_balance = new Prisma.Decimal(opening_balance);
       if (entity_type !== undefined) updateData.entity_type = entity_type;
       if (business_size !== undefined) updateData.business_size = business_size;
       if (plan !== undefined) updateData.plan = plan;
@@ -241,7 +261,9 @@ export class UserRepository {
       if (pending_plan_source !== undefined)
         updateData.pending_plan_source = pending_plan_source;
       if (subscription_expires_at !== undefined)
-        updateData.subscription_expires_at = new Date(subscription_expires_at);
+        updateData.subscription_expires_at = subscription_expires_at
+          ? new Date(subscription_expires_at)
+          : null;
 
       if (sub_type !== undefined) {
         const validSubTypes = [
@@ -266,7 +288,6 @@ export class UserRepository {
         data: updateData,
       });
 
-      // Create notification if admin provided a reason for plan change
       const { admin_reason, admin_action } = body;
       if (admin_reason && admin_action && pending_plan_source === 'ADMIN') {
         let notificationTitle = 'Subscription Updated';
@@ -278,8 +299,7 @@ export class UserRepository {
           notificationTitle = 'Pro Plan Granted';
         }
 
-        // Delete existing admin-triggered notifications for this user to avoid duplicates/clutter
-        await (this.prisma as any).notifications.deleteMany({
+        await this.prisma.notifications.deleteMany({
           where: {
             user_id: userId,
             title: {
@@ -293,7 +313,7 @@ export class UserRepository {
           },
         });
 
-        await (this.prisma as any).notifications.create({
+        await this.prisma.notifications.create({
           data: {
             user_id: userId,
             title: notificationTitle,
@@ -310,7 +330,9 @@ export class UserRepository {
     }
   }
 
-  async logout(loginId: string) {
+  async logout(
+    loginId: string,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
       await this.prisma.login_history.update({
         where: { login_id: loginId },
@@ -323,7 +345,7 @@ export class UserRepository {
     }
   }
 
-  async validateUser(email: string, password: string) {
+  async validateUser(email: string, password: string): Promise<users> {
     try {
       const user = await this.prisma.users.findUnique({
         where: { email },
@@ -344,7 +366,10 @@ export class UserRepository {
     }
   }
 
-  async registerUser(body: any) {
+  async registerUser(body: Partial<users>): Promise<{
+    status: number;
+    data: { message?: string; error?: string; user?: any };
+  }> {
     const {
       first_name,
       last_name,
@@ -368,7 +393,6 @@ export class UserRepository {
     }
 
     try {
-      // Check for existing user with same email or phone using OR
       const existing = await this.prisma.users.findFirst({
         where: {
           OR: [{ email: email }, { phone_number: phone_number }],
@@ -446,15 +470,17 @@ export class UserRepository {
           },
         },
       };
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error registering user:', err);
       throw new InternalServerErrorException(
-        err.message || 'Failed to register user',
+        err instanceof Error ? err.message : 'Failed to register user',
       );
     }
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(
+    id: string,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
       const userId = Number(id);
       const existing = await this.prisma.users.findUnique({
@@ -471,7 +497,10 @@ export class UserRepository {
     }
   }
 
-  async verifyPassword(userId: string, password: string) {
+  async verifyPassword(
+    userId: string,
+    password: string,
+  ): Promise<{ status: number; data: { valid?: boolean; error?: string } }> {
     try {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(userId) },
@@ -493,7 +522,10 @@ export class UserRepository {
     }
   }
 
-  async scheduleDowngrade(userId: string, targetPlan: string) {
+  async scheduleDowngrade(
+    userId: string,
+    targetPlan: string,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
       const user = await this.prisma.users.findUnique({
         where: { user_id: Number(userId) },
@@ -502,11 +534,13 @@ export class UserRepository {
 
       if (!user) return { status: 404, data: { error: 'User not found' } };
 
-      const planHierarchy = { FREE: 0, BASIC: 1, PRO: 2 };
-      const currentLevel =
-        planHierarchy[user.plan as keyof typeof planHierarchy] || 0;
-      const targetLevel =
-        planHierarchy[targetPlan as keyof typeof planHierarchy] || 0;
+      const planHierarchy: Record<user_plan_type, number> = {
+        FREE: 0,
+        BASIC: 1,
+        PRO: 2,
+      };
+      const currentLevel = planHierarchy[user.plan] || 0;
+      const targetLevel = planHierarchy[targetPlan as user_plan_type] || 0;
 
       if (targetLevel >= currentLevel) {
         return {
@@ -518,10 +552,10 @@ export class UserRepository {
         };
       }
 
-      await (this.prisma.users as any).update({
+      await this.prisma.users.update({
         where: { user_id: Number(userId) },
         data: {
-          pending_plan: targetPlan as any,
+          pending_plan: targetPlan as user_plan_type,
           pending_plan_source: 'USER',
         },
       });
@@ -545,9 +579,12 @@ export class UserRepository {
     }
   }
 
-  async getBillingHistory(userId: string) {
+  async getBillingHistory(userId: string): Promise<{
+    status: number;
+    data: { payments?: Partial<payments>[]; error?: string };
+  }> {
     try {
-      const payments = await this.prisma.payments.findMany({
+      const paymentRecords = await this.prisma.payments.findMany({
         where: {
           user_id: Number(userId),
           status: { not: 'PENDING' },
@@ -564,7 +601,7 @@ export class UserRepository {
           created_at: true,
         },
       });
-      return { status: 200, data: { payments } };
+      return { status: 200, data: { payments: paymentRecords } };
     } catch (err) {
       console.error('Error fetching billing history:', err);
       return {
@@ -574,9 +611,15 @@ export class UserRepository {
     }
   }
 
-  async getNotifications(userId: string) {
+  async getNotifications(userId: string): Promise<{
+    status: number;
+    data: {
+      notifications?: Partial<Prisma.notificationsUpdateInput>[];
+      error?: string;
+    };
+  }> {
     try {
-      const notifications = await (this.prisma as any).notifications.findMany({
+      const notifications = await this.prisma.notifications.findMany({
         where: { user_id: Number(userId) },
         orderBy: { created_at: 'desc' },
         take: 50,
@@ -597,14 +640,20 @@ export class UserRepository {
     }
   }
 
-  async markNotificationsRead(userId: string, notificationId?: number) {
+  async markNotificationsRead(
+    userId: string,
+    notificationId?: number,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
-      const where: any = { user_id: Number(userId), is_read: false };
+      const where: Prisma.notificationsWhereInput = {
+        user_id: Number(userId),
+        is_read: false,
+      };
       if (notificationId) {
-        where.id = Number(notificationId);
+        where.notification_id = Number(notificationId);
       }
 
-      await (this.prisma as any).notifications.updateMany({
+      await this.prisma.notifications.updateMany({
         where,
         data: { is_read: true },
       });
@@ -619,12 +668,14 @@ export class UserRepository {
     }
   }
 
-  async deleteNotification(userId: string, notificationId: number) {
+  async deleteNotification(
+    userId: string,
+    notificationId: number,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
-      await (this.prisma as any).notifications.delete({
+      await this.prisma.notifications.delete({
         where: {
-          id: Number(notificationId),
-          user_id: Number(userId),
+          notification_id: Number(notificationId),
         },
       });
       return {
@@ -637,9 +688,11 @@ export class UserRepository {
     }
   }
 
-  async clearAllNotifications(userId: string) {
+  async clearAllNotifications(
+    userId: string,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     try {
-      await (this.prisma as any).notifications.deleteMany({
+      await this.prisma.notifications.deleteMany({
         where: {
           user_id: Number(userId),
         },
@@ -654,7 +707,7 @@ export class UserRepository {
     }
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<users | null> {
     const user = await this.prisma.users.findUnique({
       where: { email },
     });

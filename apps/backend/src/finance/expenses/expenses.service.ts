@@ -2,17 +2,17 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateExpenseDto, UpdateExpenseDto } from './expenses.dto';
+import { Prisma, expenses } from '@prisma/client';
 
 @Injectable()
 export class ExpensesService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByUserId(userId: number): Promise<any[]> {
+  async findByUserId(userId: number): Promise<expenses[]> {
     try {
-      const expenses = await this.prisma.expenses.findMany({
+      const expensesList = await this.prisma.expenses.findMany({
         where: { user_id: userId },
         orderBy: [
           { date_created: 'desc' },
@@ -20,26 +20,34 @@ export class ExpensesService {
           { expense_id: 'desc' },
         ],
       });
-      return expenses;
+      return expensesList;
     } catch (error) {
       console.error('Error in ExpensesService.findByUserId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(expenseId: number): Promise<any> {
+  async findById(expenseId: number): Promise<expenses> {
     try {
       const expense = await this.prisma.expenses.findUnique({
         where: { expense_id: Number(expenseId) },
       });
-      return expense || null;
+      if (!expense) {
+        throw new NotFoundException(`Expense with ID ${expenseId} not found.`);
+      }
+      return expense;
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       console.error('Error in ExpensesService.findById:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateExpenseDto): Promise<any> {
+  async create(createDto: CreateExpenseDto): Promise<expenses> {
     const { user_id, title, occupation, category, expense, date_created } =
       createDto;
 
@@ -57,19 +65,17 @@ export class ExpensesService {
       return newExpense;
     } catch (error) {
       console.error('Error in ExpensesService.create:', error);
-      // Prisma error checking can be added here if needed
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateExpenseDto): Promise<any> {
+  async update(id: number, updateDto: UpdateExpenseDto): Promise<expenses> {
     const currentExpense = await this.findById(id);
-    if (!currentExpense) {
-      throw new NotFoundException(`Expense with ID ${id} not found.`);
-    }
 
     try {
-      const updateData: any = {};
+      const updateData: Prisma.expensesUpdateInput = {};
 
       if (updateDto.title !== undefined) updateData.title = updateDto.title;
       if (updateDto.occupation !== undefined)
@@ -92,8 +98,16 @@ export class ExpensesService {
 
       return updatedExpense;
     } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Expense with ID ${id} not found`);
+      }
       console.error('Error in ExpensesService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -101,9 +115,8 @@ export class ExpensesService {
     try {
       await this.prisma.expenses.delete({ where: { expense_id: id } });
       return true;
-    } catch (error) {
-      console.error('Error in ExpensesService.delete:', error);
-      throw new InternalServerErrorException(error.message);
+    } catch {
+      return false;
     }
   }
 
@@ -114,7 +127,9 @@ export class ExpensesService {
         message: `Expenses table reset initiated by user ${userId}`,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Failed to reset contracts table');
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -135,7 +150,9 @@ export class ExpensesService {
         'Error in ExpensesService.deleteByOccupationAndUser:',
         error,
       );
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

@@ -4,6 +4,7 @@ import {
   CreatePoultryHealthDto,
   UpdatePoultryHealthDto,
 } from './poultry-health.dto';
+import { Prisma, poultry_health } from '@prisma/client';
 
 interface PoultryHealthFilters {
   limit?: number;
@@ -14,14 +15,15 @@ interface PoultryHealthFilters {
 @Injectable()
 export class PoultryHealthService {
   constructor(private readonly prisma: PrismaService) {}
+
   async findByUserIdWithFilters(
     userId: number,
     filters: PoultryHealthFilters,
-  ): Promise<any[]> {
+  ): Promise<poultry_health[]> {
     const { limit, offset, flockId } = filters;
 
     try {
-      const where: any = { user_id: userId };
+      const where: Prisma.poultry_healthWhereInput = { user_id: userId };
       if (flockId !== undefined) where.flock_id = flockId;
 
       const records = await this.prisma.poultry_health.findMany({
@@ -38,12 +40,12 @@ export class PoultryHealthService {
         error,
       );
       throw new InternalServerErrorException(
-        `Database query failed: ${error.message}`,
+        `Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  async findById(id: number): Promise<any> {
+  async findById(id: number): Promise<poultry_health | null> {
     try {
       const record = await this.prisma.poultry_health.findUnique({
         where: { poultry_health_id: id },
@@ -54,11 +56,13 @@ export class PoultryHealthService {
         'Error executing query in findById (PoultryHealth):',
         error,
       );
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreatePoultryHealthDto): Promise<any> {
+  async create(createDto: CreatePoultryHealthDto): Promise<poultry_health> {
     const {
       user_id,
       flock_id,
@@ -91,11 +95,16 @@ export class PoultryHealthService {
       return newRecord;
     } catch (error) {
       console.error('Error executing query in create (PoultryHealth):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdatePoultryHealthDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdatePoultryHealthDto,
+  ): Promise<poultry_health | null> {
     const {
       veterinary_name,
       total_birds,
@@ -107,7 +116,7 @@ export class PoultryHealthService {
       next_appointment,
     } = updateDto;
     try {
-      const updateData: any = {};
+      const updateData: Prisma.poultry_healthUpdateInput = {};
       if (veterinary_name !== undefined)
         updateData.veterinary_name = veterinary_name;
       if (total_birds !== undefined) updateData.total_birds = total_birds;
@@ -136,7 +145,9 @@ export class PoultryHealthService {
       return updatedRecord;
     } catch (error) {
       console.error('Error executing query in update (PoultryHealth):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -148,7 +159,9 @@ export class PoultryHealthService {
       return true;
     } catch (error) {
       console.error('Error executing query in delete (PoultryHealth):', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -157,7 +170,9 @@ export class PoultryHealthService {
       await this.prisma.poultry_health.deleteMany({});
       return { message: `Poultry Health table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

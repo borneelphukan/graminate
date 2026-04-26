@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateInventoryDto, UpdateInventoryDto } from './inventory.dto';
+import { Prisma, inventory } from '@prisma/client';
 
 interface InventoryFilters {
   limit?: number;
@@ -15,39 +16,34 @@ export class InventoryService {
   async findByUserIdWithFilters(
     userId: number,
     filters: InventoryFilters,
-  ): Promise<any[]> {
+  ): Promise<inventory[]> {
     const { limit, offset, itemGroup, warehouseId } = filters;
 
     try {
-      const where: any = { user_id: userId };
+      const where: Prisma.inventoryWhereInput = { user_id: userId };
       if (warehouseId !== undefined) where.warehouse_id = warehouseId;
       if (itemGroup) where.item_group = itemGroup;
 
-      const inventory = await this.prisma.inventory.findMany({
+      const inventoryItems = await this.prisma.inventory.findMany({
         where,
         orderBy: [{ created_at: 'desc' }, { inventory_id: 'desc' }],
         take: limit,
         skip: offset,
-        // Prisma doesn't support selecting specific columns alias like "COALESCE(minimum_limit, 0) as minimum_limit" easily in top level
-        // But if minimum_limit is nullable, it returns null. Frontend handles it?
-        // Original query: COALESCE(minimum_limit, 0)
-        // I will let it return null if null, or map it.
-        // Given return type any[], I can map.
       });
 
-      return inventory.map((item) => ({
+      return inventoryItems.map((item) => ({
         ...item,
         minimum_limit: item.minimum_limit ?? 0,
       }));
     } catch (error) {
       console.error('Error executing query in findByUserIdWithFilters:', error);
       throw new InternalServerErrorException(
-        `Database query failed: ${error.message}`,
+        `Database query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  async create(createDto: CreateInventoryDto): Promise<any> {
+  async create(createDto: CreateInventoryDto): Promise<inventory> {
     const {
       user_id,
       item_name,
@@ -75,11 +71,13 @@ export class InventoryService {
       });
       return newItem;
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateInventoryDto): Promise<any> {
+  async update(id: number, updateDto: UpdateInventoryDto): Promise<inventory> {
     const {
       item_name,
       item_group,
@@ -90,7 +88,7 @@ export class InventoryService {
       feed,
     } = updateDto;
     try {
-      const updateData: any = {};
+      const updateData: Prisma.inventoryUpdateInput = {};
       if (item_name !== undefined) updateData.item_name = item_name;
       if (item_group !== undefined) updateData.item_group = item_group;
       if (units !== undefined) updateData.units = units;
@@ -106,7 +104,9 @@ export class InventoryService {
       });
       return updatedItem;
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -115,7 +115,9 @@ export class InventoryService {
       await this.prisma.inventory.delete({ where: { inventory_id: id } });
       return true;
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -124,7 +126,9 @@ export class InventoryService {
       await this.prisma.inventory.deleteMany({});
       return { message: `Inventory table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

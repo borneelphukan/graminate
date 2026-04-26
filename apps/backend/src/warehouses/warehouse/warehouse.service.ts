@@ -1,11 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateWarehouseDto, UpdateWarehouseDto } from './warehouse.dto';
+import { Prisma, warehouse } from '@prisma/client';
 
 @Injectable()
 export class WarehouseService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByUserId(userId: number): Promise<any[]> {
+  async findByUserId(userId: number): Promise<warehouse[]> {
     try {
       const warehouses = await this.prisma.warehouse.findMany({
         where: { user_id: userId },
@@ -15,14 +16,16 @@ export class WarehouseService {
         storage_capacity: w.storage_capacity
           ? Number(w.storage_capacity)
           : null,
-      }));
+      })) as warehouse[];
     } catch (error) {
       console.error('Error in WarehouseService.findByUserId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateWarehouseDto): Promise<any> {
+  async create(createDto: CreateWarehouseDto): Promise<warehouse> {
     const {
       user_id,
       name,
@@ -40,7 +43,7 @@ export class WarehouseService {
     } = createDto;
 
     try {
-      const data: any = {
+      const data: Prisma.warehouseCreateInput = {
         name: name,
         type: type || 'Unassigned',
         address_line_1: address_line_1 || 'Unassigned',
@@ -70,16 +73,16 @@ export class WarehouseService {
         storage_capacity: newWarehouse.storage_capacity
           ? Number(newWarehouse.storage_capacity)
           : null,
-      };
+      } as warehouse;
     } catch (error) {
       console.error('Error in WarehouseService.create:', error);
       throw new InternalServerErrorException(
-        `Warehouse creation failed: ${error.message}`,
+        `Warehouse creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  async update(id: number, updateDto: UpdateWarehouseDto): Promise<any> {
+  async update(id: number, updateDto: UpdateWarehouseDto): Promise<warehouse> {
     const {
       name,
       type,
@@ -96,7 +99,7 @@ export class WarehouseService {
     } = updateDto;
 
     try {
-      const updateData: any = {};
+      const updateData: Prisma.warehouseUpdateInput = {};
       if (name !== undefined) updateData.name = name;
       if (type !== undefined) updateData.type = type;
       if (address_line_1 !== undefined)
@@ -125,10 +128,12 @@ export class WarehouseService {
         storage_capacity: updatedWarehouse.storage_capacity
           ? Number(updatedWarehouse.storage_capacity)
           : null,
-      };
+      } as warehouse;
     } catch (error) {
       console.error('Error in WarehouseService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -138,7 +143,9 @@ export class WarehouseService {
       return true;
     } catch (error) {
       console.error('Error in WarehouseService.delete:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -150,7 +157,9 @@ export class WarehouseService {
       return { message: `Warehouse table reset for user ${userId}` };
     } catch (error) {
       console.error('Error in WarehouseService.resetTable:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -171,7 +180,9 @@ export class WarehouseService {
       return true;
     } catch (error) {
       console.error('Error in deleteByUserIdAndCategory:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

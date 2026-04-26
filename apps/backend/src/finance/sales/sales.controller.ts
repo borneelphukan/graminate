@@ -22,6 +22,7 @@ import {
   DeleteSalesByOccupationDto,
   ResetSalesDto,
 } from './sales.dto';
+import { sales } from '@prisma/client';
 
 @Controller('sales')
 export class SalesController {
@@ -29,19 +30,17 @@ export class SalesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId', ParseIntPipe) userId: number) {
-    const sales = await this.salesService.findByUserId(userId);
-    return { sales };
+  async getByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ sales: sales[] }> {
+    const salesList = await this.salesService.findByUserId(userId);
+    return { sales: salesList };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    const sale = await this.salesService.findById(id);
-    if (!sale) {
-      throw new HttpException('Sale not found', HttpStatus.NOT_FOUND);
-    }
-    return sale;
+  async getById(@Param('id', ParseIntPipe) id: number): Promise<sales> {
+    return this.salesService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,7 +48,7 @@ export class SalesController {
   async addSale(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     createDto: CreateSaleDto,
-  ) {
+  ): Promise<sales> {
     try {
       return await this.salesService.create(createDto);
     } catch (error) {
@@ -66,7 +65,7 @@ export class SalesController {
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     updateDto: UpdateSaleDto,
-  ) {
+  ): Promise<sales> {
     try {
       const updatedSale = await this.salesService.update(id, updateDto);
       return updatedSale;
@@ -76,7 +75,7 @@ export class SalesController {
       }
       if (
         error instanceof HttpException &&
-        error.getStatus() === HttpStatus.NOT_FOUND
+        error.getStatus() === (HttpStatus.NOT_FOUND as number)
       ) {
         throw error;
       }
@@ -86,7 +85,9 @@ export class SalesController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteSale(@Param('id', ParseIntPipe) id: number) {
+  async deleteSale(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.salesService.delete(id);
     if (!deleted) {
       throw new HttpException(
@@ -99,7 +100,9 @@ export class SalesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetInventory(@Body() resetDto: ResetSalesDto) {
+  async resetInventory(
+    @Body() resetDto: ResetSalesDto,
+  ): Promise<{ message: string }> {
     return this.salesService.resetTable(resetDto.userId);
   }
 
@@ -107,7 +110,7 @@ export class SalesController {
   @Post('delete-by-occupation')
   async deleteByOccupation(
     @Body(new ValidationPipe()) deleteDto: DeleteSalesByOccupationDto,
-  ) {
+  ): Promise<{ message: string; deletedCount: number }> {
     return this.salesService.deleteByOccupationAndUser(
       deleteDto.userId,
       deleteDto.occupation,

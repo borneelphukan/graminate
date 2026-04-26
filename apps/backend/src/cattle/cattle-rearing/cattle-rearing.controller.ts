@@ -19,6 +19,7 @@ import {
   UpdateCattleRearingDto,
   ResetCattleRearingDto,
 } from './cattle-rearing.dto';
+import { cattle_rearing } from '@prisma/client';
 
 @Controller('cattle-rearing')
 export class CattleRearingController {
@@ -26,27 +27,26 @@ export class CattleRearingController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ cattleRearings: cattle_rearing[] }> {
     const cattleRearings = await this.cattleRearingService.findByUserId(userId);
     return { cattleRearings };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    const cattleRearing = await this.cattleRearingService.findById(id);
-    if (!cattleRearing) {
-      throw new HttpException(
-        'Cattle rearing record not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return cattleRearing;
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<cattle_rearing> {
+    return this.cattleRearingService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addCattleRearing(@Body() createDto: CreateCattleRearingDto) {
+  async addCattleRearing(
+    @Body() createDto: CreateCattleRearingDto,
+  ): Promise<cattle_rearing> {
     return this.cattleRearingService.create(createDto);
   }
 
@@ -55,23 +55,15 @@ export class CattleRearingController {
   async updateCattleRearing(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateCattleRearingDto,
-  ) {
-    const updatedCattleRearing = await this.cattleRearingService.update(
-      id,
-      updateDto,
-    );
-    if (!updatedCattleRearing) {
-      throw new HttpException(
-        'Cattle rearing record not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return updatedCattleRearing;
+  ): Promise<cattle_rearing> {
+    return this.cattleRearingService.update(id, updateDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteCattleRearing(@Param('id', ParseIntPipe) id: number) {
+  async deleteCattleRearing(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.cattleRearingService.delete(id);
     if (!deleted) {
       throw new HttpException(
@@ -84,13 +76,15 @@ export class CattleRearingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset-service')
-  async resetService(@Body() resetDto: ResetCattleRearingDto) {
+  async resetService(
+    @Body() resetDto: ResetCattleRearingDto,
+  ): Promise<{ message: string }> {
     return this.cattleRearingService.resetForUser(resetDto.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset() {
+  async reset(): Promise<{ message: string }> {
     return this.cattleRearingService.resetTable();
   }
 }

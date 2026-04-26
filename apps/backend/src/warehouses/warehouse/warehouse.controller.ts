@@ -18,6 +18,7 @@ import {
   ResetWarehouseDto,
   UpdateWarehouseDto,
 } from './warehouse.dto';
+import { warehouse } from '@prisma/client';
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -25,18 +26,22 @@ export class WarehouseController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId') userId: string) {
+  async getByUserId(
+    @Param('userId') userId: string,
+  ): Promise<{ warehouses: warehouse[] }> {
     const warehouses = await this.warehouseService.findByUserId(Number(userId));
     return { warehouses };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addWarehouse(@Body() createDto: CreateWarehouseDto) {
-    const warehouse = await this.warehouseService.create(createDto);
+  async addWarehouse(
+    @Body() createDto: CreateWarehouseDto,
+  ): Promise<{ message: string; id: number }> {
+    const warehouseResult = await this.warehouseService.create(createDto);
     return {
       message: 'Warehouse created successfully',
-      id: warehouse.warehouse_id,
+      id: warehouseResult.warehouse_id,
     };
   }
 
@@ -45,7 +50,7 @@ export class WarehouseController {
   async updateWarehouse(
     @Param('id') id: string,
     @Body() updateDto: UpdateWarehouseDto,
-  ) {
+  ): Promise<warehouse> {
     const updated = await this.warehouseService.update(Number(id), updateDto);
     if (!updated) {
       throw new HttpException('Warehouse not found', HttpStatus.NOT_FOUND);
@@ -55,7 +60,7 @@ export class WarehouseController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteWarehouse(@Param('id') id: string) {
+  async deleteWarehouse(@Param('id') id: string): Promise<{ message: string }> {
     const deleted = await this.warehouseService.delete(Number(id));
     if (!deleted) {
       throw new HttpException('Warehouse not found', HttpStatus.NOT_FOUND);
@@ -65,7 +70,9 @@ export class WarehouseController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetWarehouse(@Body() resetDto: ResetWarehouseDto) {
+  async resetWarehouse(
+    @Body() resetDto: ResetWarehouseDto,
+  ): Promise<{ message: string }> {
     return this.warehouseService.resetTable(resetDto.userId);
   }
 
@@ -74,7 +81,7 @@ export class WarehouseController {
   async deleteByUserIdAndCategory(
     @Param('userId') userId: string,
     @Param('category') category: string,
-  ) {
+  ): Promise<{ message: string }> {
     await this.warehouseService.deleteByUserIdAndCategory(
       Number(userId),
       category,

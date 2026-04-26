@@ -5,8 +5,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as nodemailer from 'nodemailer';
-
-const mjml2html = require('mjml');
+import mjml2html from 'mjml';
 
 @Injectable()
 export class PasswordRepository {
@@ -31,7 +30,10 @@ export class PasswordRepository {
     return htmlOutput.html;
   }
 
-  async handleForgot(email: string) {
+  async handleForgot(email: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
     if (!email) {
       return { status: 400, data: { error: 'Email is required' } };
     }
@@ -46,7 +48,7 @@ export class PasswordRepository {
         return { status: 404, data: { error: 'User not found' } };
       }
 
-      const firstName = user.first_name;
+      const firstName = user.first_name || '';
       const resetToken = crypto.randomBytes(32).toString('hex');
       const hashedToken = await argon2.hash(resetToken);
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
@@ -79,7 +81,14 @@ export class PasswordRepository {
     }
   }
 
-  async handleReset(body: any) {
+  async handleReset(body: {
+    email?: string;
+    token?: string;
+    newPassword?: string;
+  }): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
     const { email, token, newPassword } = body;
 
     if (!email || !token || !newPassword) {

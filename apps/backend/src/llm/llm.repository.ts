@@ -14,6 +14,105 @@ type Message = {
   text: string;
 };
 
+interface Contact {
+  first_name: string;
+  last_name?: string;
+  phone_number: string;
+  email: string;
+  type: string;
+}
+
+interface Company {
+  company_name: string;
+  contact_person: string;
+  email: string;
+  phone_number: string;
+  type: string;
+}
+
+interface Contract {
+  deal_name: string;
+  partner: string;
+  stage: string;
+  amount: number;
+  end_date: string;
+}
+
+interface Receipt {
+  title: string;
+  bill_to: string;
+  due_date: string;
+  receipt_date: string;
+}
+
+interface Sale {
+  sales_name: string;
+  sales_date: string;
+  occupation: string;
+  items_sold: string[];
+  quantities_sold: number[];
+  prices_per_unit?: number[];
+}
+
+interface Expense {
+  title: string;
+  date_created: string;
+  occupation: string;
+  category: string;
+  expense: number;
+}
+
+interface Flock {
+  flock_id: number;
+  flock_name: string;
+}
+
+interface EggRecord {
+  flock_name: string;
+  date_collected: string;
+  small_eggs: number;
+  medium_eggs: number;
+  large_eggs: number;
+  extra_large_eggs: number;
+  total_eggs: number;
+  broken_eggs: number;
+}
+
+interface Warehouse {
+  warehouse_id: number;
+  name: string;
+  type: string;
+  city: string;
+  state: string;
+  storage_capacity: number;
+}
+
+interface InventoryItem {
+  item_name: string;
+  item_group: string;
+  quantity: number;
+  units: string;
+  price_per_unit: number;
+  minimum_limit: number;
+}
+
+interface Labour {
+  labour_id: number;
+  full_name: string;
+  role: string;
+  contact_number: string;
+  city: string;
+  state: string;
+  base_salary: number;
+}
+
+interface LabourPayment {
+  payment_date: string;
+  total_amount: number;
+  payment_status: string;
+  full_name?: string;
+}
+
 @Injectable()
 export class LlmRepository {
   private llmClient: OpenAI;
@@ -27,7 +126,9 @@ export class LlmRepository {
     });
   }
 
-  async generateResponse(llmDto: LlmDto) {
+  async generateResponse(
+    llmDto: LlmDto,
+  ): Promise<{ answer: string | null | undefined }> {
     const { history, userId, token } = llmDto;
 
     if (!history || !Array.isArray(history) || history.length === 0) {
@@ -206,10 +307,13 @@ export class LlmRepository {
       const toolCalls = responseMessage.tool_calls;
 
       if (toolCalls) {
-        const availableFunctions = {
+        const availableFunctions: Record<
+          string,
+          (args: any) => Promise<string>
+        > = {
           get_contacts: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ contacts: Contact[] }>(
                 `${nestApiUrl}/api/contacts/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -218,7 +322,7 @@ export class LlmRepository {
             );
             if (data.contacts && data.contacts.length > 0) {
               return JSON.stringify(
-                data.contacts.map((c: any) => ({
+                data.contacts.map((c) => ({
                   name: `${c.first_name} ${c.last_name || ''}`.trim(),
                   phone: c.phone_number,
                   email: c.email,
@@ -230,7 +334,7 @@ export class LlmRepository {
           },
           get_companies: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ companies: Company[] }>(
                 `${nestApiUrl}/api/companies/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -239,7 +343,7 @@ export class LlmRepository {
             );
             if (data.companies && data.companies.length > 0) {
               return JSON.stringify(
-                data.companies.map((c: any) => ({
+                data.companies.map((c) => ({
                   company_name: c.company_name,
                   contact_person: c.contact_person,
                   email: c.email,
@@ -252,7 +356,7 @@ export class LlmRepository {
           },
           get_contracts: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ contracts: Contract[] }>(
                 `${nestApiUrl}/api/contracts/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -261,7 +365,7 @@ export class LlmRepository {
             );
             if (data.contracts && data.contracts.length > 0) {
               return JSON.stringify(
-                data.contracts.map((c: any) => ({
+                data.contracts.map((c) => ({
                   deal_name: c.deal_name,
                   partner: c.partner,
                   stage: c.stage,
@@ -274,7 +378,7 @@ export class LlmRepository {
           },
           get_receipts: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ receipts: Receipt[] }>(
                 `${nestApiUrl}/api/receipts/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -283,7 +387,7 @@ export class LlmRepository {
             );
             if (data.receipts && data.receipts.length > 0) {
               return JSON.stringify(
-                data.receipts.map((r: any) => ({
+                data.receipts.map((r) => ({
                   title: r.title,
                   bill_to: r.bill_to,
                   due_date: r.due_date,
@@ -295,7 +399,7 @@ export class LlmRepository {
           },
           get_sales_records: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ sales: Sale[] }>(
                 `${nestApiUrl}/api/sales/user/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -304,13 +408,13 @@ export class LlmRepository {
             );
             if (data.sales && data.sales.length > 0) {
               return JSON.stringify(
-                data.sales.map((s: any) => ({
+                data.sales.map((s) => ({
                   sale_name: s.sales_name,
                   date: s.sales_date,
                   occupation: s.occupation,
                   items: s.items_sold.join(', '),
                   total_amount: s.quantities_sold.reduce(
-                    (sum: number, qty: number, idx: number) =>
+                    (sum, qty, idx) =>
                       sum +
                       qty *
                         (s.prices_per_unit && s.prices_per_unit[idx]
@@ -325,7 +429,7 @@ export class LlmRepository {
           },
           get_expense_records: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ expenses: Expense[] }>(
                 `${nestApiUrl}/api/expenses/user/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -334,7 +438,7 @@ export class LlmRepository {
             );
             if (data.expenses && data.expenses.length > 0) {
               return JSON.stringify(
-                data.expenses.map((e: any) => ({
+                data.expenses.map((e) => ({
                   title: e.title,
                   date: e.date_created,
                   occupation: e.occupation,
@@ -348,7 +452,7 @@ export class LlmRepository {
           get_poultry_egg_records: async (args: { flock_name?: string }) => {
             const { flock_name } = args;
             const { data: flocksData } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ flocks: Flock[] }>(
                 `${nestApiUrl}/api/flock/user/${userId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
@@ -362,8 +466,7 @@ export class LlmRepository {
             let targetFlocks = flocks;
             if (flock_name) {
               const foundFlock = flocks.find(
-                (f: any) =>
-                  f.flock_name.toLowerCase() === flock_name.toLowerCase(),
+                (f) => f.flock_name.toLowerCase() === flock_name.toLowerCase(),
               );
               if (foundFlock) {
                 targetFlocks = [foundFlock];
@@ -373,18 +476,19 @@ export class LlmRepository {
                 });
               }
             }
-            const allEggRecords: any[] = [];
+            const allEggRecords: (EggRecord & { flock_name: string })[] = [];
             for (const flock of targetFlocks) {
               const { data: eggData } = await firstValueFrom(
-                this.httpService.get<any>(
+                this.httpService.get<{ records: EggRecord[] }>(
                   `${nestApiUrl}/api/poultry-eggs/${userId}?flockId=${flock.flock_id}`,
                   { headers: { Authorization: `Bearer ${token}` } },
                 ),
               );
               if (eggData.records && eggData.records.length > 0) {
-                const recordsWithFlockName = eggData.records.map(
-                  (rec: any) => ({ ...rec, flock_name: flock.flock_name }),
-                );
+                const recordsWithFlockName = eggData.records.map((rec) => ({
+                  ...rec,
+                  flock_name: flock.flock_name,
+                }));
                 allEggRecords.push(...recordsWithFlockName);
               }
             }
@@ -410,14 +514,14 @@ export class LlmRepository {
           },
           get_warehouses: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(
+              this.httpService.get<{ warehouses: Warehouse[] }>(
                 `${nestApiUrl}/api/warehouse/user/${userId}`,
                 { headers: { Authorization: `Bearer ${token}` } },
               ),
             );
             if (data.warehouses && data.warehouses.length > 0) {
               return JSON.stringify(
-                data.warehouses.map((w: any) => ({
+                data.warehouses.map((w) => ({
                   name: w.name,
                   type: w.type,
                   location: [w.city, w.state].filter(Boolean).join(', '),
@@ -429,17 +533,16 @@ export class LlmRepository {
           },
           get_inventory_items: async (args: { warehouse_name?: string }) => {
             const { warehouse_name } = args;
-            let warehouseId = null;
+            let warehouseId: number | null = null;
             if (warehouse_name) {
               const { data: warehousesData } = await firstValueFrom(
-                this.httpService.get<any>(
+                this.httpService.get<{ warehouses: Warehouse[] }>(
                   `${nestApiUrl}/api/warehouse/user/${userId}`,
                   { headers: { Authorization: `Bearer ${token}` } },
                 ),
               );
               const warehouse = warehousesData.warehouses?.find(
-                (w: any) =>
-                  w.name.toLowerCase() === warehouse_name.toLowerCase(),
+                (w) => w.name.toLowerCase() === warehouse_name.toLowerCase(),
               );
               if (warehouse) {
                 warehouseId = warehouse.warehouse_id;
@@ -453,13 +556,13 @@ export class LlmRepository {
               ? `${nestApiUrl}/api/inventory/${userId}?warehouse_id=${warehouseId}`
               : `${nestApiUrl}/api/inventory/${userId}`;
             const { data: inventoryData } = await firstValueFrom(
-              this.httpService.get<any>(inventoryUrl, {
+              this.httpService.get<{ items: InventoryItem[] }>(inventoryUrl, {
                 headers: { Authorization: `Bearer ${token}` },
               }),
             );
             if (inventoryData.items && inventoryData.items.length > 0) {
               return JSON.stringify(
-                inventoryData.items.map((item: any) => ({
+                inventoryData.items.map((item) => ({
                   item_name: item.item_name,
                   item_group: item.item_group,
                   quantity: item.quantity,
@@ -476,13 +579,16 @@ export class LlmRepository {
           },
           get_labour_records: async () => {
             const { data } = await firstValueFrom(
-              this.httpService.get<any>(`${nestApiUrl}/api/labour/${userId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              }),
+              this.httpService.get<{ labours: Labour[] }>(
+                `${nestApiUrl}/api/labour/${userId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                },
+              ),
             );
             if (data.labours && data.labours.length > 0) {
               return JSON.stringify(
-                data.labours.map((l: any) => ({
+                data.labours.map((l) => ({
                   full_name: l.full_name,
                   role: l.role,
                   contact: l.contact_number,
@@ -497,9 +603,12 @@ export class LlmRepository {
           get_labour_payments: async (args: { employee_name?: string }) => {
             const { employee_name } = args;
             const { data: labourData } = await firstValueFrom(
-              this.httpService.get<any>(`${nestApiUrl}/api/labour/${userId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              }),
+              this.httpService.get<{ labours: Labour[] }>(
+                `${nestApiUrl}/api/labour/${userId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                },
+              ),
             );
             const allLabours = labourData.labours || [];
             if (allLabours.length === 0) {
@@ -508,7 +617,7 @@ export class LlmRepository {
             let targetLabours = allLabours;
             if (employee_name) {
               const foundLabour = allLabours.find(
-                (l: any) =>
+                (l) =>
                   l.full_name.toLowerCase() === employee_name.toLowerCase(),
               );
               if (foundLabour) {
@@ -519,17 +628,19 @@ export class LlmRepository {
                 });
               }
             }
-            const allPayments: any[] = [];
+            const allPayments: LabourPayment[] = [];
             for (const labour of targetLabours) {
               const { data: paymentData } = await firstValueFrom(
-                this.httpService.get<any>(
-                  `${nestApiUrl}/api/labour_payment/${labour.labour_id}`,
-                  { headers: { Authorization: `Bearer ${token}` } },
-                ),
+                this.httpService.get<{
+                  payments?: LabourPayment[];
+                  data?: { payments: LabourPayment[] };
+                }>(`${nestApiUrl}/api/labour_payment/${labour.labour_id}`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                }),
               );
               const payments =
                 paymentData.payments || paymentData.data?.payments || [];
-              const paymentsWithEmployeeName = payments.map((p: any) => ({
+              const paymentsWithEmployeeName = payments.map((p) => ({
                 ...p,
                 full_name: labour.full_name,
               }));
@@ -553,13 +664,15 @@ export class LlmRepository {
 
         for (const toolCall of toolCalls) {
           if (toolCall.type === 'function') {
-            const functionName = toolCall.function
-              .name as keyof typeof availableFunctions;
+            const functionName = toolCall.function.name;
             const functionToCall = availableFunctions[functionName];
 
             if (functionToCall) {
               const functionArgs = toolCall.function.arguments
-                ? JSON.parse(toolCall.function.arguments)
+                ? (JSON.parse(toolCall.function.arguments) as Record<
+                    string,
+                    any
+                  >)
                 : {};
               const functionResponse = await functionToCall(functionArgs);
               conversationHistory.push({

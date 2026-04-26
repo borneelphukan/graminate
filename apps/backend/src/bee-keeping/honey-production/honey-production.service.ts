@@ -9,11 +9,12 @@ import {
   CreateHoneyProductionDto,
   UpdateHoneyProductionDto,
 } from './honey-production.dto';
+import { Prisma, honey_production } from '@prisma/client';
 
 @Injectable()
 export class HoneyProductionService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByHiveId(hiveId: number): Promise<any[]> {
+  async findByHiveId(hiveId: number): Promise<honey_production[]> {
     try {
       const harvest = await this.prisma.honey_production.findMany({
         where: { hive_id: hiveId },
@@ -22,11 +23,13 @@ export class HoneyProductionService {
       return harvest;
     } catch (error) {
       console.error('Error in HoneyProductionService.findByHiveId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(harvestId: number): Promise<any> {
+  async findById(harvestId: number): Promise<honey_production> {
     const harvest = await this.prisma.honey_production.findUnique({
       where: { harvest_id: harvestId },
     });
@@ -36,7 +39,7 @@ export class HoneyProductionService {
     return harvest;
   }
 
-  async create(createDto: CreateHoneyProductionDto): Promise<any> {
+  async create(createDto: CreateHoneyProductionDto): Promise<honey_production> {
     if (!createDto || Object.keys(createDto).length === 0) {
       throw new BadRequestException('Request body cannot be empty.');
     }
@@ -64,22 +67,28 @@ export class HoneyProductionService {
       return newHarvest;
     } catch (error) {
       console.error('Error in HoneyProductionService.create:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateHoneyProductionDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdateHoneyProductionDto,
+  ): Promise<honey_production> {
     try {
-      const updateData: any = {};
-      Object.entries(updateDto).forEach(([key, value]) => {
-        if (value !== undefined) {
-          if (key === 'harvest_date') {
-            updateData[key] = new Date(value as string);
-          } else {
-            updateData[key] = value;
-          }
-        }
-      });
+      const updateData: Prisma.honey_productionUpdateInput = {};
+      if (updateDto.harvest_date !== undefined)
+        updateData.harvest_date = new Date(updateDto.harvest_date);
+      if (updateDto.honey_weight !== undefined)
+        updateData.honey_weight = updateDto.honey_weight;
+      if (updateDto.frames_harvested !== undefined)
+        updateData.frames_harvested = updateDto.frames_harvested;
+      if (updateDto.honey_type !== undefined)
+        updateData.honey_type = updateDto.honey_type;
+      if (updateDto.harvest_notes !== undefined)
+        updateData.harvest_notes = updateDto.harvest_notes;
 
       if (Object.keys(updateData).length === 0) {
         return this.findById(id);
@@ -92,11 +101,16 @@ export class HoneyProductionService {
 
       return updatedHarvest;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Harvest with ID ${id} not found`);
       }
       console.error('Error in HoneyProductionService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -104,7 +118,7 @@ export class HoneyProductionService {
     try {
       await this.prisma.honey_production.delete({ where: { harvest_id: id } });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -113,8 +127,10 @@ export class HoneyProductionService {
     try {
       await this.prisma.honey_production.deleteMany({});
       return { message: 'Honey Production table has been reset' };
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
+    } catch {
+      throw new InternalServerErrorException(
+        'Failed to reset honey production table',
+      );
     }
   }
 }

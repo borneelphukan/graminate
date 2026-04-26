@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AdminRepository } from './admin.repository';
+import { users } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
@@ -43,11 +44,25 @@ export class AdminService {
     return this.adminRepository.getUserLoginHistory(userId);
   }
 
-  async deleteUser(userId: string) {
+  async deleteUser(userId: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
     return this.adminRepository.deleteUser(userId);
   }
 
-  async updateUser(userId: string, body: any) {
+  async updateUser(
+    userId: string,
+    body: Partial<users> & {
+      darkMode?: boolean;
+      widgets?: string[];
+      admin_reason?: string;
+      admin_action?: string;
+    },
+  ): Promise<{
+    status: number;
+    data: { message?: string; error?: string; user?: Partial<users> };
+  }> {
     return this.adminRepository.updateUser(userId, body);
   }
 

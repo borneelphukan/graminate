@@ -6,13 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateSaleDto, UpdateSaleDto } from './sales.dto';
+import { Prisma, sales } from '@prisma/client';
 
 @Injectable()
 export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByUserId(userId: number): Promise<any[]> {
+  async findByUserId(userId: number): Promise<sales[]> {
     try {
-      const sales = await this.prisma.sales.findMany({
+      const salesList = await this.prisma.sales.findMany({
         where: { user_id: userId },
         orderBy: [
           { sales_date: 'desc' },
@@ -20,26 +21,34 @@ export class SalesService {
           { sales_id: 'desc' },
         ],
       });
-      return sales;
+      return salesList;
     } catch (error) {
       console.error('Error in SalesService.findByUserId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(saleId: number): Promise<any> {
+  async findById(saleId: number): Promise<sales> {
     try {
       const sale = await this.prisma.sales.findUnique({
         where: { sales_id: Number(saleId) },
       });
-      return sale || null;
+      if (!sale) {
+        throw new NotFoundException(`Sale with ID ${saleId} not found.`);
+      }
+      return sale;
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       console.error('Error in SalesService.findById:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateSaleDto): Promise<any> {
+  async create(createDto: CreateSaleDto): Promise<sales> {
     const {
       user_id,
       sales_name,
@@ -80,23 +89,14 @@ export class SalesService {
       return newSale;
     } catch (error) {
       console.error('Error in SalesService.create:', error);
-      // Prisma error for constraint violation might need checking if specific constraint name is exposed or just P2002/P2003
-      // But preserving specific message "chk_items_quantities_prices_length" if possible, but that's DB level.
-      // If Prisma throws raw error, we might see it.
-      // For now, generic handler.
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateSaleDto): Promise<any> {
+  async update(id: number, updateDto: UpdateSaleDto): Promise<sales> {
     const currentSale = await this.findById(id);
-    if (!currentSale) {
-      throw new NotFoundException(`Sale with ID ${id} not found.`);
-    }
-
-    if (updateDto.invoice_created !== undefined) {
-      // Logic for invoice_created handled in updateData construction later
-    }
 
     const finalItemsSold =
       updateDto.items_sold !== undefined
@@ -105,7 +105,7 @@ export class SalesService {
     const finalQuantitiesSold =
       updateDto.quantities_sold !== undefined
         ? updateDto.quantities_sold
-        : currentSale.quantities_sold;
+        : (currentSale.quantities_sold as Prisma.Decimal[]);
     const finalPricesPerUnit =
       updateDto.prices_per_unit !== undefined
         ? updateDto.prices_per_unit
@@ -126,7 +126,7 @@ export class SalesService {
     }
 
     try {
-      const updateData: any = {};
+      const updateData: Prisma.salesUpdateInput = {};
       if (updateDto.sales_name !== undefined)
         updateData.sales_name = updateDto.sales_name;
       if (updateDto.sales_date !== undefined)
@@ -155,8 +155,16 @@ export class SalesService {
 
       return updatedSale;
     } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Sale with ID ${id} not found`);
+      }
       console.error('Error in SalesService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -164,13 +172,8 @@ export class SalesService {
     try {
       await this.prisma.sales.delete({ where: { sales_id: id } });
       return true;
-    } catch (error) {
-      console.error('Error in SalesService.delete:', error);
-      // Prisma throws error if not found? No, delete expects it to exist depending on how invoked, but `delete` throws P2025 if not found.
-      // returning boolean based on success.
-      // Since `findById` check wasn't here, it implies strict delete.
-      // If error, return false or throw? Original threw InternalServerErrorException.
-      throw new InternalServerErrorException(error.message);
+    } catch {
+      return false;
     }
   }
 
@@ -179,7 +182,9 @@ export class SalesService {
       await this.prisma.sales.deleteMany({});
       return { message: `Sales table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -197,7 +202,9 @@ export class SalesService {
       };
     } catch (error) {
       console.error('Error in SalesService.deleteByOccupationAndUser:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

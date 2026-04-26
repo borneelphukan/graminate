@@ -14,6 +14,8 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserService } from './user.service';
 import { AuthService } from '../auth/auth.service';
+import { RequestWithUser } from '@/common/types/request.type';
+import { users } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -23,31 +25,44 @@ export class UserController {
   ) {}
 
   @Post('register')
-  async register(@Body() body: any) {
+  async register(@Body() body: Partial<users>): Promise<any> {
     return this.userService.registerUser(body);
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
+  async login(
+    @Body() body: { email: string; password: string },
+  ): Promise<{ user: any; token: string }> {
     return this.authService.login(body.email, body.password);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@Body('loginId') loginId: string) {
+  async logout(
+    @Body('loginId') loginId: string,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     return this.userService.logout(loginId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/available-sub-types')
-  async getAvailableSubTypes(@Param('id') id: string, @Request() req) {
+  async getAvailableSubTypes(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<{
+    status: number;
+    data: { subTypes?: string[]; error?: string };
+  }> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.getAvailableSubTypes(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getUser(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  async getUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (req.user.userId !== id) throw new UnauthorizedException();
     try {
       return await this.userService.getUserById(String(id));
@@ -59,7 +74,17 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() body: any, @Request() req) {
+  async updateUser(
+    @Param('id') id: string,
+    @Body()
+    body: Partial<users> & {
+      darkMode?: boolean;
+      widgets?: string[];
+      admin_reason?: string;
+      admin_action?: string;
+    },
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     try {
       return await this.userService.updateUser(id, body);
@@ -71,7 +96,10 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteUser(@Param('id') id: string, @Request() req) {
+  async deleteUser(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.deleteUser(id);
   }
@@ -81,8 +109,8 @@ export class UserController {
   async verifyPassword(
     @Param('id') userId: string,
     @Body('password') password: string,
-    @Request() req,
-  ) {
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== userId) throw new UnauthorizedException();
     const result = await this.userService.verifyPassword(userId, password);
     return result.data;
@@ -93,22 +121,28 @@ export class UserController {
   async scheduleDowngrade(
     @Param('id') userId: string,
     @Body('plan') plan: string,
-    @Request() req,
-  ) {
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== userId) throw new UnauthorizedException();
     return this.userService.scheduleDowngrade(userId, plan);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/billing-history')
-  async getBillingHistory(@Param('id') id: string, @Request() req) {
+  async getBillingHistory(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.getBillingHistory(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/notifications')
-  async getNotifications(@Param('id') id: string, @Request() req) {
+  async getNotifications(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.getNotifications(id);
   }
@@ -118,8 +152,8 @@ export class UserController {
   async markNotificationsRead(
     @Param('id') id: string,
     @Body('notificationId') notificationId: number | undefined,
-    @Request() req,
-  ) {
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.markNotificationsRead(id, notificationId);
   }
@@ -129,15 +163,18 @@ export class UserController {
   async deleteNotification(
     @Param('id') id: string,
     @Param('notificationId') notificationId: string,
-    @Request() req,
-  ) {
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.deleteNotification(id, Number(notificationId));
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/notifications')
-  async clearAllNotifications(@Param('id') id: string, @Request() req) {
+  async clearAllNotifications(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.clearAllNotifications(id);
   }

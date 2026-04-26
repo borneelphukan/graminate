@@ -7,13 +7,19 @@ export class PasswordController {
   constructor(private readonly passwordService: PasswordService) {}
 
   @Post('forgot')
-  async forgotPassword(@Body() body: any, @Res() res: Response) {
+  async forgotPassword(
+    @Body() body: { email: string },
+    @Res() res: Response,
+  ): Promise<Response> {
     const result = await this.passwordService.handleForgot(body.email);
     return res.status(result.status).json(result.data);
   }
 
   @Post('reset')
-  async resetPassword(@Body() body: any, @Res() res: Response) {
+  async resetPassword(
+    @Body() body: { email: string; token: string; newPassword: string },
+    @Res() res: Response,
+  ): Promise<Response> {
     const result = await this.passwordService.handleReset(body);
     return res.status(result.status).json(result.data);
   }

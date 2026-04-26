@@ -12,6 +12,8 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './admin.dto';
+import { RequestWithUser } from '@/common/types/request.type';
+import { users } from '@prisma/client';
 
 @Controller('admin')
 export class AdminController {
@@ -19,8 +21,9 @@ export class AdminController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req) {
-    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+  async getProfile(@Request() req: RequestWithUser) {
+    if (!req.user?.isAdmin || !req.user.adminId)
+      throw new UnauthorizedException('Admins only');
     return this.adminService.getAdminProfile(req.user.adminId);
   }
 
@@ -44,35 +47,44 @@ export class AdminController {
 
   @UseGuards(JwtAuthGuard)
   @Get('all-users')
-  async allUsers(@Request() req) {
+  async allUsers(@Request() req: RequestWithUser) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getAllUsers();
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user-count')
-  async userCount(@Request() req) {
+  async userCount(@Request() req: RequestWithUser) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getUserCount();
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('users/:id')
-  async getUserById(@Param('id') userId: string, @Request() req) {
+  async getUserById(
+    @Param('id') userId: string,
+    @Request() req: RequestWithUser,
+  ) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getUserById(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('users/:id/login-history')
-  async getUserLoginHistory(@Param('id') userId: string, @Request() req) {
+  async getUserLoginHistory(
+    @Param('id') userId: string,
+    @Request() req: RequestWithUser,
+  ) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getUserLoginHistory(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('users/:id')
-  async deleteUser(@Param('id') userId: string, @Request() req) {
+  async deleteUser(
+    @Param('id') userId: string,
+    @Request() req: RequestWithUser,
+  ) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.deleteUser(userId);
   }
@@ -81,16 +93,28 @@ export class AdminController {
   @Post('users/:id')
   async updateUser(
     @Param('id') userId: string,
-    @Body() body: any,
-    @Request() req,
-  ) {
+    @Body()
+    body: Partial<users> & {
+      darkMode?: boolean;
+      widgets?: string[];
+      admin_reason?: string;
+      admin_action?: string;
+    },
+    @Request() req: RequestWithUser,
+  ): Promise<{
+    status: number;
+    data: { message?: string; error?: string; user?: Partial<users> };
+  }> {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.updateUser(userId, body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('users/:id/billing-history')
-  async getUserBillingHistory(@Param('id') userId: string, @Request() req) {
+  async getUserBillingHistory(
+    @Param('id') userId: string,
+    @Request() req: RequestWithUser,
+  ) {
     if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
     return this.adminService.getUserBillingHistory(userId);
   }

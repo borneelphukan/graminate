@@ -1,14 +1,19 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   CreateCattleRearingDto,
   UpdateCattleRearingDto,
 } from './cattle-rearing.dto';
+import { Prisma, cattle_rearing } from '@prisma/client';
 
 @Injectable()
 export class CattleRearingService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByUserId(userId: number): Promise<any[]> {
+  async findByUserId(userId: number): Promise<cattle_rearing[]> {
     try {
       const records = await this.prisma.cattle_rearing.findMany({
         where: { user_id: userId },
@@ -17,23 +22,33 @@ export class CattleRearingService {
       return records;
     } catch (error) {
       console.error('Error in CattleRearingService.findByUserId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(cattleId: number): Promise<any> {
+  async findById(cattleId: number): Promise<cattle_rearing> {
     try {
       const record = await this.prisma.cattle_rearing.findUnique({
         where: { cattle_id: cattleId },
       });
-      return record || null;
+      if (!record) {
+        throw new NotFoundException(
+          `Cattle record with ID ${cattleId} not found`,
+        );
+      }
+      return record;
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       console.error('Error in CattleRearingService.findById:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async create(createDto: CreateCattleRearingDto): Promise<any> {
+  async create(createDto: CreateCattleRearingDto): Promise<cattle_rearing> {
     const { user_id, cattle_name, cattle_type, number_of_animals, purpose } =
       createDto;
     try {
@@ -49,14 +64,19 @@ export class CattleRearingService {
       return newRecord;
     } catch (error) {
       console.error('Error in CattleRearingService.create:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateCattleRearingDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdateCattleRearingDto,
+  ): Promise<cattle_rearing> {
     const { cattle_name, cattle_type, number_of_animals, purpose } = updateDto;
     try {
-      const updateData: any = {};
+      const updateData: Prisma.cattle_rearingUpdateInput = {};
       if (cattle_name !== undefined) updateData.cattle_name = cattle_name;
       if (cattle_type !== undefined) updateData.cattle_type = cattle_type;
       if (number_of_animals !== undefined)
@@ -74,8 +94,16 @@ export class CattleRearingService {
 
       return updatedRecord;
     } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Cattle record with ID ${id} not found`);
+      }
       console.error('Error in CattleRearingService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -83,9 +111,8 @@ export class CattleRearingService {
     try {
       await this.prisma.cattle_rearing.delete({ where: { cattle_id: id } });
       return true;
-    } catch (error) {
-      console.error('Error in CattleRearingService.delete:', error);
-      throw new InternalServerErrorException(error.message);
+    } catch {
+      return false;
     }
   }
 
@@ -96,7 +123,9 @@ export class CattleRearingService {
       });
       return { message: `Cattle Rearing data reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -105,7 +134,9 @@ export class CattleRearingService {
       await this.prisma.cattle_rearing.deleteMany({});
       return { message: 'Cattle Rearing table has been completely reset.' };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

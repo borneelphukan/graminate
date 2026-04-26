@@ -16,6 +16,7 @@ import { CompaniesService } from './companies.service';
 import { Response } from 'express';
 import { CreateCompanyDto } from './companies.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { companies } from '@prisma/client';
 
 @Controller('companies')
 export class CompaniesController {
@@ -63,7 +64,10 @@ export class CompaniesController {
   @UseGuards(JwtAuthGuard)
   @Put('update')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async updateCompany(@Body() body: any, @Res() res: Response) {
+  async updateCompany(
+    @Body() body: Partial<companies> & { company_id: number },
+    @Res() res: Response,
+  ) {
     const result = await this.companiesService.updateCompany(body);
     return res.status(result.status).json(result.data);
   }
@@ -74,7 +78,7 @@ export class CompaniesController {
     try {
       const result = await this.companiesService.resetTable(userId);
       return res.status(200).json(result);
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Failed to reset companies table' });
     }
   }

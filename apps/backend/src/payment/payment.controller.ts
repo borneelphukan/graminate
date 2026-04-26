@@ -8,14 +8,16 @@ export class PaymentController {
 
   @Post('create-order')
   @HttpCode(HttpStatus.CREATED)
-  async createOrder(@Body() createPaymentDto: CreatePaymentDto) {
+  async createOrder(@Body() createPaymentDto: CreatePaymentDto): Promise<any> {
     return await this.paymentService.createOrder(createPaymentDto);
   }
 
   // Haven't tested yet. Test after KYC of Razorpay
   @Post('verify')
   @HttpCode(HttpStatus.OK)
-  async verifyPayment(@Body() verifyPaymentDto: VerifyPaymentDto) {
+  async verifyPayment(
+    @Body() verifyPaymentDto: VerifyPaymentDto,
+  ): Promise<any> {
     return await this.paymentService.verifyPayment(verifyPaymentDto);
   }
 }

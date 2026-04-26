@@ -1,14 +1,23 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateContractDto, UpdateContractDto } from './contracts.dto';
+import { Prisma, deals } from '@prisma/client';
 
 @Injectable()
 export class ContractsRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async getContracts(userId?: number, page?: number, limit?: number) {
+
+  async getContracts(
+    userId?: number,
+    page?: number,
+    limit?: number,
+  ): Promise<{
+    status: number;
+    data: { contracts?: deals[]; error?: string };
+  }> {
     try {
-      let contracts;
-      const where: any = {};
+      let contractsList: deals[];
+      const where: Prisma.dealsWhereInput = {};
       if (userId !== undefined) {
         if (isNaN(userId) || userId <= 0) {
           return { status: 400, data: { error: 'Invalid User ID parameter' } };
@@ -18,27 +27,30 @@ export class ContractsRepository {
 
       if (limit && page) {
         const offset = (page - 1) * limit;
-        contracts = await this.prisma.deals.findMany({
+        contractsList = await this.prisma.deals.findMany({
           where,
           orderBy: { start_date: 'desc' },
           take: limit,
           skip: offset,
         });
       } else {
-        contracts = await this.prisma.deals.findMany({
+        contractsList = await this.prisma.deals.findMany({
           where,
           orderBy: { start_date: 'desc' },
         });
       }
 
-      return { status: 200, data: { contracts } };
+      return { status: 200, data: { contracts: contractsList } };
     } catch (err) {
       console.error('Error fetching contracts:', err);
       return { status: 500, data: { error: 'Failed to fetch contracts' } };
     }
   }
 
-  async addContract(createContractDto: CreateContractDto) {
+  async addContract(createContractDto: CreateContractDto): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contract?: deals };
+  }> {
     const {
       user_id,
       deal_name,
@@ -73,13 +85,15 @@ export class ContractsRepository {
           contract: newContract,
         },
       };
-    } catch (err) {
-      // console.error(err);
+    } catch {
       return { status: 500, data: { error: 'Failed to add contract' } };
     }
   }
 
-  async deleteContract(id: number) {
+  async deleteContract(id: number): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contract?: deals };
+  }> {
     if (isNaN(id) || id <= 0) {
       return { status: 400, data: { error: 'Invalid contract (deal) ID' } };
     }
@@ -110,7 +124,10 @@ export class ContractsRepository {
     }
   }
 
-  async updateContract(updateContractDto: UpdateContractDto) {
+  async updateContract(updateContractDto: UpdateContractDto): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contract?: deals };
+  }> {
     const {
       id,
       deal_name,
@@ -149,13 +166,14 @@ export class ContractsRepository {
         return { status: 404, data: { error: 'Contract not found' } };
       }
 
-      const updateData: any = {};
+      const updateData: Prisma.dealsUpdateInput = {};
 
       if (deal_name !== undefined) updateData.deal_name = deal_name;
       if (partner !== undefined) updateData.partner = partner;
       if (amount !== undefined) updateData.amount = amount;
       if (stage !== undefined) updateData.stage = stage;
-      if (start_date !== undefined) updateData.start_date = start_date;
+      if (start_date !== undefined)
+        updateData.start_date = new Date(start_date);
       if (end_date !== undefined)
         updateData.end_date = end_date ? new Date(end_date) : null;
       if (category !== undefined) updateData.category = category;
@@ -173,7 +191,7 @@ export class ContractsRepository {
           contract: updatedContract,
         },
       };
-    } catch (err) {
+    } catch {
       return { status: 500, data: { error: 'Failed to update contract' } };
     }
   }
@@ -185,7 +203,11 @@ export class ContractsRepository {
         message: `Contracts (deals) table reset initiated by user ${userId}`,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Failed to reset contracts table');
+      throw new InternalServerErrorException(
+        error instanceof Error
+          ? error.message
+          : 'Failed to reset contracts table',
+      );
     }
   }
 }

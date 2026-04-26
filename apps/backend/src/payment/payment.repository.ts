@@ -9,11 +9,20 @@ import { CreatePaymentDto, VerifyPaymentDto } from './payment.dto';
 import * as crypto from 'crypto';
 import { PrismaService } from '@/prisma/prisma.service';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Razorpay = require('razorpay');
+
+interface RazorpayOrder {
+  id: string;
+  amount: number;
+  currency: string;
+  receipt: string;
+  status: string;
+}
 
 @Injectable()
 export class PaymentRepository {
-  private razorpay;
+  private razorpay: any;
   private readonly razorpayKeySecret: string;
   private readonly logger = new Logger(PaymentRepository.name);
 
@@ -31,13 +40,16 @@ export class PaymentRepository {
     }
 
     this.razorpayKeySecret = keySecret;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     this.razorpay = new Razorpay({
       key_id: keyId,
       key_secret: keySecret,
     });
   }
 
-  async createOrder(createPaymentDto: CreatePaymentDto) {
+  async createOrder(
+    createPaymentDto: CreatePaymentDto,
+  ): Promise<RazorpayOrder> {
     const { amount, currency, userId, planType } = createPaymentDto;
     const options = {
       amount: amount * 100,
@@ -45,9 +57,12 @@ export class PaymentRepository {
       receipt: `receipt_order_${new Date().getTime()}`,
     };
 
-    let razorpayOrder;
+    let razorpayOrder: RazorpayOrder;
     try {
-      razorpayOrder = await this.razorpay.orders.create(options);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      razorpayOrder = (await this.razorpay.orders.create(
+        options,
+      )) as RazorpayOrder;
     } catch (error) {
       this.logger.error('Error creating Razorpay order:', error);
       throw new InternalServerErrorException('Error creating Razorpay order');
@@ -60,9 +75,9 @@ export class PaymentRepository {
           razorpay_order_id: razorpayOrder.id,
           amount,
           currency,
-          plan_type: planType as any,
+          plan_type: planType,
           status: 'PENDING',
-        } as any,
+        },
       });
     } catch (error) {
       this.logger.error('Error saving payment to database:', error);
@@ -110,7 +125,7 @@ export class PaymentRepository {
 
     await this.updateUserSubscription(
       updatedPayment.user_id,
-      planType as any,
+      planType as 'BASIC' | 'PRO',
       updatedPayment.razorpay_order_id,
     );
 
@@ -125,7 +140,7 @@ export class PaymentRepository {
     status: 'SUCCESS' | 'FAILED',
     paymentId: string,
     signature: string,
-  ) {
+  ): Promise<{ user_id: number; razorpay_order_id: string }> {
     try {
       const payment = await this.prisma.payments.findFirst({
         where: { razorpay_order_id: orderId },
@@ -141,7 +156,11 @@ export class PaymentRepository {
         this.logger.warn(
           `Payment ${orderId} has already been processed with status: ${payment.status}.`,
         );
-        if (payment.status === 'SUCCESS') return payment;
+        if (payment.status === 'SUCCESS')
+          return {
+            user_id: payment.user_id,
+            razorpay_order_id: payment.razorpay_order_id,
+          };
         throw new BadRequestException(
           `Payment has already been processed with status: ${payment.status}.`,
         );

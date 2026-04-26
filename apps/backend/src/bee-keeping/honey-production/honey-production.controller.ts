@@ -16,6 +16,7 @@ import {
   CreateHoneyProductionDto,
   UpdateHoneyProductionDto,
 } from './honey-production.dto';
+import { honey_production } from '@prisma/client';
 
 @Controller('honey-production')
 @UseGuards(JwtAuthGuard)
@@ -23,18 +24,24 @@ export class HoneyProductionController {
   constructor(private readonly productionService: HoneyProductionService) {}
 
   @Get('hive/:hiveId')
-  async getByHiveId(@Param('hiveId', ParseIntPipe) hiveId: number) {
+  async getByHiveId(
+    @Param('hiveId', ParseIntPipe) hiveId: number,
+  ): Promise<{ harvests: honey_production[] }> {
     const harvests = await this.productionService.findByHiveId(hiveId);
     return { harvests };
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<honey_production> {
     return this.productionService.findById(id);
   }
 
   @Post('add')
-  async addHarvest(@Body() createDto: CreateHoneyProductionDto) {
+  async addHarvest(
+    @Body() createDto: CreateHoneyProductionDto,
+  ): Promise<honey_production> {
     return this.productionService.create(createDto);
   }
 
@@ -42,12 +49,14 @@ export class HoneyProductionController {
   async updateHarvest(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateHoneyProductionDto,
-  ) {
+  ): Promise<honey_production> {
     return this.productionService.update(id, updateDto);
   }
 
   @Delete('delete/:id')
-  async deleteHarvest(@Param('id', ParseIntPipe) id: number) {
+  async deleteHarvest(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.productionService.delete(id);
     if (!deleted) {
       throw new NotFoundException(
@@ -58,7 +67,7 @@ export class HoneyProductionController {
   }
 
   @Post('reset')
-  async reset() {
+  async reset(): Promise<{ message: string }> {
     return this.productionService.resetTable();
   }
 }

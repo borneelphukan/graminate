@@ -21,6 +21,7 @@ import {
   UpdateExpenseDto,
   DeleteExpensesByOccupationDto,
 } from './expenses.dto';
+import { expenses } from '@prisma/client';
 
 @Controller('expenses')
 export class ExpensesController {
@@ -28,19 +29,17 @@ export class ExpensesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId', ParseIntPipe) userId: number) {
-    const expenses = await this.expensesService.findByUserId(userId);
-    return { expenses };
+  async getByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ expenses: expenses[] }> {
+    const expensesList = await this.expensesService.findByUserId(userId);
+    return { expenses: expensesList };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    const expense = await this.expensesService.findById(id);
-    if (!expense) {
-      throw new HttpException('Expense not found', HttpStatus.NOT_FOUND);
-    }
-    return expense;
+  async getById(@Param('id', ParseIntPipe) id: number): Promise<expenses> {
+    return this.expensesService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -48,7 +47,7 @@ export class ExpensesController {
   async addExpense(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     createDto: CreateExpenseDto,
-  ) {
+  ): Promise<expenses> {
     try {
       return await this.expensesService.create(createDto);
     } catch (error) {
@@ -65,7 +64,7 @@ export class ExpensesController {
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     updateDto: UpdateExpenseDto,
-  ) {
+  ): Promise<expenses> {
     try {
       const updatedExpense = await this.expensesService.update(id, updateDto);
       return updatedExpense;
@@ -75,7 +74,7 @@ export class ExpensesController {
       }
       if (
         error instanceof HttpException &&
-        error.getStatus() === HttpStatus.NOT_FOUND
+        error.getStatus() === (HttpStatus.NOT_FOUND as number)
       ) {
         throw error;
       }
@@ -85,7 +84,9 @@ export class ExpensesController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteExpense(@Param('id', ParseIntPipe) id: number) {
+  async deleteExpense(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.expensesService.delete(id);
     if (!deleted) {
       throw new HttpException(
@@ -98,7 +99,7 @@ export class ExpensesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(@Body('userId') userId: number) {
+  async reset(@Body('userId') userId: number): Promise<{ message: string }> {
     return this.expensesService.resetTable(userId);
   }
 
@@ -106,7 +107,7 @@ export class ExpensesController {
   @Post('delete-by-occupation')
   async deleteByOccupation(
     @Body(new ValidationPipe()) deleteDto: DeleteExpensesByOccupationDto,
-  ) {
+  ): Promise<{ message: string; deletedCount: number }> {
     return this.expensesService.deleteByOccupationAndUser(
       deleteDto.userId,
       deleteDto.occupation,

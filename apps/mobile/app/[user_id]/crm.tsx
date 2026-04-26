@@ -388,16 +388,19 @@ const CRM = () => {
     []
   );
 
-  const handleSelectView = (newView: ViewType) => {
-    if (view !== newView) {
-      setView(newView);
-      setData([]);
-      setSearchQuery("");
-      setSortCriterion(SORT_OPTIONS[newView][0].value);
-      setSortOrder("desc");
-      setSelectedProjectTitle(null);
-    }
-  };
+  const handleSelectView = useCallback(
+    (newView: ViewType) => {
+      if (view !== newView) {
+        setView(newView);
+        setData([]);
+        setSearchQuery("");
+        setSortCriterion(SORT_OPTIONS[newView][0].value);
+        setSortOrder("desc");
+        setSelectedProjectTitle(null);
+      }
+    },
+    [view, SORT_OPTIONS],
+  );
 
   useEffect(() => {
     if (viewFromParams && viewFromParams !== view)

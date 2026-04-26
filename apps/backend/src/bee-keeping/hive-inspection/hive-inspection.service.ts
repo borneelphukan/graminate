@@ -9,11 +9,12 @@ import {
   CreateInspectionDto,
   UpdateInspectionDto,
 } from './hive-inspection.dto';
+import { Prisma, hive_inspection } from '@prisma/client';
 
 @Injectable()
 export class HiveInspectionService {
   constructor(private readonly prisma: PrismaService) {}
-  async findByHiveId(hiveId: number): Promise<any[]> {
+  async findByHiveId(hiveId: number): Promise<hive_inspection[]> {
     try {
       const inspections = await this.prisma.hive_inspection.findMany({
         where: { hive_id: hiveId },
@@ -22,11 +23,13 @@ export class HiveInspectionService {
       return inspections;
     } catch (error) {
       console.error('Error in HiveInspectionService.findByHiveId:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async findById(inspectionId: number): Promise<any> {
+  async findById(inspectionId: number): Promise<hive_inspection> {
     const inspection = await this.prisma.hive_inspection.findUnique({
       where: { inspection_id: inspectionId },
     });
@@ -39,7 +42,7 @@ export class HiveInspectionService {
     return inspection;
   }
 
-  async create(createDto: CreateInspectionDto): Promise<any> {
+  async create(createDto: CreateInspectionDto): Promise<hive_inspection> {
     if (!createDto || Object.keys(createDto).length === 0) {
       throw new BadRequestException('Request body cannot be empty.');
     }
@@ -91,22 +94,51 @@ export class HiveInspectionService {
       return newInspection;
     } catch (error) {
       console.error('Error in HiveInspectionService.create:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async update(id: number, updateDto: UpdateInspectionDto): Promise<any> {
+  async update(
+    id: number,
+    updateDto: UpdateInspectionDto,
+  ): Promise<hive_inspection> {
     try {
-      const updateData: any = {};
-      Object.entries(updateDto).forEach(([key, value]) => {
-        if (value !== undefined) {
-          if (key === 'inspection_date' || key === 'queen_introduced_date') {
-            updateData[key] = new Date(value as string);
-          } else {
-            updateData[key] = value;
-          }
-        }
-      });
+      const updateData: Prisma.hive_inspectionUpdateInput = {};
+      if (updateDto.inspection_date !== undefined)
+        updateData.inspection_date = new Date(updateDto.inspection_date);
+      if (updateDto.queen_status !== undefined)
+        updateData.queen_status = updateDto.queen_status;
+      if (updateDto.queen_introduced_date !== undefined)
+        updateData.queen_introduced_date = updateDto.queen_introduced_date
+          ? new Date(updateDto.queen_introduced_date)
+          : null;
+      if (updateDto.brood_pattern !== undefined)
+        updateData.brood_pattern = updateDto.brood_pattern;
+      if (updateDto.notes !== undefined) updateData.notes = updateDto.notes;
+      if (updateDto.symptoms !== undefined)
+        updateData.symptoms = updateDto.symptoms;
+      if (updateDto.population_strength !== undefined)
+        updateData.population_strength = updateDto.population_strength;
+      if (updateDto.frames_of_brood !== undefined)
+        updateData.frames_of_brood = updateDto.frames_of_brood;
+      if (updateDto.frames_of_nectar_honey !== undefined)
+        updateData.frames_of_nectar_honey = updateDto.frames_of_nectar_honey;
+      if (updateDto.frames_of_pollen !== undefined)
+        updateData.frames_of_pollen = updateDto.frames_of_pollen;
+      if (updateDto.room_to_lay !== undefined)
+        updateData.room_to_lay = updateDto.room_to_lay;
+      if (updateDto.queen_cells_observed !== undefined)
+        updateData.queen_cells_observed = updateDto.queen_cells_observed;
+      if (updateDto.queen_cells_count !== undefined)
+        updateData.queen_cells_count = updateDto.queen_cells_count;
+      if (updateDto.varroa_mite_method !== undefined)
+        updateData.varroa_mite_method = updateDto.varroa_mite_method;
+      if (updateDto.varroa_mite_count !== undefined)
+        updateData.varroa_mite_count = updateDto.varroa_mite_count;
+      if (updateDto.actions_taken !== undefined)
+        updateData.actions_taken = updateDto.actions_taken;
 
       if (Object.keys(updateData).length === 0) {
         return this.findById(id);
@@ -119,11 +151,16 @@ export class HiveInspectionService {
 
       return updatedInspection;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         throw new NotFoundException(`Inspection with ID ${id} not found`);
       }
       console.error('Error in HiveInspectionService.update:', error);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
@@ -133,7 +170,7 @@ export class HiveInspectionService {
         where: { inspection_id: id },
       });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -143,7 +180,9 @@ export class HiveInspectionService {
       await this.prisma.hive_inspection.deleteMany({});
       return { message: 'Hive Inspections table has been reset' };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FloricultureService } from './floriculture.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { floriculture } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard)
 @Controller('floriculture')
@@ -18,27 +19,32 @@ export class FloricultureController {
   constructor(private readonly floricultureService: FloricultureService) {}
 
   @Post('add')
-  create(@Body() body: any) {
+  create(@Body() body: Partial<floriculture>): Promise<floriculture> {
     return this.floricultureService.create(body);
   }
 
   @Get('user/:userId')
-  findByUser(@Param('userId', ParseIntPipe) userId: number) {
+  findByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ floricultures: floriculture[] }> {
     return this.floricultureService.findByUser(userId);
   }
 
   @Put('update/:id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: Partial<floriculture>,
+  ): Promise<floriculture> {
     return this.floricultureService.update(id, body);
   }
 
   @Delete('delete/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number): Promise<floriculture> {
     return this.floricultureService.remove(id);
   }
 
   @Post('reset-service')
-  reset(@Body('userId') userId: number) {
+  reset(@Body('userId') userId: number): Promise<{ message: string }> {
     return this.floricultureService.reset(userId);
   }
 }

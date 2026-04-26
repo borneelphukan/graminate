@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { Prisma, tasks, kanban_columns } from '@prisma/client';
 
 @Injectable()
 export class TasksRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async createTask(dto: CreateTaskDto) {
+  async createTask(dto: CreateTaskDto): Promise<tasks> {
     try {
       const newTask = await this.prisma.tasks.create({
         data: {
@@ -26,7 +27,9 @@ export class TasksRepository {
       return newTask;
     } catch (error) {
       console.error('Error creating task entry:', error);
-      throw new InternalServerErrorException('Failed to create task entry');
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to create task entry',
+      );
     }
   }
 
@@ -34,9 +37,9 @@ export class TasksRepository {
     userId: number,
     project?: string,
     deadlineDate?: string,
-  ) {
+  ): Promise<tasks[]> {
     try {
-      const where: any = { user_id: userId };
+      const where: Prisma.tasksWhereInput = { user_id: userId };
 
       if (project) {
         where.project = project;
@@ -46,31 +49,25 @@ export class TasksRepository {
         where.deadline = new Date(deadlineDate);
       }
 
-      const tasks = await this.prisma.tasks.findMany({
+      const tasksList = await this.prisma.tasks.findMany({
         where,
-        orderBy: [
-          { deadline: 'asc' }, // NULLS LAST is default in Prisma for asc? No, strictly it puts nulls last usually or first depending on DB.
-          // Prisma doesn't support NULLS LAST directly in API easily without explicit sort logic or raw query,
-          // but for now simple asc is close enough or I can use raw if user complains.
-          // Actually, Prisma 5+ supports NULLS FIRST/LAST. Let's check if we can use it.
-          // Since I am on a recent Prisma version (generated client), let's try standard sort.
-          // If strict compatibility is needed, I might need to adjust.
-          { created_on: 'desc' },
-        ],
+        orderBy: [{ deadline: 'asc' }, { created_on: 'desc' }],
       });
-      return tasks;
+      return tasksList;
     } catch (error) {
       console.error('Error fetching tasks by user:', error);
-      throw new InternalServerErrorException('Failed to fetch tasks');
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to fetch tasks',
+      );
     }
   }
 
-  async updateTask(taskId: number, dto: UpdateTaskDto) {
+  async updateTask(taskId: number, dto: UpdateTaskDto): Promise<tasks> {
     if (dto.priority && !['Low', 'Medium', 'High'].includes(dto.priority)) {
       throw new BadRequestException('Invalid priority value');
     }
 
-    const data: any = {};
+    const data: Prisma.tasksUpdateInput = {};
     if (dto.project !== undefined) data.project = dto.project;
     if (dto.task !== undefined) data.task = dto.task;
     if (dto.status !== undefined) data.status = dto.status;
@@ -79,47 +76,46 @@ export class TasksRepository {
     if (dto.deadline !== undefined)
       data.deadline = dto.deadline ? new Date(dto.deadline) : null;
 
-    // Check if empty is handled by DTO or service. The original code checked for empty "fields".
     if (Object.keys(data).length === 0) {
       throw new BadRequestException('No fields to update');
     }
 
     try {
-      const existing = await this.prisma.tasks.findUnique({
-        where: { task_id: taskId },
-      });
-
-      if (!existing) {
-        throw new NotFoundException(`Task with ID ${taskId} not found`);
-      }
-
       const updatedTask = await this.prisma.tasks.update({
         where: { task_id: taskId },
         data,
       });
       return updatedTask;
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Task with ID ${taskId} not found`);
+      }
       console.error('Database error:', error);
-      throw new InternalServerErrorException('Failed to update task');
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to update task',
+      );
     }
   }
 
-  async deleteTask(taskId: number) {
+  async deleteTask(taskId: number): Promise<tasks> {
     try {
-      const existing = await this.prisma.tasks.findUnique({
-        where: { task_id: taskId },
-      });
-      if (!existing) {
-        throw new NotFoundException(`Task with ID ${taskId} not found`);
-      }
       const deletedTask = await this.prisma.tasks.delete({
         where: { task_id: taskId },
       });
       return deletedTask;
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Failed to delete task');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Task with ID ${taskId} not found`);
+      }
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to delete task',
+      );
     }
   }
 
@@ -128,11 +124,16 @@ export class TasksRepository {
       await this.prisma.tasks.deleteMany({});
       return { message: `Tasks table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 
-  async getKanbanColumns(userId: number, project: string) {
+  async getKanbanColumns(
+    userId: number,
+    project: string,
+  ): Promise<kanban_columns[]> {
     try {
       const columns = await this.prisma.kanban_columns.findMany({
         where: { user_id: userId, project },
@@ -140,7 +141,6 @@ export class TasksRepository {
       });
 
       if (columns.length === 0) {
-        // Auto-seed initial columns
         await this.prisma.kanban_columns.createMany({
           data: [
             { user_id: userId, project, title: 'TO DO', position: 0 },
@@ -159,7 +159,11 @@ export class TasksRepository {
       return columns;
     } catch (error) {
       console.error('Error fetching kanban columns:', error);
-      throw new InternalServerErrorException('Failed to fetch kanban columns');
+      throw new InternalServerErrorException(
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch kanban columns',
+      );
     }
   }
 
@@ -168,7 +172,7 @@ export class TasksRepository {
     project: string,
     title: string,
     position: number,
-  ) {
+  ): Promise<kanban_columns> {
     try {
       return await this.prisma.kanban_columns.create({
         data: {
@@ -180,7 +184,9 @@ export class TasksRepository {
       });
     } catch (error) {
       console.error('Error adding kanban column:', error);
-      throw new InternalServerErrorException('Failed to add kanban column');
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Failed to add kanban column',
+      );
     }
   }
 
@@ -188,9 +194,9 @@ export class TasksRepository {
     columnId: number,
     title?: string,
     position?: number,
-  ) {
+  ): Promise<kanban_columns> {
     try {
-      const data: any = {};
+      const data: Prisma.kanban_columnsUpdateInput = {};
       if (title !== undefined) data.title = title;
       if (position !== undefined) data.position = position;
 
@@ -199,19 +205,43 @@ export class TasksRepository {
         data,
       });
     } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(
+          `Kanban column with ID ${columnId} not found`,
+        );
+      }
       console.error('Error updating kanban column:', error);
-      throw new InternalServerErrorException('Failed to update kanban column');
+      throw new InternalServerErrorException(
+        error instanceof Error
+          ? error.message
+          : 'Failed to update kanban column',
+      );
     }
   }
 
-  async deleteKanbanColumn(columnId: number) {
+  async deleteKanbanColumn(columnId: number): Promise<kanban_columns> {
     try {
       return await this.prisma.kanban_columns.delete({
         where: { column_id: columnId },
       });
     } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(
+          `Kanban column with ID ${columnId} not found`,
+        );
+      }
       console.error('Error deleting kanban column:', error);
-      throw new InternalServerErrorException('Failed to delete kanban column');
+      throw new InternalServerErrorException(
+        error instanceof Error
+          ? error.message
+          : 'Failed to delete kanban column',
+      );
     }
   }
 }

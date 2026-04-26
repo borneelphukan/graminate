@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { otpStore } from '@/stores/store';
-const nodemailer = require('nodemailer');
-const mjml2html = require('mjml');
+import * as nodemailer from 'nodemailer';
+import mjml2html from 'mjml';
 
 @Injectable()
 export class OtpRepository {
@@ -49,7 +49,10 @@ export class OtpRepository {
     },
   });
 
-  async sendOtp(email: string) {
+  async sendOtp(email: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
     if (!email || typeof email !== 'string') {
       return {
         status: 400,
@@ -64,7 +67,7 @@ export class OtpRepository {
       const emailHTML = this.generateOtpEmailHTML(otp);
 
       await this.transporter.sendMail({
-        from: `"Graminate" <no-reply@graminate.com>`,
+        from: '"Graminate" <no-reply@graminate.com>',
         to: email,
         subject: 'Verify your Email',
         html: emailHTML,
@@ -84,13 +87,21 @@ export class OtpRepository {
     }
   }
 
-  async verifyOtp(email: string, otp: string) {
+  async verifyOtp(
+    email: string,
+    otp: string,
+  ): Promise<{
+    status: number;
+    data: { success: boolean; message: string };
+  }> {
     if (!email || !otp) {
       return {
         status: 400,
         data: { success: false, message: 'Email and OTP are required' },
       };
     }
+
+    await Promise.resolve();
 
     if (otpStore[email] && otpStore[email] === otp) {
       delete otpStore[email];

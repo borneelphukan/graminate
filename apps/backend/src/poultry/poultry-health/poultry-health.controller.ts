@@ -19,6 +19,7 @@ import {
   ResetPoultryHealthDto,
 } from './poultry-health.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { poultry_health } from '@prisma/client';
 
 @Controller('poultry-health')
 export class PoultryHealthController {
@@ -31,7 +32,7 @@ export class PoultryHealthController {
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('flockId') flockId?: string,
-  ) {
+  ): Promise<{ records: poultry_health[] }> {
     const records = await this.poultryHealthService.findByUserIdWithFilters(
       Number(userId),
       {
@@ -45,7 +46,9 @@ export class PoultryHealthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('record/:id')
-  async getPoultryHealthRecordById(@Param('id') id: string) {
+  async getPoultryHealthRecordById(
+    @Param('id') id: string,
+  ): Promise<poultry_health> {
     const record = await this.poultryHealthService.findById(Number(id));
     if (!record) {
       throw new NotFoundException('Poultry health record not found');
@@ -55,7 +58,9 @@ export class PoultryHealthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addPoultryHealthRecord(@Body() createDto: CreatePoultryHealthDto) {
+  async addPoultryHealthRecord(
+    @Body() createDto: CreatePoultryHealthDto,
+  ): Promise<poultry_health> {
     const newRecord = await this.poultryHealthService.create(createDto);
     return newRecord;
   }
@@ -65,7 +70,7 @@ export class PoultryHealthController {
   async updatePoultryHealthRecord(
     @Param('id') id: string,
     @Body() updateDto: UpdatePoultryHealthDto,
-  ) {
+  ): Promise<poultry_health> {
     const updatedRecord = await this.poultryHealthService.update(
       Number(id),
       updateDto,
@@ -78,7 +83,9 @@ export class PoultryHealthController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deletePoultryHealthRecord(@Param('id') id: string) {
+  async deletePoultryHealthRecord(
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
     const deleted = await this.poultryHealthService.delete(Number(id));
     if (!deleted) {
       throw new NotFoundException('Poultry health record not found');
@@ -89,7 +96,9 @@ export class PoultryHealthController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   @UsePipes(new ValidationPipe())
-  async resetUserPoultryHealthRecords(@Body() resetDto: ResetPoultryHealthDto) {
+  async resetUserPoultryHealthRecords(
+    @Body() resetDto: ResetPoultryHealthDto,
+  ): Promise<{ message: string }> {
     return this.poultryHealthService.resetTable(resetDto.userId);
   }
 }

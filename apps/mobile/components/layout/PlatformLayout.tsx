@@ -93,7 +93,7 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
     } else {
       setIsLoadingAuth(false);
     }
-  }, [user_id]);
+  }, [user_id, fetchUserSubTypes]);
 
   if (isLoadingAuth) {
     return (

@@ -19,6 +19,7 @@ import {
   ResetCattleMilkDto,
   UpdateCattleMilkDto,
 } from './cattle-milk.dto';
+import { cattle_milk } from '@prisma/client';
 
 @Controller('cattle-milk')
 export class CattleMilkController {
@@ -26,34 +27,33 @@ export class CattleMilkController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:userId')
-  async getByUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<{ cattleMilkRecords: cattle_milk[] }> {
     const records = await this.cattleMilkService.findByUserId(userId);
     return { cattleMilkRecords: records };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('cattle/:cattleId')
-  async getByCattleId(@Param('cattleId', ParseIntPipe) cattleId: number) {
+  async getByCattleId(
+    @Param('cattleId', ParseIntPipe) cattleId: number,
+  ): Promise<{ cattleMilkRecords: cattle_milk[] }> {
     const records = await this.cattleMilkService.findByCattleId(cattleId);
     return { cattleMilkRecords: records };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    const record = await this.cattleMilkService.findById(id);
-    if (!record) {
-      throw new HttpException(
-        'Cattle milk record not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return record;
+  async getById(@Param('id', ParseIntPipe) id: number): Promise<cattle_milk> {
+    return this.cattleMilkService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addRecord(@Body() createDto: CreateCattleMilkDto) {
+  async addRecord(
+    @Body() createDto: CreateCattleMilkDto,
+  ): Promise<cattle_milk> {
     return this.cattleMilkService.create(createDto);
   }
 
@@ -62,20 +62,15 @@ export class CattleMilkController {
   async updateRecord(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateCattleMilkDto,
-  ) {
-    const updatedRecord = await this.cattleMilkService.update(id, updateDto);
-    if (!updatedRecord) {
-      throw new HttpException(
-        'Cattle milk record not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return updatedRecord;
+  ): Promise<cattle_milk> {
+    return this.cattleMilkService.update(id, updateDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteRecord(@Param('id', ParseIntPipe) id: number) {
+  async deleteRecord(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
     const deleted = await this.cattleMilkService.delete(id);
     if (!deleted) {
       throw new HttpException(
@@ -90,7 +85,7 @@ export class CattleMilkController {
   @Get('animal-names/:cattleId')
   async getAnimalNamesForHerd(
     @Param('cattleId', ParseIntPipe) cattleId: number,
-  ) {
+  ): Promise<{ animalNames: string[] }> {
     const names =
       await this.cattleMilkService.findAnimalNamesByCattleId(cattleId);
     return { animalNames: names };
@@ -98,7 +93,9 @@ export class CattleMilkController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetWarehouse(@Body() resetDto: ResetCattleMilkDto) {
+  async resetWarehouse(
+    @Body() resetDto: ResetCattleMilkDto,
+  ): Promise<{ message: string }> {
     return this.cattleMilkService.resetTable(resetDto.userId);
   }
 }

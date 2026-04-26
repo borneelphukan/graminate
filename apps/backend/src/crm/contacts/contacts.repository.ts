@@ -1,12 +1,17 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
+import { contacts } from '@prisma/client';
 
 @Injectable()
 export class ContactsRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async getContacts(id?: string) {
+
+  async getContacts(id?: string): Promise<{
+    status: number;
+    data: { contacts?: contacts[]; error?: string };
+  }> {
     try {
-      let contacts;
+      let contactsList: contacts[];
 
       if (id) {
         const parsedId = parseInt(id, 10);
@@ -17,24 +22,27 @@ export class ContactsRepository {
           };
         }
 
-        contacts = await this.prisma.contacts.findMany({
+        contactsList = await this.prisma.contacts.findMany({
           where: { user_id: parsedId },
           orderBy: { created_at: 'desc' },
         });
       } else {
-        contacts = await this.prisma.contacts.findMany({
+        contactsList = await this.prisma.contacts.findMany({
           orderBy: { created_at: 'desc' },
         });
       }
 
-      return { status: 200, data: { contacts } };
+      return { status: 200, data: { contacts: contactsList } };
     } catch (err) {
       console.error('Error fetching contacts:', err);
       return { status: 500, data: { error: 'Failed to fetch contacts' } };
     }
   }
 
-  async addContact(body: any) {
+  async addContact(body: Partial<contacts>): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contact?: contacts };
+  }> {
     const {
       user_id,
       first_name,
@@ -92,7 +100,10 @@ export class ContactsRepository {
     }
   }
 
-  async deleteContact(id: string) {
+  async deleteContact(id: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contact?: contacts };
+  }> {
     const parsedId = parseInt(id, 10);
 
     if (!id || isNaN(parsedId)) {
@@ -125,7 +136,10 @@ export class ContactsRepository {
     }
   }
 
-  async updateContact(body: any) {
+  async updateContact(body: Partial<contacts> & { id?: string }): Promise<{
+    status: number;
+    data: { message?: string; error?: string; contact?: contacts };
+  }> {
     const {
       id,
       first_name,
@@ -140,8 +154,11 @@ export class ContactsRepository {
       postal_code,
     } = body;
 
+    if (!id) {
+      return { status: 400, data: { error: 'Invalid contact ID' } };
+    }
     const parsedId = parseInt(id, 10);
-    if (!id || isNaN(parsedId)) {
+    if (isNaN(parsedId)) {
       return { status: 400, data: { error: 'Invalid contact ID' } };
     }
 
@@ -157,19 +174,19 @@ export class ContactsRepository {
       const updatedContact = await this.prisma.contacts.update({
         where: { contact_id: parsedId },
         data: {
-          first_name,
+          first_name: first_name || existing.first_name,
           last_name: last_name || null,
           email: email || null,
           phone_number:
             typeof phone_number === 'string' && phone_number.trim() === ''
               ? null
-              : phone_number,
-          type,
-          address_line_1,
+              : phone_number || existing.phone_number,
+          type: type || existing.type,
+          address_line_1: address_line_1 || existing.address_line_1,
           address_line_2: address_line_2 || null,
-          city,
-          state,
-          postal_code,
+          city: city || existing.city,
+          state: state || existing.state,
+          postal_code: postal_code || existing.postal_code,
         },
       });
 
@@ -191,7 +208,9 @@ export class ContactsRepository {
       await this.prisma.contacts.deleteMany({});
       return { message: `Contacts table reset for user ${userId}` };
     } catch (error) {
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
     }
   }
 }

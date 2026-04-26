@@ -14,6 +14,7 @@ import {
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto, UpdateInventoryDto } from './inventory.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { inventory } from '@prisma/client';
 
 @Controller('inventory')
 export class InventoryController {
@@ -27,7 +28,7 @@ export class InventoryController {
     @Query('offset') offset?: string,
     @Query('item_group') itemGroup?: string,
     @Query('warehouse_id') warehouseId?: string,
-  ) {
+  ): Promise<{ items: inventory[] }> {
     const items = await this.inventoryService.findByUserIdWithFilters(
       Number(userId),
       {
@@ -42,7 +43,9 @@ export class InventoryController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addInventory(@Body() createDto: CreateInventoryDto) {
+  async addInventory(
+    @Body() createDto: CreateInventoryDto,
+  ): Promise<inventory> {
     const newItem = await this.inventoryService.create(createDto);
     return newItem;
   }
@@ -52,7 +55,7 @@ export class InventoryController {
   async updateInventory(
     @Param('id') id: string,
     @Body() updateDto: UpdateInventoryDto,
-  ) {
+  ): Promise<inventory> {
     const updatedItem = await this.inventoryService.update(
       Number(id),
       updateDto,
@@ -65,7 +68,7 @@ export class InventoryController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteInventory(@Param('id') id: string) {
+  async deleteInventory(@Param('id') id: string): Promise<{ message: string }> {
     const deleted = await this.inventoryService.delete(Number(id));
     if (!deleted) {
       throw new HttpException('Inventory item not found', HttpStatus.NOT_FOUND);

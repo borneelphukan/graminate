@@ -48,7 +48,8 @@ export class CreateSaleDto {
   @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsPositive({ each: true })
   @ValidateIf(
-    (o) => o.prices_per_unit !== undefined && o.prices_per_unit.length > 0,
+    (o: CreateSaleDto) =>
+      o.prices_per_unit !== undefined && o.prices_per_unit.length > 0,
   )
   prices_per_unit?: number[];
 
@@ -92,7 +93,7 @@ export class UpdateSaleDto {
   @IsArray()
   @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsPositive({ each: true })
-  @ValidateIf((o) => o.prices_per_unit !== undefined)
+  @ValidateIf((o: UpdateSaleDto) => o.prices_per_unit !== undefined)
   prices_per_unit?: number[];
 
   @IsOptional()

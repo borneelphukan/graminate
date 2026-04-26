@@ -13,6 +13,7 @@ import {
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, ResetTaskDto, UpdateTaskDto } from './tasks.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { tasks, kanban_columns } from '@prisma/client';
 
 @Controller('tasks')
 export class TasksController {
@@ -24,18 +25,18 @@ export class TasksController {
     @Param('userId', ParseIntPipe) userId: number,
     @Query('project') project?: string,
     @Query('deadlineDate') deadlineDate?: string,
-  ) {
-    const tasks = await this.tasksService.getTasksByUser(
+  ): Promise<{ tasks: tasks[] }> {
+    const tasksList = await this.tasksService.getTasksByUser(
       userId,
       project,
       deadlineDate,
     );
-    return { tasks };
+    return { tasks: tasksList };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async createTask(@Body() createTaskDto: CreateTaskDto) {
+  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<tasks> {
     const task = await this.tasksService.createTask(createTaskDto);
     return task;
   }
@@ -45,21 +46,23 @@ export class TasksController {
   async updateTask(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
-  ) {
+  ): Promise<tasks> {
     const task = await this.tasksService.updateTask(id, updateTaskDto);
     return task;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteTask(@Param('id', ParseIntPipe) id: number) {
+  async deleteTask(@Param('id', ParseIntPipe) id: number): Promise<tasks> {
     const task = await this.tasksService.deleteTask(id);
     return task;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetInventory(@Body() resetDto: ResetTaskDto) {
+  async resetInventory(
+    @Body() resetDto: ResetTaskDto,
+  ): Promise<{ message: string }> {
     return this.tasksService.resetTable(resetDto.userId);
   }
 
@@ -68,7 +71,7 @@ export class TasksController {
   async getKanbanColumns(
     @Param('userId', ParseIntPipe) userId: number,
     @Query('project') project: string,
-  ) {
+  ): Promise<{ columns: kanban_columns[] }> {
     const columns = await this.tasksService.getKanbanColumns(userId, project);
     return { columns };
   }
@@ -83,7 +86,7 @@ export class TasksController {
       title: string;
       position: number;
     },
-  ) {
+  ): Promise<kanban_columns> {
     const column = await this.tasksService.addKanbanColumn(
       body.userId,
       body.project,
@@ -98,7 +101,7 @@ export class TasksController {
   async updateKanbanColumn(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: { title?: string; position?: number },
-  ) {
+  ): Promise<kanban_columns> {
     const column = await this.tasksService.updateKanbanColumn(
       id,
       body.title,
@@ -109,7 +112,9 @@ export class TasksController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('column/delete/:id')
-  async deleteKanbanColumn(@Param('id', ParseIntPipe) id: number) {
+  async deleteKanbanColumn(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<kanban_columns> {
     const column = await this.tasksService.deleteKanbanColumn(id);
     return column;
   }

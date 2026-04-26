@@ -17,6 +17,7 @@ import {
   ResetPoultryEggDto,
 } from './poultry-eggs.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { poultry_eggs } from '@prisma/client';
 
 @Controller('poultry-eggs')
 export class PoultryEggsController {
@@ -29,7 +30,7 @@ export class PoultryEggsController {
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('flockId') flockId?: string,
-  ) {
+  ): Promise<{ records: poultry_eggs[] }> {
     const records = await this.poultryEggsService.findByUserIdWithFilters(
       Number(userId),
       {
@@ -43,7 +44,9 @@ export class PoultryEggsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('record/:id')
-  async getPoultryEggRecordById(@Param('id') id: string) {
+  async getPoultryEggRecordById(
+    @Param('id') id: string,
+  ): Promise<poultry_eggs> {
     const record = await this.poultryEggsService.findById(Number(id));
     if (!record) {
       throw new NotFoundException('Poultry egg record not found');
@@ -53,7 +56,9 @@ export class PoultryEggsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addPoultryEggRecord(@Body() createDto: CreatePoultryEggDto) {
+  async addPoultryEggRecord(
+    @Body() createDto: CreatePoultryEggDto,
+  ): Promise<poultry_eggs> {
     const newRecord = await this.poultryEggsService.create(createDto);
     return newRecord;
   }
@@ -63,7 +68,7 @@ export class PoultryEggsController {
   async updatePoultryEggRecord(
     @Param('id') id: string,
     @Body() updateDto: UpdatePoultryEggDto,
-  ) {
+  ): Promise<poultry_eggs> {
     const updatedRecord = await this.poultryEggsService.update(
       Number(id),
       updateDto,
@@ -76,7 +81,9 @@ export class PoultryEggsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deletePoultryEggRecord(@Param('id') id: string) {
+  async deletePoultryEggRecord(
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
     const deleted = await this.poultryEggsService.delete(Number(id));
     if (!deleted) {
       throw new NotFoundException('Poultry egg record not found');
@@ -86,7 +93,9 @@ export class PoultryEggsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async resetUserPoultryEggRecords(@Body() resetDto: ResetPoultryEggDto) {
+  async resetUserPoultryEggRecords(
+    @Body() resetDto: ResetPoultryEggDto,
+  ): Promise<{ message: string }> {
     return this.poultryEggsService.resetTable(resetDto.userId);
   }
 }
