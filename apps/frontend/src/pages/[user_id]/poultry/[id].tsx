@@ -42,6 +42,7 @@ import Loader from "@/components/ui/Loader";
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
 import WeatherModal from "@/components/modals/WeatherModal";
+import EggModal from "@/components/modals/poultry/EggModal";
 
 ChartJS.register(
   CategoryScale,
@@ -173,6 +174,7 @@ const PoultryDetail = () => {
   );
   const [loadingFlockData, setLoadingFlockData] = useState(true);
   const [showFlockForm, setShowFlockForm] = useState(false);
+  const [showEggModal, setShowEggModal] = useState(false);
   const [flockAge, setFlockAge] = useState<string>("Calculating...");
 
   const [latestPoultryHealthData, setLatestPoultryHealthData] =
@@ -755,10 +757,7 @@ const PoultryDetail = () => {
 
   const handleLogEggCollection = () => {
     if (parsedUserId && parsedFlockId) {
-      router.push(
-        `/${parsedUserId}/poultry/poultry-eggs?flock_id=${parsedFlockId}`
-      );
-    } else {
+      setShowEggModal(true);
     }
   };
 
@@ -1063,6 +1062,20 @@ const PoultryDetail = () => {
           fedToday: timesFedToday
         }}
       />
+      {showEggModal && parsedUserId && parsedFlockId && (
+        <EggModal
+          isOpen={showEggModal}
+          onClose={() => setShowEggModal(false)}
+          formTitle={`Log Egg Collection for ${selectedFlockData?.flock_name || "Flock"}`}
+          flockId={Number(parsedFlockId)}
+          userId={Number(parsedUserId)}
+          allEggRecords={allEggRecords}
+          onRecordSaved={() => {
+            fetchAllPoultryEggData();
+            setShowEggModal(false);
+          }}
+        />
+      )}
     </PlatformLayout>
   );
 };

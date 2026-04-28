@@ -118,12 +118,12 @@ const WeatherModal = ({
     if (!data || !module || !contextData || plan !== "PRO") return;
     setLoadingAI(true);
     try {
-      const prompt = `Weather: ${data.current.temperature2m}°C, ${data.current.relativeHumidity2m}% humidity. 
+      const prompt = `Weather: ${data.current.temperature2m.toFixed(1)}°C, ${data.current.relativeHumidity2m.toFixed(1)}% humidity. 
       Farm Context: ${JSON.stringify(contextData)}. 
       For this ${module.replace("_", " ")} farm, provide brief "things to do" to maintain productivity under current conditions.
       
       Structure:
-      1. Use these exact headers in bold: **Temperature (${data.current.temperature2m}°C)**, **Humidity (${data.current.relativeHumidity2m}%)**, **Daylight (${data.daily.daylightDuration[0]/60} hours)**, **Precipitation (${data.daily.precipitationSum[0]} mm)**, and **Wind (${data.current.windSpeed10m} km/h)**.
+      1. Use these exact headers in bold: **Temperature (${data.current.temperature2m.toFixed(1)}°C)**, **Humidity (${data.current.relativeHumidity2m.toFixed(1)}%)**, **Daylight (${(data.daily.daylightDuration[0] / 3600).toFixed(1)} hours)**, **Precipitation (${data.daily.precipitationSum[0].toFixed(1)} mm)**, and **Wind (${data.current.windSpeed10m.toFixed(1)} km/h)**.
       2. Under each header, provide 1-2 very brief, concise, and direct action points using **unordered bullet points** (- or *).
       3. Use available inventory/data from the context if relevant.
       4. Do NOT list the weather values or farm data points themselves.

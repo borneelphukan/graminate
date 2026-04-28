@@ -435,17 +435,17 @@ const Calendar = () => {
           "text-dark dark:text-light dark:border-blue-400 hover:bg-green-300 dark:hover:bg-green-200 ";
       } else if (isPast) {
         classes +=
-          "text-gray-300 dark:text-gray-200 cursor-default hover:bg-gray-400 dark:hover:bg-gray-200 ";
+          "text-gray-300 dark:text-gray-300 cursor-default hover:bg-gray-400 dark:hover:bg-gray-600 ";
       } else {
         classes +=
-          "text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-200 ";
+          "text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-600 ";
       }
     }
     return classes;
   };
 
   return (
-    <div className="dark:bg-gray-800 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
+    <div className="dark:bg-gray-700 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
       <InfoModal
         isOpen={showInvalidTimeModal}
         onClose={() => setShowInvalidTimeModal(false)}

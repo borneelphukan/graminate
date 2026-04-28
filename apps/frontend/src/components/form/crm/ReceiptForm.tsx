@@ -626,7 +626,7 @@ const ReceiptForm = ({ userId, onClose }: ReceiptFormProps) => {
                   />
                   <Input
                     id="billToState"
-                    label="State / Province"
+                    label="State"
                     placeholder="Customer's state"
                     value={receiptsValues.billToState}
                     onChange={(e) =>

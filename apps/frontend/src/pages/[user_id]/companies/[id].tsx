@@ -431,7 +431,7 @@ const CompanyDetails = () => {
                 />
                 <Input
                   id="state"
-                  label="State / Province"
+                  label="State"
                   value={formData.state}
                   onChange={(e) => handleInputChange("state", e.target.value)}
                 />

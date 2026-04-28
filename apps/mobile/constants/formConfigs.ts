@@ -421,7 +421,7 @@ export const WAREHOUSE_FIELDS: FormField[] = [
   },
   {
     name: "state",
-    label: "State / Province",
+    label: "State",
     type: "text",
     halfWidth: true,
     required: true,

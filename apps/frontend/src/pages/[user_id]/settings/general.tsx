@@ -377,11 +377,11 @@ const General = () => {
                               id="state-input"
                               label={
                                 t("state" as NavPanelTranslationKey) ||
-                                "State/Province"
+                                "State"
                               }
                               placeholder={
                                 t("enterState" as NavPanelTranslationKey) ||
-                                "Enter State/Province"
+                                "Enter State"
                               }
                               value={user.state}
                               onChange={(e) =>

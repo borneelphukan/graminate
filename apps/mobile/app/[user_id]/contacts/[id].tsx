@@ -428,7 +428,7 @@ Email: ${formData.email || "N/A"}
               />
               <TextInput
                 mode="outlined"
-                label="State / Province"
+                label="State"
                 value={formData.state}
                 onChangeText={(val) => handleInputChange("state", val)}
               />

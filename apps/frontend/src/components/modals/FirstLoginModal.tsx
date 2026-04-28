@@ -458,7 +458,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
               />
               <Input
                 id="state"
-                label="State/Province/Region"
+                label="State"
                 placeholder="e.g. Assam"
                 value={state}
                 onChange={(e) => setState(e.target.value)}

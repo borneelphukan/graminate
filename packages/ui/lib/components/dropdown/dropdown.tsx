@@ -74,7 +74,7 @@ const Dropdown = ({
     return (
       <div className={`w-full ${className}`}>
         {label && (
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-dark dark:text-light mb-1">
             {label}
           </label>
         )}
@@ -152,7 +152,7 @@ const Dropdown = ({
         <label
           htmlFor={dropdownId}
           className={`block mb-1 text-sm font-medium ${
-            variant === "small" ? "text-dark dark:text-gray-300" : "text-gray-200 dark:text-gray-300"
+            variant === "small" ? "text-dark dark:text-light" : "text-dark dark:text-light"
           }`}
         >
           {label}

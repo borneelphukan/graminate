@@ -339,8 +339,8 @@ const GeneralSettingsScreen = () => {
                 }
               />
               <TextInput
-                label="State/Province"
-                placeholder="Enter State/Province"
+                label="State"
+                placeholder="Enter State"
                 value={user.state}
                 onChangeText={(val) =>
                   setUser((prev) => ({ ...prev, state: val }))

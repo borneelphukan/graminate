@@ -142,7 +142,7 @@ const WarehouseForm = ({
       isValid = false;
     }
     if (!warehouseData.state.trim()) {
-      errors.state = "State / Province is required.";
+      errors.state = "State is required.";
       isValid = false;
     }
     if (!warehouseData.postal_code.trim()) {
@@ -284,7 +284,7 @@ const WarehouseForm = ({
                   onSelect={(value: string) =>
                     setWarehouseData({ ...warehouseData, category: value })
                   }
-                  label="Warehouse Category (Service Mapping)"
+                  label="Warehouse Category"
                   width="full"
                 />
               </div>
@@ -333,7 +333,7 @@ const WarehouseForm = ({
 
                   <Input
                     id="state"
-                    label="State / Province"
+                    label="State"
                     placeholder="e.g. Assam"
                     value={warehouseData.state}
                     onChange={(e) =>

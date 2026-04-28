@@ -23,6 +23,7 @@ import {
   startOfMonth,
   endOfMonth,
   isBefore,
+  startOfDay,
   min as minDateFn,
   addDays as addDaysDateFns,
 } from "date-fns";
@@ -52,8 +53,6 @@ type LatestEggMetrics = {
 
 export type PeriodOption = "Weekly" | "Monthly" | "3 Months";
 const TIME_RANGE_OPTIONS: PeriodOption[] = ["Weekly", "Monthly", "3 Months"];
-const today = new Date();
-today.setHours(0, 0, 0, 0);
 
 type ViewOption = "graphs" | "metrics";
 
@@ -117,6 +116,12 @@ const PoultryEggCard = ({
   onPeriodChange,
   earliestDataDate,
 }: Props) => {
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
   const [activeView, setActiveView] = useState<ViewOption>("graphs");
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const [selectedTimeRange, setSelectedTimeRange] =
@@ -167,38 +172,32 @@ const PoultryEggCard = ({
   }, [selectedTimeRange]);
 
   const navigationStates = useMemo(() => {
-    let isPrevDisabled = false;
     const isNextDisabled = dateOffset === 0;
+    let isPrevDisabled = true;
 
     if (earliestDataDate) {
+      const earliestDateObj = new Date(earliestDataDate);
+      const { viewStartDate } = currentInterval;
+      
+      let prevPeriodEndDate: Date;
       if (selectedTimeRange === "Weekly") {
-        const prevWeekStart = startOfWeek(addWeeks(today, dateOffset - 1), {
-          weekStartsOn: 1,
-        });
-        isPrevDisabled =
-          isBefore(prevWeekStart, earliestDataDate) &&
-          !isBefore(addDaysDateFns(earliestDataDate, 6), prevWeekStart);
+        // End of the previous week
+        prevPeriodEndDate = endOfWeek(addWeeks(viewStartDate, -1), { weekStartsOn: 1 });
       } else if (selectedTimeRange === "Monthly") {
-        const prevMonthStart = startOfMonth(addMonths(today, dateOffset - 1));
-        isPrevDisabled =
-          isBefore(prevMonthStart, earliestDataDate) &&
-          !isBefore(endOfMonth(earliestDataDate), prevMonthStart);
-      } else if (selectedTimeRange === "3 Months") {
-        const threeMonthsAgoStart = startOfMonth(
-          subMonths(addMonths(today, dateOffset), 2 + 3)
-        );
-        isPrevDisabled =
-          isBefore(threeMonthsAgoStart, earliestDataDate) &&
-          !isBefore(
-            endOfMonth(addMonths(earliestDataDate, 2)),
-            threeMonthsAgoStart
-          );
+        // End of the previous month
+        prevPeriodEndDate = endOfMonth(addMonths(viewStartDate, -1));
+      } else {
+        // For 3 Months, we check if there's any data before the current 3-month window's start
+        prevPeriodEndDate = endOfMonth(addMonths(viewStartDate, -1));
       }
-    } else {
-      isPrevDisabled = true;
+
+      // We can go back if the previous period ends on or after the earliest data date.
+      // We use startOfDay for both to avoid 23:59 vs 00:00 comparison issues.
+      isPrevDisabled = isBefore(startOfDay(prevPeriodEndDate), startOfDay(earliestDateObj));
     }
+
     return { isPrevDisabled, isNextDisabled };
-  }, [dateOffset, selectedTimeRange, earliestDataDate]);
+  }, [dateOffset, selectedTimeRange, earliestDataDate, currentInterval]);
 
   const handleTimeRangeSelect = (period: string) => {
     setSelectedTimeRange(period as PeriodOption);
@@ -404,39 +403,37 @@ const PoultryEggCard = ({
     }
 
     if (activeView === "graphs") {
-      if (
+      const hasNoDataInPeriod =
         eggCollectionLineData.labels?.length === 0 &&
         (!eggCollectionLineData.datasets ||
-          eggCollectionLineData.datasets.every((ds) => ds.data.length === 0)) &&
-        !loading
-      ) {
-        return (
-          <div className="flex flex-col justify-center items-center h-full min-h-[300px] text-center p-4">
-            <Icon
-              type={"show_chart"}
-              className="h-12 w-12 text-gray-300 mb-4"
-            />
-            <p className="text-dark dark:text-light font-semibold">
-              No egg collection data available for the selected period.
-            </p>
-            <p className="text-sm text-dark dark:text-gray-300">
-              Try logging some egg collections or adjusting filters.
-            </p>
-          </div>
-        );
-      }
+          eggCollectionLineData.datasets.every((ds) => ds.data.length === 0));
+
       return (
         <>
           <div className="flex-grow mt-2" style={{ minHeight: "300px" }}>
-            <div className="relative h-full min-h-[250px] sm:min-h-[280px] md:min-h-[320px]">
-              {loading && (
-                <div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex justify-center items-center z-10">
-                  <Loader />
-                </div>
-              )}
-
-              <Line options={finalOptions} data={eggCollectionLineData} />
-            </div>
+            {hasNoDataInPeriod && !loading ? (
+              <div className="flex flex-col justify-center items-center h-full min-h-[300px] text-center p-4">
+                <Icon
+                  type={"show_chart"}
+                  className="h-12 w-12 text-gray-300 mb-4"
+                />
+                <p className="text-dark dark:text-light font-semibold">
+                  No egg collection data available for the selected period.
+                </p>
+                <p className="text-sm text-dark dark:text-gray-300">
+                  Try logging some egg collections or adjusting filters.
+                </p>
+              </div>
+            ) : (
+              <div className="relative h-full min-h-[250px] sm:min-h-[280px] md:min-h-[320px]">
+                {loading && (
+                  <div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex justify-center items-center z-10">
+                    <Loader />
+                  </div>
+                )}
+                <Line options={finalOptions} data={eggCollectionLineData} />
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-center space-x-2 mt-5">
             <Button

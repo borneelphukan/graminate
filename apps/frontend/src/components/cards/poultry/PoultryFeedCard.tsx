@@ -375,7 +375,7 @@ const PoultryFeedCard = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-lg flex flex-col h-full">
+    <div className="bg-white dark:bg-gray-700 p-4 md:p-6 rounded-xl shadow-lg flex flex-col h-full">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
         <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
           Feed Status & Consumption
