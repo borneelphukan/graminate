@@ -104,13 +104,18 @@ export class UserRepository {
   async getUserById(id: string): Promise<{
     status: number;
     data: {
-      user?: Partial<users> & { is_subscription_active: boolean };
+      user?: any;
       error?: string;
     };
   }> {
     try {
+      const userId = Number(id);
+      if (isNaN(userId)) {
+        return { status: 400, data: { error: 'Invalid user ID' } };
+      }
+
       const user = await this.prisma.users.findUnique({
-        where: { user_id: Number(id) },
+        where: { user_id: userId },
       });
 
       if (!user) {
@@ -123,7 +128,7 @@ export class UserRepository {
 
       if (currentExpiry && now > currentExpiry && user.pending_plan) {
         const updatedUser = await this.prisma.users.update({
-          where: { user_id: Number(id) },
+          where: { user_id: userId },
           data: {
             plan: user.pending_plan,
             pending_plan: null,
@@ -158,6 +163,7 @@ export class UserRepository {
                 ? (user.sub_type as string)
                     .replace(/[{}"]/g, '')
                     .split(',')
+                    .map((s) => s.trim())
                     .filter(Boolean)
                 : [],
             address_line_1: user.address_line_1 || '',
@@ -170,7 +176,7 @@ export class UserRepository {
             plan: currentPlan,
             country: user.country || '',
             subscription_expires_at: currentExpiry,
-            opening_balance: user.opening_balance,
+            opening_balance: user.opening_balance ? Number(user.opening_balance) : 0,
             is_subscription_active: isSubscriptionActive,
             entity_type: user.entity_type,
             business_size: user.business_size,

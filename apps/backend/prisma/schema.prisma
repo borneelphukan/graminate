@@ -481,7 +481,7 @@ model users {
   city                    String?          @db.VarChar(100)
   state                   String?          @db.VarChar(100)
   postal_code             String?          @db.VarChar(20)
-  darkMode                Boolean          @default(false)
+  darkMode                Boolean          @default(false) @map("darkMode")
   widgets                 String[]         @default([])
   plan                    user_plan_type   @default(FREE)
   subscription_expires_at DateTime?        @db.Timestamp(6)
@@ -492,13 +492,13 @@ model users {
   pending_plan            user_plan_type?
   pending_plan_source     String?
   apiculture              apiculture[]
-  floriculture            floriculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]
   companies               companies[]
   contacts                contacts[]
   deals                   deals[]
   expenses                expenses[]
+  floriculture            floriculture[]
   inventory               inventory[]
   invoices                invoices[]
   kanban_columns          kanban_columns[]
@@ -576,24 +576,23 @@ model loans {
   users         users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model floriculture {
+  flower_id     Int       @id @default(autoincrement())
+  user_id       Int
+  flower_name   String
+  flower_type   String?
+  area          Float?
+  method        String?   @db.VarChar(50)
+  planting_date DateTime? @db.Date
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  users         users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+}
+
 enum payment_status {
   PENDING
   SUCCESS
   FAILED
 }
-
-model floriculture {
-  flower_id    Int       @id @default(autoincrement())
-  user_id      Int
-  flower_name  String
-  flower_type  String?
-  area         Float?
-  method       String?   @db.VarChar(50)
-  planting_date DateTime? @db.Date
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
-  users        users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
-}
-
 
 enum user_plan_type {
   FREE

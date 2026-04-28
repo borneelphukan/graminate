@@ -30,7 +30,7 @@ export class UserService {
   async getUserById(id: string): Promise<{
     status: number;
     data: {
-      user?: Partial<users> & { is_subscription_active: boolean };
+      user?: any;
       error?: string;
     };
   }> {
