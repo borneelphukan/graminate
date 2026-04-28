@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { otpStore } from '@/stores/store';
 import * as nodemailer from 'nodemailer';
-import mjml2html from 'mjml';
+const mjml2html = require('mjml');
 
 @Injectable()
 export class OtpRepository {
@@ -42,11 +42,16 @@ export class OtpRepository {
   }
 
   private transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   async sendOtp(email: string): Promise<{
@@ -82,7 +87,7 @@ export class OtpRepository {
       console.error('Error sending OTP:', err);
       return {
         status: 500,
-        data: { error: 'Something went wrong' },
+        data: { error: err.message || 'Something went wrong' },
       };
     }
   }

@@ -13,7 +13,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './admin.dto';
 import { RequestWithUser } from '@/common/types/request.type';
-import { users } from '@prisma/client';
+import type { users } from '@prisma/client';
 
 @Controller('admin')
 export class AdminController {

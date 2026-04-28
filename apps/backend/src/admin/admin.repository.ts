@@ -7,7 +7,7 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
-import { users } from '@prisma/client';
+import type { users } from '@prisma/client';
 
 @Injectable()
 export class AdminRepository {
