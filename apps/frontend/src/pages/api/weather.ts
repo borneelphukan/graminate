@@ -27,8 +27,15 @@ export default async function handler(
 
     const weatherData = await getWeather(latitude, longitude);
     return res.status(200).json(weatherData);
-  } catch (error) {
-    console.error("Error fetching weather data:", error);
-    return res.status(500).json({ error: "Failed to fetch weather data" });
+  } catch (error: any) {
+    console.error("API Weather Route Error:", {
+      message: error.message,
+      stack: error.stack,
+      query: req.query
+    });
+    return res.status(500).json({ 
+      error: "Failed to fetch weather data", 
+      details: error.message 
+    });
   }
 }

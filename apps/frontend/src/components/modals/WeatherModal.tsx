@@ -306,10 +306,10 @@ const WeatherModal = ({
             )}
             <div>
               <p className="text-sm text-dark dark:text-light font-bold tracking-tight uppercase leading-none opacity-60">
-                {activeView === "summary" ? "Local Weather" : "Forecast Report"}
+                {activeView === "summary" ? (locationName || "Local Weather") : "Forecast Report"}
               </p>
               <h2 className="text-xl font-black text-dark dark:text-light mt-1 flex items-center gap-2">
-                {locationName || "Detecting..."}
+                {activeView === "summary" ? "Current Conditions" : "Extended Forecast"}
                 {lastFetched && (
                   <span className="text-[10px] font-medium opacity-40 uppercase tracking-widest bg-gray-400/10 px-2 py-0.5 rounded-full">
                     Updated {lastFetched.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

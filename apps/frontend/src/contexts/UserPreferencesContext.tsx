@@ -27,6 +27,8 @@ type UserPreferencesContextType = {
   plan: string | null;
   country: string | null;
   setCountry: (country: string | null) => void;
+  city: string | null;
+  setCity: (city: string | null) => void;
   subTypes: string[];
   entityType: string | null;
   setEntityType: (type: string | null) => void;
@@ -104,6 +106,7 @@ export const UserPreferencesProvider = ({
   const [userType, setUserType] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null);
   const [subTypes, setSubTypesState] = useState<string[]>([]);
   const [entityType, setEntityType] = useState<string | null>(null);
   const [widgets, setWidgetsState] = useState<string[]>([]);
@@ -193,6 +196,7 @@ export const UserPreferencesProvider = ({
       setUserType(user.type || "Producer");
       setPlan(user.plan || null);
       setCountry(user.country || null);
+      setCity(user.city || null);
       setSubTypesState(Array.isArray(user.sub_type) ? user.sub_type : []);
       setEntityType(user.entity_type || null);
       setWidgetsState(Array.isArray(user.widgets) ? user.widgets : []);
@@ -202,6 +206,7 @@ export const UserPreferencesProvider = ({
       setUserType("Producer");
       setPlan(null);
       setCountry(null);
+      setCity(null);
       setSubTypesState([]);
       setWidgetsState([]);
       throw error;
@@ -237,6 +242,8 @@ export const UserPreferencesProvider = ({
         plan,
         country,
         setCountry,
+        city,
+        setCity,
         subTypes,
         entityType,
         setEntityType,

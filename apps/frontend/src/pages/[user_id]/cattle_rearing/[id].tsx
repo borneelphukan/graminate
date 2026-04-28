@@ -12,6 +12,7 @@ import { Button } from "@graminate/ui";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
+import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 import CattleForm, { CattleRearingData } from "@/components/form/CattleForm";
 import MilkCard from "@/components/cards/cattle_rearing/MilkCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
@@ -75,6 +76,7 @@ const CattleDetailPage = () => {
     temperatureScale,
     timeFormat,
     language: currentLanguage,
+    city: userCity,
   } = useUserPreferences();
 
   const [selectedCattleData, setSelectedCattleData] =
@@ -202,7 +204,7 @@ const CattleDetailPage = () => {
       }
     };
 
-    const getLocationAndFetch = () => {
+    const getLocationAndFetch = async () => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -210,9 +212,32 @@ const CattleDetailPage = () => {
             setCoords({ lat: latitude, lon: longitude });
             fetchWeather(latitude, longitude);
           },
-          () => console.error("Geolocation permission denied or error."),
-          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+          async (err) => {
+            console.warn("Geolocation failed or denied, trying city fallback:", err.message);
+            if (userCity) {
+              const cityCoords = await getCoordsFromCity(userCity);
+              if (cityCoords) {
+                setCoords({ lat: cityCoords.lat, lon: cityCoords.lon });
+                fetchWeather(cityCoords.lat, cityCoords.lon);
+                return;
+              }
+            }
+            console.error("Geolocation failed and no city fallback available.");
+            setWeatherLoading(false);
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
         );
+      } else {
+        console.warn("Geolocation not supported, trying city fallback.");
+        if (userCity) {
+          const cityCoords = await getCoordsFromCity(userCity);
+          if (cityCoords) {
+            setCoords({ lat: cityCoords.lat, lon: cityCoords.lon });
+            fetchWeather(cityCoords.lat, cityCoords.lon);
+            return;
+          }
+        }
+        setWeatherLoading(false);
       }
     };
 

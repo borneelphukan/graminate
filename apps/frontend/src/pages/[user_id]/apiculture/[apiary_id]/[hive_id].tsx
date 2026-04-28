@@ -4,6 +4,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
+import AlertDisplay from "@/components/ui/AlertDisplay";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
   useUserPreferences,
@@ -15,6 +16,7 @@ import axios from "axios";
 import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import ToggleSwitch from "@/components/ui/Switch/ToggleSwitch";
+import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 import InspectionModal, {
   InspectionData,
 } from "@/components/modals/apiculture/InspectionModal";
@@ -78,7 +80,7 @@ const HiveDetailsPage = () => {
   });
   const [weatherLoading, setWeatherLoading] = useState(true);
 
-  const { language: currentLanguage, temperatureScale } = useUserPreferences();
+  const { language: currentLanguage, temperatureScale, city: userCity } = useUserPreferences();
 
   const convertToFahrenheit = useCallback(
     (celsius: number): number => Math.round(celsius * (9 / 5) + 32),
@@ -178,18 +180,34 @@ const HiveDetailsPage = () => {
         setWeatherLoading(false);
       }
     };
-    const getLocationAndFetch = () => {
+    const getLocationAndFetch = async () => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) =>
             fetchWeather(position.coords.latitude, position.coords.longitude),
-          () => {
-            console.error("Geolocation permission denied or error.");
+          async (err) => {
+            console.warn("Geolocation failed or denied, trying city fallback:", err.message);
+            if (userCity) {
+              const cityCoords = await getCoordsFromCity(userCity);
+              if (cityCoords) {
+                fetchWeather(cityCoords.lat, cityCoords.lon);
+                return;
+              }
+            }
+            console.error("Geolocation failed and no city fallback available.");
             setWeatherLoading(false);
           },
-          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
         );
       } else {
+        console.warn("Geolocation not supported, trying city fallback.");
+        if (userCity) {
+          const cityCoords = await getCoordsFromCity(userCity);
+          if (cityCoords) {
+            fetchWeather(cityCoords.lat, cityCoords.lon);
+            return;
+          }
+        }
         setWeatherLoading(false);
       }
     };

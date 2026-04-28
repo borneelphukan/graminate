@@ -43,6 +43,7 @@ import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
 import WeatherModal from "@/components/modals/WeatherModal";
 import EggModal from "@/components/modals/poultry/EggModal";
+import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 
 ChartJS.register(
   CategoryScale,
@@ -167,6 +168,7 @@ const PoultryDetail = () => {
     temperatureScale,
     timeFormat,
     language: currentLanguage,
+    city: userCity,
   } = useUserPreferences();
 
   const [selectedFlockData, setSelectedFlockData] = useState<FlockData | null>(
@@ -197,6 +199,8 @@ const PoultryDetail = () => {
 
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
 
   const [sensorUrl] = useState<string | null>(null);
 
@@ -687,6 +691,8 @@ const PoultryDetail = () => {
 
   useEffect(() => {
     const fetchWeather = async (lat: number, lon: number) => {
+      setWeatherLoading(true);
+      setWeatherError(null);
       const endpoint = sensorUrl || "/api/weather";
       try {
         const response = await axios.get(endpoint, {
@@ -707,25 +713,56 @@ const PoultryDetail = () => {
         setTemperature(newWeatherData.temperature);
         setHumidity(newWeatherData.humidity);
         setLightHours(newWeatherData.lightHours);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-        } else {
-        }
+        setCoords({ lat, lon });
+      } catch (error: any) {
+        console.error("Failed to fetch weather data:", error);
+        setWeatherError(error.response?.data?.details || error.message || "Failed to fetch weather data");
+        // Clear loading even on error to avoid infinite spinner
+        if (temperature === null) setTemperature(null);
+        if (humidity === null) setHumidity(null);
+        if (lightHours === null) setLightHours(null);
+      } finally {
+        setWeatherLoading(false);
       }
     };
 
-    const getLocationAndFetch = () => {
+    const getLocationAndFetch = async () => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            setCoords({ lat: latitude, lon: longitude });
             fetchWeather(latitude, longitude);
           },
-          () => {},
-          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+          async (err) => {
+            console.warn("Geolocation failed or denied, trying city fallback:", err.message);
+            if (userCity) {
+              const cityCoords = await getCoordsFromCity(userCity);
+              if (cityCoords) {
+                fetchWeather(cityCoords.lat, cityCoords.lon);
+                return;
+              }
+            }
+            // If city geocoding fails or no city, set values to null to stop loading
+            setWeatherError("Location access denied and no city fallback available.");
+            setTemperature(null);
+            setHumidity(null);
+            setLightHours(null);
+          },
+          { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
         );
       } else {
+        console.warn("Geolocation not supported, trying city fallback.");
+        if (userCity) {
+          const cityCoords = await getCoordsFromCity(userCity);
+          if (cityCoords) {
+            fetchWeather(cityCoords.lat, cityCoords.lon);
+            return;
+          }
+        }
+        setWeatherError("Geolocation not supported and no city fallback available.");
+        setTemperature(null);
+        setHumidity(null);
+        setLightHours(null);
       }
     };
 
@@ -771,7 +808,7 @@ const PoultryDetail = () => {
   };
 
   const isLoadingEnvironment =
-    temperature === null || humidity === null || lightHours === null;
+    weatherLoading || (temperature === null && humidity === null && lightHours === null && !weatherError);
 
   const displayValue = useCallback(
     (

@@ -111,28 +111,28 @@ export async function getWeather(latitude: number, longitude: number) {
           Number(hourly.timeEnd()),
           hourly.interval()
         ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
-        temperature2m: hourly.variables(0)?.valuesArray() ?? [],
-        relativeHumidity2m: hourly.variables(1)?.valuesArray() ?? [],
-        dewPoint2m: hourly.variables(2)?.valuesArray() ?? [],
-        precipitationProbability: hourly.variables(3)?.valuesArray() ?? [],
-        precipitation: hourly.variables(4)?.valuesArray() ?? [],
-        rain: hourly.variables(5)?.valuesArray() ?? [],
-        snowfall: hourly.variables(6)?.valuesArray() ?? [],
-        weatherCode: hourly.variables(7)?.valuesArray() ?? [],
-        cloudCover: hourly.variables(8)?.valuesArray() ?? [],
-        evapotranspiration: hourly.variables(9)?.valuesArray() ?? [],
-        windSpeed10m: hourly.variables(10)?.valuesArray() ?? [],
-        windDirection10m: hourly.variables(11)?.valuesArray() ?? [],
-        soilTemperature0cm: hourly.variables(12)?.valuesArray() ?? [],
-        soilTemperature6cm: hourly.variables(13)?.valuesArray() ?? [],
-        soilTemperature18cm: hourly.variables(14)?.valuesArray() ?? [],
-        soilTemperature54cm: hourly.variables(15)?.valuesArray() ?? [],
-        soilMoisture0To1cm: hourly.variables(16)?.valuesArray() ?? [],
-        soilMoisture1To3cm: hourly.variables(17)?.valuesArray() ?? [],
-        soilMoisture3To9cm: hourly.variables(18)?.valuesArray() ?? [],
-        soilMoisture9To27cm: hourly.variables(19)?.valuesArray() ?? [],
-        soilMoisture27To81cm: hourly.variables(20)?.valuesArray() ?? [],
-        uvIndexHourly: hourly.variables(21)?.valuesArray() ?? [],
+        temperature2m: Array.from(hourly.variables(0)?.valuesArray() ?? []),
+        relativeHumidity2m: Array.from(hourly.variables(1)?.valuesArray() ?? []),
+        dewPoint2m: Array.from(hourly.variables(2)?.valuesArray() ?? []),
+        precipitationProbability: Array.from(hourly.variables(3)?.valuesArray() ?? []),
+        precipitation: Array.from(hourly.variables(4)?.valuesArray() ?? []),
+        rain: Array.from(hourly.variables(5)?.valuesArray() ?? []),
+        snowfall: Array.from(hourly.variables(6)?.valuesArray() ?? []),
+        weatherCode: Array.from(hourly.variables(7)?.valuesArray() ?? []),
+        cloudCover: Array.from(hourly.variables(8)?.valuesArray() ?? []),
+        evapotranspiration: Array.from(hourly.variables(9)?.valuesArray() ?? []),
+        windSpeed10m: Array.from(hourly.variables(10)?.valuesArray() ?? []),
+        windDirection10m: Array.from(hourly.variables(11)?.valuesArray() ?? []),
+        soilTemperature0cm: Array.from(hourly.variables(12)?.valuesArray() ?? []),
+        soilTemperature6cm: Array.from(hourly.variables(13)?.valuesArray() ?? []),
+        soilTemperature18cm: Array.from(hourly.variables(14)?.valuesArray() ?? []),
+        soilTemperature54cm: Array.from(hourly.variables(15)?.valuesArray() ?? []),
+        soilMoisture0To1cm: Array.from(hourly.variables(16)?.valuesArray() ?? []),
+        soilMoisture1To3cm: Array.from(hourly.variables(17)?.valuesArray() ?? []),
+        soilMoisture3To9cm: Array.from(hourly.variables(18)?.valuesArray() ?? []),
+        soilMoisture9To27cm: Array.from(hourly.variables(19)?.valuesArray() ?? []),
+        soilMoisture27To81cm: Array.from(hourly.variables(20)?.valuesArray() ?? []),
+        uvIndexHourly: Array.from(hourly.variables(21)?.valuesArray() ?? []),
       },
       daily: {
         time: range(
@@ -140,28 +140,28 @@ export async function getWeather(latitude: number, longitude: number) {
           Number(daily.timeEnd()),
           daily.interval()
         ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
-        temperature2mMax: daily.variables(0)?.valuesArray() ?? [],
-        temperature2mMin: daily.variables(1)?.valuesArray() ?? [],
-        daylightDuration: daily.variables(2)?.valuesArray() ?? [],
-        sunshineDuration: daily.variables(3)?.valuesArray() ?? [],
-        uvIndexMax: daily.variables(4)?.valuesArray() ?? [],
-        precipitationSum: daily.variables(5)?.valuesArray() ?? [],
-        rainSum: daily.variables(6)?.valuesArray() ?? [],
-        showersSum: daily.variables(7)?.valuesArray() ?? [],
-        snowfallSum: daily.variables(8)?.valuesArray() ?? [],
-        precipitationHours: daily.variables(9)?.valuesArray() ?? [],
-        precipitationProbabilityMax: daily.variables(10)?.valuesArray() ?? [],
-        windSpeed10mMax: daily.variables(11)?.valuesArray() ?? [],
-        windGusts10mMax: daily.variables(12)?.valuesArray() ?? [],
-        windDirection10mDominant: daily.variables(13)?.valuesArray() ?? [],
-        et0FaoEvapotranspiration: daily.variables(14)?.valuesArray() ?? [],
+        temperature2mMax: Array.from(daily.variables(0)?.valuesArray() ?? []),
+        temperature2mMin: Array.from(daily.variables(1)?.valuesArray() ?? []),
+        daylightDuration: Array.from(daily.variables(2)?.valuesArray() ?? []),
+        sunshineDuration: Array.from(daily.variables(3)?.valuesArray() ?? []),
+        uvIndexMax: Array.from(daily.variables(4)?.valuesArray() ?? []),
+        precipitationSum: Array.from(daily.variables(5)?.valuesArray() ?? []),
+        rainSum: Array.from(daily.variables(6)?.valuesArray() ?? []),
+        showersSum: Array.from(daily.variables(7)?.valuesArray() ?? []),
+        snowfallSum: Array.from(daily.variables(8)?.valuesArray() ?? []),
+        precipitationHours: Array.from(daily.variables(9)?.valuesArray() ?? []),
+        precipitationProbabilityMax: Array.from(daily.variables(10)?.valuesArray() ?? []),
+        windSpeed10mMax: Array.from(daily.variables(11)?.valuesArray() ?? []),
+        windGusts10mMax: Array.from(daily.variables(12)?.valuesArray() ?? []),
+        windDirection10mDominant: Array.from(daily.variables(13)?.valuesArray() ?? []),
+        et0FaoEvapotranspiration: Array.from(daily.variables(14)?.valuesArray() ?? []),
       },
     };
 
     return weatherData;
   } catch (error) {
-    console.error("Error fetching weather data:", error);
-    throw new Error("Failed to fetch weather data");
+    console.error(`Error fetching weather data for lat ${latitude}, lon ${longitude}:`, error);
+    throw new Error(`Failed to fetch weather data: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 }
 
@@ -213,5 +213,29 @@ export async function fetchCityName(
 
     console.error(errorMessage);
     return "Unknown city";
+  }
+}
+/**
+ * Fetches coordinates for a given city name using Open-Meteo Geocoding API.
+ */
+export async function getCoordsFromCity(
+  cityName: string
+): Promise<{ lat: number; lon: number } | null> {
+  try {
+    const response = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+        cityName
+      )}&count=1&language=en&format=json`
+    );
+    const data = await response.json();
+
+    if (data.results && data.results.length > 0) {
+      const { latitude, longitude } = data.results[0];
+      return { lat: latitude, lon: longitude };
+    }
+    return null;
+  } catch (error) {
+    console.error(`Geocoding failed for ${cityName}:`, error);
+    return null;
   }
 }
