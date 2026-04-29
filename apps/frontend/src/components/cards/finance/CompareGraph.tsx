@@ -500,7 +500,7 @@ const CompareGraph = ({
   }
 
   return (
-    <div className="dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg">
+    <div className="bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-700 p-4 sm:p-6 rounded-xl">
       <div className="mb-4">
         <h3 className="text-xl font-semibold mb-1 text-center sm:text-left">
           {selectedMetric1} vs {selectedMetric2}
@@ -578,14 +578,14 @@ const CompareGraph = ({
         <div className="flex justify-center items-center gap-x-3 mt-4">
           <Button
             label="Previous"
-            icon={{ left: "arrow_back" }}
+            icon={{ left: "chevron_left" }}
             variant="ghost"
             disabled={isPrevDisabled}
             onClick={handlePrev}
           />{" "}
           <Button
             label="Next"
-            icon={{ right: "arrow_forward" }}
+            icon={{ right: "chevron_right" }}
             variant="ghost"
             disabled={isNextDisabled}
             onClick={handleNext}

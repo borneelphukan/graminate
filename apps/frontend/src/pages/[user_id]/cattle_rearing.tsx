@@ -288,12 +288,6 @@ const CattleRearing = () => {
             )}
           </div>
 
-          {numericUserId && !isNaN(numericUserId) && (
-            <div className="w-full">
-              <WarehouseWidget serviceName="Cattle Rearing" />
-            </div>
-          )}
-
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
             <Table
               data={tableData}
@@ -323,6 +317,12 @@ const CattleRearing = () => {
               onDeleteRows={handleDeleteRows}
             />
           </div>
+
+          {numericUserId && !isNaN(numericUserId) && (
+            <div className="w-full max-w-md">
+              <WarehouseWidget serviceName="Cattle Rearing" />
+            </div>
+          )}
         </section>
 
         {/* Projects Section */}

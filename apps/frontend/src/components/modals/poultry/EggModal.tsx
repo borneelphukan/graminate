@@ -268,15 +268,15 @@ const EggModal = ({
           </div>
 
           {showTable ? (
-            <div className="mt-4 overflow-x-auto min-h-[400px]">
+            <div className="mt-4 overflow-x-auto overflow-y-auto max-h-[350px] custom-scrollbar pr-1">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <h4 className="text-sm font-medium text-dark dark:text-light">
                   Historical Collection Data
                 </h4>
                 <Button
-                  variant="secondary"
+                  variant="ghost"
                   label="Add Record"
-                  icon={{ left: "add" }}
+                  icon={{ left: "chevron_left" }}
                   size="sm"
                   onClick={() => {
                     setInternalRecordToEdit(null);

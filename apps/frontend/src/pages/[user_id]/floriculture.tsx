@@ -13,6 +13,7 @@ import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import FloricultureForm, { FloricultureData } from "@/components/form/floriculture/FloricultureForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
+import WaterCalendar from "@/components/floriculture/WaterCalendar";
 
 type View = "floriculture";
 
@@ -187,10 +188,6 @@ const Floriculture = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <WarehouseWidget serviceName="Floriculture" />
-          </div>
-
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
             <Table
               data={tableData}
@@ -220,12 +217,27 @@ const Floriculture = () => {
               onDeleteRows={handleDeleteRows}
             />
           </div>
+
         </section>
 
-        <section className="flex flex-col gap-6 pt-8 border-t border-gray-400 dark:border-gray-700">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-0 items-start !m-0 !p-0">
+          <div className="flex flex-col gap-0">
+            <div className="w-full">
+              <WaterCalendar userId={parsedUserId as string} />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-0">
+            <div className="w-full">
+              <WarehouseWidget serviceName="Floriculture" />
+            </div>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-2">
           <div>
             <h2 className="text-2xl font-bold text-dark dark:text-light tracking-tight">
-              Floriculture Tasks
+              Task Manager
             </h2>
           </div>
           <div className="bg-gray-50/50 dark:bg-gray-900/30 rounded-3xl p-6 border border-gray-400 dark:border-gray-800">

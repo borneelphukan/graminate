@@ -90,7 +90,7 @@ const WarehouseWidget = ({ serviceName }: WarehouseWidgetProps) => {
         <div className="flex items-center gap-3">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-              Associated Warehouse(s)
+              Warehouse(s)
             </h3>
             <p className="text-xs text-dark dark:text-light">
               Warehouse management for {serviceName}

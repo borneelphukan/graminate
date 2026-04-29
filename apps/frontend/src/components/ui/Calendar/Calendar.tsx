@@ -445,7 +445,7 @@ const Calendar = () => {
   };
 
   return (
-    <div className="dark:bg-gray-700 rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
+    <div className="bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-700 rounded-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
       <InfoModal
         isOpen={showInvalidTimeModal}
         onClose={() => setShowInvalidTimeModal(false)}

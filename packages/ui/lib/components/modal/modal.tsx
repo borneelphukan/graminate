@@ -11,6 +11,7 @@ interface ModalProps {
   content: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  className?: string;
 }
 
 const Modal = ({
@@ -22,13 +23,14 @@ const Modal = ({
   content,
   open,
   onOpenChange,
+  className,
 }: ModalProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Dialog.Portal>
         <Dialog.Overlay className="bg-neutral-dark-gray/40 inset-0 fixed backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50" />
-        <Dialog.Content className="flex flex-col fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-96 min-h-80 rounded-2xl border border-neutral-dark-gray/20 shadow-2xl bg-neutral-white/20 p-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50">
+        <Dialog.Content className={`flex flex-col fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-96 min-h-80 rounded-2xl border border-neutral-dark-gray/20 shadow-2xl bg-neutral-white/20 p-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 ${className || ""}`}>
           <div className="flex flex-col flex-1 bg-white rounded-[var(--radius-xl)] border border-neutral-dark-gray/20 shadow-sm overflow-hidden">
             <div className="flex-none flex justify-between items-center h-10 py-3 pr-3 pl-5 shrink-0 border-b border-neutral-dark-gray/10 text-sm font-medium">
               <Dialog.Title>{title}</Dialog.Title>

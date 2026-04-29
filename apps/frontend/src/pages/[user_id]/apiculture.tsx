@@ -332,12 +332,6 @@ const Apiculture = () => {
             )}
           </div>
 
-          {numericUserId && !isNaN(numericUserId) && (
-            <div className="w-full">
-              <WarehouseWidget serviceName="Apiculture" />
-            </div>
-          )}
-
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
             <Table
               data={tableData}
@@ -367,6 +361,12 @@ const Apiculture = () => {
               onDeleteRows={handleDeleteRows}
             />
           </div>
+
+          {numericUserId && !isNaN(numericUserId) && (
+            <div className="w-full max-w-md">
+              <WarehouseWidget serviceName="Apiculture" />
+            </div>
+          )}
         </section>
 
         {/* Projects Section */}

@@ -30,6 +30,44 @@ export class FloricultureController {
     return this.floricultureService.findByUser(userId);
   }
 
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<floriculture | null> {
+    return this.floricultureService.findOne(id);
+  }
+
+  @Get('watering/:userId')
+  getWateringEvents(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<any[]> {
+    return this.floricultureService.getWateringEvents(userId);
+  }
+
+  @Get('watering/:userId/:date')
+  getWateringByDate(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('date') date: string,
+  ): Promise<any[]> {
+    return this.floricultureService.getWateringByDate(userId, date);
+  }
+
+  @Post('watering')
+  updateWatering(
+    @Body()
+    body: {
+      userId: number;
+      flowerId: number;
+      date: string;
+      watered: boolean;
+    },
+  ): Promise<any> {
+    return this.floricultureService.updateWatering(
+      body.userId,
+      body.flowerId,
+      body.date,
+      body.watered,
+    );
+  }
+
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) id: number,

@@ -19,8 +19,8 @@ import type {
   ChartOptions,
   Chart,
 } from "chart.js";
-import { format } from "date-fns";
-import { Dropdown, Input } from "@graminate/ui";
+import { format, startOfMonth, endOfMonth, subMonths, addMonths, addWeeks, subDays, isBefore, isValid as isValidDate } from "date-fns";
+import { Dropdown, Input, Button } from "@graminate/ui";
 import LoanModal from "@/components/modals/LoanModal";
 import { DailyFinancialEntry } from "@/hooks/finance";
 import Loader from "@/components/ui/Loader";
@@ -80,32 +80,98 @@ const DebtAnalysis = ({
   const [selectedChartType, setSelectedChartType] = useState<ChartType>(
     CHART_TYPES[0]
   );
+  const [dateOffset, setDateOffset] = useState(0);
   const [selectedTimeRange, setSelectedTimeRange] = useState("Monthly");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
 
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
-  const filteredHistoricalData = useMemo(() => {
-    let data = initialFullHistoricalData;
+  const earliestDataPointDate = useMemo(
+    () => (initialFullHistoricalData.length > 0 ? initialFullHistoricalData[0].date : null),
+    [initialFullHistoricalData]
+  );
 
-    if (startDate && endDate) {
-      data = data.filter(
-        (entry) =>
-          entry.date >= startDate &&
-          entry.date <= endDate
-      );
-    } else {
-      let days = 30;
-      if (selectedTimeRange === "Weekly") days = 7;
-      else if (selectedTimeRange === "Monthly") days = 30;
-      else if (selectedTimeRange === "3 Months") days = 90;
-      data = data.slice(-days);
+  const isCustomDateRangeActive = useMemo(
+    () =>
+      !!(
+        startDate &&
+        endDate &&
+        isValidDate(startDate) &&
+        isValidDate(endDate) &&
+        !isBefore(endDate, startDate)
+      ),
+    [startDate, endDate]
+  );
+
+  const navigationStates = useMemo(() => {
+    let pD = true;
+    let nD = true;
+    if (!isCustomDateRangeActive && earliestDataPointDate) {
+      nD = dateOffset === 0;
+      pD = false;
+      if (selectedTimeRange === "Weekly") {
+        const pW = subDays(addWeeks(today, dateOffset - 1), 6);
+        if (isBefore(pW, earliestDataPointDate)) pD = true;
+      } else if (selectedTimeRange === "Monthly") {
+        const pM = startOfMonth(addMonths(today, dateOffset - 1));
+        if (isBefore(pM, earliestDataPointDate)) pD = true;
+      } else {
+        pD = true;
+      }
     }
-    return data;
-  }, [initialFullHistoricalData, selectedTimeRange, startDate, endDate]);
+    return { isPrevDisabled: pD, isNextDisabled: nD };
+  }, [
+    dateOffset,
+    selectedTimeRange,
+    earliestDataPointDate,
+    isCustomDateRangeActive,
+    today,
+  ]);
+
+  const filteredHistoricalData = useMemo(() => {
+    if (initialFullHistoricalData.length === 0) return [];
+    
+    let vS: Date, vE: Date;
+    if (isCustomDateRangeActive && startDate && endDate) {
+      vS = startDate;
+      vE = endDate;
+    } else {
+      if (selectedTimeRange === "Weekly") {
+        const tD = addWeeks(today, dateOffset);
+        vE = tD;
+        vS = subDays(tD, 6);
+      } else if (selectedTimeRange === "Monthly") {
+        const tMD = addMonths(today, dateOffset);
+        vS = startOfMonth(tMD);
+        vE = endOfMonth(tMD);
+      } else {
+        vS = startOfMonth(subMonths(today, 2));
+        vE = today;
+      }
+    }
+
+    return initialFullHistoricalData.filter(
+      (entry) => entry.date >= vS && entry.date <= vE
+    );
+  }, [initialFullHistoricalData, selectedTimeRange, startDate, endDate, dateOffset, isCustomDateRangeActive, today]);
+
+  const handlePrev = () => setDateOffset((p) => p - 1);
+  const handleNext = () => setDateOffset((p) => p + 1);
+  const showTimeNavCtrl =
+    !isCustomDateRangeActive &&
+    (selectedTimeRange === "Weekly" || selectedTimeRange === "Monthly");
+
+  useEffect(() => {
+    setDateOffset(0);
+  }, [selectedTimeRange, startDate, endDate]);
 
   const isValidDate = (d: unknown): d is Date =>
     d instanceof Date && !isNaN(d.getTime());
@@ -253,16 +319,16 @@ const DebtAnalysis = ({
 
   if (isLoadingData) {
     return (
-      <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
         <Loader />
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+    <div className="bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-600 p-4 sm:p-6 rounded-xl">
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+        <h3 className="text-xl font-bold text-dark dark:text-light flex items-center gap-2">
           Loans & Debt Analysis
         </h3>
         <p className="text-sm text-dark dark:text-light">
@@ -325,6 +391,25 @@ const DebtAnalysis = ({
       <div className="relative h-72 sm:h-80 md:h-96">
         <canvas ref={chartRef}></canvas>
       </div>
+
+      {showTimeNavCtrl && (
+        <div className="flex justify-center items-center gap-x-3 mt-4">
+          <Button
+            label="Previous"
+            icon={{ left: "chevron_left" }}
+            variant="ghost"
+            disabled={navigationStates.isPrevDisabled}
+            onClick={handlePrev}
+          />
+          <Button
+            label="Next"
+            icon={{ right: "chevron_right" }}
+            variant="ghost"
+            disabled={navigationStates.isNextDisabled}
+            onClick={handleNext}
+          />
+        </div>
+      )}
 
       <LoanModal
         isOpen={isModalOpen}
