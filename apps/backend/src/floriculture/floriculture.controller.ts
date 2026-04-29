@@ -81,6 +81,11 @@ export class FloricultureController {
     return this.floricultureService.remove(id);
   }
 
+  @Post('delete-multiple')
+  removeMultiple(@Body('ids') ids: number[]): Promise<any> {
+    return this.floricultureService.removeMultiple(ids);
+  }
+
   @Post('reset-service')
   async reset(@Body('userId') userId: number): Promise<{ message: string }> {
     await this.floricultureService.reset(userId);

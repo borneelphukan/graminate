@@ -109,6 +109,14 @@ export class FloricultureService {
     });
   }
 
+  async removeMultiple(ids: number[]): Promise<Prisma.BatchPayload> {
+    return this.prisma.floriculture.deleteMany({
+      where: {
+        flower_id: { in: ids },
+      },
+    });
+  }
+
   async reset(userId: number): Promise<Prisma.BatchPayload> {
     return this.prisma.floriculture.deleteMany({
       where: { user_id: userId },

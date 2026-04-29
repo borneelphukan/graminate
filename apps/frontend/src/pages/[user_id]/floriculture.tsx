@@ -1,19 +1,19 @@
-import { Icon, Button, Table } from "@graminate/ui";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Icon, Button } from "@graminate/ui";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
-import { PAGINATION_ITEMS, FLORICULTURE_EXPENSE_CONFIG } from "@/constants/options";
+import { FLORICULTURE_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
-import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import FloricultureForm, { FloricultureData } from "@/components/form/floriculture/FloricultureForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import WaterCalendar from "@/components/floriculture/WaterCalendar";
+import FloricultureExplorer from "@/components/floriculture/FloricultureExplorer";
 
 type View = "floriculture";
 
@@ -35,15 +35,12 @@ const Floriculture = () => {
 
   const [records, setRecords] = useState<FloricultureData[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editingRecord, setEditingRecord] = useState<FloricultureData | null>(null);
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const { handleDeleteRows } = useTableActions("floriculture");
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
@@ -125,18 +122,6 @@ const Floriculture = () => {
     fetchRecords();
   };
 
-  const tableData = useMemo(() => ({
-    columns: ["#", "Flower Name", "Type", "Area (sq ft)", "Method", "Planting Date"],
-    rows: filteredRecords.map((item) => [
-      item.flower_id,
-      item.flower_name,
-      item.flower_type || "N/A",
-      item.area || "N/A",
-      item.method || "N/A",
-      item.planting_date ? new Date(item.planting_date).toLocaleDateString() : "N/A",
-    ]),
-  }), [filteredRecords]);
-
   return (
     <PlatformLayout>
       <Head>
@@ -188,47 +173,36 @@ const Floriculture = () => {
             )}
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
-            <Table
-              data={tableData}
-              filteredRows={tableData.rows}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              itemsPerPage={itemsPerPage}
-              setItemsPerPage={setItemsPerPage}
-              paginationItems={PAGINATION_ITEMS}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              totalRecordCount={filteredRecords.length}
-              onRowClick={(row) => {
-                const flowerId = row[0] as number;
-                const flowerName = row[1] as string;
-                if (parsedUserId && flowerId) {
-                  router.push({
-                    pathname: `/${parsedUserId}/floriculture/${flowerId}`,
-                    query: { flowerName: encodeURIComponent(flowerName) },
-                  });
-                }
-              }}
-              view="floriculture"
-              loading={loading && records.length > 0}
-              hideChecks={false}
-              download={true}
-              onDeleteRows={handleDeleteRows}
-            />
+          <div className="flex flex-col gap-6">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <Loader />
+                <p className="mt-4 text-gray-500 animate-pulse">Loading flowers...</p>
+              </div>
+            ) : (
+              <FloricultureExplorer 
+                records={filteredRecords}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                onRefresh={fetchRecords}
+                onEdit={(record) => {
+                  setEditingRecord(record);
+                  setIsSidebarOpen(true);
+                }}
+              />
+            )}
           </div>
-
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-0 items-start !m-0 !p-0">
-          <div className="flex flex-col gap-0">
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start !m-0 !p-0">
+          <div className="flex flex-col gap-0 md:col-span-5 lg:col-span-4">
             <div className="w-full">
               <WaterCalendar userId={parsedUserId as string} />
             </div>
           </div>
 
-          <div className="flex flex-col gap-0">
-            <div className="w-full">
+          <div className="flex flex-col gap-0 md:col-span-7 lg:col-span-8">
+            <div className="w-full h-full">
               <WarehouseWidget serviceName="Floriculture" />
             </div>
           </div>

@@ -33,8 +33,9 @@ export class InventoryService {
 
       return inventoryItems.map((item) => ({
         ...item,
+        price_per_unit: item.price_per_unit ? Number(item.price_per_unit) : 0,
         minimum_limit: item.minimum_limit ?? 0,
-      }));
+      })) as unknown as inventory[];
     } catch (error) {
       console.error('Error executing query in findByUserIdWithFilters:', error);
       throw new InternalServerErrorException(
@@ -69,7 +70,12 @@ export class InventoryService {
           feed,
         },
       });
-      return newItem;
+      return {
+        ...newItem,
+        price_per_unit: newItem.price_per_unit
+          ? Number(newItem.price_per_unit)
+          : 0,
+      } as unknown as inventory;
     } catch (error) {
       throw new InternalServerErrorException(
         error instanceof Error ? error.message : 'Unknown error',
@@ -102,7 +108,12 @@ export class InventoryService {
         where: { inventory_id: id },
         data: updateData,
       });
-      return updatedItem;
+      return {
+        ...updatedItem,
+        price_per_unit: updatedItem.price_per_unit
+          ? Number(updatedItem.price_per_unit)
+          : 0,
+      } as unknown as inventory;
     } catch (error) {
       throw new InternalServerErrorException(
         error instanceof Error ? error.message : 'Unknown error',
