@@ -9,7 +9,6 @@ export * from "./components/dropdownMenu/dropdownMenu";
 export * from "./components/icon/icon";
 export * from "./components/input/input";
 export * from "./components/layouts/layout";
-export * from "./components/modal/modal";
 export * from "./components/sidebar/sidebar";
 export * from "./components/tabs/tabs";
 export * from "./components/accordion/accordion";
@@ -38,5 +37,6 @@ export * from "./components/segmentedControl/segmentedControl";
 export * from "./components/table/table";
 export * from "./components/spinner/spinner";
 export * from "./components/searchbar/searchbar";
+export * from "./components/infoModal/infoModal";
 
 export * from "./utils";

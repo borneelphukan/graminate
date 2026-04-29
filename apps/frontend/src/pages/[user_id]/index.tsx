@@ -8,7 +8,6 @@ import {
   format as formatDateFns,
   parseISO,
 } from "date-fns";
-import Swal from "sweetalert2";
 
 import PlatformLayout from "@/layout/PlatformLayout";
 import Calendar from "@/components/ui/Calendar/Calendar";
@@ -463,7 +462,11 @@ const Dashboard = () => {
         setFullHistoricalData(generatedData);
       } catch (error) {
         console.error("Dashboard: Error fetching financial data:", error);
-        Swal.fire("Error", "Could not load financial widget data.", "error");
+        setErrorModal({
+          isOpen: true,
+          title: "Error",
+          text: "Could not load financial widget data.",
+        });
       } finally {
         setIsFinanceLoading(false);
       }

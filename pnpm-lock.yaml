@@ -148,9 +148,6 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
-      sweetalert2:
-        specifier: ^11.17.2
-        version: 11.26.18
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -528,9 +525,6 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
-      sweetalert2:
-        specifier: ^11.17.2
-        version: 11.26.18
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -803,9 +797,6 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
-      sweetalert2:
-        specifier: ^11.17.2
-        version: 11.26.18
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -1006,9 +997,6 @@ importers:
       sonner:
         specifier: ^1.7.4
         version: 1.7.4(react-dom@19.1.0)(react@19.1.0)
-      sweetalert2:
-        specifier: ^11.17.2
-        version: 11.26.18
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.4.1
@@ -19578,10 +19566,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /sweetalert2@11.26.18:
-    resolution: {integrity: sha512-3O5feBqV+hTIOwCRKGuZGHosjiuBAKP/vpBl6vKFZeVYfCUGdXqXuuidn6YXHan3f6e62UdmnjwJBt8UtDVBhg==}
-    dev: false
 
   /symbol-observable@4.0.0:
     resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}

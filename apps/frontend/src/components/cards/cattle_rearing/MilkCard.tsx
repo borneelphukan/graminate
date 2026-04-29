@@ -27,7 +27,7 @@ import {
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
 import Loader from "@/components/ui/Loader";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import {
   format,
   subMonths,
@@ -138,6 +138,18 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { handleDeleteRows } = useTableActions("milk_records");
 
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
   const animalNameSuggestionsRef = useRef<HTMLDivElement>(null);
@@ -209,11 +221,12 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.date_collected || !formData.milk_produced) {
-      Swal.fire(
-        "Error",
-        "Date Collected and Milk Produced are required.",
-        "error"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Date Collected and Milk Produced are required.",
+        variant: "error",
+      });
       return;
     }
     setIsSubmitting(true);
@@ -231,21 +244,32 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
           `/cattle-milk/update/${editingRecord.milk_id}`,
           payload
         );
-        Swal.fire("Success", "Milk record updated successfully!", "success");
+        setInfoModal({
+          isOpen: true,
+          title: "Success",
+          text: "Milk record updated successfully!",
+          variant: "success",
+        });
       } else {
         await axiosInstance.post("/cattle-milk/add", payload);
-        Swal.fire("Success", "Milk record logged successfully!", "success");
+        setInfoModal({
+          isOpen: true,
+          title: "Success",
+          text: "Milk record logged successfully!",
+          variant: "success",
+        });
       }
       await fetchMilkData();
       setEditingRecord(null);
       setActiveView("table");
     } catch (error) {
       console.error("Failed to save milk record:", error);
-      Swal.fire(
-        "Error",
-        "Failed to save milk record. Please try again.",
-        "error"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to save milk record. Please try again.",
+        variant: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -994,6 +1018,13 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
         </div>
       </div>
       {renderContent()}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </div>
   );
 };

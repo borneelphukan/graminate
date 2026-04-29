@@ -14,7 +14,7 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 
 type SaleRecord = {
   sales_id: number;
@@ -60,6 +60,17 @@ const Sales = () => {
   const [salesItemsPerPage, setSalesItemsPerPage] = useState(25);
   const [isSalesModalOpen, setIsSalesModalOpen] = useState(false);
   const [showFinancials, setShowFinancials] = useState(true);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const fetchSalesData = useCallback(async () => {
     if (!currentUserId) {
@@ -75,7 +86,12 @@ const Sales = () => {
     } catch (error) {
       console.error("Error fetching sales data:", error);
       setSalesData([]);
-      Swal.fire("Error", "Could not fetch sales data.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not fetch sales data.",
+        variant: "error",
+      });
     } finally {
       setIsSalesLoading(false);
     }
@@ -105,6 +121,8 @@ const Sales = () => {
     userId: currentUserId,
     targetSubType: "All",
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
+    onError: (title, text) =>
+      setInfoModal({ isOpen: true, title, text, variant: "error" }),
   });
 
   const currentDate = useMemo(() => new Date(), []);
@@ -307,6 +325,13 @@ const Sales = () => {
           onSaleAdded={handleSaleAdded}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </>
   );
 };

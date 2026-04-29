@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import SearchBar from "@/components/ui/SearchBar";
 import { Dropdown, Checkbox, Button } from "@graminate/ui";
 import * as XLSX from "xlsx";
@@ -109,9 +109,28 @@ const SalesTable = ({
   const [sortColumn, setSortColumn] = useState<number | null>(null);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    showCancelButton?: boolean;
+    onConfirm?: () => void;
+    confirmButtonText?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const entityNames: Record<string, string> = {
+    sales: "sales",
+    expenses: "expenses",
+    loans: "loans",
+  };
 
 
 
@@ -182,7 +201,12 @@ const SalesTable = ({
     const exportRows = getExportRows();
 
     if (exportRows.length === 0) {
-      Swal.fire("No Data", "There is no data to export.", "info");
+      setInfoModal({
+        isOpen: true,
+        title: "No Data",
+        text: "There is no data to export.",
+        variant: "info",
+      });
       return;
     }
 
@@ -261,65 +285,56 @@ const SalesTable = ({
     });
 
     if (rowsToDelete.length === 0) {
-      await Swal.fire(
-        "No Selection",
-        "Please select at least one row to delete.",
-        "info"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "No Selection",
+        text: "Please select at least one row to delete.",
+        variant: "info",
+      });
       return;
     }
-
-    const entityNames: Record<string, string> = {
-      sales: "sales",
-      expenses: "expenses",
-      loans: "loans",
-    };
 
     const entityToDelete = entityNames[view] || view;
     const pluralEntity =
       rowsToDelete.length > 1 ? `${entityToDelete}s` : entityToDelete;
 
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Are you sure?",
       text: `Do you want to delete the selected ${pluralEntity}?`,
-      icon: "warning",
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
+      variant: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      reverseButtons: true,
+      onConfirm: async () => {
+        try {
+          const endpointMap: Record<string, string> = {
+            sales: "sales",
+            expenses: "expenses",
+            loans: "loans",
+          };
+          const endpoint = endpointMap[view] || "sales";
+
+          const deletePromises = rowsToDelete.map(async (id) => {
+            await axiosInstance.delete(`/${endpoint}/delete/${id}`);
+          });
+
+          await Promise.all(deletePromises);
+
+          setSelectedRows([]);
+          setSelectAll(false);
+          setInfoModal((prev) => ({ ...prev, isOpen: false }));
+          onDataMutated?.();
+        } catch (error) {
+          console.error("Error deleting rows:", error);
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: `Failed to delete selected ${pluralEntity}. Please try again.`,
+            variant: "error",
+          });
+        }
+      },
     });
-
-    if (result.isConfirmed) {
-      try {
-        const endpointMap: Record<string, string> = {
-          sales: "sales",
-          expenses: "expenses",
-          loans: "loans",
-        };
-        const endpoint = endpointMap[view] || "sales";
-
-        const deletePromises = rowsToDelete.map(async (id) => {
-          await axiosInstance.delete(`/${endpoint}/delete/${id}`);
-        });
-
-        await Promise.all(deletePromises);
-
-        setSelectedRows([]);
-        setSelectAll(false);
-        onDataMutated?.();
-      } catch (error) {
-        console.error("Error deleting rows:", error);
-        await Swal.fire(
-          "Error",
-          `Failed to delete selected ${pluralEntity}. Please try again. Details: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-          "error"
-        );
-      }
-    }
   };
 
   const toggleSort = (columnIndex: number) => {
@@ -356,11 +371,12 @@ const SalesTable = ({
       });
     } else {
       console.error("User ID not found for navigation.");
-      Swal.fire(
-        "Error",
-        "Could not determine user. Please try again.",
-        "error"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not determine user. Please try again.",
+        variant: "error",
+      });
     }
   };
 
@@ -371,7 +387,12 @@ const SalesTable = ({
       : userIdToUse;
 
     if (!finalUserId) {
-      Swal.fire("Error", "User ID not found.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "User ID not found.",
+        variant: "error",
+      });
       return;
     }
 
@@ -390,11 +411,21 @@ const SalesTable = ({
           query: { data: JSON.stringify(linkedReceipt), user_id: finalUserId },
         });
       } else {
-        Swal.fire("Error", "Could not find the linked receipt.", "error");
+        setInfoModal({
+          isOpen: true,
+          title: "Error",
+          text: "Could not find the linked receipt.",
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error fetching receipt for sale:", saleId, error);
-      Swal.fire("Error", "Failed to fetch receipt details.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to fetch receipt details.",
+        variant: "error",
+      });
     }
   };
 
@@ -436,37 +467,39 @@ const SalesTable = ({
               disabled={filteredRows.length === 0}
               onClick={async () => {
                 if (filteredRows.length === 0) return;
-                  const entityNames: Record<string, string> = {
-                    sales: "sales",
-                    expenses: "expenses",
-                    loans: "loans",
-                  };
+                const entityNames: Record<string, string> = {
+                  sales: "sales",
+                  expenses: "expenses",
+                  loans: "loans",
+                };
 
                 const entityToTruncate = entityNames[view] || view;
 
-                const result = await Swal.fire({
+                setInfoModal({
+                  isOpen: true,
                   title: "Are you sure?",
                   text: `This will reset your ${entityToTruncate} records.`,
-                  icon: "warning",
-                  confirmButtonColor: "#04ad79",
-                  cancelButtonColor: "#bbbbbc",
+                  variant: "warning",
                   showCancelButton: true,
                   confirmButtonText: "Reset",
-                  cancelButtonText: "Cancel",
+                  onConfirm: async () => {
+                    try {
+                      const userId = localStorage.getItem("userId");
+                      await axiosInstance.post(`/${entityToTruncate}/reset`, {
+                        userId,
+                      });
+                      window.location.reload();
+                    } catch (error) {
+                      console.error(error);
+                      setInfoModal({
+                        isOpen: true,
+                        title: "Error",
+                        text: "Failed to reset table.",
+                        variant: "error",
+                      });
+                    }
+                  },
                 });
-
-                if (result.isConfirmed) {
-                  try {
-                    const userId = localStorage.getItem("userId");
-                    await axiosInstance.post(`/${entityToTruncate}/reset`, {
-                      userId,
-                    });
-                    window.location.reload();
-                  } catch (error) {
-                    console.error(error);
-                    Swal.fire("Error", "Failed to reset table.", "error");
-                  }
-                }
               }}
             />
           )}
@@ -745,6 +778,16 @@ const SalesTable = ({
           </div>
         </nav>
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        showCancelButton={infoModal.showCancelButton}
+        onConfirm={infoModal.onConfirm}
+        confirmButtonText={infoModal.confirmButtonText}
+      />
     </div>
   );
 };

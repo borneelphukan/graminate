@@ -1,7 +1,7 @@
 import { Dropdown, Icon, Button, TextArea, Input } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent, useMemo } from "react";
 
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -69,6 +69,17 @@ const TaskModal = ({
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const hasChanges = useMemo(() => {
     return (
@@ -93,7 +104,12 @@ const TaskModal = ({
       onClose();
     } catch (error) {
       console.error("Failed to save all changes:", error);
-      Swal.fire("Error", "Failed to save changes. Please try again.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to save changes. Please try again.",
+        variant: "error",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -114,7 +130,12 @@ const TaskModal = ({
       onClose();
     } catch (error) {
       console.error("Error deleting task:", error);
-      Swal.fire("Error!", "Could not delete the task.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error!",
+        text: "Could not delete the task.",
+        variant: "error",
+      });
     }
   };
 
@@ -377,6 +398,13 @@ const TaskModal = ({
           />
         </div>
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </div>
   );
 };

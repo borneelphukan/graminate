@@ -7,7 +7,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button, Table } from "@graminate/ui";
+import { InfoModal, Button, Table } from "@graminate/ui";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
@@ -78,7 +78,18 @@ const ApicultureDetailPage = () => {
   const [hiveSearchQuery, setHiveSearchQuery] = useState("");
   const [hiveCurrentPage, setHiveCurrentPage] = useState(1);
   const [hiveItemsPerPage, setHiveItemsPerPage] = useState(5);
-  const { handleDeleteRows } = useTableActions("hives");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("hives", setInfoModal);
 
   const [apicultureInventoryItems, setApicultureInventoryItems] = useState<
     ItemRecord[]
@@ -479,6 +490,13 @@ const ApicultureDetailPage = () => {
           apiaryId={numericApiaryId}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </PlatformLayout>
   );
 };

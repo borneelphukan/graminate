@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import Swal from "sweetalert2";
+import { InfoModal } from "../infoModal/infoModal";
 
 import { Dropdown } from "../dropdown/dropdown";
 import { Icon } from "../icon/icon";
@@ -64,6 +64,17 @@ const Table = ({
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [itemsPerPage, setItemsPerPageState] = useState(10);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const effectiveLoading = loading;
 
@@ -115,7 +126,12 @@ const Table = ({
     const exportRows = getExportRows();
 
     if (exportRows.length === 0) {
-      Swal.fire("No Data", "There is no data to export.", "info");
+      setInfoModal({
+        isOpen: true,
+        title: "No Data",
+        text: "There is no data to export.",
+        variant: "info",
+      });
       return;
     }
 
@@ -183,11 +199,12 @@ const Table = ({
     const selectedRowsData = sortedAndPaginatedRows.filter((_, idx) => selectedRows[idx]);
     
     if (selectedRowsData.length === 0) {
-      await Swal.fire(
-        "No Selection",
-        "Please select at least one row to delete.",
-        "info"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "No Selection",
+        text: "Please select at least one row to delete.",
+        variant: "info",
+      });
       return;
     }
 
@@ -536,6 +553,13 @@ const Table = ({
           </div>
         </nav>
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </div>
   );
 };

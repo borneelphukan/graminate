@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import { Button, Table } from "@graminate/ui";
+import { InfoModal, Button, Table } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import VeterinaryForm from "@/components/form/poultry/VeterinaryForm";
@@ -46,7 +46,18 @@ const PoultryHealth = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
-  const { handleDeleteRows } = useTableActions("poultry_health");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("poultry_health", setInfoModal);
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -200,6 +211,13 @@ const PoultryHealth = () => {
           flockId={Number(parsedFlockId)}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </PlatformLayout>
   );
 };

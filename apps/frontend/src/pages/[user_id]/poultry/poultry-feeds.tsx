@@ -7,7 +7,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import { parseISO, format } from "date-fns";
 import PoultryFeedsModal from "@/components/modals/poultry/PoultryFeedsModal";
-import Swal from "sweetalert2"; 
+import InfoModal from "@/components/modals/InfoModal"; 
 
 type FeedRecord = {
   feed_id: number;
@@ -66,7 +66,18 @@ const PoultryFeedsPage = () => {
     []
   );
   const [loadingFeedItems, setLoadingFeedItems] = useState(true);
-  const { handleDeleteRows } = useTableActions("poultry_feeds");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("poultry_feeds", setInfoModal);
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -151,24 +162,21 @@ const PoultryFeedsPage = () => {
 
   const handleAddRecord = () => {
     if (loadingFeedItems) {
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Loading...",
-        text: "Checking available feed items.",
-        icon: "info",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+        text: "Checking available feed items. Please try again in a moment.",
+        variant: "info",
       });
       return;
     }
 
     if (availableFeedItems.length === 0) {
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "No Feed Items",
         text: "Inventory contains no feed items marked for your flocks. Please add or mark items as feed in your inventory first.",
-        icon: "warning",
-        confirmButtonText: "OK",
+        variant: "warning",
       });
     } else {
       setEditingRecord(null);
@@ -298,6 +306,13 @@ const PoultryFeedsPage = () => {
           }}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </PlatformLayout>
   );
 };

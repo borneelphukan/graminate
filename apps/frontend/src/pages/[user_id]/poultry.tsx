@@ -1,4 +1,4 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { InfoModal, Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -58,12 +58,25 @@ const Poultry = () => {
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
-  const { handleDeleteRows } = useTableActions("flock");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("flock", setInfoModal);
 
   const { fullHistoricalData, isLoadingFinancials } = useSubTypeFinancialData({
     userId: parsedUserId,
     targetSubType: TARGET_POULTRY_SUB_TYPE,
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
+    onError: (title, text) =>
+      setInfoModal({ isOpen: true, title, text, variant: "error" }),
   });
 
   const fetchFlocks = useCallback(async () => {
@@ -362,6 +375,13 @@ const Poultry = () => {
             onFlockUpdateOrAdd={handleFlockFormSuccess}
           />
         )}
+        <InfoModal
+          isOpen={infoModal.isOpen}
+          onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+          title={infoModal.title}
+          text={infoModal.text}
+          variant={infoModal.variant}
+        />
       </div>
     </PlatformLayout>
   );

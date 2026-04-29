@@ -7,7 +7,7 @@ import SettingsBar from "@/components/layout/SettingsBar";
 import { Button, Table, TableData } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import { format } from "date-fns";
 
 type Payment = {
@@ -33,6 +33,20 @@ const Billing = () => {
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    showCancelButton?: boolean;
+    onConfirm?: () => void;
+    confirmButtonText?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   // Table state
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,52 +84,49 @@ const Billing = () => {
   const handleCancelSubscription = async () => {
     if (!userId || plan === "FREE") return;
 
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Cancel Subscription?",
       text: "Your plan will be downgraded to Free. Your current features will remain active until the end of your billing cycle.",
-      icon: "warning",
+      variant: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ef4444",
-      cancelButtonColor: "#6b7280",
       confirmButtonText: "Yes, cancel subscription",
-      cancelButtonText: "Keep my plan",
-      background: document.documentElement.classList.contains("dark")
-        ? "#1f2937"
-        : "#ffffff",
-      color: document.documentElement.classList.contains("dark")
-        ? "#f3f4f6"
-        : "#111827",
+      onConfirm: async () => {
+        setIsCancelling(true);
+        setInfoModal((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await axiosInstance.post(`/user/${userId}/schedule-downgrade`, {
+            plan: "FREE",
+          });
+
+          setInfoModal({
+            isOpen: true,
+            title: "Subscription Cancelled",
+            text: "Your plan will revert to Free at the end of your current billing cycle.",
+            variant: "success",
+          });
+
+          if (userId) {
+            fetchUserSubTypes(userId);
+            fetchBillingData();
+          }
+        } catch (error: unknown) {
+          console.error("Cancel subscription error:", error);
+          let message = "Failed to cancel subscription. Please try again.";
+          if (axios.isAxiosError(error)) {
+            message = error.response?.data?.data?.error || message;
+          }
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: message,
+            variant: "error",
+          });
+        } finally {
+          setIsCancelling(false);
+        }
+      },
     });
-
-    if (!result.isConfirmed) return;
-
-    setIsCancelling(true);
-    try {
-      await axiosInstance.post(`/user/${userId}/schedule-downgrade`, {
-        plan: "FREE",
-      });
-
-      Swal.fire({
-        title: "Subscription Cancelled",
-        text: "Your plan will revert to Free at the end of your current billing cycle.",
-        icon: "success",
-        confirmButtonColor: "#10b981",
-      });
-
-      if (userId) {
-        fetchUserSubTypes(userId);
-        fetchBillingData();
-      }
-    } catch (error: unknown) {
-      console.error("Cancel subscription error:", error);
-      let message = "Failed to cancel subscription. Please try again.";
-      if (axios.isAxiosError(error)) {
-        message = error.response?.data?.data?.error || message;
-      }
-      Swal.fire("Error", message, "error");
-    } finally {
-      setIsCancelling(false);
-    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -268,6 +279,16 @@ const Billing = () => {
           </main>
         </div>
       </PlatformLayout>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        showCancelButton={infoModal.showCancelButton}
+        onConfirm={infoModal.onConfirm}
+        confirmButtonText={infoModal.confirmButtonText}
+      />
     </>
   );
 };

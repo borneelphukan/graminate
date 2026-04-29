@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { InfoModal, Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,7 +7,6 @@ import { CONTACT_TYPES } from "@/constants/options";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
 
 type Contact = {
   contact_id: string;
@@ -91,6 +90,18 @@ const ContactDetails = () => {
   const [avatarInitials, setAvatarInitials] = useState("?");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const isLoading = !contact;
 
@@ -219,38 +230,31 @@ const ContactDetails = () => {
       return;
     }
 
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Delete Contact",
       text: `Are you sure you want to delete ${
         initialFullName || "this contact"
       }? This action cannot be undone.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
+      variant: "warning",
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setDeleting(true);
+        try {
+          await axiosInstance.delete(`/contacts/delete/${contact.contact_id}`);
+          triggerToast("Contact deleted successfully", "success");
+          router.push(`/${user_id}/crm?view=contacts`);
+        } catch (error: unknown) {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "An error occurred while deleting the contact.";
+          triggerToast(errorMessage, "error");
+        } finally {
+          setDeleting(false);
+        }
+      },
     });
-
-    if (!result.isConfirmed) {
-      return;
-    }
-
-    setDeleting(true);
-    try {
-      await axiosInstance.delete(`/contacts/delete/${contact.contact_id}`);
-      triggerToast("Contact deleted successfully", "success");
-      router.push(`/${user_id}/crm?view=contacts`);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while deleting the contact.";
-      triggerToast(errorMessage, "error");
-    } finally {
-      setDeleting(false);
-    }
   };
 
   const handleCallContact = () => {
@@ -483,6 +487,14 @@ const ContactDetails = () => {
           </div>
         </div>
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        onConfirm={infoModal.onConfirm}
+      />
     </PlatformLayout>
   );
 };

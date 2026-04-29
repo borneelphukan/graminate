@@ -1,4 +1,4 @@
-import { Button, Table } from "@graminate/ui";
+import { InfoModal, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -118,6 +118,17 @@ const CRM = () => {
   const [tasksData, setTasksData] = useState<Task[]>([]);
   const [fetchedData, setFetchedData] = useState<FetchedDataItem[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const dropdownItems = [
     { label: "Contacts", view: "contacts" },
@@ -210,6 +221,8 @@ const CRM = () => {
         return false;
     }
   }, [plan, view, contactsData, companiesData, contractsData]);
+
+  const { handleDeleteRows } = useTableActions(view, setInfoModal);
 
   const tableData = useMemo(() => {
     const locale = mapSupportedLanguageToLocale(currentLanguage);
@@ -459,8 +472,6 @@ const CRM = () => {
     }
   };
 
-  const { handleDeleteRows } = useTableActions(view);
-
   return (
     <PlatformLayout>
       <Head>
@@ -487,7 +498,12 @@ const CRM = () => {
               onClick={() => {
                 if (isLimitReached) {
                   const itemType = view.charAt(0).toUpperCase() + view.slice(1, -1);
-                  alert(`Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`);
+                  setInfoModal({
+                    isOpen: true,
+                    title: "Limit Reached",
+                    text: `Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`,
+                    variant: "warning",
+                  });
                   return;
                 }
                 setIsSidebarOpen(true);
@@ -576,6 +592,13 @@ const CRM = () => {
           </>
         )}
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </PlatformLayout>
   );
 };

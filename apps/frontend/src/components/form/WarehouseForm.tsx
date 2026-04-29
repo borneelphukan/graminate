@@ -65,19 +65,25 @@ const WarehouseForm = ({
     : queryUserId;
 
   const [animate, setAnimate] = useState(false);
+  const cleanValue = (val: any) => {
+    const placeholders = ["Unassigned", "N/A", "Not Assigned", "No address provided"];
+    if (typeof val === "string" && placeholders.includes(val)) return "";
+    return val || "";
+  };
+
   const [warehouseData, setWarehouseData] = useState<WarehouseData>({
-    name: initialData?.name || "",
-    type: initialData?.type || "",
-    address_line_1: initialData?.address_line_1 || "",
-    address_line_2: initialData?.address_line_2 || "",
-    city: initialData?.city || "",
-    state: initialData?.state || "",
-    postal_code: initialData?.postal_code || "",
-    country: initialData?.country || "",
-    contact_person: initialData?.contact_person || "",
-    phone: initialData?.phone || "",
+    name: cleanValue(initialData?.name),
+    type: cleanValue(initialData?.type),
+    address_line_1: cleanValue(initialData?.address_line_1),
+    address_line_2: cleanValue(initialData?.address_line_2),
+    city: cleanValue(initialData?.city),
+    state: cleanValue(initialData?.state),
+    postal_code: cleanValue(initialData?.postal_code),
+    country: cleanValue(initialData?.country),
+    contact_person: cleanValue(initialData?.contact_person),
+    phone: cleanValue(initialData?.phone),
     storage_capacity: initialData?.storage_capacity?.toString() || "",
-    category: initialData?.category || "",
+    category: cleanValue(initialData?.category),
   });
   const [warehouseErrors, setWarehouseErrors] = useState<WarehouseFormErrors>(
     {}
@@ -104,18 +110,18 @@ const WarehouseForm = ({
   useEffect(() => {
     if (initialData) {
       setWarehouseData({
-        name: initialData.name || "",
-        type: initialData.type || "",
-        address_line_1: initialData.address_line_1 || "",
-        address_line_2: initialData.address_line_2 || "",
-        city: initialData.city || "",
-        state: initialData.state || "",
-        postal_code: initialData.postal_code || "",
-        country: initialData.country || "",
-        contact_person: initialData.contact_person || "",
-        phone: initialData.phone || "",
+        name: cleanValue(initialData.name),
+        type: cleanValue(initialData.type),
+        address_line_1: cleanValue(initialData.address_line_1),
+        address_line_2: cleanValue(initialData.address_line_2),
+        city: cleanValue(initialData.city),
+        state: cleanValue(initialData.state),
+        postal_code: cleanValue(initialData.postal_code),
+        country: cleanValue(initialData.country),
+        contact_person: cleanValue(initialData.contact_person),
+        phone: cleanValue(initialData.phone),
         storage_capacity: initialData.storage_capacity?.toString() || "",
-        category: initialData.category || "",
+        category: cleanValue(initialData.category),
       });
       setWarehouseErrors({});
     }
@@ -125,34 +131,17 @@ const WarehouseForm = ({
     const errors: WarehouseFormErrors = {};
     let isValid = true;
 
-    if (!warehouseData.name.trim()) {
-      errors.name = "Warehouse Name is required.";
-      isValid = false;
+    if (!isEditMode) {
+      if (!warehouseData.name.trim()) {
+        errors.name = "Warehouse Name is required.";
+        isValid = false;
+      }
+      if (!warehouseData.type) {
+        errors.type = "Warehouse Type is required.";
+        isValid = false;
+      }
     }
-    if (!warehouseData.type) {
-      errors.type = "Warehouse Type is required.";
-      isValid = false;
-    }
-    if (!warehouseData.address_line_1.trim()) {
-      errors.address_line_1 = "Address Line 1 is required.";
-      isValid = false;
-    }
-    if (!warehouseData.city.trim()) {
-      errors.city = "City is required.";
-      isValid = false;
-    }
-    if (!warehouseData.state.trim()) {
-      errors.state = "State is required.";
-      isValid = false;
-    }
-    if (!warehouseData.postal_code.trim()) {
-      errors.postal_code = "Postal Code is required.";
-      isValid = false;
-    }
-    if (!warehouseData.country.trim()) {
-      errors.country = "Country is required.";
-      isValid = false;
-    }
+    
     if (
       warehouseData.storage_capacity &&
       isNaN(parseFloat(warehouseData.storage_capacity))
@@ -160,7 +149,7 @@ const WarehouseForm = ({
       errors.storage_capacity = "Storage capacity must be a valid number.";
       isValid = false;
     }
-    // Basic phone validation
+
     if (
       warehouseData.phone &&
       !/^\+?[1-9]\d{1,14}$/.test(warehouseData.phone)
@@ -198,20 +187,25 @@ const WarehouseForm = ({
       category: warehouseData.category || undefined,
     };
 
-    if (isEditMode && warehouseId) {
-      await axiosInstance.put(`/warehouse/update/${warehouseId}`, payload);
-    } else {
-      if (!parsedUserId) {
-        alert("User ID is missing. Cannot create warehouse.");
-        return;
+    try {
+      if (isEditMode && warehouseId) {
+        await axiosInstance.put(`/warehouse/update/${warehouseId}`, payload);
+      } else {
+        if (!parsedUserId) {
+          alert("User ID is missing. Cannot create warehouse.");
+          return;
+        }
+        await axiosInstance.post(`/warehouse/add`, payload);
       }
-      await axiosInstance.post(`/warehouse/add`, payload);
-    }
-    handleClose();
-    if (onSuccess) {
-      onSuccess();
-    } else {
-      window.location.reload();
+      handleClose();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error saving warehouse:", error);
+      alert("Failed to save warehouse. Please check the console for details.");
     }
   };
 
@@ -300,7 +294,7 @@ const WarehouseForm = ({
               <div className="grid grid-cols-1 gap-6">
                 <Input
                   id="address_line_1"
-                  label="Address Line 1"
+                  label="Address Line"
                   placeholder="e.g. 123 Industrial Park Rd"
                   value={warehouseData.address_line_1}
                   onChange={(e) =>
@@ -311,7 +305,7 @@ const WarehouseForm = ({
 
                 <Input
                   id="address_line_2"
-                  label="Address Line 2 (Optional)"
+                  label="Address Line 2 *"
                   placeholder="e.g. Suite 100"
                   value={warehouseData.address_line_2}
                   onChange={(e) =>

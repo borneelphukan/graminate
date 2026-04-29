@@ -1,9 +1,8 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { InfoModal, Icon, Button, Table } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import Swal from "sweetalert2";
 import AlertDisplay from "@/components/ui/AlertDisplay";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
@@ -124,7 +123,12 @@ const HiveDetailsPage = () => {
     } catch (error) {
       console.error("Error fetching hive details:", error);
       setHiveData(null);
-      Swal.fire("Error", "Could not load hive details.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not load hive details.",
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -275,25 +279,34 @@ const HiveDetailsPage = () => {
 
   const handleDelete = async () => {
     if (!hiveId) return;
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: "warning",
+      variant: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    });
-    if (result.isConfirmed) {
-      try {
-        await axiosInstance.delete(`/bee-hives/delete/${hiveId}`);
-        Swal.fire("Deleted!", "The hive has been deleted.", "success");
-        router.push(`/${userId}/apiculture/${apiaryId}`);
-      } catch (error) {
-        Swal.fire("Error", "Failed to delete the hive.", "error");
-        console.error("Failed to delete hive:", error);
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        try {
+          await axiosInstance.delete(`/bee-hives/delete/${hiveId}`);
+          setInfoModal({
+            isOpen: true,
+            title: "Deleted!",
+            text: "The hive has been deleted.",
+            variant: "success",
+          });
+          router.push(`/${userId}/apiculture/${apiaryId}`);
+        } catch (error) {
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: "Failed to delete the hive.",
+            variant: "error",
+          });
+          console.error("Failed to delete hive:", error);
+        }
       }
-    }
+    });
   };
 
   const detailItems = useMemo(() => {
@@ -750,6 +763,8 @@ const HiveDetailsPage = () => {
           apiaryId={parseInt(apiaryId as string, 10)}
         />
       )}
+        />
+      )}
       {showInspectionModal && numericHiveId > 0 && (
         <InspectionModal
           isOpen={showInspectionModal}
@@ -765,6 +780,15 @@ const HiveDetailsPage = () => {
           inspectionToEdit={inspectionToEdit}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        showCancelButton={infoModal.showCancelButton}
+        onConfirm={infoModal.onConfirm}
+      />
     </PlatformLayout>
   );
 };

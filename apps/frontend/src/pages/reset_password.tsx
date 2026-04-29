@@ -1,8 +1,7 @@
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, InfoModal } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import Swal from "sweetalert2";
 import HomeNavbar from "@/components/layout/Navbar/HomeNavbar";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
@@ -14,6 +13,18 @@ const ResetPasswordPage = () => {
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -21,13 +32,13 @@ const ResetPasswordPage = () => {
     const tokenParam = urlParams.get("token") || "";
 
     if (!emailParam || !tokenParam) {
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Invalid Link",
         text: "This password reset link is invalid or expired.",
-        icon: "error",
-        confirmButtonText: "OK",
+        variant: "error",
+        onConfirm: () => router.push("/"),
       });
-      router.push("/");
       return;
     }
 
@@ -37,11 +48,11 @@ const ResetPasswordPage = () => {
 
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Error",
         text: "Passwords do not match.",
-        icon: "error",
-        confirmButtonText: "OK",
+        variant: "error",
       });
       return;
     }
@@ -50,11 +61,11 @@ const ResetPasswordPage = () => {
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
     if (!passwordRegex.test(newPassword)) {
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Weak Password",
         text: "Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character.",
-        icon: "warning",
-        confirmButtonText: "OK",
+        variant: "warning",
       });
       return;
     }
@@ -66,24 +77,23 @@ const ResetPasswordPage = () => {
         newPassword,
       });
 
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Success",
         text: "Password successfully reset. You can now log in.",
-        icon: "success",
-        confirmButtonText: "OK",
+        variant: "success",
+        onConfirm: () => router.push("/"),
       });
-
-      router.push("/");
     } catch (error: unknown) {
       console.error(error);
       const errorMessage =
         (error as { response?: { data?: { error?: string } } })?.response?.data
           ?.error || "Something went wrong. Please try again later.";
-      Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Error",
         text: errorMessage,
-        icon: "error",
-        confirmButtonText: "OK",
+        variant: "error",
       });
     }
   };
@@ -131,6 +141,16 @@ const ResetPasswordPage = () => {
           </div>
         </div>
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => {
+          if (infoModal.onConfirm) infoModal.onConfirm();
+          setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        }}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </>
   );
 };

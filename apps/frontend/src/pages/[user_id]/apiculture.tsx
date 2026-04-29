@@ -1,4 +1,4 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { InfoModal, Icon, Button, Table } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -92,7 +92,18 @@ const Apiculture = () => {
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
   const currentView: View | "tasks" = router.query.view === "apiculture" ? "apiculture" : "tasks";
-  const { handleDeleteRows } = useTableActions("apiculture");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("apiculture", setInfoModal);
 
   const [apicultureRecords, setApicultureRecords] = useState<
     ApicultureRecord[]
@@ -110,6 +121,8 @@ const Apiculture = () => {
     userId: parsedUserId,
     targetSubType: TARGET_APICULTURE_SUB_TYPE,
     expenseCategoryConfig: APICULTURE_EXPENSE_CONFIG,
+    onError: (title, text) =>
+      setInfoModal({ isOpen: true, title, text, variant: "error" }),
   });
 
   const fetchApiculture = useCallback(async () => {
@@ -395,6 +408,13 @@ const Apiculture = () => {
             onApiaryUpdateOrAdd={handleApiaryFormSuccess}
           />
         )}
+        <InfoModal
+          isOpen={infoModal.isOpen}
+          onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+          title={infoModal.title}
+          text={infoModal.text}
+          variant={infoModal.variant}
+        />
       </div>
     </PlatformLayout>
   );

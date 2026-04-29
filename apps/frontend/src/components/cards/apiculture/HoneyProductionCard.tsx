@@ -22,7 +22,7 @@ import {
 import { Dropdown, Button, Table, Input } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
   format,
@@ -190,6 +190,18 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { handleDeleteRows } = useTableActions("honey_harvests");
 
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const barChartInstanceRef = useRef<Chart<"bar"> | null>(null);
 
@@ -250,11 +262,12 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.harvest_date || !formData.honey_weight) {
-      Swal.fire(
-        "Error",
-        "Harvest Date and Honey Weight are required.",
-        "error"
-      );
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Harvest Date and Honey Weight are required.",
+        variant: "error",
+      });
       return;
     }
     setIsSubmitting(true);
@@ -275,17 +288,32 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
           `/honey-production/update/${editingRecord.harvest_id}`,
           payload
         );
-        Swal.fire("Success", "Harvest updated successfully!", "success");
+        setInfoModal({
+          isOpen: true,
+          title: "Success",
+          text: "Harvest updated successfully!",
+          variant: "success",
+        });
       } else {
         await axiosInstance.post("/honey-production/add", payload);
-        Swal.fire("Success", "Harvest logged successfully!", "success");
+        setInfoModal({
+          isOpen: true,
+          title: "Success",
+          text: "Harvest logged successfully!",
+          variant: "success",
+        });
       }
       await fetchHoneyData();
       setEditingRecord(null);
       setActiveView("table");
     } catch (error) {
       console.error("Failed to save harvest:", error);
-      Swal.fire("Error", "Failed to save harvest. Please try again.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to save harvest. Please try again.",
+        variant: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -949,6 +977,13 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
         </div>
       </div>
       {renderContent()}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </div>
   );
 };

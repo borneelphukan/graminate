@@ -1,9 +1,8 @@
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
 
 import { RowType } from "@graminate/ui";
 
-export const useTableActions = (view: string) => {
+export const useTableActions = (view: string, setInfoModal?: (modal: any) => void) => {
   const handleDeleteRows = async (selectedRows: RowType[]) => {
     const rowsToDelete: number[] = [];
     selectedRows.forEach((row) => {
@@ -36,54 +35,61 @@ export const useTableActions = (view: string) => {
     const entityToDelete = entityNames[view] || view;
     const pluralEntity = rowsToDelete.length > 1 ? `${entityToDelete}s` : entityToDelete;
 
-    const result = await Swal.fire({
+    if (!setInfoModal) {
+      // Fallback if no modal setter is provided (though we should always provide it now)
+      console.warn("setInfoModal not provided to useTableActions");
+      return;
+    }
+
+    setInfoModal({
+      isOpen: true,
       title: "Are you sure?",
       text: `Do you want to delete the selected ${pluralEntity}?`,
-      icon: "warning",
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
+      variant: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      reverseButtons: true,
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        try {
+          const endpointMap: Record<string, string> = {
+            contacts: "contacts",
+            companies: "companies",
+            contracts: "contracts",
+            receipts: "receipts",
+            tasks: "tasks",
+            labour: "labour",
+            inventory: "inventory",
+            warehouse: "warehouse",
+            flock: "flock",
+            poultry_health: "poultry-health",
+            poultry_eggs: "poultry-eggs",
+            poultry_feeds: "poultry-feeds",
+            cattle: "cattle-rearing",
+            cattle_milk: "cattle-milk",
+            apiculture: "apiculture",
+            hives: "bee-hives",
+            inspections: "hive-inspections",
+          };
+
+          const endpoint = endpointMap[view] || "inventory";
+
+          await Promise.all(
+            rowsToDelete.map(async (id) => {
+              await axiosInstance.delete(`/${endpoint}/delete/${id}`);
+            })
+          );
+
+          location.reload();
+        } catch (error) {
+          console.error("Error deleting rows:", error);
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: "Failed to delete selected rows.",
+            variant: "error",
+          });
+        }
+      },
     });
-
-    if (result.isConfirmed) {
-      try {
-        const endpointMap: Record<string, string> = {
-          contacts: "contacts",
-          companies: "companies",
-          contracts: "contracts",
-          receipts: "receipts",
-          tasks: "tasks",
-          labour: "labour",
-          inventory: "inventory",
-          warehouse: "warehouse",
-          flock: "flock",
-          poultry_health: "poultry-health",
-          poultry_eggs: "poultry-eggs",
-          poultry_feeds: "poultry-feeds",
-          cattle: "cattle-rearing",
-          cattle_milk: "cattle-milk",
-          apiculture: "apiculture",
-          hives: "bee-hives",
-          inspections: "hive-inspections",
-        };
-
-        const endpoint = endpointMap[view] || "inventory";
-
-        await Promise.all(
-          rowsToDelete.map(async (id) => {
-            await axiosInstance.delete(`/${endpoint}/delete/${id}`);
-          })
-        );
-
-        location.reload();
-      } catch (error) {
-        console.error("Error deleting rows:", error);
-        await Swal.fire("Error", "Failed to delete selected rows.", "error");
-      }
-    }
   };
 
   return {

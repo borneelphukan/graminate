@@ -14,7 +14,7 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 
 type ExpenseRecord = {
   expense_id: number;
@@ -56,6 +56,17 @@ const Expenses = () => {
   const [expensesItemsPerPage, setExpensesItemsPerPage] = useState(25);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [showFinancials, setShowFinancials] = useState(true);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const fetchExpensesData = useCallback(async () => {
     if (!currentUserId) {
@@ -71,7 +82,12 @@ const Expenses = () => {
     } catch (error) {
       console.error("Error fetching expenses data:", error);
       setExpensesData([]);
-      Swal.fire("Error", "Could not fetch expenses data.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not fetch expenses data.",
+        variant: "error",
+      });
     } finally {
       setIsExpensesLoading(false);
     }
@@ -102,6 +118,8 @@ const Expenses = () => {
     userId: currentUserId,
     targetSubType: "All", // We want global data
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
+    onError: (title, text) =>
+      setInfoModal({ isOpen: true, title, text, variant: "error" }),
   });
 
   const currentDate = useMemo(() => new Date(), []);
@@ -278,6 +296,13 @@ const Expenses = () => {
           onExpenseAdded={handleExpenseAdded}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </>
   );
 };

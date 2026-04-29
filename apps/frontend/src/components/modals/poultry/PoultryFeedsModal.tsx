@@ -1,7 +1,7 @@
 import { Dropdown, Icon, Button, Input } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import Loader from "@/components/ui/Loader";
 
 import { UNITS } from "@/constants/options";
@@ -56,6 +56,17 @@ const PoultryFeedsModal = ({
   const [errors, setErrors] = useState<
     Partial<Record<keyof FeedRecord, string>>
   >({});
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const [inventoryFeedObjects, setInventoryFeedObjects] = useState<
     ItemRecord[]
@@ -187,12 +198,11 @@ const PoultryFeedsModal = ({
           `/poultry-feeds/update/${feedRecordToEdit.feed_id}`,
           payload
         );
-        Swal.fire({
+        setInfoModal({
+          isOpen: true,
           title: "Success",
-          text: "Feed record updated successfully!",
-          icon: "success",
-          footer:
-            "Remember to manually adjust inventory if feed item or amount changed.",
+          text: "Milk record updated successfully!\n\nRemember to manually adjust inventory if feed item or amount changed.",
+          variant: "success",
         });
         onRecordSaved();
         onClose();
@@ -214,11 +224,12 @@ const PoultryFeedsModal = ({
                 quantity: newQuantity,
               }
             );
-            Swal.fire(
-              "Success",
-              "Feed record added and inventory updated!",
-              "success"
-            );
+            setInfoModal({
+              isOpen: true,
+              title: "Success",
+              text: "Feed record added and inventory updated!",
+              variant: "success",
+            });
           } catch (inventoryError: unknown) {
             console.error("Error updating inventory:", inventoryError);
             const errorMessage =
@@ -230,18 +241,20 @@ const PoultryFeedsModal = ({
                 : inventoryError instanceof Error
                 ? inventoryError.message
                 : "Unknown error";
-            Swal.fire(
-              "Partial Success",
-              `Feed record saved, but failed to update inventory: ${errorMessage}. Please adjust inventory manually.`,
-              "warning"
-            );
+            setInfoModal({
+              isOpen: true,
+              title: "Partial Success",
+              text: `Feed record saved, but failed to update inventory: ${errorMessage}. Please adjust inventory manually.`,
+              variant: "warning",
+            });
           }
         } else {
-          Swal.fire(
-            "Feed Saved - Inventory Warning",
-            "Feed record saved, but the corresponding inventory item was not found for quantity update. Please check inventory.",
-            "warning"
-          );
+          setInfoModal({
+            isOpen: true,
+            title: "Feed Saved - Inventory Warning",
+            text: "Feed record saved, but the corresponding inventory item was not found for quantity update. Please check inventory.",
+            variant: "warning",
+          });
         }
         onRecordSaved();
         onClose();
@@ -255,7 +268,12 @@ const PoultryFeedsModal = ({
           : error instanceof Error
           ? error.message
           : "Failed to save feed record.";
-      Swal.fire("Error", errorMessage, "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: errorMessage,
+        variant: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -363,6 +381,13 @@ const PoultryFeedsModal = ({
           </div>
         </form>
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </div>
   );
 };

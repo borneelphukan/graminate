@@ -6,7 +6,6 @@ import {
   parseISO,
 } from "date-fns";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
 
 export type SubTypeValue = { name: string; value: number };
 export type MetricBreakdown = { total: number; breakdown: SubTypeValue[] };
@@ -149,12 +148,14 @@ type Props = {
   userId: string | undefined;
   targetSubType: string;
   expenseCategoryConfig: ExpenseCategoryConfig;
+  onError?: (title: string, text: string) => void;
 };
 
 export const useSubTypeFinancialData = ({
   userId,
   targetSubType,
   expenseCategoryConfig,
+  onError,
 }: Props) => {
   const [fullHistoricalData, setFullHistoricalData] = useState<
     DailyFinancialEntry[]
@@ -371,11 +372,12 @@ export const useSubTypeFinancialData = ({
           `useSubTypeFinancialData (${targetSubType}): Error fetching financial related data:`,
           error
         );
-        Swal.fire(
-          "Error",
-          `Could not load financial data for ${targetSubType}.`,
-          "error"
-        );
+        if (onError) {
+          onError(
+            "Error",
+            `Could not load financial data for ${targetSubType}.`
+          );
+        }
       }
 
       const data = generateDailyFinancialData(

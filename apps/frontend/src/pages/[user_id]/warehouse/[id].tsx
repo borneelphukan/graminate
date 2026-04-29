@@ -1,4 +1,4 @@
-import { Icon, Button, Table } from "@graminate/ui";
+import { InfoModal, Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -110,7 +110,18 @@ const Warehouse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const { handleDeleteRows } = useTableActions("inventory");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("inventory", setInfoModal);
   const [loadingInventory, setLoadingInventory] = useState(true);
   const { darkMode } = useUserPreferences();
 
@@ -208,20 +219,24 @@ const Warehouse = () => {
   const groups = Array.from(
     new Set(inventoryForWarehouse.map((item) => item.item_group))
   );
-  const pieColors = generateColors(inventoryForWarehouse.length);
+  const pieColors = useMemo(
+    () => generateColors(inventoryForWarehouse.length),
+    [inventoryForWarehouse.length]
+  );
 
   const chartData = useMemo(
     () => ({
       labels: groups,
-      datasets: inventoryForWarehouse.map((item) => ({
+      datasets: inventoryForWarehouse.map((item, idx) => ({
         label: item.item_name,
         data: groups.map((group) =>
           group === item.item_group ? item.quantity : null
         ),
-        backgroundColor: getBarColor(item.quantity, maxQuantity),
+        backgroundColor: pieColors[idx],
+        borderRadius: 4,
       })),
     }),
-    [groups, inventoryForWarehouse, maxQuantity]
+    [groups, inventoryForWarehouse, pieColors]
   );
 
   const dynamicWarehouseName =
@@ -264,6 +279,7 @@ const Warehouse = () => {
 
   const cumulativeAddress = useMemo(() => {
     if (!currentWarehouseDetails) return "";
+    const placeholders = ["Unassigned", "N/A", "Not Assigned", "No address provided"];
     return [
       currentWarehouseDetails.address_line_1,
       currentWarehouseDetails.address_line_2,
@@ -272,7 +288,7 @@ const Warehouse = () => {
       currentWarehouseDetails.postal_code,
       currentWarehouseDetails.country,
     ]
-      .filter(Boolean)
+      .filter(val => val && !placeholders.includes(val))
       .join(", ");
   }, [currentWarehouseDetails]);
 
@@ -464,35 +480,36 @@ const Warehouse = () => {
                 <div className="max-w-[220px] mx-auto">
                   <Pie
                     data={{
-                      labels: inventoryForWarehouse.map((item) => item.item_name),
+                      labels: inventoryForWarehouse.length > 0 
+                        ? inventoryForWarehouse.map((item) => item.item_name) 
+                        : ["No Items"],
                       datasets: [{
-                        data: inventoryForWarehouse.map((item) => item.quantity),
-                        backgroundColor: pieColors,
+                        data: inventoryForWarehouse.length > 0 
+                          ? inventoryForWarehouse.map((item) => item.quantity) 
+                          : [1],
+                        backgroundColor: inventoryForWarehouse.length > 0 
+                          ? pieColors 
+                          : ["#e5e7eb"], // gray-200 for empty state
                         borderWidth: 0,
+                        hoverOffset: 4
                       }],
                     }}
                     options={{
-                      plugins: { legend: { display: false } },
-                      maintainAspectRatio: true
+                      plugins: { 
+                        legend: { display: false },
+                        tooltip: { enabled: inventoryForWarehouse.length > 0 }
+                      },
+                      maintainAspectRatio: true,
+                      cutout: "65%" // Making it a donut for a more modern look
                     }}
                   />
                 </div>
-                <div className="mt-6 space-y-2">
-                  {inventoryForWarehouse.slice(0, 4).map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pieColors[idx] }} />
-                        <span className="text-dark dark:text-light truncate max-w-[100px]">{item.item_name}</span>
-                      </div>
-                      <span className="font-bold text-dark dark:text-light">{item.quantity} {item.units}</span>
-                    </div>
-                  ))}
-                  {inventoryForWarehouse.length > 4 && (
-                    <p className="text-[10px] text-center text-dark dark:text-light pt-2 border-t border-gray-100 dark:border-gray-700">
-                      + {inventoryForWarehouse.length - 4} more items
-                    </p>
-                  )}
-                </div>
+                {inventoryForWarehouse.length === 0 && (
+                  <div className="mt-8 text-center py-4 border-t border-gray-400/20 dark:border-gray-700/50">
+                    <p className="text-sm font-bold text-dark dark:text-light">Inventory Empty</p>
+                    <p className="text-xs text-dark dark:text-light opacity-60">Start adding items to see distribution</p>
+                  </div>
+                )}
               </div>
 
               {/* Alerts Card */}
@@ -534,7 +551,19 @@ const Warehouse = () => {
                     </div>
                     <div>
                       <p className="text-[10px] text-green-200 uppercase tracking-wider">Manager</p>
-                      <p className="text-sm font-medium">{currentWarehouseDetails?.contact_person || "Not Assigned"}</p>
+                      <p className="text-sm font-medium">
+                        {currentWarehouseDetails?.contact_person && 
+                        !["Unassigned", "N/A", "Not Assigned"].includes(currentWarehouseDetails.contact_person) ? (
+                          currentWarehouseDetails.contact_person
+                        ) : (
+                          <Button
+                            label="Assign"
+                            variant="link"
+                            size="sm"
+                            onClick={() => setIsWarehouseFormOpen(true)}
+                          />
+                        )}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -543,12 +572,40 @@ const Warehouse = () => {
                     </div>
                     <div>
                       <p className="text-[10px] text-green-200 uppercase tracking-wider">Contact</p>
-                      <p className="text-sm font-medium">{currentWarehouseDetails?.phone || "N/A"}</p>
+                      <p className="text-sm font-medium">
+                        {currentWarehouseDetails?.phone && 
+                        !["Unassigned", "N/A", "Not Assigned"].includes(currentWarehouseDetails.phone) ? (
+                          currentWarehouseDetails.phone
+                        ) : (
+                          <Button
+                            label="Assign"
+                            variant="link"
+                            size="sm"
+                            onClick={() => setIsWarehouseFormOpen(true)}
+                          />
+                        )}
+                      </p>
                     </div>
                   </div>
-                  <div className="pt-4 border-t border-white/20 mt-4">
-                    <p className="text-[10px] text-blue-100 uppercase tracking-wider mb-1">Full Address</p>
-                    <p className="text-xs leading-relaxed opacity-90">{cumulativeAddress || "No address provided"}</p>
+                  <div className="flex items-start gap-3">
+                    <div className="p-1.5 bg-white/20 rounded-lg">
+                      <Icon type="location_on" className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-green-200 uppercase tracking-wider">Address</p>
+                      <p className="text-sm font-medium leading-relaxed">
+                        {cumulativeAddress ? (
+                          cumulativeAddress
+                        ) : (
+                          <Button
+                            label="Assign"
+                            variant="link"
+                            size="sm"
+                            onClick={() => setIsWarehouseFormOpen(true)}
+                          />
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -568,7 +625,7 @@ const Warehouse = () => {
                 ? `Edit ${editingItem.item_name}`
                 : `Add Item to ${dynamicWarehouseName}`
             }
-            warehouseId={parseInt(parsedId, 10)}
+            warehouseId={parseInt(String(parsedId), 10)}
             initialData={editingItem || undefined}
             onSuccess={() => {
               setIsInventoryFormOpen(false);
@@ -581,7 +638,7 @@ const Warehouse = () => {
           <WarehouseForm
             onClose={() => setIsWarehouseFormOpen(false)}
             formTitle={`Edit ${currentWarehouseDetails.name}`}
-            warehouseId={parseInt(parsedId, 10)}
+            warehouseId={parseInt(String(parsedId), 10)}
             initialData={{
               name: currentWarehouseDetails.name,
               type: currentWarehouseDetails.type,
@@ -603,6 +660,13 @@ const Warehouse = () => {
             }}
           />
         )}
+        <InfoModal
+          isOpen={infoModal.isOpen}
+          onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+          title={infoModal.title}
+          text={infoModal.text}
+          variant={infoModal.variant}
+        />
       </div>
     </PlatformLayout>
   );

@@ -127,7 +127,7 @@ const Floriculture = () => {
       <Head>
         <title>Graminate | {currentView === "tasks" ? "Tasks" : "Floriculture"}</title>
       </Head>
-      <div className="min-h-screen container mx-auto p-4 flex flex-col items-stretch gap-12">
+      <div className="min-h-screen container mx-auto p-4 flex flex-col items-stretch gap-8">
         <section className="flex flex-col gap-6">
           <div className="flex justify-between items-end border-b border-gray-400 dark:border-gray-800 pb-4">
             <div>

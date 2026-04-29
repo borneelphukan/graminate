@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Table, TableData, RowType } from "@graminate/ui";
+import { InfoModal, Table, TableData, RowType } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { format, addMonths, addDays } from "date-fns";
-import Swal from "sweetalert2";
 import ReasonModal from "@/components/modals/ReasonModal";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -35,6 +34,17 @@ const SubscriptionsPage = () => {
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ row: RowType; action: string } | null>(null);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const fetchData = useCallback(async () => {
     if (!admin_id) return;
@@ -125,7 +135,12 @@ const SubscriptionsPage = () => {
       });
 
       if (response.ok) {
-        Swal.fire("Success", `User plan changed to ${newPlan}`, "success");
+        setInfoModal({
+          isOpen: true,
+          title: "Success",
+          text: `User plan changed to ${newPlan}`,
+          variant: "success",
+        });
         setIsReasonModalOpen(false);
         setPendingAction(null);
         fetchData();
@@ -135,7 +150,12 @@ const SubscriptionsPage = () => {
     } catch (err: unknown) {
       const error = err as Error;
       console.error("Error updating user plan:", error);
-      Swal.fire("Error", "Failed to update user plan", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to update user plan",
+        variant: "error",
+      });
     } finally {
       setIsActionLoading(false);
     }
@@ -258,6 +278,13 @@ const SubscriptionsPage = () => {
         action={pendingAction?.action || ""}
         userName={pendingUserName}
         isLoading={isActionLoading}
+      />
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
       />
     </>
   );

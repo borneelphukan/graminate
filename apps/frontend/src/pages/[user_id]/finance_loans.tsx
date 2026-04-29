@@ -11,7 +11,7 @@ import SalesTable, {
 } from "@/components/tables/SalesTable";
 import LoanModal from "@/components/modals/LoanModal";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 
 type LoanRecord = {
   loan_id: number;
@@ -54,6 +54,17 @@ const LoansPage = () => {
   const [loansCurrentPage, setLoansCurrentPage] = useState(1);
   const [loansItemsPerPage, setLoansItemsPerPage] = useState(25);
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const fetchLoansData = useCallback(async () => {
     if (!currentUserId) {
@@ -69,7 +80,12 @@ const LoansPage = () => {
     } catch (error) {
       console.error("Error fetching loans data:", error);
       setLoansData([]);
-      Swal.fire("Error", "Could not fetch loans data.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not fetch loans data.",
+        variant: "error",
+      });
     } finally {
       setIsLoansLoading(false);
     }
@@ -236,6 +252,13 @@ const LoansPage = () => {
           onSuccess={handleLoanAdded}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </>
   );
 };

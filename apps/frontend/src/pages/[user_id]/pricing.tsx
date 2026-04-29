@@ -1,17 +1,31 @@
 import { Icon, Button, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@graminate/ui";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 import LoginLayout from "@/layout/LoginLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import Swal from "sweetalert2";
+import InfoModal from "@/components/modals/InfoModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 const Pricing = () => {
   const router = useRouter();
   const { user_id } = router.query;
   const { plan: currentPlanFromDb, country, fetchUserSubTypes } = useUserPreferences();
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    showCancelButton?: boolean;
+    onConfirm?: () => void;
+    confirmButtonText?: string;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   React.useEffect(() => {
     if (user_id) {
@@ -43,7 +57,12 @@ const Pricing = () => {
 
   const handleSubscribe = async (planType: "BASIC" | "PRO") => {
     if (!user_id) {
-      Swal.fire("Error", "User identification missing. Please log in again.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "User identification missing. Please log in again.",
+        variant: "error",
+      });
       return;
     }
 
@@ -69,12 +88,11 @@ const Pricing = () => {
         description: `${planType.charAt(0) + planType.slice(1).toLowerCase()} Plan Subscription`,
         order_id: order.id,
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
-          Swal.fire({
+          setInfoModal({
+            isOpen: true,
             title: "Processing Payment...",
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
+            text: "Please do not close this window while we verify your transaction.",
+            variant: "info",
           });
 
           try {
@@ -86,18 +104,23 @@ const Pricing = () => {
               planType: planType
             });
             
-            Swal.fire({
+            setInfoModal({
+              isOpen: true,
               title: "Payment Successful!",
               text: `Welcome to Graminate ${planType.charAt(0) + planType.slice(1).toLowerCase()}! You are now subscribed at ${REGIONAL_PRICING.symbol}${price}/${REGIONAL_PRICING.currency === "INR" ? "month" : "mo"}.`,
-              icon: "success",
-              confirmButtonColor: "#10b981",
+              variant: "success",
             });
             
             // Refresh user data to update the UI
             fetchUserSubTypes(user_id as string);
           } catch (error) {
             console.error("Verification error:", error);
-            Swal.fire("Error", "Payment verification failed. Please contact support.", "error");
+            setInfoModal({
+              isOpen: true,
+              title: "Error",
+              text: "Payment verification failed. Please contact support.",
+              variant: "error",
+            });
           }
         },
         modal: {
@@ -114,7 +137,12 @@ const Pricing = () => {
       rzp.open();
     } catch (error) {
       console.error("Payment initiation error:", error);
-      Swal.fire("Error", "Could not initiate payment. Please try again later.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Could not initiate payment. Please try again later.",
+        variant: "error",
+      });
     }
   };
 
@@ -128,39 +156,40 @@ const Pricing = () => {
 
     // Downgrade logic
     if (targetLevel < currentLevel) {
-      const result = await Swal.fire({
+      setInfoModal({
+        isOpen: true,
         title: "Downgrade Plan?",
         text: `Are you sure you want to shift to the ${planId} plan? Your current features will remain active until the end of your billing cycle, after which you will be transitioned to ${planId}.`,
-        icon: "warning",
+        variant: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#10b981",
-        cancelButtonColor: "#ef4444",
         confirmButtonText: `Yes, schedule ${planId}`,
-        cancelButtonText: "Keep current plan",
-        background: document.documentElement.classList.contains("dark") ? "#1f2937" : "#ffffff",
-        color: document.documentElement.classList.contains("dark") ? "#f3f4f6" : "#111827",
-      });
-
-      if (result.isConfirmed) {
-        try {
-          const response = await axiosInstance.post(`/user/${user_id}/schedule-downgrade`, {
-            plan: normalizedId
-          });
-          
-          Swal.fire({
-            title: "Downgrade Scheduled",
-            text: response.data.data.message,
-            icon: "success",
-            confirmButtonColor: "#10b981",
-          });
-          
-          if (user_id) fetchUserSubTypes(user_id as string);
-        } catch (error: unknown) {
-          console.error("Downgrade error:", error);
-          const errorMessage = (error as { response?: { data?: { data?: { error?: string } } } })?.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.";
-          Swal.fire("Error", errorMessage, "error");
+        onConfirm: async () => {
+          setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+          try {
+            const response = await axiosInstance.post(`/user/${user_id}/schedule-downgrade`, {
+              plan: normalizedId
+            });
+            
+            setInfoModal({
+              isOpen: true,
+              title: "Downgrade Scheduled",
+              text: response.data.data.message,
+              variant: "success",
+            });
+            
+            if (user_id) fetchUserSubTypes(user_id as string);
+          } catch (error: unknown) {
+            console.error("Downgrade error:", error);
+            const errorMessage = (error as { response?: { data?: { data?: { error?: string } } } })?.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.";
+            setInfoModal({
+              isOpen: true,
+              title: "Error",
+              text: errorMessage,
+              variant: "error",
+            });
+          }
         }
-      }
+      });
       return;
     }
 
@@ -463,6 +492,16 @@ const Pricing = () => {
       <Script
         id="razorpay-checkout-js"
         src="https://checkout.razorpay.com/v1/checkout.js"
+      />
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        showCancelButton={infoModal.showCancelButton}
+        onConfirm={infoModal.onConfirm}
+        confirmButtonText={infoModal.confirmButtonText}
       />
     </>
   );

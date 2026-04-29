@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { InfoModal, Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -7,7 +7,6 @@ import { triggerToast } from "@/stores/toast";
 import { COMPANY_TYPES, INDUSTRY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
-import Swal from "sweetalert2";
 
 type Company = {
   company_id: string;
@@ -81,6 +80,18 @@ const CompanyDetails = () => {
   const [avatarInitials, setAvatarInitials] = useState("?");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const isLoading = !company;
 
@@ -183,37 +194,31 @@ const CompanyDetails = () => {
       return;
     }
 
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Delete Company",
       text: `Are you sure you want to delete ${
         initialCompanyName || "this company"
       }? This action cannot be undone.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
+      variant: "warning",
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setDeleting(true);
+        try {
+          await axiosInstance.delete(`/companies/delete/${company.company_id}`);
+          triggerToast("Company deleted successfully", "success");
+          router.push(`/${user_id}/crm?view=companies`);
+        } catch (error: unknown) {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "An error occurred while deleting the company.";
+          triggerToast(errorMessage, "error");
+        } finally {
+          setDeleting(false);
+        }
+      },
     });
-    if (!result.isConfirmed) {
-      return;
-    }
-
-    setDeleting(true);
-    try {
-      await axiosInstance.delete(`/companies/delete/${company.company_id}`);
-      triggerToast("Company deleted successfully", "success");
-      router.push(`/${user_id}/crm?view=companies`);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while deleting the company.";
-      triggerToast(errorMessage, "error");
-    } finally {
-      setDeleting(false);
-    }
   };
 
   const handleCallCompany = () => {
@@ -462,6 +467,14 @@ const CompanyDetails = () => {
           </div>
         </div>
       </div>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        onConfirm={infoModal.onConfirm}
+      />
     </PlatformLayout>
   );
 };

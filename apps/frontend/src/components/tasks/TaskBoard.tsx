@@ -25,10 +25,9 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import { Dropdown, Button, SegmentedControl } from "@graminate/ui";
+import { InfoModal, Dropdown, Button, SegmentedControl } from "@graminate/ui";
 import TaskModal from "@/components/modals/crm/TaskModal";
 import React, { useState, useMemo, useEffect } from "react";
-import Swal from "sweetalert2";
 
 const formatDeadlineForInput = (
   deadlineString: string | null | undefined
@@ -109,6 +108,19 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
   );
   const [isListView, setIsListView] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<string>("Priority");
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    showCancelButton?: boolean;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   useEffect(() => {
     const savedPriority = localStorage.getItem("taskPriorityFilter");
@@ -225,7 +237,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         setTasks(mappedTasks);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        Swal.fire("Error", "Could not fetch tasks or columns.", "error");
+        setInfoModal({
+          isOpen: true,
+          title: "Error",
+          text: "Could not fetch tasks or columns.",
+          variant: "error",
+        });
         setTasks([]);
       } finally {
         setIsLoading(false);
@@ -238,7 +255,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
 
   const handleCreateColumn = async () => {
     if (!newColumnTitle.trim()) {
-      Swal.fire("Error", "Column title cannot be empty.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Column title cannot be empty.",
+        variant: "error",
+      });
       return;
     }
 
@@ -256,7 +278,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       setIsAddingColumn(false);
     } catch (error) {
       console.error("Failed to add column:", error);
-      Swal.fire("Error", "Failed to add column", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to add column",
+        variant: "error",
+      });
     }
   };
 
@@ -300,48 +327,56 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       );
     } catch (error) {
       console.error("Failed to update column:", error);
-      Swal.fire("Error", "Failed to update column title", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to update column title",
+        variant: "error",
+      });
     }
   };
 
   const deleteColumn = async (id: Id) => {
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Delete Column?",
       text: "This will delete the column. Tasks in it will be marked as 'unknown' and hidden from the board.",
-      icon: "warning",
+      variant: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!"
-    });
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        try {
+          if (!isNaN(Number(id))) {
+            await axiosInstance.delete(`/tasks/column/delete/${id}`);
+          }
+          
+          // Find tasks in this column
+          const tasksToUpdate = tasks.filter(t => t.columnId === id);
+          
+          // Update tasks status to "unknown" in the backend
+          await Promise.all(
+            tasksToUpdate.map(t => 
+              axiosInstance.put(`/tasks/update/${t.id}`, { status: "unknown" })
+            )
+          );
 
-    if (result.isConfirmed) {
-      try {
-        if (!isNaN(Number(id))) {
-          await axiosInstance.delete(`/tasks/column/delete/${id}`);
+          // Update local state
+          setTasks(prev => prev.map(t => 
+            t.columnId === id ? { ...t, status: "unknown", columnId: "orphaned" } : t
+          ));
+
+          setColumns((prev) => prev.filter((col) => col.id !== id));
+        } catch (error) {
+          console.error("Failed to delete column and update tasks:", error);
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: "Failed to delete column or update task statuses.",
+            variant: "error",
+          });
         }
-        
-        // Find tasks in this column
-        const tasksToUpdate = tasks.filter(t => t.columnId === id);
-        
-        // Update tasks status to "unknown" in the backend
-        await Promise.all(
-          tasksToUpdate.map(t => 
-            axiosInstance.put(`/tasks/update/${t.id}`, { status: "unknown" })
-          )
-        );
-
-        // Update local state
-        setTasks(prev => prev.map(t => 
-          t.columnId === id ? { ...t, status: "unknown", columnId: "orphaned" } : t
-        ));
-
-        setColumns((prev) => prev.filter((col) => col.id !== id));
-      } catch (error) {
-        console.error("Failed to delete column and update tasks:", error);
-        Swal.fire("Error", "Failed to delete column or update task statuses.", "error");
       }
-    }
+    });
   };
 
 
@@ -362,7 +397,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
 
   const addTask = async (columnId: Id, title: string, priority: string) => {
     if (!title.trim()) {
-      Swal.fire("Error", "Task title cannot be empty.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Task title cannot be empty.",
+        variant: "error",
+      });
       return;
     }
     try {
@@ -403,8 +443,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       }
     } catch (error) {
       console.error("Failed to add task:", error);
-      const msg = "Failed to create task";
-      Swal.fire("Error", msg, "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to create task",
+        variant: "error",
+      });
     }
   };
 
@@ -412,35 +456,47 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
     const taskIdNum =
       typeof taskId === "string" ? parseInt(taskId, 10) : taskId;
     if (isNaN(taskIdNum)) {
-      Swal.fire("Error", "Invalid task ID.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Invalid task ID.",
+        variant: "error",
+      });
       return;
     }
 
-    const result = await Swal.fire({
+    setInfoModal({
+      isOpen: true,
       title: "Delete Task?",
       text: "This action cannot be undone.",
-      icon: "warning",
+      variant: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#04ad79",
-      cancelButtonColor: "#bbbbbc",
-      confirmButtonText: "Yes",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axiosInstance.delete(`/tasks/delete/${taskIdNum}`);
-        setTasks((prev) => prev.filter((task) => task.id !== taskId));
-        setTaskActionDropdownOpen(null);
-        if (isTaskModalOpen && selectedTask?.id === taskId) {
-          closeTaskModal(false);
+      onConfirm: async () => {
+        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        try {
+          await axiosInstance.delete(`/tasks/delete/${taskIdNum}`);
+          setTasks((prev) => prev.filter((task) => task.id !== taskId));
+          setTaskActionDropdownOpen(null);
+          if (isTaskModalOpen && selectedTask?.id === taskId) {
+            closeTaskModal(false);
+          }
+          setInfoModal({
+            isOpen: true,
+            title: "Deleted!",
+            text: "The task has been deleted.",
+            variant: "success",
+          });
+        } catch (error) {
+          console.error("Error deleting task:", error);
+          setInfoModal({
+            isOpen: true,
+            title: "Error",
+            text: "Failed to delete task",
+            variant: "error",
+          });
         }
-        Swal.fire("Deleted!", "The task has been deleted.", "success");
-      } catch (error) {
-        console.error("Error deleting task:", error);
-        const msg = "Failed to delete task";
-        Swal.fire("Error", msg, "error");
       }
-    }
+    });
   };
 
   const updateTask = async (updatedTaskData: FrontendTaskType) => {
@@ -448,7 +504,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       updatedTaskData;
     const taskIdNum = typeof id === "string" ? parseInt(id, 10) : id;
     if (isNaN(taskIdNum)) {
-      Swal.fire("Error", "Invalid task ID for update.", "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Invalid task ID for update.",
+        variant: "error",
+      });
       throw new Error("Invalid task ID");
     }
 
@@ -483,8 +544,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       }
     } catch (error) {
       console.error("Failed to update task:", error);
-      const msg = "Failed to update task details.";
-      Swal.fire("Error", msg, "error");
+      setInfoModal({
+        isOpen: true,
+        title: "Error",
+        text: "Failed to update task details.",
+        variant: "error",
+      });
       throw error;
     }
   };
@@ -509,7 +574,12 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         }));
         closeTicketModal();
       } else {
-        Swal.fire("Invalid Limit", "Use numbers or leave blank.", "error");
+        setInfoModal({
+          isOpen: true,
+          title: "Invalid Limit",
+          text: "Use numbers or leave blank.",
+          variant: "error",
+        });
       }
     } else {
       closeTicketModal();
@@ -1007,6 +1077,15 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
           onClose={() => closeTaskModal(true)}
         />
       )}
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+        showCancelButton={infoModal.showCancelButton}
+        onConfirm={infoModal.onConfirm}
+      />
     </div>
   );
 };

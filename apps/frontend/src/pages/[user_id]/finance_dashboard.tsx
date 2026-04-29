@@ -19,9 +19,8 @@ import WorkingCapital from "@/components/cards/finance/WorkingCapital";
 import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import OpeningBalanceModal from "@/components/modals/OpeningBalanceModal";
 import Loader from "@/components/ui/Loader";
-import { Button } from "@graminate/ui";
+import { Button, InfoModal } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Swal from "sweetalert2";
 
 const FINANCIAL_METRICS = [
   "Revenue",
@@ -219,6 +218,17 @@ const Finance = () => {
   const [loans, setLoans] = useState<Loan[]>([]);
   const [openingBalance, setOpeningBalance] = useState<number>(0);
   const [isOpeningBalanceModalOpen, setIsOpeningBalanceModalOpen] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
 
   const processSalesData = useCallback(
     (
@@ -425,7 +435,12 @@ const Finance = () => {
         setSubTypes(Array.from(new Set(finalSubTypesList)));
       } catch (error) {
         console.error("FinancePage: Error fetching initial data:", error);
-        Swal.fire("Error", "Could not load initial financial data.", "error");
+        setInfoModal({
+          isOpen: true,
+          title: "Error",
+          text: "Could not load initial financial data.",
+          variant: "error",
+        });
       }
 
       const generatedData = generateDailyFinancialData(
@@ -615,7 +630,16 @@ const Finance = () => {
             />
           </div>
         </main>
+          </div>
+        </main>
       </PlatformLayout>
+      <InfoModal
+        isOpen={infoModal.isOpen}
+        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
+        title={infoModal.title}
+        text={infoModal.text}
+        variant={infoModal.variant}
+      />
     </>
   );
 };
