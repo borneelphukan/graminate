@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import { Button, Icon } from "@graminate/ui";
+import { Button, Table, Popup, Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
@@ -14,7 +14,6 @@ import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
-import InfoModal from "@/components/modals/InfoModal";
 
 type SaleRecord = {
   sales_id: number;
@@ -60,7 +59,7 @@ const Sales = () => {
   const [salesItemsPerPage, setSalesItemsPerPage] = useState(25);
   const [isSalesModalOpen, setIsSalesModalOpen] = useState(false);
   const [showFinancials, setShowFinancials] = useState(true);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -86,7 +85,7 @@ const Sales = () => {
     } catch (error) {
       console.error("Error fetching sales data:", error);
       setSalesData([]);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Could not fetch sales data.",
@@ -122,7 +121,7 @@ const Sales = () => {
     targetSubType: "All",
     expenseCategoryConfig: POULTRY_EXPENSE_CONFIG,
     onError: (title, text) =>
-      setInfoModal({ isOpen: true, title, text, variant: "error" }),
+      setPopup({ isOpen: true, title, text, variant: "error" }),
   });
 
   const currentDate = useMemo(() => new Date(), []);
@@ -254,9 +253,7 @@ const Sales = () => {
                         className="flex items-center cursor-pointer text-sm text-blue-200 dark:hover:text-blue-300"
                         onClick={() => setShowFinancials(!showFinancials)}
                       >
-                        <Icon
-                          type={showFinancials ? "expand_less" : "expand_more"}
-                        />
+                        <Icon type={showFinancials ? "expand_less" : "expand_more"}/>
                         {showFinancials ? "Hide Finances" : "Show Finances"}
                       </div>
                     </div>
@@ -325,12 +322,12 @@ const Sales = () => {
           onSaleAdded={handleSaleAdded}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </>
   );

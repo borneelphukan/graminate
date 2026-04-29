@@ -8,8 +8,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button } from "@graminate/ui";
-import AlertDisplay from "@/components/ui/AlertDisplay";
+import { Button, Alert } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
 import { getCoordsFromCity } from "@/lib/utils/loadWeather";
@@ -88,6 +87,38 @@ const CattleDetailPage = () => {
     ItemRecord[]
   >([]);
   const [loadingCattleInventory, setLoadingCattleInventory] = useState(true);
+  const [activeAlerts, setActiveAlerts] = useState<
+    { id: number; title: string; message: string; variant: "warning" | "neutral" }[]
+  >([]);
+
+  useEffect(() => {
+    const alerts: {
+      id: number;
+      title: string;
+      message: string;
+      variant: "warning" | "neutral";
+    }[] = [];
+    let idCounter = 1;
+
+    if (!loadingCattleInventory && cattleInventoryItems.length > 0) {
+      cattleInventoryItems.forEach((item) => {
+        if (
+          item.minimum_limit != null &&
+          item.minimum_limit > 0 &&
+          item.quantity < item.minimum_limit
+        ) {
+          alerts.push({
+            id: idCounter++,
+            title: "Warning Alert",
+            message: `${item.item_name} inventory low (Qty: ${item.quantity} ${item.units}, Min: ${item.minimum_limit} ${item.units})`,
+            variant: "warning",
+          });
+        }
+      });
+    }
+
+    setActiveAlerts(alerts);
+  }, [loadingCattleInventory, cattleInventoryItems]);
 
   const [weatherData, setWeatherData] = useState<WeatherDataState>({
     temperature: null,
@@ -337,14 +368,23 @@ const CattleDetailPage = () => {
         </title>
       </Head>
       <div className="min-h-screen container mx-auto p-4 space-y-6">
-        <AlertDisplay
-          temperature={weatherData.temperature}
-          formatTemperature={formatTemperature}
-          inventoryItems={cattleInventoryItems}
-          loadingInventory={loadingCattleInventory}
-          inventoryCategoryName="Cattle Rearing"
-          latestFutureAppointment={null}
-        />
+        {activeAlerts.length > 0 && (
+          <div className="space-y-3">
+            {activeAlerts.map((alert) => (
+              <Alert
+                key={alert.id}
+                variant={alert.variant}
+                title={alert.title}
+                description={alert.message}
+                onClose={() =>
+                  setActiveAlerts((prev) =>
+                    prev.filter((a) => a.id !== alert.id)
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
 
         <div className="mb-6 mt-2 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">

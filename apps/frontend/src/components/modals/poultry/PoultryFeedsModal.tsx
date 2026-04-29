@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "@/components/modals/InfoModal";
 import Loader from "@/components/ui/Loader";
 
 import { UNITS } from "@/constants/options";
@@ -56,7 +55,7 @@ const PoultryFeedsModal = ({
   const [errors, setErrors] = useState<
     Partial<Record<keyof FeedRecord, string>>
   >({});
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -198,7 +197,7 @@ const PoultryFeedsModal = ({
           `/poultry-feeds/update/${feedRecordToEdit.feed_id}`,
           payload
         );
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: "Milk record updated successfully!\n\nRemember to manually adjust inventory if feed item or amount changed.",
@@ -224,7 +223,7 @@ const PoultryFeedsModal = ({
                 quantity: newQuantity,
               }
             );
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Success",
               text: "Feed record added and inventory updated!",
@@ -241,7 +240,7 @@ const PoultryFeedsModal = ({
                 : inventoryError instanceof Error
                 ? inventoryError.message
                 : "Unknown error";
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Partial Success",
               text: `Feed record saved, but failed to update inventory: ${errorMessage}. Please adjust inventory manually.`,
@@ -249,7 +248,7 @@ const PoultryFeedsModal = ({
             });
           }
         } else {
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Feed Saved - Inventory Warning",
             text: "Feed record saved, but the corresponding inventory item was not found for quantity update. Please check inventory.",
@@ -268,7 +267,7 @@ const PoultryFeedsModal = ({
           : error instanceof Error
           ? error.message
           : "Failed to save feed record.";
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -381,12 +380,12 @@ const PoultryFeedsModal = ({
           </div>
         </form>
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );

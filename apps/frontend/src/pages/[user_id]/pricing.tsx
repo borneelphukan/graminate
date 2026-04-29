@@ -1,18 +1,17 @@
-import { Icon, Button, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@graminate/ui";
+import { Icon, Button, Accordion, AccordionItem, AccordionTrigger, AccordionContent, Popup } from "@graminate/ui";
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 import LoginLayout from "@/layout/LoginLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import InfoModal from "@/components/modals/InfoModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 const Pricing = () => {
   const router = useRouter();
   const { user_id } = router.query;
   const { plan: currentPlanFromDb, country, fetchUserSubTypes } = useUserPreferences();
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -57,7 +56,7 @@ const Pricing = () => {
 
   const handleSubscribe = async (planType: "BASIC" | "PRO") => {
     if (!user_id) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "User identification missing. Please log in again.",
@@ -88,7 +87,7 @@ const Pricing = () => {
         description: `${planType.charAt(0) + planType.slice(1).toLowerCase()} Plan Subscription`,
         order_id: order.id,
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Processing Payment...",
             text: "Please do not close this window while we verify your transaction.",
@@ -104,7 +103,7 @@ const Pricing = () => {
               planType: planType
             });
             
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Payment Successful!",
               text: `Welcome to Graminate ${planType.charAt(0) + planType.slice(1).toLowerCase()}! You are now subscribed at ${REGIONAL_PRICING.symbol}${price}/${REGIONAL_PRICING.currency === "INR" ? "month" : "mo"}.`,
@@ -115,7 +114,7 @@ const Pricing = () => {
             fetchUserSubTypes(user_id as string);
           } catch (error) {
             console.error("Verification error:", error);
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Error",
               text: "Payment verification failed. Please contact support.",
@@ -137,7 +136,7 @@ const Pricing = () => {
       rzp.open();
     } catch (error) {
       console.error("Payment initiation error:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Could not initiate payment. Please try again later.",
@@ -156,7 +155,7 @@ const Pricing = () => {
 
     // Downgrade logic
     if (targetLevel < currentLevel) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Downgrade Plan?",
         text: `Are you sure you want to shift to the ${planId} plan? Your current features will remain active until the end of your billing cycle, after which you will be transitioned to ${planId}.`,
@@ -164,13 +163,13 @@ const Pricing = () => {
         showCancelButton: true,
         confirmButtonText: `Yes, schedule ${planId}`,
         onConfirm: async () => {
-          setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+          setPopup((prev: any) => ({ ...prev, isOpen: false }));
           try {
             const response = await axiosInstance.post(`/user/${user_id}/schedule-downgrade`, {
               plan: normalizedId
             });
             
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Downgrade Scheduled",
               text: response.data.data.message,
@@ -181,7 +180,7 @@ const Pricing = () => {
           } catch (error: unknown) {
             console.error("Downgrade error:", error);
             const errorMessage = (error as { response?: { data?: { data?: { error?: string } } } })?.response?.data?.data?.error || "Failed to schedule downgrade. Please try again.";
-            setInfoModal({
+            setPopup({
               isOpen: true,
               title: "Error",
               text: errorMessage,
@@ -493,15 +492,15 @@ const Pricing = () => {
         id="razorpay-checkout-js"
         src="https://checkout.razorpay.com/v1/checkout.js"
       />
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        showCancelButton={infoModal.showCancelButton}
-        onConfirm={infoModal.onConfirm}
-        confirmButtonText={infoModal.confirmButtonText}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        showCancelButton={popup.showCancelButton}
+        onConfirm={popup.onConfirm}
+        confirmButtonText={popup.confirmButtonText}
       />
     </>
   );

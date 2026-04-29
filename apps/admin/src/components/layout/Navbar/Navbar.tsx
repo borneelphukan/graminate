@@ -90,7 +90,7 @@ const Navbar = ({
         <div className="relative flex h-12 py-1 justify-between items-center">
           <div className="flex items-center">
             <button
-              className="lg:hidden text-gray-400 hover:text-white focus:outline-none mr-2"
+              className="lg:hidden text-dark dark:text-light hover:text-white focus:outline-none mr-2"
               onClick={toggleSidebar}
               aria-expanded={isSidebarOpen}
             >
@@ -150,7 +150,7 @@ const Navbar = ({
                 </span>
                 <Icon
                   type={isDropdownOpen ? "expand_less" : "expand_more"}
-                  className="size-5 text-gray-400 group-hover:text-white transition-colors"
+                  className="size-5 text-dark dark:text-light group-hover:text-white transition-colors"
                 />
               </button>
 

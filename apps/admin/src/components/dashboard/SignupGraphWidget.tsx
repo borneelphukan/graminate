@@ -206,7 +206,7 @@ const SignupGraphWidget = ({ data, isLoading, onPeriodChange }: Props) => {
           ) : data.labels.length > 0 ? (
             <Line data={chartData} options={options} />
           ) : (
-            <div className="size-full flex flex-col items-center justify-center text-gray-400">
+            <div className="size-full flex flex-col items-center justify-center text-dark dark:text-light">
               <Icon type="query_stats" className="size-8 mb-2 opacity-20" />
               <p className="text-sm">No data available for this range</p>
             </div>

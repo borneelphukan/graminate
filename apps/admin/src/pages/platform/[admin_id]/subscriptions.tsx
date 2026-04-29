@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { InfoModal, Table, TableData, RowType } from "@graminate/ui";
+import { Popup, Table, TableData, RowType } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { format, addMonths, addDays } from "date-fns";
 import ReasonModal from "@/components/modals/ReasonModal";
@@ -34,7 +34,7 @@ const SubscriptionsPage = () => {
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ row: RowType; action: string } | null>(null);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -135,7 +135,7 @@ const SubscriptionsPage = () => {
       });
 
       if (response.ok) {
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: `User plan changed to ${newPlan}`,
@@ -150,7 +150,7 @@ const SubscriptionsPage = () => {
     } catch (err: unknown) {
       const error = err as Error;
       console.error("Error updating user plan:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to update user plan",
@@ -279,12 +279,12 @@ const SubscriptionsPage = () => {
         userName={pendingUserName}
         isLoading={isActionLoading}
       />
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </>
   );

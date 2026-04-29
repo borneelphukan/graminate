@@ -1,4 +1,4 @@
-import { InfoModal, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -168,7 +168,7 @@ const FinanceReceipts = () => {
     });
   };
 
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -179,7 +179,7 @@ const FinanceReceipts = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("receipts", setInfoModal);
+  const { handleDeleteRows } = useTableActions("receipts", setPopup);
 
   return (
     <PlatformLayout>
@@ -263,12 +263,12 @@ const FinanceReceipts = () => {
           </div>
         )}
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

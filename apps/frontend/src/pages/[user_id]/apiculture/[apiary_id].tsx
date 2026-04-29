@@ -7,8 +7,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { InfoModal, Button, Table } from "@graminate/ui";
-import AlertDisplay from "@/components/ui/AlertDisplay";
+import { Popup, Button, Table, Alert, Icon } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axios from "axios";
 import ApicultureForm from "@/components/form/apiculture/ApicultureForm";
@@ -78,7 +77,7 @@ const ApicultureDetailPage = () => {
   const [hiveSearchQuery, setHiveSearchQuery] = useState("");
   const [hiveCurrentPage, setHiveCurrentPage] = useState(1);
   const [hiveItemsPerPage, setHiveItemsPerPage] = useState(5);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -89,7 +88,7 @@ const ApicultureDetailPage = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("hives", setInfoModal);
+  const { handleDeleteRows } = useTableActions("hives", setPopup);
 
   const [apicultureInventoryItems, setApicultureInventoryItems] = useState<
     ItemRecord[]
@@ -97,6 +96,36 @@ const ApicultureDetailPage = () => {
   const [loadingApicultureInventory, setLoadingApicultureInventory] =
     useState(true);
   const [temperature, setTemperature] = useState<number | null>(null);
+  const [activeAlerts, setActiveAlerts] = useState<
+    { id: number; message: string; variant: "warning" | "error" | "neutral" }[]
+  >([]);
+
+  useEffect(() => {
+    const alerts: {
+      id: number;
+      message: string;
+      variant: "warning" | "error" | "neutral";
+    }[] = [];
+    let idCounter = 1;
+
+    if (!loadingApicultureInventory && apicultureInventoryItems.length > 0) {
+      apicultureInventoryItems.forEach((item) => {
+        if (
+          item.minimum_limit != null &&
+          item.minimum_limit > 0 &&
+          item.quantity < item.minimum_limit
+        ) {
+          alerts.push({
+            id: idCounter++,
+            message: `${item.item_name} inventory low (Qty: ${item.quantity} ${item.units}, Min: ${item.minimum_limit} ${item.units})`,
+            variant: "warning",
+          });
+        }
+      });
+    }
+
+    setActiveAlerts(alerts);
+  }, [loadingApicultureInventory, apicultureInventoryItems]);
 
   const {
     temperatureScale,
@@ -350,14 +379,24 @@ const ApicultureDetailPage = () => {
         </title>
       </Head>
       <div className="min-h-screen container mx-auto p-4 space-y-6">
-        <AlertDisplay
-          temperature={temperature}
-          formatTemperature={formatTemperature}
-          inventoryItems={apicultureInventoryItems}
-          loadingInventory={loadingApicultureInventory}
-          inventoryCategoryName="Apiculture"
-          latestFutureAppointment={null}
-        />
+        {activeAlerts.length > 0 && (
+          <div className="space-y-3">
+            {activeAlerts.map((alert) => (
+              <Alert
+                key={alert.id}
+                variant={alert.variant}
+                title={alert.variant + " Alert"}
+                description={alert.message}
+                className="capitalize"
+                onClose={() =>
+                  setActiveAlerts((prev) =>
+                    prev.filter((a) => a.id !== alert.id)
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
 
         <div className="mb-6 mt-2 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -490,12 +529,12 @@ const ApicultureDetailPage = () => {
           apiaryId={numericApiaryId}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

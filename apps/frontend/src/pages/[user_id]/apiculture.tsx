@@ -1,4 +1,4 @@
-import { InfoModal, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -92,7 +92,7 @@ const Apiculture = () => {
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
   const currentView: View | "tasks" = router.query.view === "apiculture" ? "apiculture" : "tasks";
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -103,7 +103,7 @@ const Apiculture = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("apiculture", setInfoModal);
+  const { handleDeleteRows } = useTableActions("apiculture", setPopup);
 
   const [apicultureRecords, setApicultureRecords] = useState<
     ApicultureRecord[]
@@ -122,7 +122,7 @@ const Apiculture = () => {
     targetSubType: TARGET_APICULTURE_SUB_TYPE,
     expenseCategoryConfig: APICULTURE_EXPENSE_CONFIG,
     onError: (title, text) =>
-      setInfoModal({ isOpen: true, title, text, variant: "error" }),
+      setPopup({ isOpen: true, title, text, variant: "error" }),
   });
 
   const fetchApiculture = useCallback(async () => {
@@ -408,12 +408,12 @@ const Apiculture = () => {
             onApiaryUpdateOrAdd={handleApiaryFormSuccess}
           />
         )}
-        <InfoModal
-          isOpen={infoModal.isOpen}
-          onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-          title={infoModal.title}
-          text={infoModal.text}
-          variant={infoModal.variant}
+        <Popup
+          isOpen={popup.isOpen}
+          onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+          title={popup.title}
+          text={popup.text}
+          variant={popup.variant}
         />
       </div>
     </PlatformLayout>

@@ -1,7 +1,5 @@
-import { Dropdown, Icon, Button, TextArea, Input } from "@graminate/ui";
+import { Dropdown, Icon, Button, TextArea, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect, KeyboardEvent, useMemo } from "react";
-
-import InfoModal from "@/components/modals/InfoModal";
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -69,7 +67,7 @@ const TaskModal = ({
   });
 
   const [isSaving, setIsSaving] = useState(false);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -104,7 +102,7 @@ const TaskModal = ({
       onClose();
     } catch (error) {
       console.error("Failed to save all changes:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to save changes. Please try again.",
@@ -130,7 +128,7 @@ const TaskModal = ({
       onClose();
     } catch (error) {
       console.error("Error deleting task:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error!",
         text: "Could not delete the task.",
@@ -304,7 +302,7 @@ const TaskModal = ({
                     onBlur={saveTitleLocal}
                     onKeyDown={handleTitleKeyDown}
                   />
-                  <p className="text-[10px] text-gray-400 mt-1 ml-1 uppercase font-bold tracking-tighter">
+                  <p className="text-xs text-dark dark:text-light mt-1 ml-1 uppercase font-bold tracking-tighter">
                     Press Enter to save • Esc to cancel
                   </p>
                 </div>
@@ -398,12 +396,12 @@ const TaskModal = ({
           />
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { InfoModal, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -110,7 +110,7 @@ const Warehouse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -121,7 +121,7 @@ const Warehouse = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("inventory", setInfoModal);
+  const { handleDeleteRows } = useTableActions("inventory", setPopup);
   const [loadingInventory, setLoadingInventory] = useState(true);
   const { darkMode } = useUserPreferences();
 
@@ -660,12 +660,12 @@ const Warehouse = () => {
             }}
           />
         )}
-        <InfoModal
-          isOpen={infoModal.isOpen}
-          onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-          title={infoModal.title}
-          text={infoModal.text}
-          variant={infoModal.variant}
+        <Popup
+          isOpen={popup.isOpen}
+          onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+          title={popup.title}
+          text={popup.text}
+          variant={popup.variant}
         />
       </div>
     </PlatformLayout>

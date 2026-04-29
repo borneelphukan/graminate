@@ -711,7 +711,7 @@ export default function GraminateERP() {
                         <span className="text-base font-semibold leading-7 group-hover:text-emerald-600 transition-colors">
                           {content[faq.questionKey as keyof typeof content]}
                         </span>
-                        <span className="ml-6 flex h-7 items-center text-gray-400 group-hover:text-emerald-600 transition-colors">
+                        <span className="ml-6 flex h-7 items-center text-dark dark:text-light group-hover:text-emerald-600 transition-colors">
                           <motion.div
                             animate={{ rotate: faqOpen.has(index) ? 45 : 0 }}
                             transition={{ duration: 0.2 }}

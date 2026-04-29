@@ -4,9 +4,8 @@ import { useRouter } from "next/router";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, Popup } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "@/components/modals/InfoModal";
 import Loader from "@/components/ui/Loader";
 
 const FinanceSettings = () => {
@@ -18,7 +17,7 @@ const FinanceSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
-  const [infoModalState, setInfoModalState] = useState<{
+  const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -58,7 +57,7 @@ const FinanceSettings = () => {
       await axiosInstance.put(`/user/${userId}`, {
         opening_balance: Number(openingBalance),
       });
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Success",
         text: "Finance settings updated successfully.",
@@ -70,7 +69,7 @@ const FinanceSettings = () => {
       if (axios.isAxiosError(error)) {
         text = error.response?.data?.message || text;
       }
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text,
@@ -140,12 +139,12 @@ const FinanceSettings = () => {
           </main>
         </div>
       </PlatformLayout>
-      <InfoModal
-        isOpen={infoModalState.isOpen}
-        onClose={() => setInfoModalState((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+      <Popup
+        isOpen={popupState.isOpen}
+        onClose={() => setPopupState((prev) => ({ ...prev, isOpen: false }))}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

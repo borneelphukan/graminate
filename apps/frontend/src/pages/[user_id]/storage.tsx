@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { InfoModal, Button, Table } from "@graminate/ui";
+import { Popup, Button, Table } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
@@ -40,7 +40,7 @@ const WarehousePage = () => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -51,7 +51,7 @@ const WarehousePage = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions(view, setInfoModal);
+  const { handleDeleteRows } = useTableActions(view, setPopup);
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -203,12 +203,12 @@ const WarehousePage = () => {
           />
         )}
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

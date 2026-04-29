@@ -1,8 +1,7 @@
-import { Icon, Button, Input } from "@graminate/ui";
+import { Icon, Button, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useRouter } from "next/router";
-import InfoModal from "./InfoModal";
 
 type LoanModalProps = {
   isOpen: boolean;
@@ -27,7 +26,7 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
     status: "Active",
   });
 
-  const [infoModalState, setInfoModalState] = useState<{
+  const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -79,7 +78,7 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
     e.preventDefault();
     if (!validateForm()) return;
     if (!userId) {
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: "User ID is not available.",
@@ -106,7 +105,7 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
           : error instanceof Error
           ? error.message
           : "Could not log loan. Please try again.";
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -212,12 +211,12 @@ const LoanModal = ({ isOpen, onClose, onSuccess }: LoanModalProps) => {
           </div>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModalState.isOpen}
-        onClose={() => setInfoModalState((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+      <Popup
+        isOpen={popupState.isOpen}
+        onClose={() => setPopupState((prev) => ({ ...prev, isOpen: false }))}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

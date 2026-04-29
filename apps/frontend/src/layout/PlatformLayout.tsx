@@ -1,11 +1,10 @@
-import { Icon, Button, Sidebar as SharedSidebar, type SidebarItem } from "@graminate/ui";
+import { Icon, Button, Sidebar as SharedSidebar, type SidebarItem, Popup } from "@graminate/ui";
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar/Navbar";
 import axios, { AxiosError } from "axios";
 import ChatWindow from "@/layout/ChatWindow";
-import InfoModal from "@/components/modals/InfoModal";
 import CookieDisclaimer from "@/components/ui/CookieDisclaimer";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator } from "@/translations";
@@ -412,7 +411,7 @@ const PlatformLayout = ({ children }: Props) => {
   if (!isAuthorized) {
     return (
       <>
-        <InfoModal
+        <Popup
           isOpen={modalState.isOpen}
           onClose={() => {
             setModalState((prev) => ({ ...prev, isOpen: false }));
@@ -539,7 +538,7 @@ const PlatformLayout = ({ children }: Props) => {
         )}
       </div>
 
-      <InfoModal
+      <Popup
         isOpen={modalState.isOpen && !isAuthorized}
         onClose={() => {
           setModalState((prev) => ({ ...prev, isOpen: false }));

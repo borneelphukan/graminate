@@ -153,7 +153,7 @@ export const Sidebar = ({
 
       <div className="mt-auto bg-gray-800 p-3 border-t border-gray-700">
         <button
-          className={`w-full flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
+          className={`w-full flex items-center p-3 rounded-lg text-dark dark:text-light hover:bg-gray-700 hover:text-gray-300 transition-colors duration-200 ${
             isCollapsed ? "justify-center" : "justify-end"
           }`}
           onClick={onToggleCollapse}

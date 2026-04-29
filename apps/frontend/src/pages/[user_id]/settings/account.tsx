@@ -10,7 +10,7 @@ import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, translations } from "@/translations";
 
 type ModalType = "confirmDelete" | "password" | "info" | null;
-type InfoModalContent = {
+type PopupContent = {
   titleKey: keyof typeof translations.English;
   messageKey: keyof typeof translations.English;
   type: "success" | "error";
@@ -24,7 +24,7 @@ const Account = () => {
   const [userId, setUserId] = useState<string | null>(null);
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [infoModalContent, setInfoModalContent] = useState<InfoModalContent>({
+  const [popupContent, setPopupContent] = useState<PopupContent>({
     titleKey: "errorTitle",
     messageKey: "anUnknownErrorOccurred",
     type: "success",
@@ -43,21 +43,21 @@ const Account = () => {
     }
   }, [router.isReady, router.query.user_id]);
 
-  const openModal = (type: ModalType, infoContent?: InfoModalContent) => {
+  const openModal = (type: ModalType, infoContent?: PopupContent) => {
     setPassword("");
     setPasswordErrorKey(null);
     if (type === "info" && infoContent) {
-      setInfoModalContent(infoContent);
+      setPopupContent(infoContent);
     }
     setActiveModal(type);
   };
 
   const closeModal = () => {
     const wasSuccess =
-      infoModalContent.type === "success" &&
-      infoModalContent.titleKey === "deletedTitle";
+      popupContent.type === "success" &&
+      popupContent.titleKey === "deletedTitle";
     setActiveModal(null);
-    setInfoModalContent({
+    setPopupContent({
       titleKey: "errorTitle",
       messageKey: "anUnknownErrorOccurred",
       type: "success",
@@ -228,7 +228,7 @@ const Account = () => {
               e.preventDefault();
               closeModal();
             }}
-            title={t(infoModalContent.titleKey)}
+            title={t(popupContent.titleKey)}
             footerContent={
               <Button
                 label={t("okButton")}
@@ -238,7 +238,7 @@ const Account = () => {
             }
           >
             <p className="text-sm text-dark dark:text-gray-300">
-              {t(infoModalContent.messageKey)}
+              {t(popupContent.messageKey)}
             </p>
           </PasswordModal>
         );

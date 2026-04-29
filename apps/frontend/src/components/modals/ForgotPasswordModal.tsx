@@ -1,6 +1,5 @@
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, Popup } from "@graminate/ui";
 import React, { useState } from "react";
-import InfoModal from "./InfoModal";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
 
@@ -11,7 +10,7 @@ type Props = {
 
 const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
   const [email, setEmail] = useState("");
-  const [infoModalState, setInfoModalState] = useState({
+  const [popupState, setPopupState] = useState({
     isOpen: false,
     title: "",
     text: "",
@@ -23,7 +22,7 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
     e.preventDefault();
 
     if (!email.trim()) {
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: "Please enter your email address.",
@@ -35,7 +34,7 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
 
     try {
       await axios.post(`${API_BASE_URL}/password/forgot`, { email });
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Email Sent",
         text: "Please check your email for the reset password link.",
@@ -49,7 +48,7 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
           ? (error as { response: { data: { error: string } } }).response.data
               .error
           : "Failed to send reset link. Please try again later.";
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -101,15 +100,15 @@ const ForgotPasswordModal = ({ isOpen, closeModal }: Props) => {
         </div>
       </div>
 
-      <InfoModal
-        isOpen={infoModalState.isOpen}
+      <Popup
+        isOpen={popupState.isOpen}
         onClose={() => {
-          setInfoModalState((prev) => ({ ...prev, isOpen: false }));
-          infoModalState.onClose();
+          setPopupState((prev) => ({ ...prev, isOpen: false }));
+          popupState.onClose();
         }}
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

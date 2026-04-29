@@ -12,7 +12,7 @@ import {
 import PlatformLayout from "@/layout/PlatformLayout";
 import Calendar from "@/components/ui/Calendar/Calendar";
 import FirstLoginModal from "@/components/modals/FirstLoginModal";
-import InfoModal from "@/components/modals/InfoModal";
+import { Popup } from "@graminate/ui";
 import WidgetModal from "@/components/modals/WidgetModal";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
@@ -687,7 +687,7 @@ const Dashboard = () => {
         userSubTypes={userData?.sub_type || []}
       />
 
-      <InfoModal
+      <Popup
         isOpen={successModal.isOpen}
         onClose={() => setSuccessModal((prev) => ({ ...prev, isOpen: false }))}
         title={successModal.title}
@@ -695,7 +695,7 @@ const Dashboard = () => {
         variant="success"
       />
 
-      <InfoModal
+      <Popup
         isOpen={errorModal.isOpen}
         onClose={() => setErrorModal((prev) => ({ ...prev, isOpen: false }))}
         title={errorModal.title}
@@ -703,7 +703,7 @@ const Dashboard = () => {
         variant="error"
       />
 
-      <InfoModal
+      <Popup
         isOpen={fetchErrorModal.isOpen}
         onClose={() => {
           setFetchErrorModal((prev) => ({ ...prev, isOpen: false }));

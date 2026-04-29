@@ -1,7 +1,6 @@
-import { Icon, Button, Input, Table } from "@graminate/ui";
+import { Icon, Button, Input, Table, Popup } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "../InfoModal";
 import { format, parseISO } from "date-fns";
 import { useTableActions } from "@/hooks/useTableActions";
 
@@ -58,7 +57,7 @@ const EggModal = ({
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { handleDeleteRows } = useTableActions("poultry_eggs");
 
-  const [infoModalState, setInfoModalState] = useState<{
+  const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -185,7 +184,7 @@ const EggModal = ({
           : error instanceof Error
           ? error.message
           : "Failed to save egg record.";
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -394,14 +393,14 @@ const EggModal = ({
         </div>
       </div>
     </div>
-      <InfoModal
-        isOpen={infoModalState.isOpen}
+      <Popup
+        isOpen={popupState.isOpen}
         onClose={() =>
-          setInfoModalState((prev) => ({ ...prev, isOpen: false }))
+          setPopupState((prev) => ({ ...prev, isOpen: false }))
         }
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

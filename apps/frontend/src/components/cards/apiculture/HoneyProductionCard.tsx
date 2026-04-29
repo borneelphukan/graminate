@@ -19,10 +19,9 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input } from "@graminate/ui";
+import { Dropdown, Button, Table, Input, Popup } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "@/components/modals/InfoModal";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
   format,
@@ -190,7 +189,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { handleDeleteRows } = useTableActions("honey_harvests");
 
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -262,7 +261,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.harvest_date || !formData.honey_weight) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Harvest Date and Honey Weight are required.",
@@ -288,7 +287,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
           `/honey-production/update/${editingRecord.harvest_id}`,
           payload
         );
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: "Harvest updated successfully!",
@@ -296,7 +295,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
         });
       } else {
         await axiosInstance.post("/honey-production/add", payload);
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: "Harvest logged successfully!",
@@ -308,7 +307,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
       setActiveView("table");
     } catch (error) {
       console.error("Failed to save harvest:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to save harvest. Please try again.",
@@ -977,12 +976,12 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
         </div>
       </div>
       {renderContent()}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );

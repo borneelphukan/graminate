@@ -18,7 +18,7 @@ import {
 } from "react-native-paper";
 
 type ModalType = "confirmDelete" | "password" | "info" | null;
-type InfoModalContent = {
+type PopupContent = {
   title: string;
   message: string;
   type: "success" | "error";
@@ -30,7 +30,7 @@ const AccountSettingsScreen = () => {
   const theme = useTheme();
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [infoModalContent, setInfoModalContent] = useState<InfoModalContent>({
+  const [popupContent, setPopupContent] = useState<PopupContent>({
     title: "Error",
     message: "An unknown error occurred.",
     type: "success",
@@ -40,19 +40,19 @@ const AccountSettingsScreen = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const openModal = (type: ModalType, infoContent?: InfoModalContent) => {
+  const openModal = (type: ModalType, infoContent?: PopupContent) => {
     setPassword("");
     setPasswordError(null);
-    if (type === "info" && infoContent) setInfoModalContent(infoContent);
+    if (type === "info" && infoContent) setPopupContent(infoContent);
     setActiveModal(type);
   };
 
   const closeModal = async () => {
     const wasSuccess =
-      infoModalContent.type === "success" &&
-      infoModalContent.title === "Account Deleted";
+      popupContent.type === "success" &&
+      popupContent.title === "Account Deleted";
     setActiveModal(null);
-    setInfoModalContent({
+    setPopupContent({
       title: "Error",
       message: "An unknown error occurred.",
       type: "success",
@@ -190,21 +190,21 @@ const AccountSettingsScreen = () => {
             <Dialog.Icon
               icon={() => (
                 <Icon
-                  type={infoModalContent.type === "success"
+                  type={popupContent.type === "success"
                       ? "check-circle"
                       : "alert-circle"}
                   size={48}
                   color={
-                    infoModalContent.type === "success"
+                    popupContent.type === "success"
                       ? theme.colors.primary
                       : theme.colors.error
                   }
                 />
               )}
             />
-            <Dialog.Title>{infoModalContent.title}</Dialog.Title>
+            <Dialog.Title>{popupContent.title}</Dialog.Title>
             <Dialog.Content>
-              <Text variant="bodyMedium">{infoModalContent.message}</Text>
+              <Text variant="bodyMedium">{popupContent.message}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={closeModal}>OK</Button>

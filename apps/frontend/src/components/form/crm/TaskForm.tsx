@@ -180,7 +180,7 @@ const TaskForm = ({ userId, onClose }: TaskFormProps) => {
                       className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto"
                     >
                       <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-600">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Default Suggestions</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-dark dark:text-light">Default Suggestions</p>
                       </div>
                       {suggestions.map((suggestion, index) => (
                         <div

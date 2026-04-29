@@ -19,7 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input } from "@graminate/ui";
+import { Dropdown, Button, Table, Input, Popup } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -27,7 +27,6 @@ import {
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
 import Loader from "@/components/ui/Loader";
-import InfoModal from "@/components/modals/InfoModal";
 import {
   format,
   subMonths,
@@ -138,7 +137,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { handleDeleteRows } = useTableActions("milk_records");
 
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -221,7 +220,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.date_collected || !formData.milk_produced) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Date Collected and Milk Produced are required.",
@@ -244,7 +243,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
           `/cattle-milk/update/${editingRecord.milk_id}`,
           payload
         );
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: "Milk record updated successfully!",
@@ -252,7 +251,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
         });
       } else {
         await axiosInstance.post("/cattle-milk/add", payload);
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Success",
           text: "Milk record logged successfully!",
@@ -264,7 +263,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
       setActiveView("table");
     } catch (error) {
       console.error("Failed to save milk record:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to save milk record. Please try again.",
@@ -809,7 +808,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
                       ref={animalNameSuggestionsRef}
                       className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 rounded-md shadow-lg max-h-48 overflow-y-auto border border-gray-300 dark:border-gray-600"
                     >
-                      <p className="text-xs p-2 text-gray-400 dark:text-gray-500">
+                      <p className="text-xs p-2 text-dark dark:text-light">
                         {isLoadingAnimalNameSuggestions
                           ? "Loading suggestions..."
                           : "Suggestions..."}
@@ -991,7 +990,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
               <Button
                 label="Back"
                 variant="ghost"
-                icon={{ left: "arrow_back" }}
+                icon={{ left: "chevron_left" }}
                 onClick={handleBackToChart}
               />
             )}
@@ -1018,12 +1017,12 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
         </div>
       </div>
       {renderContent()}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );

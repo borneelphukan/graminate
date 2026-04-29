@@ -2,12 +2,11 @@ import React, { useState, useEffect, FormEvent } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import LoginLayout from "@/layout/LoginLayout";
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, Popup } from "@graminate/ui";
 import ForgotPasswordModal from "@/components/modals/ForgotPasswordModal";
 import OTPModal from "@/components/modals/OTPModal";
 import axios from "axios";
 import { API_BASE_URL } from "@/constants/constants";
-import InfoModal from "@/components/modals/InfoModal";
 
 const SignIn = () => {
   const router = useRouter();
@@ -536,7 +535,7 @@ const SignIn = () => {
         </div>
       </LoginLayout>
 
-      <InfoModal
+      <Popup
         isOpen={modalState.isOpen}
         onClose={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
         title={modalState.title}

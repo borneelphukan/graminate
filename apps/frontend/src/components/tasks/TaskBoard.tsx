@@ -25,7 +25,7 @@ import ColumnContainer from "./ColumnContainer";
 import TaskCard from "./TaskCard";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-import { InfoModal, Dropdown, Button, SegmentedControl } from "@graminate/ui";
+import { Popup, Dropdown, Button, SegmentedControl } from "@graminate/ui";
 import TaskModal from "@/components/modals/crm/TaskModal";
 import React, { useState, useMemo, useEffect } from "react";
 
@@ -108,7 +108,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
   );
   const [isListView, setIsListView] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<string>("Priority");
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -237,7 +237,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         setTasks(mappedTasks);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Error",
           text: "Could not fetch tasks or columns.",
@@ -255,7 +255,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
 
   const handleCreateColumn = async () => {
     if (!newColumnTitle.trim()) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Column title cannot be empty.",
@@ -278,7 +278,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       setIsAddingColumn(false);
     } catch (error) {
       console.error("Failed to add column:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to add column",
@@ -327,7 +327,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       );
     } catch (error) {
       console.error("Failed to update column:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to update column title",
@@ -337,14 +337,14 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
   };
 
   const deleteColumn = async (id: Id) => {
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Delete Column?",
       text: "This will delete the column. Tasks in it will be marked as 'unknown' and hidden from the board.",
       variant: "warning",
       showCancelButton: true,
       onConfirm: async () => {
-        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setPopup((prev: any) => ({ ...prev, isOpen: false }));
         try {
           if (!isNaN(Number(id))) {
             await axiosInstance.delete(`/tasks/column/delete/${id}`);
@@ -368,7 +368,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
           setColumns((prev) => prev.filter((col) => col.id !== id));
         } catch (error) {
           console.error("Failed to delete column and update tasks:", error);
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: "Failed to delete column or update task statuses.",
@@ -397,7 +397,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
 
   const addTask = async (columnId: Id, title: string, priority: string) => {
     if (!title.trim()) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Task title cannot be empty.",
@@ -443,7 +443,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       }
     } catch (error) {
       console.error("Failed to add task:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to create task",
@@ -456,7 +456,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
     const taskIdNum =
       typeof taskId === "string" ? parseInt(taskId, 10) : taskId;
     if (isNaN(taskIdNum)) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Invalid task ID.",
@@ -465,14 +465,14 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       return;
     }
 
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Delete Task?",
       text: "This action cannot be undone.",
       variant: "warning",
       showCancelButton: true,
       onConfirm: async () => {
-        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setPopup((prev: any) => ({ ...prev, isOpen: false }));
         try {
           await axiosInstance.delete(`/tasks/delete/${taskIdNum}`);
           setTasks((prev) => prev.filter((task) => task.id !== taskId));
@@ -480,7 +480,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
           if (isTaskModalOpen && selectedTask?.id === taskId) {
             closeTaskModal(false);
           }
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Deleted!",
             text: "The task has been deleted.",
@@ -488,7 +488,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
           });
         } catch (error) {
           console.error("Error deleting task:", error);
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: "Failed to delete task",
@@ -504,7 +504,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       updatedTaskData;
     const taskIdNum = typeof id === "string" ? parseInt(id, 10) : id;
     if (isNaN(taskIdNum)) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Invalid task ID for update.",
@@ -544,7 +544,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
       }
     } catch (error) {
       console.error("Failed to update task:", error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to update task details.",
@@ -574,7 +574,7 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
         }));
         closeTicketModal();
       } else {
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Invalid Limit",
           text: "Use numbers or leave blank.",
@@ -1077,14 +1077,14 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
           onClose={() => closeTaskModal(true)}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        showCancelButton={infoModal.showCancelButton}
-        onConfirm={infoModal.onConfirm}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        showCancelButton={popup.showCancelButton}
+        onConfirm={popup.onConfirm}
       />
     </div>
   );

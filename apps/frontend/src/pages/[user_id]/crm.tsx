@@ -1,4 +1,4 @@
-import { InfoModal, Button, Table } from "@graminate/ui";
+import { Popup, Button, Table } from "@graminate/ui";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
@@ -118,7 +118,7 @@ const CRM = () => {
   const [tasksData, setTasksData] = useState<Task[]>([]);
   const [fetchedData, setFetchedData] = useState<FetchedDataItem[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -222,7 +222,7 @@ const CRM = () => {
     }
   }, [plan, view, contactsData, companiesData, contractsData]);
 
-  const { handleDeleteRows } = useTableActions(view, setInfoModal);
+  const { handleDeleteRows } = useTableActions(view, setPopup);
 
   const tableData = useMemo(() => {
     const locale = mapSupportedLanguageToLocale(currentLanguage);
@@ -498,7 +498,7 @@ const CRM = () => {
               onClick={() => {
                 if (isLimitReached) {
                   const itemType = view.charAt(0).toUpperCase() + view.slice(1, -1);
-                  setInfoModal({
+                  setPopup({
                     isOpen: true,
                     title: "Limit Reached",
                     text: `Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`,
@@ -592,12 +592,12 @@ const CRM = () => {
           </>
         )}
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

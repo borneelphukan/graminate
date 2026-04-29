@@ -4,10 +4,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
-import { Button, Table, TableData } from "@graminate/ui";
+import { Button, Table, TableData, Popup } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "@/components/modals/InfoModal";
 import { format } from "date-fns";
 
 type Payment = {
@@ -33,7 +32,7 @@ const Billing = () => {
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -84,7 +83,7 @@ const Billing = () => {
   const handleCancelSubscription = async () => {
     if (!userId || plan === "FREE") return;
 
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Cancel Subscription?",
       text: "Your plan will be downgraded to Free. Your current features will remain active until the end of your billing cycle.",
@@ -93,13 +92,13 @@ const Billing = () => {
       confirmButtonText: "Yes, cancel subscription",
       onConfirm: async () => {
         setIsCancelling(true);
-        setInfoModal((prev) => ({ ...prev, isOpen: false }));
+        setPopup((prev) => ({ ...prev, isOpen: false }));
         try {
           await axiosInstance.post(`/user/${userId}/schedule-downgrade`, {
             plan: "FREE",
           });
 
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Subscription Cancelled",
             text: "Your plan will revert to Free at the end of your current billing cycle.",
@@ -116,7 +115,7 @@ const Billing = () => {
           if (axios.isAxiosError(error)) {
             message = error.response?.data?.data?.error || message;
           }
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: message,
@@ -279,15 +278,15 @@ const Billing = () => {
           </main>
         </div>
       </PlatformLayout>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        showCancelButton={infoModal.showCancelButton}
-        onConfirm={infoModal.onConfirm}
-        confirmButtonText={infoModal.confirmButtonText}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        showCancelButton={popup.showCancelButton}
+        onConfirm={popup.onConfirm}
+        confirmButtonText={popup.confirmButtonText}
       />
     </>
   );

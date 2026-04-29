@@ -1,4 +1,4 @@
-import { Button, Input, InfoModal } from "@graminate/ui";
+import { Button, Input, Popup } from "@graminate/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -13,7 +13,7 @@ const ResetPasswordPage = () => {
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -32,7 +32,7 @@ const ResetPasswordPage = () => {
     const tokenParam = urlParams.get("token") || "";
 
     if (!emailParam || !tokenParam) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Invalid Link",
         text: "This password reset link is invalid or expired.",
@@ -48,7 +48,7 @@ const ResetPasswordPage = () => {
 
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Passwords do not match.",
@@ -61,7 +61,7 @@ const ResetPasswordPage = () => {
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
     if (!passwordRegex.test(newPassword)) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Weak Password",
         text: "Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character.",
@@ -77,7 +77,7 @@ const ResetPasswordPage = () => {
         newPassword,
       });
 
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Success",
         text: "Password successfully reset. You can now log in.",
@@ -89,7 +89,7 @@ const ResetPasswordPage = () => {
       const errorMessage =
         (error as { response?: { data?: { error?: string } } })?.response?.data
           ?.error || "Something went wrong. Please try again later.";
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -141,15 +141,15 @@ const ResetPasswordPage = () => {
           </div>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
+      <Popup
+        isOpen={popup.isOpen}
         onClose={() => {
-          if (infoModal.onConfirm) infoModal.onConfirm();
-          setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+          if (popup.onConfirm) popup.onConfirm();
+          setPopup((prev: any) => ({ ...prev, isOpen: false }));
         }}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </>
   );

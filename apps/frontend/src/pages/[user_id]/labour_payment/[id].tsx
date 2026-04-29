@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { InfoModal, Table } from "@graminate/ui";
+import { Popup, Table } from "@graminate/ui";
 import { useTableActions } from "@/hooks/useTableActions";
 import SalaryModal from "@/components/modals/SalaryModal";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -52,7 +52,7 @@ const LabourPaymentDetails = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(25);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -63,7 +63,7 @@ const LabourPaymentDetails = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("labour_payment", setInfoModal);
+  const { handleDeleteRows } = useTableActions("labour_payment", setPopup);
   const PAGINATION_ITEMS = ["10 per page", "25 per page", "50 per page", "100 per page"];
 
   useEffect(() => {
@@ -241,12 +241,12 @@ const LabourPaymentDetails = () => {
           />
         )}
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

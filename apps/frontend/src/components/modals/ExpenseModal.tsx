@@ -1,8 +1,7 @@
-import { Icon, Dropdown, Button, Input } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
-import InfoModal from "./InfoModal";
+import Loader from "../ui/Loader";
 
 type ExpenseModalProps = {
   isOpen: boolean;
@@ -41,7 +40,7 @@ const ExpenseModal = ({
   const [subTypes, setSubTypes] = useState<string[]>([]);
   const [isLoadingSubTypes, setIsLoadingSubTypes] = useState(true);
 
-  const [infoModalState, setInfoModalState] = useState<{
+  const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -77,7 +76,7 @@ const ExpenseModal = ({
       } catch (error) {
         console.error("Error fetching user sub_types:", error);
         setSubTypes([]);
-        setInfoModalState({
+        setPopupState({
           isOpen: true,
           title: "Error",
           text: "Failed to fetch user occupations. Please try again.",
@@ -128,7 +127,7 @@ const ExpenseModal = ({
     e.preventDefault();
     if (!validateForm()) return;
     if (!userId) {
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: "User ID is not available.",
@@ -161,7 +160,7 @@ const ExpenseModal = ({
           : error instanceof Error
           ? error.message
           : "Failed to add expense.";
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -294,14 +293,14 @@ const ExpenseModal = ({
           </div>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModalState.isOpen}
+      <Popup
+        isOpen={popupState.isOpen}
         onClose={() =>
-          setInfoModalState((prev) => ({ ...prev, isOpen: false }))
+          setPopupState((prev) => ({ ...prev, isOpen: false }))
         }
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

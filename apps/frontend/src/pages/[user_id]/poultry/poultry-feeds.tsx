@@ -2,13 +2,11 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import { Button, Table } from "@graminate/ui";
+import { Button, Table, Popup } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import { parseISO, format } from "date-fns";
 import PoultryFeedsModal from "@/components/modals/poultry/PoultryFeedsModal";
-import InfoModal from "@/components/modals/InfoModal"; 
-
 type FeedRecord = {
   feed_id: number;
   user_id: number;
@@ -66,7 +64,7 @@ const PoultryFeedsPage = () => {
     []
   );
   const [loadingFeedItems, setLoadingFeedItems] = useState(true);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -77,7 +75,7 @@ const PoultryFeedsPage = () => {
     text: "",
     variant: "info",
   });
-  const { handleDeleteRows } = useTableActions("poultry_feeds", setInfoModal);
+  const { handleDeleteRows } = useTableActions("poultry_feeds", setPopup);
 
   const fetchFlockDetails = useCallback(async () => {
     if (!parsedFlockId) return;
@@ -162,7 +160,7 @@ const PoultryFeedsPage = () => {
 
   const handleAddRecord = () => {
     if (loadingFeedItems) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Loading...",
         text: "Checking available feed items. Please try again in a moment.",
@@ -172,7 +170,7 @@ const PoultryFeedsPage = () => {
     }
 
     if (availableFeedItems.length === 0) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "No Feed Items",
         text: "Inventory contains no feed items marked for your flocks. Please add or mark items as feed in your inventory first.",
@@ -306,12 +304,12 @@ const PoultryFeedsPage = () => {
           }}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </PlatformLayout>
   );

@@ -65,7 +65,7 @@ const UserDistributionWidget = ({ data, isLoading }: Props) => {
             <span className="text-xl font-bold text-dark dark:text-light">
               {isLoading ? "..." : (data.free + data.basic + data.pro)}
             </span>
-            <span className="text-[10px] uppercase font-bold text-gray-400">Total</span>
+            <span className="text-xs uppercase font-bold text-dark dark:text-light">Total</span>
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Loader from "@/components/ui/Loader";
-import { Button } from "@graminate/ui";
+import { Button, Popup } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
@@ -11,7 +11,6 @@ import SalesTable, {
 } from "@/components/tables/SalesTable";
 import LoanModal from "@/components/modals/LoanModal";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
-import InfoModal from "@/components/modals/InfoModal";
 
 type LoanRecord = {
   loan_id: number;
@@ -54,7 +53,7 @@ const LoansPage = () => {
   const [loansCurrentPage, setLoansCurrentPage] = useState(1);
   const [loansItemsPerPage, setLoansItemsPerPage] = useState(25);
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -80,7 +79,7 @@ const LoansPage = () => {
     } catch (error) {
       console.error("Error fetching loans data:", error);
       setLoansData([]);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Could not fetch loans data.",
@@ -252,12 +251,12 @@ const LoansPage = () => {
           onSuccess={handleLoanAdded}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </>
   );

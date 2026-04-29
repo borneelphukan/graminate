@@ -35,9 +35,8 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button } from "@graminate/ui";
+import { Button, Alert } from "@graminate/ui";
 import FlockForm from "@/components/form/poultry/FlockForm";
-import AlertDisplay from "@/components/ui/AlertDisplay";
 import Loader from "@/components/ui/Loader";
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
@@ -196,6 +195,64 @@ const PoultryDetail = () => {
     ItemRecord[]
   >([]);
   const [loadingPoultryInventory, setLoadingPoultryInventory] = useState(true);
+  const [activeAlerts, setActiveAlerts] = useState<
+    {
+      id: number;
+      title: string;
+      message: string;
+      variant: "warning" | "neutral";
+    }[]
+  >([]);
+
+  useEffect(() => {
+    const alerts: {
+      id: number;
+      title: string;
+      message: string;
+      variant: "warning" | "neutral";
+    }[] = [];
+    let idCounter = 1;
+
+    if (!loadingPoultryInventory && poultryInventoryItems.length > 0) {
+      poultryInventoryItems.forEach((item) => {
+        if (
+          item.minimum_limit != null &&
+          item.minimum_limit > 0 &&
+          item.quantity < item.minimum_limit
+        ) {
+          alerts.push({
+            id: idCounter++,
+            title: "Warning Alert",
+            message: `${item.item_name} inventory low (Qty: ${item.quantity} ${item.units}, Min: ${item.minimum_limit} ${item.units})`,
+            variant: "warning",
+          });
+        }
+      });
+    }
+
+    const latestAppt = latestPoultryHealthData.latest_future_appointment;
+    if (latestAppt && latestAppt !== "N/A") {
+      const appointmentDate = new Date(latestAppt);
+      const today = new Date();
+      const diffTime = appointmentDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 0 && diffDays <= 7) {
+        alerts.push({
+          id: idCounter++,
+          title: "Info Alert",
+          message: `Upcoming veterinary visit scheduled in ${diffDays} days (${appointmentDate.toLocaleDateString()}).`,
+          variant: "neutral",
+        });
+      }
+    }
+
+    setActiveAlerts(alerts);
+  }, [
+    loadingPoultryInventory,
+    poultryInventoryItems,
+    latestPoultryHealthData.latest_future_appointment,
+  ]);
 
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [isWeatherModalOpen, setIsWeatherModalOpen] = useState(false);
@@ -857,16 +914,23 @@ const PoultryDetail = () => {
         <title>Graminate | Poultry Management</title>
       </Head>
       <div className="min-h-screen container mx-auto p-4 space-y-6">
-        <AlertDisplay
-          temperature={temperature}
-          formatTemperature={formatTemperature}
-          inventoryItems={poultryInventoryItems}
-          loadingInventory={loadingPoultryInventory}
-          inventoryCategoryName="Poultry"
-          latestFutureAppointment={
-            latestPoultryHealthData.latest_future_appointment
-          }
-        />
+        {activeAlerts.length > 0 && (
+          <div className="space-y-3">
+            {activeAlerts.map((alert) => (
+              <Alert
+                key={alert.id}
+                variant={alert.variant}
+                title={alert.title}
+                description={alert.message}
+                onClose={() =>
+                  setActiveAlerts((prev) =>
+                    prev.filter((a) => a.id !== alert.id)
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
 
         <div className="mb-6 mt-2 p-4 bg-white dark:bg-gray-700 shadow-md rounded-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">

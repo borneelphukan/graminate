@@ -1,4 +1,4 @@
-import { InfoModal, Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Popup, Dropdown, Icon, Button, Input } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -90,7 +90,7 @@ const ContactDetails = () => {
   const [avatarInitials, setAvatarInitials] = useState("?");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -230,7 +230,7 @@ const ContactDetails = () => {
       return;
     }
 
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Delete Contact",
       text: `Are you sure you want to delete ${
@@ -238,7 +238,7 @@ const ContactDetails = () => {
       }? This action cannot be undone.`,
       variant: "warning",
       onConfirm: async () => {
-        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setPopup((prev: any) => ({ ...prev, isOpen: false }));
         setDeleting(true);
         try {
           await axiosInstance.delete(`/contacts/delete/${contact.contact_id}`);
@@ -487,13 +487,13 @@ const ContactDetails = () => {
           </div>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        onConfirm={infoModal.onConfirm}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        onConfirm={popup.onConfirm}
       />
     </PlatformLayout>
   );

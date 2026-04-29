@@ -234,7 +234,7 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
 
           <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
             {loadingFlowers ? (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400 py-12">
+              <div className="flex flex-col items-center justify-center h-full text-dark dark:text-light py-12">
                 <div className="relative h-12 w-12 mb-4">
                   <div className="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
                   <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
@@ -242,7 +242,7 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
                 <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">FETCHING SCHEDULE...</span>
               </div>
             ) : filteredFlowers.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400 text-center py-12">
+              <div className="flex flex-col items-center justify-center h-full text-dark dark:text-light text-center py-12">
                 <div className="p-4 rounded-full bg-gray-100 dark:bg-gray-800 mb-4 opacity-50">
                   <Icon type="search_off" size="lg" />
                 </div>

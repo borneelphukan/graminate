@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-export type InfoModalProps = {
+export type PopupProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -14,7 +14,7 @@ export type InfoModalProps = {
   variant?: "success" | "error" | "info" | "warning";
 }
 
-const InfoModal = ({
+const Popup = ({
   isOpen,
   onClose,
   title,
@@ -26,7 +26,7 @@ const InfoModal = ({
   showCancelButton = false,
   onConfirm,
   variant,
-}: InfoModalProps) => {
+}: PopupProps) => {
   if (!isOpen) return null;
 
   let buttonColorClass = confirmButtonColorClass;
@@ -170,4 +170,4 @@ const InfoModal = ({
   );
 };
 
-export { InfoModal };
+export { Popup };

@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import TableSkeleton from "../skeletons/TableSkeleton";
-import InfoModal from "@/components/modals/InfoModal";
 import SearchBar from "@/components/ui/SearchBar";
-import { Dropdown, Checkbox, Button } from "@graminate/ui";
+import { Dropdown, Checkbox, Button, Popup } from "@graminate/ui";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -109,7 +108,7 @@ const SalesTable = ({
   const [sortColumn, setSortColumn] = useState<number | null>(null);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -201,7 +200,7 @@ const SalesTable = ({
     const exportRows = getExportRows();
 
     if (exportRows.length === 0) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "No Data",
         text: "There is no data to export.",
@@ -285,7 +284,7 @@ const SalesTable = ({
     });
 
     if (rowsToDelete.length === 0) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "No Selection",
         text: "Please select at least one row to delete.",
@@ -298,7 +297,7 @@ const SalesTable = ({
     const pluralEntity =
       rowsToDelete.length > 1 ? `${entityToDelete}s` : entityToDelete;
 
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Are you sure?",
       text: `Do you want to delete the selected ${pluralEntity}?`,
@@ -322,11 +321,11 @@ const SalesTable = ({
 
           setSelectedRows([]);
           setSelectAll(false);
-          setInfoModal((prev) => ({ ...prev, isOpen: false }));
+          setPopup((prev) => ({ ...prev, isOpen: false }));
           onDataMutated?.();
         } catch (error) {
           console.error("Error deleting rows:", error);
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: `Failed to delete selected ${pluralEntity}. Please try again.`,
@@ -371,7 +370,7 @@ const SalesTable = ({
       });
     } else {
       console.error("User ID not found for navigation.");
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Could not determine user. Please try again.",
@@ -387,7 +386,7 @@ const SalesTable = ({
       : userIdToUse;
 
     if (!finalUserId) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "User ID not found.",
@@ -411,7 +410,7 @@ const SalesTable = ({
           query: { data: JSON.stringify(linkedReceipt), user_id: finalUserId },
         });
       } else {
-        setInfoModal({
+        setPopup({
           isOpen: true,
           title: "Error",
           text: "Could not find the linked receipt.",
@@ -420,7 +419,7 @@ const SalesTable = ({
       }
     } catch (error) {
       console.error("Error fetching receipt for sale:", saleId, error);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Failed to fetch receipt details.",
@@ -475,7 +474,7 @@ const SalesTable = ({
 
                 const entityToTruncate = entityNames[view] || view;
 
-                setInfoModal({
+                setPopup({
                   isOpen: true,
                   title: "Are you sure?",
                   text: `This will reset your ${entityToTruncate} records.`,
@@ -491,7 +490,7 @@ const SalesTable = ({
                       window.location.reload();
                     } catch (error) {
                       console.error(error);
-                      setInfoModal({
+                      setPopup({
                         isOpen: true,
                         title: "Error",
                         text: "Failed to reset table.",
@@ -778,15 +777,15 @@ const SalesTable = ({
           </div>
         </nav>
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        showCancelButton={infoModal.showCancelButton}
-        onConfirm={infoModal.onConfirm}
-        confirmButtonText={infoModal.confirmButtonText}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        showCancelButton={popup.showCancelButton}
+        onConfirm={popup.onConfirm}
+        confirmButtonText={popup.confirmButtonText}
       />
     </div>
   );

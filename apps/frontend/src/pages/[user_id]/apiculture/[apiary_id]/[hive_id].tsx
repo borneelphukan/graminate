@@ -1,9 +1,8 @@
-import { InfoModal, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Alert } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import AlertDisplay from "@/components/ui/AlertDisplay";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
   useUserPreferences,
@@ -62,7 +61,20 @@ const HiveDetailsPage = () => {
   const [activeView, setActiveView] = useState<HiveView>("status");
   const [inspectionToEdit, setInspectionToEdit] =
     useState<InspectionData | null>(null);
-  const { handleDeleteRows } = useTableActions("inspections");
+  const [popup, setPopup] = useState<{
+    isOpen: boolean;
+    title: string;
+    text: string;
+    variant: "success" | "error" | "info" | "warning";
+    showCancelButton?: boolean;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info",
+  });
+  const { handleDeleteRows } = useTableActions("inspections", setPopup);
 
   const [weatherData, setWeatherData] = useState<{
     temperature: number | null;
@@ -123,7 +135,7 @@ const HiveDetailsPage = () => {
     } catch (error) {
       console.error("Error fetching hive details:", error);
       setHiveData(null);
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "Could not load hive details.",
@@ -279,17 +291,17 @@ const HiveDetailsPage = () => {
 
   const handleDelete = async () => {
     if (!hiveId) return;
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       variant: "warning",
       showCancelButton: true,
       onConfirm: async () => {
-        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setPopup((prev: any) => ({ ...prev, isOpen: false }));
         try {
           await axiosInstance.delete(`/bee-hives/delete/${hiveId}`);
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Deleted!",
             text: "The hive has been deleted.",
@@ -297,7 +309,7 @@ const HiveDetailsPage = () => {
           });
           router.push(`/${userId}/apiculture/${apiaryId}`);
         } catch (error) {
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: "Failed to delete the hive.",
@@ -570,39 +582,20 @@ const HiveDetailsPage = () => {
         </title>
       </Head>
       <div className="min-h-screen container mx-auto p-4 space-y-6">
-        {alerts.map((alert) => (
-          <div
-            key={alert.id}
-            className={`p-4 border-l-4 rounded-r-lg flex justify-between items-center ${
-              alert.type === "warning"
-                ? "bg-yellow-300 border-yellow-200 text-yellow-100 dark:bg-yellow-300/30 dark:border-yellow-200 dark:text-yellow-300"
-                : "bg-blue-100 border-blue-500 text-blue-700 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-300"
-            }`}
-            role="alert"
-          >
-            <div className="flex items-center">
-              <Icon type={"warning"} className="mr-3" />
-              <span className="font-medium">{alert.message}</span>
-            </div>
-            <button
-              onClick={() => handleCloseAlert(alert.id)}
-              className={`ml-4 ${
-                alert.type === "warning"
-                  ? "text-yellow-700 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-100"
-                  : "text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100"
-              }`}
-              aria-label="Dismiss"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
+        {alerts.length > 0 && (
+          <div className="space-y-3">
+            {alerts.map((alert) => (
+              <Alert
+                key={alert.id}
+                variant={alert.type === "warning" ? "warning" : "neutral"}
+                title={alert.type + " Alert"}
+                description={alert.message}
+                className="capitalize"
+                onClose={() => handleCloseAlert(alert.id)}
+              />
+            ))}
           </div>
-        ))}
+        )}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div className="mb-4 md:mb-0">
             {hiveData ? (
@@ -763,8 +756,6 @@ const HiveDetailsPage = () => {
           apiaryId={parseInt(apiaryId as string, 10)}
         />
       )}
-        />
-      )}
       {showInspectionModal && numericHiveId > 0 && (
         <InspectionModal
           isOpen={showInspectionModal}
@@ -780,14 +771,14 @@ const HiveDetailsPage = () => {
           inspectionToEdit={inspectionToEdit}
         />
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
-        showCancelButton={infoModal.showCancelButton}
-        onConfirm={infoModal.onConfirm}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
+        showCancelButton={popup.showCancelButton}
+        onConfirm={popup.onConfirm}
       />
     </PlatformLayout>
   );

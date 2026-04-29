@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button } from "@graminate/ui";
+import { Dropdown, Icon, Button, Popup } from "@graminate/ui";
 import React, { useState, useMemo } from "react";
 import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
@@ -10,7 +10,6 @@ import TextArea from "@/components/ui/TextArea";
 import SortableItem from "./SortableItem";
 import TaskCard from "./TaskCard";
 import { Column, Id, Task } from "@/types/types";
-import InfoModal from "@/components/modals/InfoModal";
 
 type ColumnContainerProps = {
   column: Column;
@@ -49,7 +48,7 @@ const ColumnContainer = ({
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("Medium");
-  const [infoModalState, setInfoModalState] = useState({
+  const [popupState, setPopupState] = useState({
     isOpen: false,
     title: "",
     text: "",
@@ -68,7 +67,7 @@ const ColumnContainer = ({
 
   const handleAddTask = () => {
     if (!newTaskTitle.trim()) {
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Task cannot be added",
         text: "Please provide a title for the task",
@@ -202,14 +201,14 @@ const ColumnContainer = ({
         </>
       )}
 
-      <InfoModal
-        isOpen={infoModalState.isOpen}
+      <Popup
+        isOpen={popupState.isOpen}
         onClose={() =>
-          setInfoModalState((prev) => ({ ...prev, isOpen: false }))
+          setPopupState((prev) => ({ ...prev, isOpen: false }))
         }
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </div>
   );

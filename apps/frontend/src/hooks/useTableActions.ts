@@ -2,7 +2,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 
 import { RowType } from "@graminate/ui";
 
-export const useTableActions = (view: string, setInfoModal?: (modal: any) => void) => {
+export const useTableActions = (view: string, setPopup?: (modal: any) => void) => {
   const handleDeleteRows = async (selectedRows: RowType[]) => {
     const rowsToDelete: number[] = [];
     selectedRows.forEach((row) => {
@@ -35,20 +35,20 @@ export const useTableActions = (view: string, setInfoModal?: (modal: any) => voi
     const entityToDelete = entityNames[view] || view;
     const pluralEntity = rowsToDelete.length > 1 ? `${entityToDelete}s` : entityToDelete;
 
-    if (!setInfoModal) {
+    if (!setPopup) {
       // Fallback if no modal setter is provided (though we should always provide it now)
-      console.warn("setInfoModal not provided to useTableActions");
+      console.warn("setPopup not provided to useTableActions");
       return;
     }
 
-    setInfoModal({
+    setPopup({
       isOpen: true,
       title: "Are you sure?",
       text: `Do you want to delete the selected ${pluralEntity}?`,
       variant: "warning",
       showCancelButton: true,
       onConfirm: async () => {
-        setInfoModal((prev: any) => ({ ...prev, isOpen: false }));
+        setPopup((prev: any) => ({ ...prev, isOpen: false }));
         try {
           const endpointMap: Record<string, string> = {
             contacts: "contacts",
@@ -81,7 +81,7 @@ export const useTableActions = (view: string, setInfoModal?: (modal: any) => voi
           location.reload();
         } catch (error) {
           console.error("Error deleting rows:", error);
-          setInfoModal({
+          setPopup({
             isOpen: true,
             title: "Error",
             text: "Failed to delete selected rows.",

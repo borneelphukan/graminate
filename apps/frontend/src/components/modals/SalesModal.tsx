@@ -1,7 +1,6 @@
-import { Icon, Dropdown, Button, Input } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "@/components/modals/InfoModal";
 import Loader from "@/components/ui/Loader";
 import { UNITS } from "@/constants/options";
 
@@ -43,7 +42,7 @@ const SalesModal = ({
   const [showUnitSuggestionsFor, setShowUnitSuggestionsFor] = useState<
     number | null
   >(null);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -215,7 +214,7 @@ const SalesModal = ({
     e.preventDefault();
     if (!validateForm()) return;
     if (!userId) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "Error",
         text: "User ID is not available.",
@@ -432,12 +431,12 @@ const SalesModal = ({
           </form>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );

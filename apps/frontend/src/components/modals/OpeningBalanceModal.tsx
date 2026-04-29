@@ -1,7 +1,6 @@
-import { Icon, Button, Input } from "@graminate/ui";
+import { Icon, Button, Input, Popup } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import InfoModal from "./InfoModal";
 
 type OpeningBalanceModalProps = {
   isOpen: boolean;
@@ -22,7 +21,7 @@ const OpeningBalanceModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [infoModalState, setInfoModalState] = useState<{
+  const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -70,7 +69,7 @@ const OpeningBalanceModal = ({
           : err instanceof Error
           ? err.message
           : "Could not update opening balance.";
-      setInfoModalState({
+      setPopupState({
         isOpen: true,
         title: "Error",
         text: errorMessage,
@@ -134,12 +133,12 @@ const OpeningBalanceModal = ({
           </div>
         </div>
       </div>
-      <InfoModal
-        isOpen={infoModalState.isOpen}
-        onClose={() => setInfoModalState((prev) => ({ ...prev, isOpen: false }))}
-        title={infoModalState.title}
-        text={infoModalState.text}
-        variant={infoModalState.variant}
+      <Popup
+        isOpen={popupState.isOpen}
+        onClose={() => setPopupState((prev) => ({ ...prev, isOpen: false }))}
+        title={popupState.title}
+        text={popupState.text}
+        variant={popupState.variant}
       />
     </>
   );

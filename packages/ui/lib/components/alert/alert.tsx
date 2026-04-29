@@ -1,38 +1,36 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-
-import { cn } from "../../utils";
 import { Icon } from "../icon/icon";
 
-const alertVariants = cva(
-  "relative w-full rounded-[var(--radius-lg)] border border-neutral-light-gray px-4 py-3 text-sm flex items-center gap-3 [&>svg]:shrink-0 [&>svg]:text-current [&>i]:shrink-0 [&>i]:text-current",
-  {
-    variants: {
-      variant: {
-        default: "bg-card text-card-foreground",
-        error:
-          "bg-red-200/10 text-red-400 border-black/10 [&>svg]:text-current *:data-[slot=alert-description]:text-current",
-        success:
-          "bg-green-200/10 text-brand-mute-green border-black/10 [&>svg]:text-current *:data-[slot=alert-description]:text-current",
-        warning:
-          "bg-yellow-200/10 text-yellow-400 border-black/10 [&>svg]:text-current *:data-[slot=alert-description]:text-current",
-        neutral:
-          "bg-neutral-gray/10 text-neutral-black border-neutral-black/20 [&>svg]:text-current *:data-[slot=alert-description]:text-current",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
+type AlertVariant = "default" | "error" | "success" | "warning" | "neutral";
+
+const variants: Record<AlertVariant, string> = {
+  default: "bg-card text-card-foreground",
+  error: "bg-red-300 text-red-100",
+  success: "bg-green-300 text-green-100",
+  warning: "bg-yellow-300 text-yellow-100",
+  neutral: "bg-gray-400 text-dark",
+};
+
+interface AlertProps extends Omit<React.ComponentProps<"div">, "title"> {
+  variant?: AlertVariant;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  onClose?: () => void;
+}
 
 function Alert({
   className,
   variant = "default",
+  title,
+  description,
+  onClose,
   children,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
-  const iconMap: Record<string, React.ComponentProps<typeof Icon>["type"]> = {
+}: AlertProps) {
+  const iconMap: Record<
+    AlertVariant,
+    React.ComponentProps<typeof Icon>["type"]
+  > = {
     default: "info",
     warning: "warning",
     error: "error",
@@ -40,45 +38,37 @@ function Alert({
     neutral: "info",
   };
 
-  const icon = iconMap[variant || "default"];
+  const icon = iconMap[variant];
+
+  const baseClasses = "relative w-full rounded-lg px-4 py-3 text-sm flex items-center gap-3";
+  const variantClasses = variants[variant];
+  const combinedClasses = `${baseClasses} ${variantClasses} ${className || ""}`.trim();
 
   return (
-    <div
-      data-slot="alert"
-      role="alert"
-      className={cn(alertVariants({ variant }), className)}
-      {...props}
-    >
-      {icon && <Icon type={icon} />}
-      {children}
+    <div data-slot="alert" role="alert" className={combinedClasses} {...props}>
+      {icon && <Icon type={icon} className="shrink-0" />}
+      <div className="flex-1">
+        {title && (
+          <div className="font-medium leading-none tracking-tight mb-1">
+            {title}
+          </div>
+        )}
+        {description && (
+          <div className="text-sm opacity-90">{description}</div>
+        )}
+        {children}
+      </div>
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors shrink-0"
+          aria-label="Dismiss"
+        >
+          <Icon type="close" size="sm" />
+        </button>
+      )}
     </div>
   );
 }
 
-function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="alert-title"
-      className={cn("mb-1 font-medium leading-none tracking-tight", className)}
-      {...props}
-    />
-  );
-}
-
-function AlertDescription({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="alert-description"
-      className={cn(
-        "text-muted-foreground text-sm [&_p]:leading-relaxed",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-export { Alert, AlertDescription, AlertTitle };
+export { Alert };

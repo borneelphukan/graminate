@@ -11,7 +11,7 @@ import TaskListView from "./TaskListView";
 import AddTaskView from "./AddTaskView";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useRouter } from "next/router";
-import InfoModal from "@/components/modals/InfoModal";
+import { Popup } from "@graminate/ui";
 
 export type RawBackendTask = {
   task_id: number;
@@ -446,7 +446,7 @@ const Calendar = () => {
 
   return (
     <div className="bg-white dark:bg-gray-700 border border-gray-400 dark:border-gray-700 rounded-xl p-4 sm:p-6 w-full max-w-2xl mx-auto text-dark dark:text-light relative min-h-[400px]">
-      <InfoModal
+      <Popup
         isOpen={showInvalidTimeModal}
         onClose={() => setShowInvalidTimeModal(false)}
         title="Invalid Time"

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { InfoModal } from "../infoModal/infoModal";
+import { Popup } from "../popup/popup";
 
 import { Dropdown } from "../dropdown/dropdown";
 import { Icon } from "../icon/icon";
@@ -64,7 +64,7 @@ const Table = ({
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [itemsPerPage, setItemsPerPageState] = useState(10);
-  const [infoModal, setInfoModal] = useState<{
+  const [popup, setPopup] = useState<{
     isOpen: boolean;
     title: string;
     text: string;
@@ -126,7 +126,7 @@ const Table = ({
     const exportRows = getExportRows();
 
     if (exportRows.length === 0) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "No Data",
         text: "There is no data to export.",
@@ -199,7 +199,7 @@ const Table = ({
     const selectedRowsData = sortedAndPaginatedRows.filter((_, idx) => selectedRows[idx]);
     
     if (selectedRowsData.length === 0) {
-      setInfoModal({
+      setPopup({
         isOpen: true,
         title: "No Selection",
         text: "Please select at least one row to delete.",
@@ -553,12 +553,12 @@ const Table = ({
           </div>
         </nav>
       )}
-      <InfoModal
-        isOpen={infoModal.isOpen}
-        onClose={() => setInfoModal((prev: any) => ({ ...prev, isOpen: false }))}
-        title={infoModal.title}
-        text={infoModal.text}
-        variant={infoModal.variant}
+      <Popup
+        isOpen={popup.isOpen}
+        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        title={popup.title}
+        text={popup.text}
+        variant={popup.variant}
       />
     </div>
   );
