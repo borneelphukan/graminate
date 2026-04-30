@@ -58,18 +58,7 @@ type WarehouseDetails = {
   country: string | null;
   contact_person: string | null;
   phone: string | null;
-  storage_capacity: number | string | null;
   category?: string | null;
-};
-
-const getBarColor = (quantity: number, max: number) => {
-  if (max === 0 && quantity === 0) return "#6B7280";
-  if (max === 0 && quantity > 0) return "#04ad79";
-  const ratio = quantity / max;
-  if (ratio < 0.25) return "#e53e3e";
-  if (ratio < 0.5) return "orange";
-  if (ratio < 0.75) return "#facd1d";
-  return "#04ad79";
 };
 
 const generateColors = (count: number) =>
@@ -369,7 +358,7 @@ const Warehouse = () => {
 
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { 
                 label: "Total Items", 
@@ -392,21 +381,20 @@ const Warehouse = () => {
                 color: lowStockItems.length > 0 ? "red" : "blue",
                 sub: "Need attention" 
               },
-              { 
-                label: "Capacity", 
-                value: `${currentWarehouseDetails?.storage_capacity || "N/A"}`, 
-                icon: "view_quilt", 
-                color: "orange",
-                sub: "sq. ft. area" 
-              },
             ].map((stat, i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-400 dark:border-gray-700 group hover:border-green-200 transition-all">
+              <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-700 group hover:border-green-400/30 transition-all relative overflow-hidden">
+                <div className={`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-[0.03] dark:opacity-[0.05] text-${stat.color}-500`}>
+                   <Icon type={stat.icon} className="w-full h-full" />
+                </div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-medium text-dark dark:text-light uppercase tracking-wider">{stat.label}</span>
+                  <div className={`p-2 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-900/20 text-${stat.color}-600 dark:text-${stat.color}-400`}>
+                    <Icon type={stat.icon} className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold text-dark dark:text-light uppercase tracking-widest opacity-60">{stat.label}</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-dark dark:text-light mb-1">{stat.value}</h3>
-                  <p className="text-xs text-dark dark:text-light flex items-center gap-1">
+                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</h3>
+                  <p className="text-xs text-dark dark:text-light flex items-center gap-1 opacity-70 font-medium">
                     {stat.sub}
                   </p>
                 </div>
@@ -650,8 +638,6 @@ const Warehouse = () => {
               country: currentWarehouseDetails.country || "",
               contact_person: currentWarehouseDetails.contact_person || "",
               phone: currentWarehouseDetails.phone || "",
-              storage_capacity:
-                currentWarehouseDetails.storage_capacity?.toString() || "",
               category: currentWarehouseDetails.category || "",
             }}
             onSuccess={() => {

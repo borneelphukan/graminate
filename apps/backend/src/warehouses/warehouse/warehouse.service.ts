@@ -11,12 +11,7 @@ export class WarehouseService {
       const warehouses = await this.prisma.warehouse.findMany({
         where: { user_id: userId },
       });
-      return warehouses.map((w) => ({
-        ...w,
-        storage_capacity: w.storage_capacity
-          ? Number(w.storage_capacity)
-          : null,
-      })) as warehouse[];
+      return warehouses;
     } catch (error) {
       console.error('Error in WarehouseService.findByUserId:', error);
       throw new InternalServerErrorException(
@@ -38,7 +33,6 @@ export class WarehouseService {
       country,
       contact_person,
       phone,
-      storage_capacity,
       category,
     } = createDto;
 
@@ -61,19 +55,11 @@ export class WarehouseService {
         data.users = { connect: { user_id: Number(user_id) } };
       }
 
-      if (storage_capacity !== undefined && storage_capacity !== null) {
-        data.storage_capacity = Number(storage_capacity);
-      }
+
 
       const newWarehouse = await this.prisma.warehouse.create({ data });
 
-      // Convert Decimal to number for serialization safety
-      return {
-        ...newWarehouse,
-        storage_capacity: newWarehouse.storage_capacity
-          ? Number(newWarehouse.storage_capacity)
-          : null,
-      } as warehouse;
+      return newWarehouse;
     } catch (error) {
       console.error('Error in WarehouseService.create:', error);
       throw new InternalServerErrorException(
@@ -94,7 +80,6 @@ export class WarehouseService {
       country,
       contact_person,
       phone,
-      storage_capacity,
       category,
     } = updateDto;
 
@@ -113,9 +98,7 @@ export class WarehouseService {
       if (contact_person !== undefined)
         updateData.contact_person = contact_person;
       if (phone !== undefined) updateData.phone = phone;
-      if (storage_capacity !== undefined)
-        updateData.storage_capacity =
-          storage_capacity !== null ? Number(storage_capacity) : null;
+
       if (category !== undefined) updateData.category = category;
 
       const updatedWarehouse = await this.prisma.warehouse.update({
@@ -123,12 +106,7 @@ export class WarehouseService {
         data: updateData,
       });
 
-      return {
-        ...updatedWarehouse,
-        storage_capacity: updatedWarehouse.storage_capacity
-          ? Number(updatedWarehouse.storage_capacity)
-          : null,
-      } as warehouse;
+      return updatedWarehouse;
     } catch (error) {
       console.error('Error in WarehouseService.update:', error);
       throw new InternalServerErrorException(

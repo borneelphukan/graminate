@@ -84,7 +84,6 @@ interface Warehouse {
   type: string;
   city: string;
   state: string;
-  storage_capacity: number;
 }
 
 interface InventoryItem {
@@ -525,7 +524,6 @@ export class LlmRepository {
                   name: w.name,
                   type: w.type,
                   location: [w.city, w.state].filter(Boolean).join(', '),
-                  capacity: w.storage_capacity,
                 })),
               );
             }

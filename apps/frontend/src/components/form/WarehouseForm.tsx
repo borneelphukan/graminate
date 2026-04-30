@@ -26,7 +26,6 @@ type WarehouseData = {
   country: string;
   contact_person: string;
   phone: string;
-  storage_capacity: string;
   category: string;
 };
 
@@ -39,7 +38,6 @@ type WarehouseFormErrors = {
   postal_code?: string;
   country?: string;
   phone?: string;
-  storage_capacity?: string;
   category?: string;
 };
 
@@ -82,7 +80,6 @@ const WarehouseForm = ({
     country: cleanValue(initialData?.country),
     contact_person: cleanValue(initialData?.contact_person),
     phone: cleanValue(initialData?.phone),
-    storage_capacity: initialData?.storage_capacity?.toString() || "",
     category: cleanValue(initialData?.category),
   });
   const [warehouseErrors, setWarehouseErrors] = useState<WarehouseFormErrors>(
@@ -120,7 +117,6 @@ const WarehouseForm = ({
         country: cleanValue(initialData.country),
         contact_person: cleanValue(initialData.contact_person),
         phone: cleanValue(initialData.phone),
-        storage_capacity: initialData.storage_capacity?.toString() || "",
         category: cleanValue(initialData.category),
       });
       setWarehouseErrors({});
@@ -142,13 +138,7 @@ const WarehouseForm = ({
       }
     }
     
-    if (
-      warehouseData.storage_capacity &&
-      isNaN(parseFloat(warehouseData.storage_capacity))
-    ) {
-      errors.storage_capacity = "Storage capacity must be a valid number.";
-      isValid = false;
-    }
+
 
     if (
       warehouseData.phone &&
@@ -181,9 +171,6 @@ const WarehouseForm = ({
       country: warehouseData.country || undefined,
       contact_person: warehouseData.contact_person || undefined,
       phone: warehouseData.phone || undefined,
-      storage_capacity: warehouseData.storage_capacity
-        ? parseFloat(warehouseData.storage_capacity)
-        : undefined,
       category: warehouseData.category || undefined,
     };
 
@@ -366,7 +353,7 @@ const WarehouseForm = ({
             <section className="space-y-6 pt-4 pb-8">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-1 h-6 bg-amber-500 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Contact & Capacity</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Contact Information</h3>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
@@ -391,18 +378,6 @@ const WarehouseForm = ({
                     error={warehouseErrors.phone}
                   />
                 </div>
-
-                <Input
-                  id="storage_capacity"
-                  type="number"
-                  label="Storage Capacity (Numeric)"
-                  placeholder="e.g. 10000.50"
-                  value={warehouseData.storage_capacity}
-                  onChange={(e) =>
-                    setWarehouseData({ ...warehouseData, storage_capacity: e.target.value })
-                  }
-                  error={warehouseErrors.storage_capacity}
-                />
               </div>
             </section>
           </form>
