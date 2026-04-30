@@ -334,7 +334,7 @@ const LabourDetails = () => {
           <Button
             label="Back"
             variant="ghost"
-            icon={{ left: "arrow_back" }}
+            icon={{ left: "chevron_left" }}
             onClick={() =>
               router.push(`/${router.query.user_id}/labour_database`)
             }

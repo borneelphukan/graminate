@@ -113,6 +113,11 @@ export class LabourService {
       return { status: 400, data: { error: 'Missing required fields' } };
     }
 
+    const cleanAadhar = String(aadhar_card_number).replace(/\s/g, '');
+    if (cleanAadhar.length > 12) {
+      return { status: 400, data: { error: 'Aadhar card number must be 12 digits.' } };
+    }
+
     try {
       let dob: Date;
       if (typeof date_of_birth === 'string' && date_of_birth.includes('/')) {
@@ -138,27 +143,30 @@ export class LabourService {
           state: String(state),
           postal_code: String(postal_code),
           contact_number: String(contact_number),
-          aadhar_card_number: String(aadhar_card_number),
+          aadhar_card_number: cleanAadhar,
           role: role ? String(role) : 'Worker',
           base_salary:
-            base_salary !== undefined
+            base_salary != null && !isNaN(Number(base_salary))
               ? new Prisma.Decimal(base_salary)
               : new Prisma.Decimal(0),
-          bonus: bonus !== undefined ? new Prisma.Decimal(bonus) : null,
+          bonus:
+            bonus != null && !isNaN(Number(bonus))
+              ? new Prisma.Decimal(bonus)
+              : null,
           overtime_pay:
-            overtime_pay !== undefined
+            overtime_pay != null && !isNaN(Number(overtime_pay))
               ? new Prisma.Decimal(overtime_pay)
               : null,
           housing_allowance:
-            housing_allowance !== undefined
+            housing_allowance != null && !isNaN(Number(housing_allowance))
               ? new Prisma.Decimal(housing_allowance)
               : null,
           travel_allowance:
-            travel_allowance !== undefined
+            travel_allowance != null && !isNaN(Number(travel_allowance))
               ? new Prisma.Decimal(travel_allowance)
               : null,
           meal_allowance:
-            meal_allowance !== undefined
+            meal_allowance != null && !isNaN(Number(meal_allowance))
               ? new Prisma.Decimal(meal_allowance)
               : null,
           payment_frequency: payment_frequency
@@ -173,6 +181,14 @@ export class LabourService {
       };
     } catch (error) {
       console.error('Error inserting labour:', error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return {
+            status: 409,
+            data: { error: 'Labour with this Aadhar number already exists' },
+          };
+        }
+      }
       return { status: 500, data: { error: 'Internal Server Error' } };
     }
   }
@@ -251,8 +267,13 @@ export class LabourService {
       if (body.role) updateData.role = String(body.role);
       if (body.contact_number)
         updateData.contact_number = String(body.contact_number);
-      if (body.aadhar_card_number)
-        updateData.aadhar_card_number = String(body.aadhar_card_number);
+      if (body.aadhar_card_number) {
+        const cleanAadhar = String(body.aadhar_card_number).replace(/\s/g, '');
+        if (cleanAadhar.length > 12) {
+          return { status: 400, data: { error: 'Aadhar card number must be 12 digits.' } };
+        }
+        updateData.aadhar_card_number = cleanAadhar;
+      }
       if (body.address_line_1)
         updateData.address_line_1 = String(body.address_line_1);
       if (body.address_line_2)
@@ -277,19 +298,19 @@ export class LabourService {
       if (body.esic) updateData.esic = String(body.esic);
       if (body.pm_kisan !== undefined)
         updateData.pm_kisan = Boolean(body.pm_kisan);
-      if (body.base_salary !== undefined)
+      if (body.base_salary != null && !isNaN(Number(body.base_salary)))
         updateData.base_salary = new Prisma.Decimal(body.base_salary);
-      if (body.bonus !== undefined)
+      if (body.bonus != null && !isNaN(Number(body.bonus)))
         updateData.bonus = new Prisma.Decimal(body.bonus);
-      if (body.overtime_pay !== undefined)
+      if (body.overtime_pay != null && !isNaN(Number(body.overtime_pay)))
         updateData.overtime_pay = new Prisma.Decimal(body.overtime_pay);
-      if (body.housing_allowance !== undefined)
+      if (body.housing_allowance != null && !isNaN(Number(body.housing_allowance)))
         updateData.housing_allowance = new Prisma.Decimal(
           body.housing_allowance,
         );
-      if (body.travel_allowance !== undefined)
+      if (body.travel_allowance != null && !isNaN(Number(body.travel_allowance)))
         updateData.travel_allowance = new Prisma.Decimal(body.travel_allowance);
-      if (body.meal_allowance !== undefined)
+      if (body.meal_allowance != null && !isNaN(Number(body.meal_allowance)))
         updateData.meal_allowance = new Prisma.Decimal(body.meal_allowance);
       if (body.payment_frequency)
         updateData.payment_frequency = String(body.payment_frequency);
@@ -312,6 +333,14 @@ export class LabourService {
       };
     } catch (error) {
       console.error('Error updating labour:', error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return {
+            status: 409,
+            data: { error: 'Aadhar card number already in use' },
+          };
+        }
+      }
       return { status: 500, data: { error: 'Internal Server Error' } };
     }
   }

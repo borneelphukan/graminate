@@ -225,7 +225,7 @@ Stage: ${formData.stage || "N/A"}
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"chevron_left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -247,7 +247,7 @@ Stage: ${formData.stage || "N/A"}
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"chevron_left" as any}
               size={22}
               color={theme.colors.onSurface}
             />

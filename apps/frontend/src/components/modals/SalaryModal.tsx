@@ -2,7 +2,7 @@ import { Dropdown, Button, Input } from "@graminate/ui";
 import { useSalaryModalPrefill } from "@/hooks/modals";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useState } from "react";
-import { showToast, toastMessage } from "@/stores/toast";
+import { triggerToast } from "@/stores/toast";
 
 type PaymentData = {
   payment_id: number;
@@ -59,11 +59,7 @@ const SalaryModal = ({
     e.preventDefault();
 
     if (!paymentDate || !salaryPaid) {
-      toastMessage.set({
-        message: "Payment Date and Salary Paid are required.",
-        type: "error",
-      });
-      showToast.set(true);
+      triggerToast("Payment Date and Salary Paid are required.", "error");
       return;
     }
 
@@ -93,22 +89,15 @@ const SalaryModal = ({
         await axiosInstance.post(`/labour_payment/add`, payload);
       }
 
-      toastMessage.set({
-        message: editMode
-          ? "Salary updated successfully!"
-          : "Salary added successfully!",
-        type: "success",
-      });
-      showToast.set(true);
+      triggerToast(editMode ? "Salary updated successfully!" : "Salary added successfully!", "success");
 
       onClose();
       onSuccess();
       window.location.reload();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting salary data:", error);
-      const errorMessage = "An unexpected error occurred.";
-      toastMessage.set({ message: errorMessage, type: "error" });
-      showToast.set(true);
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || "An unexpected error occurred.";
+      triggerToast(errorMessage, "error");
     } finally {
       setLoading(false);
     }

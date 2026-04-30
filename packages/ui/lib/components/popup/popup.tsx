@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Button } from "../button/button";
+import { Icon } from "../icon/icon";
 
 export type PopupProps = {
   isOpen: boolean;
@@ -56,76 +58,28 @@ const Popup = ({
     case "success":
       defaultIcon = (
         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-400">
-          <svg
-            className="h-6 w-6 text-green-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+          <Icon type="check" className="text-green-200 text-2xl" />
         </div>
       );
       break;
     case "error":
       defaultIcon = (
         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-400">
-          <svg
-            className="h-6 w-6 text-red-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <Icon type="close" className="text-red-200 text-2xl" />
         </div>
       );
       break;
     case "info":
       defaultIcon = (
         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-          <svg
-            className="h-6 w-6 text-blue-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <Icon type="info" className="text-blue-200 text-2xl" />
         </div>
       );
       break;
     case "warning":
       defaultIcon = (
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
-          <svg
-            className="h-6 w-6 text-yellow-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-200">
+          <Icon type="warning" />
         </div>
       );
       break;
@@ -148,21 +102,17 @@ const Popup = ({
           </div>
           <div className="mt-6 flex justify-center gap-3">
             {showCancelButton && (
-              <button
-                type="button"
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              <Button
+                variant="secondary"
+                label={cancelButtonText}
                 onClick={onClose}
-              >
-                {cancelButtonText}
-              </button>
+              />
             )}
-            <button
-              type="button"
-              className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${buttonColorClass}`}
+            <Button
+              variant="primary"
+              label={confirmButtonText}
               onClick={onConfirm || onClose}
-            >
-              {confirmButtonText}
-            </button>
+            />
           </div>
         </div>
       </div>

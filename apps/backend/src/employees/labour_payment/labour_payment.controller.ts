@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Delete,
   Param,
   Body,
   Res,
@@ -57,6 +58,16 @@ export class LabourPaymentController {
     @Res() res: Response,
   ): Promise<Response> {
     const result = await this.labourPaymentService.updatePayment(body);
+    return res.status(result.status).json(result.data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async deletePayment(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const result = await this.labourPaymentService.deletePayment(id);
     return res.status(result.status).json(result.data);
   }
 }

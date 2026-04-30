@@ -283,7 +283,7 @@ Total Amount: ₹${total.toFixed(2)}
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow_back" as any}
+                type={"chevron_left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />
@@ -305,7 +305,7 @@ Total Amount: ₹${total.toFixed(2)}
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow_back" as any}
+              type={"chevron_left" as any}
               size={22}
               color={theme.colors.onSurface}
             />

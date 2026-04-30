@@ -66,36 +66,37 @@ export class LabourPaymentService {
     if (
       !labour_id ||
       !payment_date ||
-      salary_paid === undefined ||
-      bonus === undefined ||
-      overtime_pay === undefined ||
-      housing_allowance === undefined ||
-      travel_allowance === undefined ||
-      meal_allowance === undefined
+      salary_paid === undefined
     ) {
       return { status: 400, data: { error: 'Missing required fields' } };
     }
 
+    const cleanLabourId = Number(labour_id);
+    if (isNaN(cleanLabourId)) {
+      return { status: 400, data: { error: 'Invalid labour_id' } };
+    }
+
     try {
-      const total_amount =
-        Number(salary_paid) +
-        Number(bonus) +
-        Number(overtime_pay) +
-        Number(housing_allowance) +
-        Number(travel_allowance) +
-        Number(meal_allowance);
+      const salary = Number(salary_paid || 0);
+      const bonusVal = Number(bonus || 0);
+      const overtime = Number(overtime_pay || 0);
+      const housing = Number(housing_allowance || 0);
+      const travel = Number(travel_allowance || 0);
+      const meal = Number(meal_allowance || 0);
+
+      const total_amount = salary + bonusVal + overtime + housing + travel + meal;
 
       const newPayment = await this.prisma.labour_payments.create({
         data: {
-          labour_id,
+          labour_id: cleanLabourId,
           payment_date: new Date(payment_date),
-          salary_paid,
-          bonus,
-          overtime_pay,
-          housing_allowance,
-          travel_allowance,
-          meal_allowance,
-          total_amount,
+          salary_paid: new Prisma.Decimal(salary),
+          bonus: new Prisma.Decimal(bonusVal),
+          overtime_pay: new Prisma.Decimal(overtime),
+          housing_allowance: new Prisma.Decimal(housing),
+          travel_allowance: new Prisma.Decimal(travel),
+          meal_allowance: new Prisma.Decimal(meal),
+          total_amount: new Prisma.Decimal(total_amount),
           payment_status: payment_status || 'Pending',
         },
       });
@@ -125,8 +126,8 @@ export class LabourPaymentService {
     data: { message?: string; error?: string; payment?: labour_payments };
   }> {
     const { payment_id } = body;
-    if (!payment_id) {
-      return { status: 400, data: { error: 'Missing payment_id' } };
+    if (!payment_id || isNaN(Number(payment_id))) {
+      return { status: 400, data: { error: 'Missing or invalid payment_id' } };
     }
 
     try {
@@ -142,16 +143,23 @@ export class LabourPaymentService {
       if (body.payment_date)
         updateData.payment_date = new Date(body.payment_date);
       if (body.salary_paid !== undefined)
-        updateData.salary_paid = body.salary_paid;
-      if (body.bonus !== undefined) updateData.bonus = body.bonus;
+        updateData.salary_paid = new Prisma.Decimal(Number(body.salary_paid));
+      if (body.bonus !== undefined)
+        updateData.bonus = new Prisma.Decimal(Number(body.bonus));
       if (body.overtime_pay !== undefined)
-        updateData.overtime_pay = body.overtime_pay;
+        updateData.overtime_pay = new Prisma.Decimal(Number(body.overtime_pay));
       if (body.housing_allowance !== undefined)
-        updateData.housing_allowance = body.housing_allowance;
+        updateData.housing_allowance = new Prisma.Decimal(
+          Number(body.housing_allowance),
+        );
       if (body.travel_allowance !== undefined)
-        updateData.travel_allowance = body.travel_allowance;
+        updateData.travel_allowance = new Prisma.Decimal(
+          Number(body.travel_allowance),
+        );
       if (body.meal_allowance !== undefined)
-        updateData.meal_allowance = body.meal_allowance;
+        updateData.meal_allowance = new Prisma.Decimal(
+          Number(body.meal_allowance),
+        );
       if (body.payment_status) updateData.payment_status = body.payment_status;
 
       // Recalculate total
@@ -186,7 +194,7 @@ export class LabourPaymentService {
 
       const total_amount =
         salary + bonusVal + overtime + housing + travel + meal;
-      updateData.total_amount = total_amount;
+      updateData.total_amount = new Prisma.Decimal(total_amount);
 
       const updatedPayment = await this.prisma.labour_payments.update({
         where: { payment_id: payment_id },
@@ -202,6 +210,38 @@ export class LabourPaymentService {
       };
     } catch (error) {
       console.error('Error updating payment:', error);
+      return { status: 500, data: { error: 'Internal Server Error' } };
+    }
+  }
+
+  async deletePayment(id: string): Promise<{
+    status: number;
+    data: { message?: string; error?: string };
+  }> {
+    const paymentId = parseInt(id, 10);
+    if (isNaN(paymentId)) {
+      return {
+        status: 400,
+        data: { error: 'Invalid or missing payment_id' },
+      };
+    }
+
+    try {
+      const existing = await this.prisma.labour_payments.findUnique({
+        where: { payment_id: paymentId },
+      });
+
+      if (!existing) {
+        return { status: 404, data: { error: 'Payment record not found' } };
+      }
+
+      await this.prisma.labour_payments.delete({
+        where: { payment_id: paymentId },
+      });
+
+      return { status: 200, data: { message: 'Payment deleted successfully' } };
+    } catch (error) {
+      console.error('Error deleting payment:', error);
       return { status: 500, data: { error: 'Internal Server Error' } };
     }
   }

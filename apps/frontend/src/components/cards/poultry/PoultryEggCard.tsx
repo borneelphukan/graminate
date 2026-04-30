@@ -437,7 +437,7 @@ const PoultryEggCard = ({
           </div>
           <div className="flex items-center justify-center space-x-2 mt-5">
             <Button
-              icon={{ left: "arrow_back" }}
+              icon={{ left: "chevron_left" }}
               label="Previous"
               onClick={handlePrev}
               variant="ghost"

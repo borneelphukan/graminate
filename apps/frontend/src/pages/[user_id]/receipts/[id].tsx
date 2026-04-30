@@ -390,7 +390,7 @@ const ReceiptDetails = () => {
           <Button
             label="Back"
             variant="ghost"
-            icon={{ left: "arrow_back" }}
+            icon={{ left: "chevron_left" }}
             onClick={() => router.back()}
           />
         </div>

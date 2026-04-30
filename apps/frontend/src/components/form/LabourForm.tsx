@@ -5,6 +5,7 @@ import { GENDER } from "@/constants/options";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { triggerToast } from "@/stores/toast";
 
 const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
   const router = useRouter();
@@ -104,6 +105,7 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
       gender: "",
       role: "",
       aadharCardNumber: "",
+      contactNumber: "",
     };
     let isValid = true;
 
@@ -125,6 +127,13 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
     }
     if (!labourValues.aadharCardNumber.trim()) {
       errors.aadharCardNumber = "Aadhar Card Number is required.";
+      isValid = false;
+    }
+    if (!labourValues.contactNumber.trim()) {
+      errors.contactNumber = "Contact Number is required.";
+      isValid = false;
+    } else if (!isValidE164(labourValues.contactNumber)) {
+      errors.contactNumber = "Phone number format is not valid.";
       isValid = false;
     }
 
@@ -151,26 +160,21 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
     const addressValidation = validateLabourAddress();
     const salaryValidation = validateSalaryFields();
     const requiredValidation = validateRequiredFields();
-    const phoneValid =
-      isValidE164(labourValues.contactNumber) || !labourValues.contactNumber;
-    const phoneErrorMsg = !phoneValid ? "Phone number is not valid" : "";
 
     setLabourErrors({
-      ...labourErrors,
       ...addressValidation.errors,
       ...salaryValidation.errors,
       ...requiredValidation.errors,
-      contactNumber: phoneErrorMsg,
     });
 
     if (
       !addressValidation.isValid ||
-      !phoneValid ||
       !salaryValidation.isValid ||
       !requiredValidation.isValid
     ) {
       return;
     }
+
 
     const payload = {
       user_id: Number(user_id),
@@ -186,61 +190,58 @@ const LabourForm = ({ onClose, formTitle }: SidebarProp) => {
       state: labourValues.state,
       postal_code: labourValues.postalCode,
       // Salary fields
-      base_salary: labourValues.baseSalary
-        ? parseFloat(labourValues.baseSalary)
-        : 0,
+      base_salary: labourValues.baseSalary ? parseFloat(labourValues.baseSalary) : 0,
       bonus: labourValues.bonus ? parseFloat(labourValues.bonus) : 0,
-      overtime_pay: labourValues.overtimePay
-        ? parseFloat(labourValues.overtimePay)
-        : 0,
-      housing_allowance: labourValues.housingAllowance
-        ? parseFloat(labourValues.housingAllowance)
-        : 0,
-      travel_allowance: labourValues.travelAllowance
-        ? parseFloat(labourValues.travelAllowance)
-        : 0,
-      meal_allowance: labourValues.mealAllowance
-        ? parseFloat(labourValues.mealAllowance)
-        : 0,
+      overtime_pay: labourValues.overtimePay ? parseFloat(labourValues.overtimePay) : 0,
+      housing_allowance: labourValues.housingAllowance ? parseFloat(labourValues.housingAllowance) : 0,
+      travel_allowance: labourValues.travelAllowance ? parseFloat(labourValues.travelAllowance) : 0,
+      meal_allowance: labourValues.mealAllowance ? parseFloat(labourValues.mealAllowance) : 0,
       payment_frequency: labourValues.paymentFrequency,
     };
 
-    await axiosInstance.post(`/labour/add`, payload);
-    setLabourValues({
-      fullName: "",
-      dateOfBirth: "",
-      gender: "",
-      role: "",
-      contactNumber: "",
-      aadharCardNumber: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      baseSalary: "",
-      bonus: "",
-      overtimePay: "",
-      housingAllowance: "",
-      travelAllowance: "",
-      mealAllowance: "",
-      paymentFrequency: "Monthly",
-    });
-    setLabourErrors({
-      fullName: "",
-      dateOfBirth: "",
-      gender: "",
-      role: "",
-      contactNumber: "",
-      aadharCardNumber: "",
-      addressLine1: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      baseSalary: "",
-    });
-    handleClose();
-    window.location.reload();
+    try {
+      await axiosInstance.post(`/labour/add`, payload);
+      triggerToast("Employee added successfully!", "success");
+      setLabourValues({
+        fullName: "",
+        dateOfBirth: "",
+        gender: "",
+        role: "",
+        contactNumber: "",
+        aadharCardNumber: "",
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        baseSalary: "",
+        bonus: "",
+        overtimePay: "",
+        housingAllowance: "",
+        travelAllowance: "",
+        mealAllowance: "",
+        paymentFrequency: "Monthly",
+      });
+      setLabourErrors({
+        fullName: "",
+        dateOfBirth: "",
+        gender: "",
+        role: "",
+        contactNumber: "",
+        aadharCardNumber: "",
+        addressLine1: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        baseSalary: "",
+      });
+      handleClose();
+      window.location.reload();
+    } catch (error: any) {
+      console.error("Error adding employee:", error);
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || "Failed to add employee. Please try again.";
+      triggerToast(errorMsg, "error");
+    }
   };
 
   return (

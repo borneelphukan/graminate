@@ -180,7 +180,7 @@ const ContractDetails = () => {
             <Button
               label="All Contracts"
               variant="secondary"
-              icon={{ left: "arrow_back" }}
+              icon={{ left: "chevron_left" }}
               onClick={() =>
                 router.push(`/${user_id}/crm?view=contracts`)
               }

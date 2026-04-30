@@ -617,7 +617,7 @@ const HiveDetailsPage = () => {
           <div className="flex flex-wrap gap-2">
             <Button
               label="Bee Yard"
-              icon={{ left: "arrow_back" }}
+              icon={{ left: "chevron_left" }}
               variant="secondary"
               onClick={() =>
                 router.push(`/${userId}/apiculture/${apiaryId}`)

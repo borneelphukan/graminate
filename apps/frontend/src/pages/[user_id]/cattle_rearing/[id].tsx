@@ -411,7 +411,7 @@ const CattleDetailPage = () => {
               {parsedUserId && (
                 <Button
                   label="All Cattle Records"
-                  icon={{ left: "arrow_back" }}
+                  icon={{ left: "chevron_left" }}
                   variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/cattle_rearing`)

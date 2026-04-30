@@ -717,7 +717,7 @@ const SalesTable = ({
               <Button
                 label="Previous"
                 variant="ghost"
-                icon={{ left: "arrow_back" }}
+                icon={{ left: "chevron_left" }}
                 disabled={currentPage === 1}
                 onClick={() => {
                   if (currentPage > 1) setCurrentPage(currentPage - 1);

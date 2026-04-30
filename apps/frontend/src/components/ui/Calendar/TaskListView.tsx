@@ -62,7 +62,7 @@ const TaskListView = ({
           className="p-2 rounded-full text-dark hover:text-dark dark:text-light hover:bg-gray-400 dark:hover:bg-gray-200 transition-colors duration-150 ease-in-out"
           aria-label="Back to calendar"
         >
-          <Icon type={"arrow_back"} className="h-5 w-5" />
+          <Icon type={"chevron_left"} className="h-5 w-5" />
         </button>
         <h3 className="text-md font-semibold text-dark dark:text-light text-center">
           {getDayStatus(selectedDate)}

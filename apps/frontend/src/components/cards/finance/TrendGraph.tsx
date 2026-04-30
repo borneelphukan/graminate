@@ -878,7 +878,7 @@ const TrendGraph = ({
             <div className="flex justify-center items-center gap-x-3 mt-4">
               <Button
                 label="Previous"
-                icon={{ left: "arrow_back" }}
+                icon={{ left: "chevron_left" }}
                 variant="ghost"
                 disabled={isPrevDisabled}
                 onClick={handlePrev}

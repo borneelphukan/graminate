@@ -274,7 +274,7 @@ const PoultryHealthDetails = () => {
           <div className="mb-6 flex justify-between items-center">
             <Button
               label="Back"
-              icon={{ left: "arrow_back" }}
+              icon={{ left: "chevron_left" }}
               onClick={() => {
                 const flockIdForBack = parsedFlockIdFromUrl || record.flock_id;
                 if (parsedUserId && flockIdForBack) {

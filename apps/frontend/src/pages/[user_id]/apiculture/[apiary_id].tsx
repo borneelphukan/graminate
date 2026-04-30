@@ -423,7 +423,7 @@ const ApicultureDetailPage = () => {
               {parsedUserId && (
                 <Button
                   label="All Bee Yards"
-                  icon={{ left: "arrow_back" }}
+                  icon={{ left: "chevron_left" }}
                   variant="secondary"
                   onClick={() =>
                     router.push(`/${parsedUserId}/apiculture`)

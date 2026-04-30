@@ -7,7 +7,8 @@ export const useTableActions = (view: string, setPopup?: (modal: any) => void) =
     const rowsToDelete: number[] = [];
     selectedRows.forEach((row) => {
       const id = row[0];
-      if (typeof id === "number") rowsToDelete.push(id);
+      const numericId = Number(id);
+      if (!isNaN(numericId)) rowsToDelete.push(numericId);
     });
 
     if (rowsToDelete.length === 0) return;
@@ -21,6 +22,7 @@ export const useTableActions = (view: string, setPopup?: (modal: any) => void) =
       contracts: "contract",
       receipts: "receipt",
       tasks: "tasks",
+      labour_payment: "labour payment",
       flock: "flock",
       poultry_health: "poultry-health",
       poultry_eggs: "poultry-eggs",
@@ -68,13 +70,14 @@ export const useTableActions = (view: string, setPopup?: (modal: any) => void) =
             apiculture: "apiculture",
             hives: "bee-hives",
             inspections: "hive-inspections",
+            labour_payment: "labour_payment",
           };
 
           const endpoint = endpointMap[view] || "inventory";
 
           await Promise.all(
             rowsToDelete.map(async (id) => {
-              await axiosInstance.delete(`/${endpoint}/delete/${id}`);
+              await axiosInstance.delete(`${endpoint}/delete/${id}`);
             })
           );
 

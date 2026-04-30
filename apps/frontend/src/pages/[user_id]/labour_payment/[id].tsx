@@ -122,6 +122,7 @@ const LabourPaymentDetails = () => {
   const tableData = useMemo(() => {
     return {
       columns: [
+        "#",
         "Payment Date",
         "Base Salary",
         "Bonus",
@@ -133,6 +134,7 @@ const LabourPaymentDetails = () => {
         "Payment Status",
       ],
       rows: paymentRecords.map((p) => [
+        p.payment_id,
         new Date(p.payment_date).toLocaleDateString(),
         p.salary_paid,
         p.bonus,
@@ -163,7 +165,7 @@ const LabourPaymentDetails = () => {
       <Button
         label="Back"
         variant="ghost"
-        icon={{ left: "arrow_back" }}
+        icon={{ left: "chevron_left" }}
         onClick={() => router.push(`/${parsedUserId}/labour_payment`)}
       />
       <div className="min-h-screen container mx-auto px-4">
@@ -217,14 +219,14 @@ const LabourPaymentDetails = () => {
           totalRecordCount={tableData.rows.length}
           onRowClick={(row) => {
             const payment = paymentRecords.find(
-              (p) => new Date(p.payment_date).toLocaleDateString() === row[0]
+              (p) => p.payment_id === Number(row[0])
             );
             if (payment) {
               setSelectedRecord(payment);
               setShowSalaryModal(true);
             }
           }}
-          hideChecks={true}
+          hideChecks={false}
           onDeleteRows={handleDeleteRows}
         />
 
@@ -247,6 +249,8 @@ const LabourPaymentDetails = () => {
         title={popup.title}
         text={popup.text}
         variant={popup.variant}
+        onConfirm={(popup as any).onConfirm}
+        showCancelButton={(popup as any).showCancelButton}
       />
     </PlatformLayout>
   );

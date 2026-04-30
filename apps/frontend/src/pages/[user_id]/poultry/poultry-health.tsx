@@ -165,7 +165,7 @@ const PoultryHealth = () => {
 
           <div className="flex gap-3 mt-3 sm:mt-0">
             <Button
-              icon={{ left: "arrow_back" }}
+              icon={{ left: "chevron_left" }}
               label="Dashboard"
               onClick={() => {
                 if (parsedUserId && parsedFlockId) {
