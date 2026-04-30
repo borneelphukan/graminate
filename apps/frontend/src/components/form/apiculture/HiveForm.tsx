@@ -140,8 +140,8 @@ const HiveForm = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!validate()) return;
     setIsLoading(true);
 
@@ -230,126 +230,155 @@ const HiveForm = ({
   const unitOptions = selectedHiveConfig ? selectedHiveConfig.unit : [];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div
         ref={panelRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-light dark:bg-gray-800 shadow-lg border-l border-gray-400 dark:border-gray-700 overflow-x-hidden"
+        className="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white dark:bg-gray-700 overflow-hidden flex flex-col"
         style={{
           transform: animate ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 300ms ease-out",
+          transition: "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="p-6 flex flex-col h-full overflow-hidden">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-500 dark:border-gray-700">
-            <h2 className="text-xl font-semibold text-dark dark:text-light">
-              {formTitle}
+        <div className="px-8 py-6 flex justify-between items-center border-b border-gray-400 dark:border-gray-200">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {formTitle || (hiveToEdit ? "Edit Hive Record" : "Add New Hive Record")}
             </h2>
-            <button
-              onClick={handleClose}
-              className="text-gray-400 hover:text-dark dark:text-light dark:hover:text-gray-300 transition-colors"
-              aria-label="Close panel"
-            >
-              <Icon type={"close"} className="w-5 h-5" />
-            </button>
+            <p className="text-sm text-dark dark:text-light mt-1">
+              {hiveToEdit ? "Update existing hive details." : "Register a new hive to your bee yard."}
+            </p>
           </div>
-          <div className="flex-grow overflow-y-auto custom-scrollbar px-1 mt-4">
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-4 flex-grow"
-            >
-            <Input
-              id="hive-name"
-              label="Hive Name / Identifier Number"
-              placeholder="Enter Hive Name or Identifier"
-              value={hiveData.hive_name}
-              onChange={(e) => handleInputChange("hive_name", e.target.value)}
-              error={errors.hive_name}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Dropdown
-                label="Hive Type"
-                items={HIVE_TYPES_STRUCTURED}
-                selectedItem={hiveData.hive_type}
-                onSelect={(val: string) => handleInputChange("hive_type", val)}
-                placeholder="Select a Hive Type"
-              />
-              <Dropdown
-                label="Bee Species"
-                items={beeSpeciesOptions}
-                selectedItem={hiveData.bee_species}
-                onSelect={(val: string) =>
-                  handleInputChange("bee_species", val)
-                }
-                placeholder="Select Bee Species"
-                isDisabled={!hiveData.hive_type}
-              />
-            </div>
+          <button
+            className="p-2 rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 text-dark dark:text-light transition-all"
+            onClick={handleClose}
+            aria-label="Close panel"
+          >
+            <Icon type={"close"} className="w-6 h-6" />
+          </button>
+        </div>
 
-            <Input
-              id="installation-date"
-              type="date"
-              label="Installation Date"
-              value={hiveData.installation_date}
-              onChange={(e) => handleInputChange("installation_date", e.target.value)}
-            />
+        <div className="flex-grow overflow-y-auto custom-scrollbar p-8">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-8"
+            noValidate
+          >
+            {/* Basic Information Section */}
+            <section className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-green-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+              </div>
 
-            {/* REMOVED latitude and longitude TextFields */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                id="honey-capacity"
-                label="Honey Capacity"
-                type="number"
-                placeholder="e.g., 25.5"
-                value={hiveData.honey_capacity}
-                onChange={(e) => handleInputChange("honey_capacity", e.target.value)}
-              />
-              <Dropdown
-                label="Unit"
-                items={unitOptions}
-                selectedItem={hiveData.unit}
-                onSelect={(val: string) => handleInputChange("unit", val)}
-                placeholder="Select Unit"
-                isDisabled={!hiveData.honey_capacity || !hiveData.hive_type}
-              />
-            </div>
-
-            <Dropdown
-              label="Ventilation Status"
-              items={ventilationOptions}
-              selectedItem={hiveData.ventilation_status}
-              onSelect={(val: string) =>
-                handleInputChange("ventilation_status", val)
-              }
-              placeholder="Select Ventilation Status"
-              isDisabled={!hiveData.hive_type}
-            />
-            <TextArea
-              label="Notes (Optional)"
-              value={hiveData.notes}
-              onChange={(val) => handleInputChange("notes", val)}
-            />
-
-              <div className="grid grid-cols-2 gap-3 mt-auto pt-4">
-                <Button
-                  label="Cancel"
-                  variant="secondary"
-                  onClick={handleClose}
-                  disabled={isLoading}
+              <div className="grid grid-cols-1 gap-6">
+                <Input
+                  id="hive-name"
+                  label="Hive Name / Identifier Number"
+                  placeholder="Enter Hive Name or Identifier"
+                  value={hiveData.hive_name}
+                  onChange={(e) => handleInputChange("hive_name", e.target.value)}
+                  error={errors.hive_name}
                 />
-                <Button
-                  label={hiveToEdit ? "Update Hive" : "Add Hive"}
-                  variant="primary"
-                  type="submit"
-                  disabled={isLoading}
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Dropdown
+                    label="Hive Type"
+                    items={HIVE_TYPES_STRUCTURED}
+                    selectedItem={hiveData.hive_type}
+                    onSelect={(val: string) => handleInputChange("hive_type", val)}
+                    placeholder="Select a Hive Type"
+                    width="full"
+                  />
+                  <Dropdown
+                    label="Bee Species"
+                    items={beeSpeciesOptions}
+                    selectedItem={hiveData.bee_species}
+                    onSelect={(val: string) => handleInputChange("bee_species", val)}
+                    placeholder="Select Bee Species"
+                    isDisabled={!hiveData.hive_type}
+                    width="full"
+                  />
+                </div>
+
+                <Input
+                  id="installation-date"
+                  type="date"
+                  label="Installation Date"
+                  value={hiveData.installation_date}
+                  onChange={(e) => handleInputChange("installation_date", e.target.value)}
                 />
               </div>
+            </section>
+
+            {/* Capacity & Environment Section */}
+            <section className="space-y-6 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Capacity & Environment</h3>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Input
+                    id="honey-capacity"
+                    label="Honey Capacity"
+                    type="number"
+                    placeholder="e.g., 25.5"
+                    value={hiveData.honey_capacity}
+                    onChange={(e) => handleInputChange("honey_capacity", e.target.value)}
+                  />
+                  <Dropdown
+                    label="Unit"
+                    items={unitOptions}
+                    selectedItem={hiveData.unit}
+                    onSelect={(val: string) => handleInputChange("unit", val)}
+                    placeholder="Select Unit"
+                    isDisabled={!hiveData.honey_capacity || !hiveData.hive_type}
+                    width="full"
+                  />
+                </div>
+
+                <Dropdown
+                  label="Ventilation Status"
+                  items={ventilationOptions}
+                  selectedItem={hiveData.ventilation_status}
+                  onSelect={(val: string) => handleInputChange("ventilation_status", val)}
+                  placeholder="Select Ventilation Status"
+                  isDisabled={!hiveData.hive_type}
+                  width="full"
+                />
+
+                <TextArea
+                  label="Notes (Optional)"
+                  value={hiveData.notes}
+                  onChange={(val) => handleInputChange("notes", val)}
+                />
+              </div>
+            </section>
           </form>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-gray-400 dark:border-gray-200 grid grid-cols-2 gap-4 w-full">
+          <Button
+            label="Cancel"
+            variant="secondary"
+            onClick={handleClose}
+            disabled={isLoading}
+            className="w-full"
+          />
+          <Button
+            label={hiveToEdit ? "Update Hive" : "Add Hive"}
+            variant="primary"
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full"
+          />
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default HiveForm;
