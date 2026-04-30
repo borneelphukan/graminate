@@ -9,7 +9,7 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
-import FloricultureForm, { FloricultureData } from "@/components/form/floriculture/FloricultureForm";
+import FloricultureForm, { FloricultureData } from "@/components/form/FloricultureForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import WaterCalendar from "@/components/floriculture/WaterCalendar";

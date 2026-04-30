@@ -5,11 +5,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import ContactForm from "@/components/form/crm/ContactForm";
-import CompanyForm from "@/components/form/crm/CompanyForm";
-import ContractForm from "@/components/form/crm/ContractForm";
-import ReceiptForm from "@/components/form/crm/ReceiptForm";
-import TaskForm from "@/components/form/crm/TaskForm";
+import CRMForm, { CRMType } from "@/components/form/CRMForm";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
   useUserPreferences,
@@ -558,38 +554,21 @@ const CRM = () => {
           onDeleteRows={handleDeleteRows}
         />
         {isSidebarOpen && (
-          <>
-            {view === "contacts" && (
-              <ContactForm
-                userId={user_id}
-                onClose={() => setIsSidebarOpen(false)}
-              />
-            )}
-            {view === "companies" && (
-              <CompanyForm
-                userId={user_id}
-                onClose={() => setIsSidebarOpen(false)}
-              />
-            )}
-            {view === "contracts" && (
-              <ContractForm
-                userId={user_id}
-                onClose={() => setIsSidebarOpen(false)}
-              />
-            )}
-            {view === "receipts" && (
-              <ReceiptForm
-                userId={user_id}
-                onClose={() => setIsSidebarOpen(false)}
-              />
-            )}
-            {view === "tasks" && (
-              <TaskForm
-                userId={user_id}
-                onClose={() => setIsSidebarOpen(false)}
-              />
-            )}
-          </>
+          <CRMForm
+            userId={user_id}
+            onClose={() => setIsSidebarOpen(false)}
+            type={
+              view === "tasks" 
+                ? "task" 
+                : view === "contacts" 
+                  ? "contact" 
+                  : view === "companies" 
+                    ? "company" 
+                    : view === "contracts" 
+                      ? "contract" 
+                      : "receipt"
+            }
+          />
         )}
       </div>
       <Popup

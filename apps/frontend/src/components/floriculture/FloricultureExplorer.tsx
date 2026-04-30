@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon, Button, SearchBar, Checkbox } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { format } from "date-fns";
-import { FloricultureData } from "../form/floriculture/FloricultureForm";
+import { FloricultureData } from "../form/FloricultureForm";
 
 interface FloricultureExplorerProps {
   records: FloricultureData[];

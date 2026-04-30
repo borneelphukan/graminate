@@ -5,7 +5,7 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import ReceiptForm from "@/components/form/crm/ReceiptForm";
+import CRMForm from "@/components/form/CRMForm";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
   useUserPreferences,
@@ -54,40 +54,9 @@ const FinanceReceipts = () => {
   const [loading, setLoading] = useState(true);
   const [receiptsData, setReceiptsData] = useState<Receipt[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [animate, setAnimate] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
 
-  const handleClosePanelAnimation = useCallback(() => {
-    setAnimate(false);
-    setTimeout(() => setIsSidebarOpen(false), 300);
-  }, []);
 
-  useEffect(() => {
-    if (isSidebarOpen) {
-      setAnimate(true);
-      document.body.classList.add("overflow-hidden");
-      return () => {
-        document.body.classList.remove("overflow-hidden");
-      };
-    }
-  }, [isSidebarOpen]);
 
-  useEffect(() => {
-    if (isSidebarOpen) {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          panelRef.current &&
-          !panelRef.current.contains(event.target as Node)
-        ) {
-          handleClosePanelAnimation();
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
-  }, [isSidebarOpen, handleClosePanelAnimation]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(25);
@@ -228,39 +197,11 @@ const FinanceReceipts = () => {
           onDeleteRows={handleDeleteRows}
         />
         {isSidebarOpen && (
-          <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm">
-            <div
-              ref={panelRef}
-              className="fixed top-0 right-0 h-full w-full md:w-[650px] bg-light dark:bg-gray-800 shadow-lg dark:border-l border-gray-700 overflow-y-auto"
-              style={{
-                transform: animate ? "translateX(0)" : "translateX(100%)",
-                transition: "transform 300ms ease-out",
-              }}
-            >
-              <div className="p-6 flex flex-col h-full">
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-400 dark:border-gray-200">
-                  <h2 className="text-xl font-semibold text-dark dark:text-light">
-                    Create Receipt
-                  </h2>
-                  <button
-                    className="text-gray-300 hover:text-gray-200 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
-                    onClick={handleClosePanelAnimation}
-                  >
-                    <Icon type={"close"} className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="flex-grow overflow-y-auto pr-2 -mr-2 space-y-6">
-                  <ReceiptForm
-                    userId={user_id}
-                    onClose={() => {
-                      handleClosePanelAnimation();
-                      fetchData();
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <CRMForm
+            userId={user_id}
+            onClose={() => setIsSidebarOpen(false)}
+            type="receipt"
+          />
         )}
       </div>
       <Popup

@@ -1,7 +1,7 @@
 import { Icon } from "@graminate/ui";
 import { format } from "date-fns";
 
-import { FloricultureData } from "../form/floriculture/FloricultureForm";
+import { FloricultureData } from "../form/FloricultureForm";
 
 interface FloricultureCardProps {
   data: FloricultureData;
