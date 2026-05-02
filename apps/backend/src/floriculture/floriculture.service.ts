@@ -14,7 +14,11 @@ export class FloricultureService {
         flower_type: data.flower_type as string,
         area: data.area as number,
         method: data.method as string,
-        planting_date: data.planting_date ? new Date(`${data.planting_date.toString().split('T')[0]}T00:00:00Z`) : null,
+        planting_date: data.planting_date
+          ? (data.planting_date instanceof Date
+              ? data.planting_date
+              : new Date(`${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`))
+          : null,
       },
     });
   }
@@ -94,7 +98,9 @@ export class FloricultureService {
     if (data.method !== undefined) updateData.method = data.method;
     if (data.planting_date !== undefined)
       updateData.planting_date = data.planting_date
-        ? new Date(`${data.planting_date.toString().split('T')[0]}T00:00:00Z`)
+        ? (data.planting_date instanceof Date
+            ? data.planting_date
+            : new Date(`${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`))
         : null;
 
     return this.prisma.floriculture.update({

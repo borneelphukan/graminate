@@ -12,6 +12,7 @@ import {
 import { FloricultureService } from './floriculture.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { floriculture } from '@prisma/client';
+import { floricultureSchema } from '@graminate/shared';
 
 @UseGuards(JwtAuthGuard)
 @Controller('floriculture')
@@ -20,7 +21,11 @@ export class FloricultureController {
 
   @Post('add')
   create(@Body() body: Partial<floriculture>): Promise<floriculture> {
-    return this.floricultureService.create(body);
+    if (body && ((body as any).planting_date === '' || (body as any).planting_date === 'Invalid Date')) {
+      (body as any).planting_date = null;
+    }
+    const parsed = floricultureSchema.partial().parse(body);
+    return this.floricultureService.create(parsed);
   }
 
   @Get('user/:userId')

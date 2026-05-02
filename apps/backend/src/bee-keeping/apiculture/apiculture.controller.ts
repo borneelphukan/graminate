@@ -20,6 +20,8 @@ import {
   ResetApicultureDto,
 } from './apiculture.dto';
 
+import { apicultureSchema } from '@graminate/shared';
+
 @Controller('apiculture')
 export class ApicultureController {
   constructor(private readonly apicultureService: ApicultureService) {}
@@ -50,7 +52,8 @@ export class ApicultureController {
   async addApiary(
     @Body() createDto: CreateApiaryDto,
   ): Promise<ApicultureWithCount> {
-    return this.apicultureService.create(createDto);
+    const parsed = apicultureSchema.parse(createDto);
+    return this.apicultureService.create(parsed as any);
   }
 
   @UseGuards(JwtAuthGuard)

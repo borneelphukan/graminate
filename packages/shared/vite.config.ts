@@ -6,8 +6,8 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       name: "shared",
-      fileName: () => "shared.js",
-      formats: ["es"],
+      formats: ["es", "cjs"],
+      fileName: (format) => `shared.${format === 'es' ? 'js' : 'cjs'}`,
     },
     sourcemap: true,
     rollupOptions: {

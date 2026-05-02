@@ -16,6 +16,7 @@ import { UserService } from './user.service';
 import { AuthService } from '../auth/auth.service';
 import { RequestWithUser } from '@/common/types/request.type';
 import { users } from '@prisma/client';
+import { usersSchema } from '@graminate/shared';
 
 @Controller('user')
 export class UserController {
@@ -26,7 +27,8 @@ export class UserController {
 
   @Post('register')
   async register(@Body() body: Partial<users>): Promise<any> {
-    return this.userService.registerUser(body);
+    const parsed = usersSchema.partial().parse(body);
+    return this.userService.registerUser(parsed as any);
   }
 
   @Post('login')

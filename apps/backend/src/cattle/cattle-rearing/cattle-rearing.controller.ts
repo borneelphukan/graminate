@@ -21,6 +21,8 @@ import {
 } from './cattle-rearing.dto';
 import { cattle_rearing } from '@prisma/client';
 
+import { cattleRearingSchema } from '@graminate/shared';
+
 @Controller('cattle-rearing')
 export class CattleRearingController {
   constructor(private readonly cattleRearingService: CattleRearingService) {}
@@ -47,7 +49,8 @@ export class CattleRearingController {
   async addCattleRearing(
     @Body() createDto: CreateCattleRearingDto,
   ): Promise<cattle_rearing> {
-    return this.cattleRearingService.create(createDto);
+    const parsed = cattleRearingSchema.parse(createDto);
+    return this.cattleRearingService.create(parsed as any);
   }
 
   @UseGuards(JwtAuthGuard)

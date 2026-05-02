@@ -17,6 +17,8 @@ import { FlockService } from './flock.service';
 import { CreateFlockDto, UpdateFlockDto, ResetFlockDto } from './flock.dto';
 import { poultry_flock } from '@prisma/client';
 
+import { poultryFlockSchema } from '@graminate/shared';
+
 @Controller('flock')
 export class FlockController {
   constructor(private readonly flockService: FlockService) {}
@@ -43,7 +45,8 @@ export class FlockController {
   @UseGuards(JwtAuthGuard)
   @Post('add')
   async addFlock(@Body() createDto: CreateFlockDto): Promise<poultry_flock> {
-    return this.flockService.create(createDto);
+    const parsed = poultryFlockSchema.parse(createDto);
+    return this.flockService.create(parsed as any);
   }
 
   @UseGuards(JwtAuthGuard)

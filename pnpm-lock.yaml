@@ -221,6 +221,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.1032.0
         version: 3.1032.0
+      '@graminate/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@nestjs/axios':
         specifier: ^4.0.1
         version: 4.0.1(@nestjs/common@11.1.13)(axios@1.13.5)(rxjs@7.8.2)

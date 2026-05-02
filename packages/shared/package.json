@@ -2,17 +2,19 @@
   "name": "@graminate/shared",
   "private": true,
   "version": "0.0.1",
-  "type": "module",
   "sideEffects": false,
+  "main": "./dist/shared.cjs",
+  "module": "./dist/shared.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/shared.js"
+      "import": "./dist/shared.js",
+      "require": "./dist/shared.cjs",
+      "default": "./dist/shared.js"
     },
     "./package.json": "./package.json"
   },
-  "module": "./dist/shared.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
