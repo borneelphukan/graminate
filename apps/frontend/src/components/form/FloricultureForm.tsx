@@ -5,13 +5,13 @@ import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
-const FLOWER_TYPES_OPTIONS = ["Rose", "Tulip", "Marigold", "Lily", "Sunflower", "Orchid"];
+const FLOWER_TYPES_OPTIONS = ["Loose Flowers", "Cut Flowers"];
 
 const CULTIVATION_METHOD_OPTIONS = [
   "Open Field",
   "Greenhouse",
   "Hydroponics",
-  "Polyhouse",
+  "Net House Cultivation", "Polyhouse Cultivation", "Shade Net Cultivation",
 ];
 
 export type FloricultureData = {

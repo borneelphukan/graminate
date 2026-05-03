@@ -793,7 +793,7 @@ export type FloricultureFormData = {
 };
 
 export const FLOWER_TYPES_OPTIONS = ["Rose", "Tulip", "Marigold", "Lily", "Sunflower", "Orchid"];
-export const CULTIVATION_METHOD_OPTIONS = ["Open Field", "Greenhouse", "Hydroponics", "Polyhouse"];
+export const CULTIVATION_METHOD_OPTIONS = ["Open Field", "Greenhouse", "Hydroponics", "Net House Cultivation", "Polyhouse Cultivation", "Shade Net Cultivation"];
 
 export const FLORICULTURE_FIELDS: FormField[] = [
   {
