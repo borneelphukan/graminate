@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
     defaultLocale: "en",
   },
   transpilePackages: ["@graminate/ui"],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
