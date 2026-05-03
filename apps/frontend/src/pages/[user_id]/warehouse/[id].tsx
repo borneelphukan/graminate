@@ -549,6 +549,7 @@ const Warehouse = () => {
                             variant="link"
                             size="sm"
                             onClick={() => setIsWarehouseFormOpen(true)}
+                            className="!text-blue-200 underline"
                           />
                         )}
                       </p>
@@ -570,6 +571,7 @@ const Warehouse = () => {
                             variant="link"
                             size="sm"
                             onClick={() => setIsWarehouseFormOpen(true)}
+                            className="!text-blue-200 underline"
                           />
                         )}
                       </p>
@@ -590,6 +592,7 @@ const Warehouse = () => {
                             variant="link"
                             size="sm"
                             onClick={() => setIsWarehouseFormOpen(true)}
+                            className="!text-blue-200 underline"
                           />
                         )}
                       </p>

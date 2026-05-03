@@ -19,7 +19,11 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@graminate/shared": ["../../packages/shared/dist/index.d.ts"]
-    }
+      "@graminate/shared": ["../../packages/shared/src/index.ts"]
+    },
+    "rootDirs": [
+      "src",
+      "../../packages/shared/src"
+    ]
   }
 }

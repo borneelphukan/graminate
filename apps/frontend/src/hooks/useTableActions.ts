@@ -37,62 +37,48 @@ export const useTableActions = (view: string, setPopup?: (modal: any) => void) =
     const entityToDelete = entityNames[view] || view;
     const pluralEntity = rowsToDelete.length > 1 ? `${entityToDelete}s` : entityToDelete;
 
-    if (!setPopup) {
-      // Fallback if no modal setter is provided (though we should always provide it now)
-      console.warn("setPopup not provided to useTableActions");
-      return;
+    try {
+      const endpointMap: Record<string, string> = {
+        contacts: "contacts",
+        companies: "companies",
+        contracts: "contracts",
+        receipts: "receipts",
+        tasks: "tasks",
+        labour: "labour",
+        inventory: "inventory",
+        warehouse: "warehouse",
+        flock: "flock",
+        poultry_health: "poultry-health",
+        poultry_eggs: "poultry-eggs",
+        poultry_feeds: "poultry-feeds",
+        cattle: "cattle-rearing",
+        cattle_milk: "cattle-milk",
+        apiculture: "apiculture",
+        hives: "bee-hives",
+        inspections: "hive-inspections",
+        labour_payment: "labour_payment",
+      };
+
+      const endpoint = endpointMap[view] || "inventory";
+
+      await Promise.all(
+        rowsToDelete.map(async (id) => {
+          await axiosInstance.delete(`${endpoint}/delete/${id}`);
+        })
+      );
+
+      location.reload();
+    } catch (error) {
+      console.error("Error deleting rows:", error);
+      if (setPopup) {
+        setPopup({
+          isOpen: true,
+          title: "Error",
+          text: "Failed to delete selected rows.",
+          variant: "error",
+        });
+      }
     }
-
-    setPopup({
-      isOpen: true,
-      title: "Are you sure?",
-      text: `Do you want to delete the selected ${pluralEntity}?`,
-      variant: "warning",
-      showCancelButton: true,
-      onConfirm: async () => {
-        setPopup((prev: any) => ({ ...prev, isOpen: false }));
-        try {
-          const endpointMap: Record<string, string> = {
-            contacts: "contacts",
-            companies: "companies",
-            contracts: "contracts",
-            receipts: "receipts",
-            tasks: "tasks",
-            labour: "labour",
-            inventory: "inventory",
-            warehouse: "warehouse",
-            flock: "flock",
-            poultry_health: "poultry-health",
-            poultry_eggs: "poultry-eggs",
-            poultry_feeds: "poultry-feeds",
-            cattle: "cattle-rearing",
-            cattle_milk: "cattle-milk",
-            apiculture: "apiculture",
-            hives: "bee-hives",
-            inspections: "hive-inspections",
-            labour_payment: "labour_payment",
-          };
-
-          const endpoint = endpointMap[view] || "inventory";
-
-          await Promise.all(
-            rowsToDelete.map(async (id) => {
-              await axiosInstance.delete(`${endpoint}/delete/${id}`);
-            })
-          );
-
-          location.reload();
-        } catch (error) {
-          console.error("Error deleting rows:", error);
-          setPopup({
-            isOpen: true,
-            title: "Error",
-            text: "Failed to delete selected rows.",
-            variant: "error",
-          });
-        }
-      },
-    });
   };
 
   return {

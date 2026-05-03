@@ -76,9 +76,13 @@ export class FloricultureController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: Partial<floriculture>,
+    @Body() body: any,
   ): Promise<floriculture> {
-    return this.floricultureService.update(id, body);
+    if (body && (body.planting_date === '' || body.planting_date === 'Invalid Date')) {
+      body.planting_date = null;
+    }
+    const parsed = floricultureSchema.partial().parse(body);
+    return this.floricultureService.update(id, parsed);
   }
 
   @Delete('delete/:id')

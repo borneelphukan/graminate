@@ -19,7 +19,7 @@ export type FloricultureData = {
   user_id: number;
   flower_name: string;
   flower_type?: string | null;
-  area?: number | null;
+  plants?: number | null;
   method?: string | null;
   planting_date?: string | null;
   created_at?: string;
@@ -33,7 +33,7 @@ interface FloricultureFormProps extends SidebarProp {
 type FloricultureFormState = {
   flower_name: string;
   flower_type: string;
-  area: string | number;
+  plants: string | number;
   method: string;
   planting_date: string;
 };
@@ -41,7 +41,7 @@ type FloricultureFormState = {
 type FloricultureFormErrors = {
   flower_name?: string;
   flower_type?: string;
-  area?: string;
+  plants?: string;
   method?: string;
   planting_date?: string;
 };
@@ -62,7 +62,7 @@ const FloricultureForm = ({
   const [formData, setFormData] = useState<FloricultureFormState>({
     flower_name: "",
     flower_type: "",
-    area: "",
+    plants: "",
     method: "",
     planting_date: "",
   });
@@ -77,7 +77,7 @@ const FloricultureForm = ({
       setFormData({
         flower_name: flowerToEdit.flower_name || "",
         flower_type: flowerToEdit.flower_type || "",
-        area: flowerToEdit.area != null ? String(flowerToEdit.area) : "",
+        plants: flowerToEdit.plants != null ? String(flowerToEdit.plants) : "",
         method: flowerToEdit.method || "",
         planting_date: flowerToEdit.planting_date ? flowerToEdit.planting_date.split('T')[0] : "",
       });
@@ -85,7 +85,7 @@ const FloricultureForm = ({
       setFormData({
         flower_name: "",
         flower_type: "",
-        area: "",
+        plants: "",
         method: "",
         planting_date: "",
       });
@@ -114,8 +114,8 @@ const FloricultureForm = ({
       isValid = false;
     }
     
-    if (formData.area && isNaN(Number(formData.area))) {
-      newErrors.area = "Area must be a valid number.";
+    if (formData.plants && isNaN(Number(formData.plants))) {
+      newErrors.plants = "Number of plants must be a valid number.";
       isValid = false;
     }
 
@@ -134,7 +134,7 @@ const FloricultureForm = ({
     setIsLoading(true);
     const payload = {
       ...formData,
-      area: formData.area ? Number(formData.area) : null,
+      plants: formData.plants ? Number(formData.plants) : null,
       user_id: Number(parsedUserId),
       planting_date: formData.planting_date || null,
     };
@@ -240,22 +240,22 @@ const FloricultureForm = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Input
-                    id="area"
+                    id="plants"
                     type="number"
-                    label="Planting Area (sq. ft)"
-                    placeholder="e.g. 1500"
-                    value={String(formData.area)}
+                    label="Number of Plants"
+                    placeholder="e.g. 50"
+                    value={String(formData.plants)}
                     onChange={(e) => {
                       setFormData({
                         ...formData,
-                        area: e.target.value,
+                        plants: e.target.value,
                       });
                       setErrors({
                         ...errors,
-                        area: undefined,
+                        plants: undefined,
                       });
                     }}
-                    error={errors.area}
+                    error={errors.plants}
                   />
                   <Input
                     id="planting_date"

@@ -7,12 +7,12 @@ export class FloricultureService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Partial<floriculture>): Promise<floriculture> {
-    return this.prisma.floriculture.create({
+    return (this.prisma.floriculture as any).create({
       data: {
         user_id: data.user_id as number,
         flower_name: data.flower_name as string,
         flower_type: data.flower_type as string,
-        area: data.area as number,
+        plants: (data as any).plants ? parseInt((data as any).plants.toString()) : null,
         method: data.method as string,
         planting_date: data.planting_date
           ? (data.planting_date instanceof Date
@@ -94,7 +94,8 @@ export class FloricultureService {
       updateData.flower_name = data.flower_name;
     if (data.flower_type !== undefined)
       updateData.flower_type = data.flower_type;
-    if (data.area !== undefined) updateData.area = data.area;
+    if ((data as any).plants !== undefined)
+      (updateData as any).plants = (data as any).plants ? parseInt((data as any).plants.toString()) : null;
     if (data.method !== undefined) updateData.method = data.method;
     if (data.planting_date !== undefined)
       updateData.planting_date = data.planting_date
@@ -103,7 +104,7 @@ export class FloricultureService {
             : new Date(`${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`))
         : null;
 
-    return this.prisma.floriculture.update({
+    return (this.prisma.floriculture as any).update({
       where: { flower_id: id },
       data: updateData,
     });

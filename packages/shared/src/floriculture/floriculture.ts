@@ -5,7 +5,7 @@ export const floricultureSchema = z.object({
   user_id: z.number().int(),
   flower_name: z.string().min(1),
   flower_type: z.string().optional().nullable(),
-  area: z.coerce.number().optional().nullable(),
+  plants: z.coerce.number().int().optional().nullable(),
   method: z.string().optional().nullable(),
   planting_date: z.preprocess((val) => (val === '' || val === 'Invalid Date' ? null : val), z.coerce.date().optional().nullable()).transform((val) => {
     if (val instanceof Date && isNaN(val.getTime())) {

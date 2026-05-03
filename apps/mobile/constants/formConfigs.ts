@@ -818,8 +818,8 @@ export const FLORICULTURE_FIELDS: FormField[] = [
     icon: "office-building",
   },
   {
-    name: "area",
-    label: "Planting Area (sq. ft)",
+    name: "plants",
+    label: "Number of Plants",
     type: "number",
     icon: "ruler",
     halfWidth: true,

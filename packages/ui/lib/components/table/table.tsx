@@ -75,6 +75,13 @@ const Table = ({
     text: "",
     variant: "info",
   });
+  const [deleteConfirmPopup, setDeleteConfirmPopup] = useState<{
+    isOpen: boolean;
+    selectedRowsData: RowType[];
+  }>({
+    isOpen: false,
+    selectedRowsData: [],
+  });
 
   const effectiveLoading = loading;
 
@@ -208,7 +215,10 @@ const Table = ({
       return;
     }
 
-    await onDeleteRows(selectedRowsData);
+    setDeleteConfirmPopup({
+      isOpen: true,
+      selectedRowsData,
+    });
   };
 
   const toggleSort = (columnIndex: number) => {
@@ -559,6 +569,20 @@ const Table = ({
         title={popup.title}
         text={popup.text}
         variant={popup.variant}
+      />
+      <Popup
+        isOpen={deleteConfirmPopup.isOpen}
+        onClose={() => setDeleteConfirmPopup({ isOpen: false, selectedRowsData: [] })}
+        title="Confirm Deletion"
+        text={`Are you sure you want to delete ${deleteConfirmPopup.selectedRowsData.length} selected row${deleteConfirmPopup.selectedRowsData.length > 1 ? "s" : ""}? This action cannot be undone.`}
+        confirmButtonText="OK"
+        cancelButtonText="Cancel"
+        showCancelButton={true}
+        onConfirm={async () => {
+          await onDeleteRows?.(deleteConfirmPopup.selectedRowsData);
+          setDeleteConfirmPopup({ isOpen: false, selectedRowsData: [] });
+        }}
+        variant="error"
       />
     </div>
   );

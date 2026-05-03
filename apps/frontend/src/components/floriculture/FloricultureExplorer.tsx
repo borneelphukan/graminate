@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Button, SearchBar, Checkbox } from "@graminate/ui";
+import { Icon, Button, SearchBar, Checkbox, Popup } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { format } from "date-fns";
 import { FloricultureData } from "../form/FloricultureForm";
@@ -41,10 +41,14 @@ const FloricultureExplorer = ({
     setSelectedIds(newSelected);
   };
 
-  const handleDeleteSelected = async () => {
-    if (selectedIds.size === 0) return;
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} records?`)) return;
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
+  const handleDeleteClick = () => {
+    if (selectedIds.size === 0) return;
+    setShowConfirmDelete(true);
+  };
+
+  const confirmDeleteSelected = async () => {
     setDeleting(true);
     try {
       await axiosInstance.post("/floriculture/delete-multiple", {
@@ -56,6 +60,7 @@ const FloricultureExplorer = ({
       console.error("Error deleting records:", error);
     } finally {
       setDeleting(false);
+      setShowConfirmDelete(false);
     }
   };
 
@@ -101,7 +106,7 @@ const FloricultureExplorer = ({
           </div>
           {selectedIds.size > 0 && (
             <Button 
-              onClick={handleDeleteSelected}
+              onClick={handleDeleteClick}
               disabled={deleting}
               variant="destructive"
               size="sm"
@@ -176,7 +181,7 @@ const FloricultureExplorer = ({
 
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                <div className="bg-gray-50 dark:bg-gray-900/40 p-5 rounded-2xl border border-gray-400 dark:border-gray-200">
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl border border-gray-400 dark:border-gray-200">
                   <div className="flex items-center gap-3 mb-3">
                       <Icon type="architecture" />
                     <p className="text-xs font-bold text-dark dark:text-light uppercase">Method</p>
@@ -184,17 +189,17 @@ const FloricultureExplorer = ({
                   <p className="text-sm text-gray-900 dark:text-white">{selectedRecord.method || "Open Field Cultivation"}</p>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-gray-700 p-5 rounded-2xl border border-gray-400 dark:border-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl border border-gray-400 dark:border-gray-200">
                   <div className="flex items-center gap-3 mb-3">
                       <Icon type="square_foot" size="xs" />
-                    <p className="text-xs font-bold text-dark dark:text-light uppercase">Area</p>
+                    <p className="text-xs font-bold text-dark dark:text-light uppercase">Number of Plants</p>
                   </div>
                   <p className="text-sm text-gray-900 dark:text-white">
-                    {selectedRecord.area ? `${selectedRecord.area} sq ft` : "Not Specified"}
+                    {selectedRecord.plants ? `${selectedRecord.plants} plants` : "Not Specified"}
                   </p>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-gray-900/40 p-5 rounded-2xl border border-gray-400 dark:border-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-2xl border border-gray-400 dark:border-gray-200">
                   <div className="flex items-center gap-3 mb-3">
                       <Icon type="event" size="xs" />
                     <p className="text-xs font-bold text-dark dark:text-light uppercase">Planting Date</p>
@@ -230,6 +235,20 @@ const FloricultureExplorer = ({
           </div>
         )}
       </div>
+
+      {showConfirmDelete && (
+        <Popup
+          isOpen={showConfirmDelete}
+          onClose={() => setShowConfirmDelete(false)}
+          title="Confirm Deletion"
+          text={`Are you sure you want to delete ${selectedIds.size} selected flower record${selectedIds.size > 1 ? "s" : ""}? This action cannot be undone.`}
+          confirmButtonText="Delete"
+          cancelButtonText="Cancel"
+          showCancelButton={true}
+          onConfirm={confirmDeleteSelected}
+          variant="error"
+        />
+      )}
     </div>
   );
 };

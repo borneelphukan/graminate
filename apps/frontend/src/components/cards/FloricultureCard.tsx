@@ -35,9 +35,9 @@ const FloricultureCard = ({ data, onClick }: FloricultureCardProps) => {
 
       <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
         <div className="space-y-1">
-          <p className="text-[10px] text-gray-500 dark:text-gray-500 uppercase font-bold tracking-tight">Area</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-500 uppercase font-bold tracking-tight">Plants</p>
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-            {data.area ? `${data.area} sq ft` : "N/A"}
+            {data.plants ? `${data.plants} plants` : "N/A"}
           </p>
         </div>
         <div className="space-y-1">
