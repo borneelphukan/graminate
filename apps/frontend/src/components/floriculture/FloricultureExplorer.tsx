@@ -10,6 +10,8 @@ interface FloricultureExplorerProps {
   onSearchChange: (value: string) => void;
   onEdit: (record: FloricultureData) => void;
   onRefresh: () => void;
+  selectedFlowerId?: number | null;
+  onSelectFlower?: (id: number | null) => void;
 }
 
 const FloricultureExplorer = ({ 
@@ -17,9 +19,13 @@ const FloricultureExplorer = ({
   searchQuery, 
   onSearchChange, 
   onEdit, 
-  onRefresh
+  onRefresh,
+  selectedFlowerId,
+  onSelectFlower
 }: FloricultureExplorerProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [localSelectedId, setLocalSelectedId] = useState<number | null>(null);
+  const selectedId = selectedFlowerId !== undefined ? selectedFlowerId : localSelectedId;
+  const setSelectedId = onSelectFlower !== undefined ? onSelectFlower : setLocalSelectedId;
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [deleting, setDeleting] = useState(false);
 
@@ -27,7 +33,7 @@ const FloricultureExplorer = ({
     if (records.length > 0 && selectedId === null) {
       setSelectedId(records[0].flower_id || null);
     }
-  }, [records, selectedId]);
+  }, [records, selectedId, setSelectedId]);
 
   const selectedRecord = records.find(r => r.flower_id === selectedId) || records[0];
 

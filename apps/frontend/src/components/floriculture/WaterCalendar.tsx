@@ -18,7 +18,7 @@ type FlowerWithWatering = {
   flower_watering: WateringEvent[];
 };
 
-const WaterCalendar = ({ userId }: { userId: string | number }) => {
+const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userId: string | number; selectedFlowerId?: number | null; selectedFlowerName?: string }) => {
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -28,8 +28,6 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
   const [flowersForDate, setFlowersForDate] = useState<FlowerWithWatering[]>([]);
   const [loadingFlowers, setLoadingFlowers] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchWateringEvents = useCallback(async () => {
@@ -40,7 +38,7 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
       const events = response.data as WateringEvent[];
       const presence: Record<string, boolean> = {};
       events.forEach((event) => {
-        if (event.watered) {
+        if (event.watered && (!selectedFlowerId || event.flower_id === selectedFlowerId)) {
           const dateKey = event.watering_date.split("T")[0];
           presence[dateKey] = true;
         }
@@ -51,7 +49,7 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
     } finally {
       setLoadingEvents(false);
     }
-  }, [userId]);
+  }, [userId, selectedFlowerId]);
 
   const fetchFlowersForDate = useCallback(async (date: Date) => {
     if (!userId) return;
@@ -111,15 +109,12 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
     
     const date = new Date(calendarYear, calendarMonth, day);
     const dateKey = format(date, "yyyy-MM-dd");
-    const isWatered = wateringEvents[dateKey];
     const isSelected = selectedDate && format(selectedDate, "yyyy-MM-dd") === dateKey;
     const isToday = format(new Date(), "yyyy-MM-dd") === dateKey;
 
-    let classes = "flex items-center justify-center h-10 w-10 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ";
+    let classes = "flex items-center justify-center h-10 w-10 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer relative ";
     
-    if (isWatered) {
-      classes += "bg-blue-200 text-blue-800 shadow-sm ";
-    } else if (isSelected) {
+    if (isSelected) {
       classes += "bg-green-100 text-green-800 border-2 border-green-300 ";
     } else if (isToday) {
       classes += "bg-gray-400 dark:bg-gray-200 text-dark dark:text-light ";
@@ -142,10 +137,17 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
       {!selectedDate ? (
         <div className="p-6 flex flex-col h-full animate-in fade-in zoom-in-95 duration-300">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-dark dark:text-light flex items-center gap-2">
-              <Icon type="water_drop" className="text-blue-500" size="md" />
-              Watering Calendar
-            </h3>
+            <div>
+              <h3 className="text-lg font-bold text-dark dark:text-light flex items-center gap-2">
+                <Icon type="water_drop" className="text-blue-500" size="md" />
+                Watering Calendar
+              </h3>
+              {selectedFlowerName && (
+                <p className="text-xs font-semibold text-blue-500 dark:text-blue-300 ml-8 animate-in fade-in duration-300">
+                  {selectedFlowerName}
+                </p>
+              )}
+            </div>
           </div>
           
           <CalendarHeader
@@ -182,8 +184,11 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
                 onClick={() => day && setSelectedDate(new Date(calendarYear, calendarMonth, day))}
               >
                 {day && (
-                  <div className={`${getDayClasses(day)} !h-9 !w-9 text-xs transition-transform active:scale-90`}>
-                    {day}
+                  <div className={`${getDayClasses(day)} !h-9 !w-9 text-xs transition-transform active:scale-90 flex items-center justify-center relative`}>
+                    <span>{day}</span>
+                    {wateringEvents[format(new Date(calendarYear, calendarMonth, day), "yyyy-MM-dd")] && (
+                      <span className="absolute bottom-1 w-1.5 h-1.5 bg-blue-500 rounded-full animate-in fade-in zoom-in duration-200"></span>
+                    )}
                   </div>
                 )}
               </div>
@@ -192,7 +197,7 @@ const WaterCalendar = ({ userId }: { userId: string | number }) => {
 
           <div className="mt-auto flex items-center gap-4 text-[10px] font-medium text-gray-500 dark:text-gray-400 border-t border-gray-400 dark:border-gray-200 pt-4">
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-blue-300 shadow-sm"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
               <span className="text-dark dark:text-light">Watered</span>
             </div>
             <div className="flex items-center gap-1.5">

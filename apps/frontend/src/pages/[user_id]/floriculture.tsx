@@ -38,6 +38,13 @@ const Floriculture = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editingRecord, setEditingRecord] = useState<FloricultureData | null>(null);
+  const [selectedFlowerId, setSelectedFlowerId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (records.length > 0 && selectedFlowerId === null) {
+      setSelectedFlowerId(records[0].flower_id || null);
+    }
+  }, [records, selectedFlowerId]);
 
   const [showFinancials, setShowFinancials] = useState(true);
   const currentDate = useMemo(() => new Date(), []);
@@ -189,6 +196,8 @@ const Floriculture = () => {
                   setEditingRecord(record);
                   setIsSidebarOpen(true);
                 }}
+                selectedFlowerId={selectedFlowerId}
+                onSelectFlower={setSelectedFlowerId}
               />
             )}
           </div>
@@ -197,7 +206,7 @@ const Floriculture = () => {
         <section className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start !m-0 !p-0">
           <div className="flex flex-col gap-0 md:col-span-5 lg:col-span-4">
             <div className="w-full">
-              <WaterCalendar userId={parsedUserId as string} />
+              <WaterCalendar userId={parsedUserId as string} selectedFlowerId={selectedFlowerId} selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name} />
             </div>
           </div>
 
