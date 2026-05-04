@@ -312,7 +312,6 @@ const Navbar = ({
                     <div className="flex flex-col gap-1">
                       {[
                         { code: "en", label: "English", flag: "🇺🇸" },
-                        { code: "de", label: "Deutsch", flag: "🇩🇪" },
                         { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
                         { code: "as", label: "অসমীয়া", flag: "🇮🇳" },
                       ].map((lang) => (

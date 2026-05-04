@@ -56,7 +56,7 @@ const slideInRight: Variants = {
 export default function Home() {
   const router = useRouter();
   const { t } = useTranslation();
-  const backgroundRef = useRef<HTMLDivElement>(null);
+  const backgroundRef = useRef<HTMLImageElement>(null);
 
   const navigateTo = (url: string) => {
     router.push(url);
@@ -174,14 +174,17 @@ export default function Home() {
       <DefaultLayout>
         <main className="flex flex-col flex-grow bg-white">
           <div className="relative bg-gray-900 text-white overflow-hidden">
-            <div
-              ref={backgroundRef}
-              className="absolute inset-0 home-container bg-cover bg-center opacity-30 scale-105"
-              style={{ 
-                willChange: "transform",
-                backgroundImage: 'url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop")'
-              }}
-            ></div>
+            <div className="absolute inset-0 overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+                alt="Agricultural landscape background"
+                fill
+                priority
+                className="object-cover opacity-30 scale-105"
+                sizes="100vw"
+                ref={backgroundRef}
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/40 to-gray-900"></div>
             
             <motion.div
@@ -313,14 +316,19 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.3 }}
                   className="lg:w-1/2 flex justify-center items-center mt-10 lg:mt-0"
                 >
-                  <Image
-                    src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop"
-                    alt="Farmer using a tablet in a wheat field"
-                    className="w-full max-w-sm md:max-w-lg object-cover rounded-3xl shadow-2xl"
-                    width={500}
-                    height={500}
-                    priority
-                  />
+                  <div className="relative w-full max-w-sm md:max-w-lg aspect-square group">
+                    <div className="absolute -inset-4 bg-emerald-500/10 rounded-[2rem] blur-2xl group-hover:bg-emerald-500/20 transition-colors duration-500" />
+                    <div className="relative w-full h-full overflow-hidden rounded-3xl shadow-2xl border border-gray-100">
+                      <Image
+                        src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop"
+                        alt="Farmer using a tablet in a wheat field"
+                        fill
+                        className="object-cover transform transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 512px"
+                        priority
+                      />
+                    </div>
+                  </div>
                 </motion.div>
               </div>
             </div>
@@ -467,14 +475,16 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.3 }}
                   className="w-full lg:w-1/2"
                 >
-                  <Image
-                    className="w-full h-[500px] object-cover rounded-3xl shadow-2xl"
-                    src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop"
-                    alt="Lush green vegetable farm"
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                  />
+                  <div className="relative w-full h-[500px] overflow-hidden rounded-3xl shadow-2xl group">
+                    <Image
+                      src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop"
+                      alt="Lush green vegetable farm"
+                      fill
+                      className="object-cover transform transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      loading="lazy"
+                    />
+                  </div>
                 </motion.div>
                 <motion.div
                   initial="initial"

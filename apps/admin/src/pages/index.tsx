@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, Popup } from "@graminate/ui";
 import DefaultLayout from "@/layout/LoginLayout";
 import Head from "next/head";
 
@@ -11,8 +11,13 @@ const AuthPage = () => {
   const router = useRouter();
   const [isLoginView, setIsLoginView] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [loginErrorMessage, setLoginErrorMessage] = useState("");
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: "",
+    text: "",
+    variant: "info" as "success" | "error" | "info" | "warning",
+  });
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -26,8 +31,13 @@ const AuthPage = () => {
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-    setSuccessMessage(null);
+    setLoginErrorMessage("");
+
+    if (!loginEmail.trim() || !loginPassword.trim()) {
+      setLoginErrorMessage("Email and password are required.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -37,8 +47,36 @@ const AuthPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          validateStatus: () => true,
         }
       );
+
+      if (response.status === 401) {
+        const serverMessage =
+          response.data?.error || response.data?.message;
+        
+        if (serverMessage === "User does not exist") {
+          setModalState({
+            isOpen: true,
+            title: "User Not Found",
+            text: "Email not registered. Please sign up first.",
+            variant: "error",
+          });
+        } else {
+          setModalState({
+            isOpen: true,
+            title: "Login Failed",
+            text: "Username doesn't exist or password incorrect",
+            variant: "error",
+          });
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(response.data?.message || `Request failed with status ${response.status}`);
+      }
 
       const result = response.data;
 
@@ -52,28 +90,24 @@ const AuthPage = () => {
       } else {
         throw new Error("Login failed: Incomplete data received from server.");
       }
-    } catch (err) {
-      console.error("Login error:", err);
-
-      let errorMessage = "An unexpected error occurred during login.";
+    } catch (err: unknown) {
+      let serverMessage: string | undefined = "An unknown error occurred.";
 
       if (axios.isAxiosError(err)) {
-        const axiosError = err as AxiosError<{ message?: string }>;
-        if (axiosError.response) {
-          errorMessage =
-            axiosError.response.data?.message ||
-            `Request failed with status code ${axiosError.response.status}`;
-        } else if (axiosError.request) {
-          errorMessage =
-            "No response received from server. Check network connection.";
-        } else {
-          errorMessage = axiosError.message;
-        }
+        serverMessage =
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message;
       } else if (err instanceof Error) {
-        errorMessage = err.message;
+        serverMessage = err.message;
       }
 
-      setError(errorMessage);
+      setModalState({
+        isOpen: true,
+        title: "Login Failed",
+        text: serverMessage || "Invalid email or password.",
+        variant: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,12 +116,16 @@ const AuthPage = () => {
   const handleRegisterSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (regPassword !== regConfirmPassword) {
-      setError("Passwords do not match.");
+      setModalState({
+        isOpen: true,
+        title: "Registration Failed",
+        text: "Passwords do not match.",
+        variant: "error",
+      });
       return;
     }
     setIsLoading(true);
-    setError(null);
-    setSuccessMessage(null);
+    setLoginErrorMessage("");
 
     const registrationData = {
       first_name: regFirstName,
@@ -116,7 +154,12 @@ const AuthPage = () => {
         );
       }
 
-      setSuccessMessage("Registration successful! Please log in.");
+      setModalState({
+        isOpen: true,
+        title: "Registration Successful!",
+        text: "You can now log in.",
+        variant: "success",
+      });
       setIsLoginView(true);
       setRegFirstName("");
       setRegLastName("");
@@ -125,13 +168,12 @@ const AuthPage = () => {
       setRegConfirmPassword("");
     } catch (err) {
       console.error("Registration error:", err);
-      if (err instanceof Error) {
-        setError(
-          err.message || "An unexpected error occurred during registration."
-        );
-      } else {
-        setError("An unexpected error occurred during registration.");
-      }
+      setModalState({
+        isOpen: true,
+        title: "Registration Failed",
+        text: err instanceof Error ? err.message : "An unexpected error occurred during registration.",
+        variant: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -157,8 +199,7 @@ const AuthPage = () => {
                 }`}
                 onClick={() => {
                   setIsLoginView(true);
-                  setError(null);
-                  setSuccessMessage(null);
+                  setLoginErrorMessage("");
                 }}
               >
                 Login
@@ -171,24 +212,14 @@ const AuthPage = () => {
                 }`}
                 onClick={() => {
                   setIsLoginView(false);
-                  setError(null);
-                  setSuccessMessage(null);
+                  setLoginErrorMessage("");
                 }}
               >
                 Register
               </button>
             </div>
 
-            {error && (
-              <div className="p-3 text-sm text-red-100 bg-red-300 border border-red-100 rounded">
-                {error}
-              </div>
-            )}
-            {successMessage && (
-              <div className="p-3 text-sm text-green-700 bg-green-300 border border-green-200 rounded">
-                {successMessage}
-              </div>
-            )}
+
 
             {isLoginView && (
               <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -215,6 +246,11 @@ const AuthPage = () => {
                     disabled={isLoading}
                   />
                 </div>
+                {loginErrorMessage && (
+                  <p className="text-red-200 text-sm mb-4">
+                    {loginErrorMessage}
+                  </p>
+                )}
                 <div>
                   <Button
                     label="Admin Login"
@@ -296,6 +332,14 @@ const AuthPage = () => {
           </div>
         </div>
       </DefaultLayout>
+
+      <Popup
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
+        title={modalState.title}
+        text={modalState.text}
+        variant={modalState.variant}
+      />
     </>
   );
 };

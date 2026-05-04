@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     domains: ["images.unsplash.com"],
   },
   i18n: {
-    locales: ["en", "hi", "as", "de"],
+    locales: ["en", "hi", "as"],
     defaultLocale: "en",
   },
   transpilePackages: ["@graminate/ui"],

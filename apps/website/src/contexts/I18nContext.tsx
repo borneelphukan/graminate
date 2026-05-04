@@ -3,15 +3,14 @@ import { useRouter } from "next/router";
 import en from "../translations/en.json";
 import hi from "../translations/hi.json";
 import as from "../translations/as.json";
-import de from "../translations/de.json";
 
 interface Translation {
   [key: string]: string | Translation;
 }
 
-const translations: Record<string, Translation> = { en, hi, as, de };
+const translations: Record<string, Translation> = { en, hi, as };
 
-type Region = "India" | "Germany" | "Global";
+type Region = "India" | "Global";
 
 interface I18nContextType {
   t: (key: string) => string;
@@ -24,7 +23,6 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 const REGION_LOCALES: Record<Region, string[]> = {
   India: ["en", "hi", "as"],
-  Germany: ["en", "de"],
   Global: ["en"],
 };
 
@@ -48,18 +46,12 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
           updateRegion("India");
           return;
         }
-        if (timeZone.startsWith("Europe/Berlin") || timeZone.startsWith("Europe/Busingen")) {
-          updateRegion("Germany");
-          return;
-        }
 
         // Fallback to a fast GeoIP lookup if TimeZone is ambiguous
         const response = await fetch("https://ipapi.co/json/");
         const data = await response.json();
         if (data.country_name === "India") {
           updateRegion("India");
-        } else if (data.country_name === "Germany") {
-          updateRegion("Germany");
         } else {
           updateRegion("Global");
         }
