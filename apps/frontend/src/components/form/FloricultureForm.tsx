@@ -207,7 +207,7 @@ const FloricultureForm = ({
               <div className="grid grid-cols-1 gap-6">
                 <Input
                   id="flower_name"
-                  label="Flower Name / Variety"
+                  label="Flower Name"
                   placeholder="e.g. Red Roses, Dutch Tulips"
                   value={formData.flower_name}
                   onChange={(e) => {

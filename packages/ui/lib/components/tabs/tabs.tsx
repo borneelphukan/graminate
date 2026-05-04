@@ -36,7 +36,7 @@ export const Tabs = <T extends readonly TabItem[]>({
           <RadixTabs.Trigger
             key={`tab-trigger-${tab.value}`}
             value={tab.value}
-            className="flex items-center justify-center gap-2 pt-2 pb-4 px-3 h-9 border-b border-solid border-neutral-light-gray bg-none cursor-pointer relative text-sm text-neutral-gray transition-colors hover:text-neutral-black focus-visible:outline-2 focus-visible:border-none
+            className="flex items-center justify-center gap-2 pt-2 pb-4 px-3 h-9 border-b border-gray-400 dark:border-gray-800 bg-none cursor-pointer relative text-sm text-neutral-gray transition-colors hover:text-neutral-black focus-visible:outline-2 focus-visible:border-none
             data-[state=active]:text-neutral-black data-[state=active]:font-medium data-[state=active]:border-black flex-1 whitespace-nowrap"
           >
             {tab.icon && <Icon type={tab.icon} />}

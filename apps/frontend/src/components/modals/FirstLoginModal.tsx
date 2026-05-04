@@ -29,7 +29,7 @@ type FirstLoginModalProps = {
 };
 
 const BUSINESS_TYPES = ["Producer", "Seller"];
-const AGRICULTURE_TYPES = ["Poultry", "Cattle Rearing", "Apiculture"];
+const AGRICULTURE_TYPES = ["Poultry", "Cattle Rearing", "Apiculture", "Floriculture"];
 
 const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => {
   const [businessName, setBusinessName] = useState("");
@@ -655,6 +655,7 @@ const FirstLoginModal = ({ isOpen, onSubmit, userId }: FirstLoginModalProps) => 
         Poultry: <PoultryIcon />,
         "Cattle Rearing": <CattleIcon />,
         Apiculture: <BeeIcon />,
+        Floriculture: <Icon type="local_florist" />,
       };
       return (
         <form onSubmit={handleSubTypeSubmit} noValidate>

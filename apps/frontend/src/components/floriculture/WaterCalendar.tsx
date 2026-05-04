@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import CalendarHeader from "../ui/Calendar/CalendarHeader";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Checkbox, Icon, SearchBar, Button } from "@graminate/ui";
 import { format } from "date-fns";
 
@@ -18,17 +19,75 @@ type FlowerWithWatering = {
   flower_watering: WateringEvent[];
 };
 
-const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userId: string | number; selectedFlowerId?: number | null; selectedFlowerName?: string }) => {
+const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName, plantingDate }: { userId: string | number; selectedFlowerId?: number | null; selectedFlowerName?: string; plantingDate?: string }) => {
+  const { plan } = useUserPreferences();
+  const isPro = plan === "PRO";
+
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const isDateInPast = useMemo(() => {
+    if (!selectedDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedMidnight = new Date(selectedDate);
+    selectedMidnight.setHours(0, 0, 0, 0);
+    return selectedMidnight < today;
+  }, [selectedDate]);
+
   const [wateringEvents, setWateringEvents] = useState<Record<string, boolean>>({});
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [wateringFrequency, setWateringFrequency] = useState<number>(3);
 
   const [flowersForDate, setFlowersForDate] = useState<FlowerWithWatering[]>([]);
   const [loadingFlowers, setLoadingFlowers] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCarePlan = async () => {
+      if (!selectedFlowerName || !isPro) return;
+      try {
+        const res = await axiosInstance.post("/llm", {
+          history: [
+            {
+              sender: "user",
+              text: `Determine watering frequency in days and the best sunlight period of the day for the flower "${selectedFlowerName}". Respond only in valid JSON format with keys "watering_frequency" (integer number of days) and "best_sunlight_period" (string with hours like "10:00 AM - 02:00 PM").`
+            }
+          ],
+          userId: userId?.toString() || "anonymous",
+          token: typeof window !== "undefined" ? localStorage.getItem("token") || "test_token" : "test_token"
+        });
+        const match = res.data?.answer?.match(/\{[\s\S]*?\}/);
+        if (match && isMounted) {
+          const parsed = JSON.parse(match[0]);
+          if (typeof parsed.watering_frequency === "number") {
+            setWateringFrequency(parsed.watering_frequency);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching water plan via LLM:", err);
+      }
+    };
+    fetchCarePlan();
+    return () => { isMounted = false; };
+  }, [selectedFlowerName, userId]);
+
+  const generatedWateringDates = useMemo(() => {
+    const dates: Record<string, boolean> = {};
+    if (!plantingDate || !isPro) return dates;
+    const pDate = new Date(plantingDate);
+    if (isNaN(pDate.getTime())) return dates;
+
+    for (let i = 0; i < 365; i += wateringFrequency) {
+      const wDate = new Date(pDate);
+      wDate.setDate(pDate.getDate() + i);
+      dates[format(wDate, "yyyy-MM-dd")] = true;
+    }
+    return dates;
+  }, [plantingDate, wateringFrequency]);
 
   const fetchWateringEvents = useCallback(async () => {
     if (!userId) return;
@@ -40,7 +99,9 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
       events.forEach((event) => {
         if (event.watered && (!selectedFlowerId || event.flower_id === selectedFlowerId)) {
           const dateKey = event.watering_date.split("T")[0];
-          presence[dateKey] = true;
+          if (!plantingDate || new Date(dateKey) >= new Date(plantingDate)) {
+            presence[dateKey] = true;
+          }
         }
       });
       setWateringEvents(presence);
@@ -49,7 +110,7 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
     } finally {
       setLoadingEvents(false);
     }
-  }, [userId, selectedFlowerId]);
+  }, [userId, selectedFlowerId, plantingDate]);
 
   const fetchFlowersForDate = useCallback(async (date: Date) => {
     if (!userId) return;
@@ -132,7 +193,7 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
   }, [flowersForDate, searchQuery]);
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-3xl border border-gray-400 dark:border-gray-200 w-full max-w-md h-[550px] flex flex-col transition-all duration-300 shadow-sm overflow-hidden relative">
+    <div className="bg-white dark:bg-gray-700 rounded-3xl border border-gray-400 dark:border-gray-200 w-full h-[550px] flex flex-col transition-all duration-300 shadow-sm overflow-hidden relative">
       {/* Calendar Month View */}
       {!selectedDate ? (
         <div className="p-6 flex flex-col h-full animate-in fade-in zoom-in-95 duration-300">
@@ -186,9 +247,11 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
                 {day && (
                   <div className={`${getDayClasses(day)} !h-9 !w-9 text-xs transition-transform active:scale-90 flex items-center justify-center relative`}>
                     <span>{day}</span>
-                    {wateringEvents[format(new Date(calendarYear, calendarMonth, day), "yyyy-MM-dd")] && (
+                    {wateringEvents[format(new Date(calendarYear, calendarMonth, day), "yyyy-MM-dd")] ? (
                       <span className="absolute bottom-1 w-1.5 h-1.5 bg-blue-500 rounded-full animate-in fade-in zoom-in duration-200"></span>
-                    )}
+                    ) : generatedWateringDates[format(new Date(calendarYear, calendarMonth, day), "yyyy-MM-dd")] ? (
+                      <span className="absolute bottom-1 w-1.5 h-1.5 bg-gray-300 dark:bg-gray-500 rounded-full animate-in fade-in zoom-in duration-200"></span>
+                    ) : null}
                   </div>
                 )}
               </div>
@@ -199,6 +262,10 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
               <span className="text-dark dark:text-light">Watered</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-500"></div>
+              <span className="text-dark dark:text-light">Scheduled (Not Watered)</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-gray-300 shadow-sm"></div>
@@ -238,7 +305,32 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
-            {loadingFlowers ? (
+            {!(selectedDate && (wateringEvents[format(selectedDate, "yyyy-MM-dd")] || generatedWateringDates[format(selectedDate, "yyyy-MM-dd")])) ? (
+              <div className="flex flex-col items-center justify-center h-full text-center py-12 text-dark dark:text-light">
+                <div className="p-4 rounded-full bg-blue-200 dark:bg-blue-800 mb-4 opacity-50">
+                  <Icon type="water_drop" size="lg" className="text-blue-400" />
+                </div>
+                <p className="text-sm text-dark dark:text-light mb-4">No watering scheduled or logged for this day</p>
+                {!isDateInPast ? (
+                  <Button 
+                    label="Add Watering Log" 
+                    variant="primary"
+                    size="sm"
+                    icon={{ left: "add" }}
+                    onClick={() => {
+                      if (selectedFlowerId) {
+                        handleWaterChange(selectedFlowerId, true);
+                      }
+                    }}
+                    className="!py-1 animate-in fade-in zoom-in duration-200"
+                  />
+                ) : (
+                  <span className="text-xs text-dark dark:text-light">
+                    Watering logs cannot be added for past dates
+                  </span>
+                )}
+              </div>
+            ) : loadingFlowers ? (
               <div className="flex flex-col items-center justify-center h-full text-dark dark:text-light py-12">
                 <div className="relative h-12 w-12 mb-4">
                   <div className="absolute inset-0 border-4 border-blue-500/20 rounded-full"></div>
@@ -297,6 +389,7 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName }: { userI
                             id={`watered-${flower.flower_id}`}
                             checked={isWatered}
                             onCheckedChange={(checked) => handleWaterChange(flower.flower_id, checked)}
+                            disabled={isDateInPast}
                             className={`scale-110 transition-all ${isWatered ? "border-blue-500" : ""}`}
                           />
                         </div>

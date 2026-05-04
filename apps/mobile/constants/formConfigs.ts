@@ -798,7 +798,7 @@ export const CULTIVATION_METHOD_OPTIONS = ["Open Field", "Greenhouse", "Hydropon
 export const FLORICULTURE_FIELDS: FormField[] = [
   {
     name: "flower_name",
-    label: "Flower Name / Variety",
+    label: "Flower Name",
     type: "text",
     icon: "tag-outline",
     required: true,

@@ -14,6 +14,7 @@ import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import WaterCalendar from "@/components/floriculture/WaterCalendar";
 import FloricultureExplorer from "@/components/floriculture/FloricultureExplorer";
+import SunlightCard from "@/components/cards/SunlightCard";
 
 type View = "floriculture";
 
@@ -44,6 +45,10 @@ const Floriculture = () => {
     if (records.length > 0 && selectedFlowerId === null) {
       setSelectedFlowerId(records[0].flower_id || null);
     }
+  }, [records, selectedFlowerId]);
+
+  const selectedMethod = useMemo(() => {
+    return records.find((r) => r.flower_id === selectedFlowerId)?.method || "Open Field";
   }, [records, selectedFlowerId]);
 
   const [showFinancials, setShowFinancials] = useState(true);
@@ -203,17 +208,27 @@ const Floriculture = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start !m-0 !p-0">
-          <div className="flex flex-col gap-0 md:col-span-5 lg:col-span-4">
-            <div className="w-full">
-              <WaterCalendar userId={parsedUserId as string} selectedFlowerId={selectedFlowerId} selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name} />
-            </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full">
+            <SunlightCard 
+              method={selectedMethod} 
+              selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name || records[0]?.flower_name}
+              plantingDate={records.find(r => r.flower_id === selectedFlowerId)?.planting_date || records[0]?.planting_date || undefined}
+            />
           </div>
+          <div className="w-full">
+            <WaterCalendar 
+              userId={parsedUserId as string}
+              selectedFlowerId={selectedFlowerId} 
+              selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name || records[0]?.flower_name}
+              plantingDate={records.find(r => r.flower_id === selectedFlowerId)?.planting_date || records[0]?.planting_date || undefined}
+            />
+          </div>
+        </section>
 
-          <div className="flex flex-col gap-0 md:col-span-7 lg:col-span-8">
-            <div className="w-full h-full">
-              <WarehouseWidget serviceName="Floriculture" />
-            </div>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full">
+            <WarehouseWidget serviceName="Floriculture" />
           </div>
         </section>
 
