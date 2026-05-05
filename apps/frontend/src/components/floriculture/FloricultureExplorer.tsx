@@ -195,13 +195,8 @@ const FloricultureExplorer = ({
         }
       }
     }
-    wateringEvents.forEach((e: any) => {
-      if (e.flower_id === selectedRecord.flower_id && e.watering_date) {
-        dates.add(e.watering_date.split("T")[0]);
-      }
-    });
     return dates.size;
-  }, [isPro, selectedRecord, wateringFrequency, wateringEvents]);
+  }, [isPro, selectedRecord, wateringFrequency]);
 
   const daysSincePlanted = useMemo(() => {
     if (!selectedRecord?.planting_date) return 0;

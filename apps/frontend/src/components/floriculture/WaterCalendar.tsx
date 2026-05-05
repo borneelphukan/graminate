@@ -370,7 +370,7 @@ const WaterCalendar = ({ userId, selectedFlowerId, selectedFlowerName, plantingD
                           </div>
                           <div className="min-w-0">
                             <span className={`block text-sm font-bold transition-colors ${
-                              isWatered ? "text-blue-700 dark:text-blue-300" : "text-gray-700 dark:text-gray-200"
+                              isWatered ? "text-blue-700 dark:text-blue-200" : "text-dark dark:text-light"
                             } truncate`}>
                               {flower.flower_name}
                             </span>
