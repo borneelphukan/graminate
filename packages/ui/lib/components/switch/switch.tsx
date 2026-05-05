@@ -1,7 +1,6 @@
 import * as React from "react";
 import { forwardRef, useState } from "react";
 
-import { cn } from "../../utils";
 import { Label } from "../label/label";
 import { Layout } from "../layouts/layout";
 
@@ -55,15 +54,14 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
     };
 
     return (
-      <Layout className={cn(disabled && "cursor-not-allowed opacity-50")}>
+      <Layout className={disabled ? "cursor-not-allowed opacity-50" : ""}>
         <div className="flex items-center justify-between">
           <Label
             htmlFor={id}
             onClick={handleClick}
-            className={cn(
-              disabled ? "text-gray-400" : "text-gray-900",
-              hideLabel && "sr-only"
-            )}
+            className={`${disabled ? "text-gray-400" : "text-dark dark:text-light"} ${
+              hideLabel ? "sr-only" : ""
+            }`}
           >
             {label}
           </Label>
@@ -78,34 +76,29 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
             disabled={disabled}
             onClick={handleClick}
             {...props}
-            className={cn(
-              "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent outline-none",
-              "focus:!ring-[2px] focus:!ring-offset-2 focus-visible:!ring-[2px] focus-visible:!ring-offset-2",
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-1 border-gray-400 outline-none focus:!ring-[2px] focus:!ring-offset-1 focus-visible:!ring-[2px] focus-visible:!ring-offset-1 ${
               error
                 ? "focus:!ring-red-200 focus-visible:!ring-red-200"
-                : "focus:!ring-brand-tech-green focus-visible:!ring-brand-tech-green",
-              "transition-colors duration-200 ease-in-out",
-              "ml-2",
-              disabled ? "opacity-50 cursor-not-allowed" : "",
-              displayChecked ? "bg-brand-green" : "bg-neutral-light-gray",
-              className
-            )}
+                : "focus:!ring-green-200 focus-visible:!ring-green-200"
+            } transition-colors duration-200 ease-in-out ml-2 ${
+              disabled ? "opacity-50 cursor-not-allowed" : ""
+            } ${displayChecked ? "bg-green-200" : "bg-gray-500"} ${
+              className || ""
+            }`}
           >
             <span
               aria-hidden="true"
-              className={cn(
-                "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0",
-                "transition duration-200 ease-in-out",
+              className={`h-5 w-5 rounded-full bg-white transition duration-200 ease-in-out ${
                 displayChecked ? "translate-x-5" : "translate-x-0"
-              )}
+              }`}
             />
           </button>
         </div>
 
         {hint && (
-          <span className="text-neutral-gray font-normal text-xs">{hint}</span>
+          <span className="text-dark dark:text-light font-normal text-xs">{hint}</span>
         )}
-        {error && <span className="text-red-400 text-xs">{error}</span>}
+        {error && <span className="text-red-200 text-xs">{error}</span>}
       </Layout>
     );
   }

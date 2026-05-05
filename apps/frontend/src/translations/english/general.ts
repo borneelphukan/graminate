@@ -73,5 +73,15 @@ const englishGeneralSettings = {
   defaultInventoryUnit: "Default Inventory Unit",
   globalLowStockThreshold: "Global Low Stock Threshold",
   enableLowStockAlerts: "Enable low stock visual alerts in warehouse dashboard",
+  wateringAlerts: "Watering Alerts",
+  setWateringAlerts: "Set plant watering alerts",
+  alertTime: "Alert Time",
+  onSameDay: "On Same Day",
+  oneDayBefore: "1 day before",
+  twoDaysBefore: "2 days before",
+  floricultureSettingsDescription: "Configure your floriculture and plant management preferences.",
+  saveFloricultureSettings: "Save Floriculture Settings",
+  floricultureUpdateSuccess: "Floriculture settings updated successfully!",
+  floricultureUpdateError: "Error updating floriculture settings:",
 };
 export default englishGeneralSettings;

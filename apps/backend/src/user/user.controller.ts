@@ -136,7 +136,6 @@ export class UserController {
     if (String(req.user.userId) !== id) throw new UnauthorizedException();
     return this.userService.getBillingHistory(id);
   }
-
   @UseGuards(JwtAuthGuard)
   @Get(':id/notifications')
   async getNotifications(

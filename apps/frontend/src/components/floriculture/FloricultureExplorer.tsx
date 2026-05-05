@@ -213,6 +213,102 @@ const FloricultureExplorer = ({
     const diff = today.getTime() - pDate.getTime();
     return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
   }, [selectedRecord]);
+  
+  const nextWateringDate = useMemo(() => {
+    if (!selectedRecord?.planting_date) return null;
+    const pDate = new Date(selectedRecord.planting_date);
+    if (isNaN(pDate.getTime())) return null;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (let i = 0; i < 365; i += wateringFrequency) {
+      const wDate = new Date(pDate);
+      wDate.setDate(pDate.getDate() + i);
+      wDate.setHours(0, 0, 0, 0);
+      
+      if (wDate >= today) {
+        return wDate;
+      }
+    }
+    return null;
+  }, [selectedRecord, wateringFrequency]);
+
+  const [settingsTrigger, setSettingsTrigger] = useState(0);
+
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "floriculture_watering_alerts_enabled" || e.key === "floriculture_watering_alert_time") {
+        setSettingsTrigger(prev => prev + 1);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  useEffect(() => {
+    const wateringAlertsEnabled = localStorage.getItem("floriculture_watering_alerts_enabled") === "true";
+    const alertTime = localStorage.getItem("floriculture_watering_alert_time") || "On Same Day";
+
+    if (!wateringAlertsEnabled || records.length === 0) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    records.forEach(record => {
+      const cacheKey = `ai_plant_info_${record.flower_name}`;
+      const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
+      let freq = 3;
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (typeof parsed.watering_frequency === "number") freq = parsed.watering_frequency;
+        } catch (e) {}
+      }
+
+      if (!record.planting_date) return;
+      const pDate = new Date(record.planting_date);
+      if (isNaN(pDate.getTime())) return;
+      pDate.setHours(0, 0, 0, 0);
+
+      let nextWDate = null;
+      for (let i = 0; i < 365; i += freq) {
+        const wDate = new Date(pDate);
+        wDate.setDate(pDate.getDate() + i);
+        wDate.setHours(0, 0, 0, 0);
+        if (wDate >= today) {
+          nextWDate = wDate;
+          break;
+        }
+      }
+
+      if (nextWDate) {
+        const diffTime = nextWDate.getTime() - today.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        
+        let shouldNotify = false;
+        if (alertTime === "On Same Day" && diffDays === 0) shouldNotify = true;
+        else if (alertTime === "1 day before" && diffDays === 1) shouldNotify = true;
+        else if (alertTime === "2 days before" && diffDays === 2) shouldNotify = true;
+        
+        if (shouldNotify) {
+          // Include alertTime in the key so changing settings allows re-notifying for the new window
+          const lastNotifiedKey = `last_notified_${record.flower_id}_${format(nextWDate, "yyyy-MM-dd")}_${alertTime.replace(/\s+/g, "_")}`;
+          if (localStorage.getItem(lastNotifiedKey) !== "true") {
+            localStorage.setItem(lastNotifiedKey, "true");
+            
+            axiosInstance.post(`/floriculture/notifications/user/${record.user_id}`, {
+              title: "wateringAlerts",
+              message: `Time to water your ${record.flower_name}! (Scheduled for ${format(nextWDate, "MMM d")})`,
+              type: "info"
+            }).catch(err => {
+              console.error("Error sending notification:", err);
+            });
+          }
+        }
+      }
+    });
+  }, [records, settingsTrigger]);
 
   const handleToggleSelect = (id: number) => {
     const newSelected = new Set(selectedIds);

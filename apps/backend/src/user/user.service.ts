@@ -126,4 +126,10 @@ export class UserService {
   async findByEmail(email: string): Promise<users | null> {
     return this.userRepository.findByEmail(email);
   }
+  async createNotification(
+    userId: string,
+    data: { title: string; message: string; type?: string },
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
+    return this.userRepository.createNotification(userId, data);
+  }
 }

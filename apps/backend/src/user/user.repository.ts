@@ -719,4 +719,23 @@ export class UserRepository {
     });
     return user || null;
   }
+  async createNotification(
+    userId: string,
+    data: { title: string; message: string; type?: string },
+  ): Promise<{ status: number; data: { message?: string; error?: string } }> {
+    try {
+      await this.prisma.notifications.create({
+        data: {
+          user_id: Number(userId),
+          title: data.title,
+          message: data.message,
+          type: data.type || 'info',
+        },
+      });
+      return { status: 201, data: { message: 'Notification created successfully' } };
+    } catch (err) {
+      console.error('Error creating notification:', err);
+      return { status: 500, data: { error: 'Failed to create notification' } };
+    }
+  }
 }

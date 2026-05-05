@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Checkbox, Button } from "@graminate/ui";
+import { Checkbox, Button, Switch } from "@graminate/ui";
 import { API_BASE_URL } from "@/constants/constants";
 
 type NotificationSettings = {
@@ -254,18 +254,11 @@ const SectionCard = ({
         </h3>
         <p className="mt-1 text-sm text-dark dark:text-light">{description}</p>
       </div>
-      <button
-        onClick={onToggle}
-        className={`ml-4 relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent
-          transition-colors duration-200 ${
-            enabled ? "bg-green-200" : "bg-gray-300"
-          }`}
-      >
-        <span
-          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform
-          duration-200 ${enabled ? "translate-x-5" : "translate-x-0"}`}
-        />
-      </button>
+      <Switch
+        id={`${title.toLowerCase().replace(/\s+/g, "-")}-toggle`}
+        checked={enabled}
+        onChange={onToggle}
+      />
     </div>
     <div className={`mt-6 space-y-4 ${enabled ? "" : "pointer-events-none"}`}>
       {children}

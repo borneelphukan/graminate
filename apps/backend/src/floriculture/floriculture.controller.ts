@@ -8,16 +8,23 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
+  Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { FloricultureService } from './floriculture.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { floriculture } from '@prisma/client';
 import { floricultureSchema } from '@graminate/shared';
+import { UserService } from '../user/user.service';
+import { RequestWithUser } from '@/common/types/request.type';
 
 @UseGuards(JwtAuthGuard)
 @Controller('floriculture')
 export class FloricultureController {
-  constructor(private readonly floricultureService: FloricultureService) {}
+  constructor(
+    private readonly floricultureService: FloricultureService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('add')
   create(@Body() body: Partial<floriculture>): Promise<floriculture> {
@@ -26,6 +33,16 @@ export class FloricultureController {
     }
     const parsed = floricultureSchema.partial().parse(body);
     return this.floricultureService.create(parsed);
+  }
+
+  @Post('notifications/user/:id')
+  async createNotification(
+    @Param('id') id: string,
+    @Body() data: { title: string; message: string; type?: string },
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
+    if (String(req.user.userId) !== id) throw new UnauthorizedException();
+    return this.userService.createNotification(id, data);
   }
 
   @Get('user/:userId')

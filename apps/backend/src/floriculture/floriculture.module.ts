@@ -3,8 +3,10 @@ import { FloricultureController } from './floriculture.controller';
 import { FloricultureService } from './floriculture.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
+import { UserModule } from '../user/user.module';
+
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UserModule],
   controllers: [FloricultureController],
   providers: [FloricultureService],
 })

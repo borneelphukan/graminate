@@ -1,41 +1,143 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
+import { Dropdown, Button, Switch } from "@graminate/ui";
+import Loader from "@/components/ui/Loader";
+import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import { getTranslator } from "@/translations";
+import { getTranslator, translations } from "@/translations";
+
+type TranslationKey = keyof typeof translations.English;
 
 const FloricultureSettings = () => {
+  const router = useRouter();
+  const { user_id } = router.query;
+  const userId = Array.isArray(user_id) ? user_id[0] : user_id;
+
   const { language: currentLanguage } = useUserPreferences();
   const t = useMemo(() => getTranslator(currentLanguage), [currentLanguage]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [wateringAlertsEnabled, setWateringAlertsEnabled] = useState(false);
+  const [alertTime, setAlertTime] = useState("On Same Day");
+
+  useEffect(() => {
+    const savedEnabled = localStorage.getItem("floriculture_watering_alerts_enabled") === "true";
+    const savedTime = localStorage.getItem("floriculture_watering_alert_time") || "On Same Day";
+    setWateringAlertsEnabled(savedEnabled);
+    setAlertTime(savedTime);
+  }, []);
+
+  const handleSaveFloricultureSettings = async () => {
+    if (!userId) return;
+    setIsSaving(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+    try {
+      // For now we persist in localStorage as requested before, 
+      // but we could also send to backend if we had specific fields.
+      localStorage.setItem("floriculture_watering_alerts_enabled", String(wateringAlertsEnabled));
+      localStorage.setItem("floriculture_watering_alert_time", alertTime);
+
+      setSuccessMessage(t("floricultureUpdateSuccess" as TranslationKey));
+    } catch (error: unknown) {
+      let msg = t("anUnknownErrorOccurred" as TranslationKey);
+      if (error instanceof Error) msg = error.message;
+      setErrorMessage(`${t("floricultureUpdateError" as TranslationKey)} ${msg}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const alertOptions = [
+    t("onSameDay" as TranslationKey),
+    t("oneDayBefore" as TranslationKey),
+    t("twoDaysBefore" as TranslationKey),
+  ];
 
   return (
     <>
       <Head>
-        <title>{t("floricultureSettings")}</title>
+        <title>{t("floricultureSettings" as TranslationKey)}</title>
       </Head>
       <PlatformLayout>
         <div className="flex min-h-screen">
           <SettingsBar />
           <main className="flex-1 px-4 sm:px-6 md:px-12">
             <div className="py-6">
-              <div className="pb-4 font-bold text-lg text-dark dark:text-light border-b border-gray-400 dark:border-gray-700">
-                {t("floricultureSettings")}
+              <div className="pb-4 font-bold text-lg text-dark dark:text-light">
+                {t("floricultureSettings" as TranslationKey)}
               </div>
-              <section className="py-8">
-                <div className="bg-light dark:bg-gray-600 p-6 rounded-2xl border border-gray-400 dark:border-gray-600 shadow-sm animate-in fade-in duration-500">
-                  <div className="flex items-center gap-3 mb-4 text-green-600 dark:text-green-400">
-                    <span className="p-2 bg-green-100 dark:bg-green-900/30 rounded-xl">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"/><path d="M12 7.5V9"/><path d="M12 15v1.5"/><path d="M16.5 12H15"/><path d="M9 12H7.5"/><path d="m15.182 8.818-1.061 1.061"/><path d="m9.879 14.121-1.061 1.061"/><path d="m15.182 15.182-1.061-1.061"/><path d="m9.879 9.879-1.061-1.061"/></svg>
-                    </span>
-                    <h3 className="font-bold">Preferences</h3>
-                  </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                    Floriculture specific settings and preferences will be available here soon. 
-                    Customize your flower management, AI insight frequency, and display options.
-                  </p>
+              
+              {isLoading ? (
+                <div className="flex justify-center items-center h-64">
+                  <Loader />
                 </div>
-              </section>
+              ) : (
+                <section>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                    <p className="mt-2 text-sm text-dark dark:text-light">
+                      {t("floricultureSettingsDescription" as TranslationKey)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-6 max-w-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-dark dark:text-light">
+                          {t("wateringAlerts" as TranslationKey)}
+                        </span>
+                        <span className="text-xs text-dark dark:text-light">
+                          {t("setWateringAlerts" as TranslationKey)}
+                        </span>
+                      </div>
+                      <Switch
+                        id="watering-alerts"
+                        checked={wateringAlertsEnabled}
+                        onChange={setWateringAlertsEnabled}
+                      />
+                    </div>
+
+                    {wateringAlertsEnabled && (
+                      <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                        <Dropdown
+                          label={t("alertTime" as TranslationKey)}
+                          items={alertOptions}
+                          selectedItem={alertTime}
+                          onSelect={setAlertTime}
+                          variant="small"
+                        />
+                      </div>
+                    )}
+
+                    <div className="mt-4">
+                      <Button
+                        variant="primary"
+                        label={t("saveFloricultureSettings" as TranslationKey)}
+                        onClick={handleSaveFloricultureSettings}
+                        disabled={isSaving}
+                      />
+                    </div>
+
+                    {successMessage && (
+                      <p className="text-green-200 mt-2 text-sm">
+                        {successMessage}
+                      </p>
+                    )}
+                    {errorMessage && (
+                      <p className="text-red-200 mt-2 text-sm">
+                        {errorMessage}
+                      </p>
+                    )}
+                  </div>
+                </section>
+              )}
             </div>
           </main>
         </div>

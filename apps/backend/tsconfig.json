@@ -20,10 +20,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@graminate/shared": ["../../packages/shared/src/index.ts"]
-    },
-    "rootDirs": [
-      "src",
-      "../../packages/shared/src"
-    ]
-  }
+    }
+  },
+  "include": ["src"]
 }
