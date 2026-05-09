@@ -5,16 +5,21 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as nodemailer from 'nodemailer';
-import mjml2html from 'mjml';
+const mjml2html = require('mjml');
 
 @Injectable()
 export class PasswordRepository {
   constructor(private readonly prisma: PrismaService) {}
   private transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: (process.env.EMAIL_USER || '').trim(),
+      pass: (process.env.EMAIL_PASS || '').trim(),
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 

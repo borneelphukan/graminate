@@ -27,8 +27,16 @@ export class UserController {
 
   @Post('register')
   async register(@Body() body: Partial<users>): Promise<any> {
-    const parsed = usersSchema.partial().parse(body);
-    return this.userService.registerUser(parsed as any);
+    try {
+      const parsed = usersSchema.partial().parse(body);
+      return await this.userService.registerUser(parsed as any);
+    } catch (err) {
+      console.error('Registration error in controller:', err);
+      if (err instanceof Error && err.name === 'ZodError') {
+        return { status: 400, data: { error: 'Validation failed', details: (err as any).errors } };
+      }
+      return { status: 500, data: { error: err instanceof Error ? err.message : 'Internal Server Error' } };
+    }
   }
 
   @Post('login')

@@ -22,6 +22,7 @@ const hindiSidebar = {
   storage: "भंडारण",
   warehouse: "गोदाम",
   inventory: "भंडार",
+  marketplace: "बाज़ार",
   loadingSidebar: "लोड हो रहा है...",
   expandSidebar: "साइडबार का विस्तार करें",
   collapseSidebar: "साइडबार संक्षिप्त करें",

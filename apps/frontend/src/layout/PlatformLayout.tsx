@@ -168,6 +168,13 @@ const PlatformLayout = ({ children }: Props) => {
         path: `/${userId}/storage`,
       },
       {
+        icon: "storefront",
+        label: t("marketplace"),
+        section: "Marketplace",
+        path: `/${userId}/marketplace`,
+        basePath: `/${userId}/marketplace`,
+      },
+      {
         icon: "add",
         label: t("addService"),
         section: "Add Service",

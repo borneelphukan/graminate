@@ -9,16 +9,16 @@ const badgeVariants = cva(
     variants: {
       type: {
         default:
-          "bg-neutral-gray/10 text-neutral-black border-neutral-black/20",
+          "bg-gray-300 text-dark",
         success:
-          "bg-green-200/10 text-brand-mute-green border-black/10 rounded-[var(--radius-md)]",
+          "bg-green-200 text-white",
         error:
-          "bg-red-200/10 text-red-400 border-black/10 rounded-[var(--radius-md)]",
-        warning: "bg-yellow-200/10 text-yellow-400 border-black/10",
-        blue: "bg-blue-200/10 text-blue-400 border-blue-400/20",
-        outline: "bg-transparent text-neutral-black border-neutral-gray/20",
+          "bg-red-200 text-white",
+        warning: "bg-yellow-300 text-yellow-100",
+        blue: "bg-blue-200 text-white",
+        outline: "bg-transparent text-dark",
         dotted:
-          "bg-transparent text-neutral-black border-neutral-gray/30 border-dashed",
+          "bg-transparent text-dark border-neutral-gray/30 border-dashed",
       },
       size: {
         sm: "text-[0.625rem]/[0.875rem] gap-0.5",

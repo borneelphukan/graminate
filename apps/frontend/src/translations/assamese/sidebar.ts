@@ -22,6 +22,7 @@ const assameseSidebar = {
   storage: "সংগ্রহ",
   warehouse: "গুদাম",
   inventory: "তালিকা",
+  marketplace: "বজাৰ",
   loadingSidebar: "লোড হৈ আছে...",
   expandSidebar: "চাইদবাৰ বহলাওক",
   collapseSidebar: "চাইদবাৰ সংকোচন কৰক",

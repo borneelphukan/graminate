@@ -442,6 +442,7 @@ export class UserRepository {
           business_size: body.business_size || null,
           plan: 'FREE',
           subscription_expires_at: null,
+          sub_type: [],
         },
         select: {
           user_id: true,

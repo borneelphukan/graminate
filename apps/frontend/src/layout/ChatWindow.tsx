@@ -169,7 +169,7 @@ const ChatWindow = ({ userId }: ChatWindowProps) => {
               label="Upgrade"
               variant="primary"
               className="mt-6"
-              onClick={() => window.open("http://localhost:3003/pricing", "_blank")}
+              onClick={() => window.open(`/${userId}/pricing`, "_blank")}
             />
           </div>
         </div>

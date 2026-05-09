@@ -176,19 +176,20 @@ model honey_production {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model inventory {
-  inventory_id   Int        @id @default(autoincrement())
-  user_id        Int?
-  item_name      String     @db.VarChar(100)
-  item_group     String     @db.VarChar(100)
-  units          String     @db.VarChar(50)
-  quantity       Int
-  created_at     DateTime?  @default(now()) @db.Timestamp(6)
-  price_per_unit Decimal    @db.Decimal(10, 2)
-  warehouse_id   Int?
-  minimum_limit  Int?
-  feed           Boolean    @default(false)
-  users          users?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  warehouse      warehouse? @relation(fields: [warehouse_id], references: [warehouse_id], onDelete: Cascade, onUpdate: NoAction)
+  inventory_id         Int                    @id @default(autoincrement())
+  user_id              Int?
+  item_name            String                 @db.VarChar(100)
+  item_group           String                 @db.VarChar(100)
+  units                String                 @db.VarChar(50)
+  quantity             Int
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  price_per_unit       Decimal                @db.Decimal(10, 2)
+  warehouse_id         Int?
+  minimum_limit        Int?
+  feed                 Boolean                @default(false)
+  users                users?                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  warehouse            warehouse?             @relation(fields: [warehouse_id], references: [warehouse_id], onDelete: Cascade, onUpdate: NoAction)
+  marketplace_products marketplace_products[]
 
   @@index([item_group], map: "idx_inventory_item_group")
   @@index([user_id], map: "idx_inventory_user_id")
@@ -462,33 +463,33 @@ model tasks {
 }
 
 model users {
-  user_id                 Int               @id @default(autoincrement())
-  first_name              String            @db.VarChar(50)
-  last_name               String            @db.VarChar(50)
-  email                   String            @unique @db.VarChar(100)
-  phone_number            String            @unique @db.VarChar(15)
-  business_name           String?           @db.VarChar(100)
-  date_of_birth           DateTime?         @db.Date
-  password                String            @db.VarChar(255)
-  created_at              DateTime?         @default(now()) @db.Timestamp(6)
-  language                String?           @default("English") @db.VarChar(50)
-  time_format             String?           @default("24-hour") @db.VarChar(10)
-  type                    String?           @db.VarChar(50)
+  user_id                 Int                     @id @default(autoincrement())
+  first_name              String                  @db.VarChar(50)
+  last_name               String                  @db.VarChar(50)
+  email                   String                  @unique @db.VarChar(100)
+  phone_number            String                  @unique @db.VarChar(20)
+  business_name           String?                 @db.VarChar(100)
+  date_of_birth           DateTime?               @db.Date
+  password                String                  @db.VarChar(255)
+  created_at              DateTime?               @default(now()) @db.Timestamp(6)
+  language                String?                 @default("English") @db.VarChar(50)
+  time_format             String?                 @default("24-hour") @db.VarChar(10)
+  type                    String?                 @db.VarChar(50)
   sub_type                String[]
-  temperature_scale       String?           @default("Celsius") @db.VarChar(15)
-  address_line_1          String?           @db.VarChar(255)
-  address_line_2          String?           @db.VarChar(255)
-  city                    String?           @db.VarChar(100)
-  state                   String?           @db.VarChar(100)
-  postal_code             String?           @db.VarChar(20)
-  darkMode                Boolean           @default(false) @map("darkMode")
-  widgets                 String[]          @default([])
-  plan                    user_plan_type    @default(FREE)
-  subscription_expires_at DateTime?         @db.Timestamp(6)
-  country                 String?           @db.VarChar(100)
-  opening_balance         Decimal           @default(0.00) @db.Decimal(15, 2)
-  business_size           String?           @db.VarChar(50)
-  entity_type             String?           @db.VarChar(50)
+  temperature_scale       String?                 @default("Celsius") @db.VarChar(15)
+  address_line_1          String?                 @db.VarChar(255)
+  address_line_2          String?                 @db.VarChar(255)
+  city                    String?                 @db.VarChar(100)
+  state                   String?                 @db.VarChar(100)
+  postal_code             String?                 @db.VarChar(20)
+  darkMode                Boolean                 @default(false) @map("darkMode")
+  widgets                 String[]                @default([])
+  plan                    user_plan_type          @default(FREE)
+  subscription_expires_at DateTime?               @db.Timestamp(6)
+  country                 String?                 @db.VarChar(100)
+  opening_balance         Decimal                 @default(0.00) @db.Decimal(15, 2)
+  business_size           String?                 @db.VarChar(50)
+  entity_type             String?                 @db.VarChar(50)
   pending_plan            user_plan_type?
   pending_plan_source     String?
   apiculture              apiculture[]
@@ -506,6 +507,9 @@ model users {
   labours                 labours[]
   loans                   loans[]
   login_history           login_history[]
+  marketplace_favorites   marketplace_favorites[]
+  marketplace_products    marketplace_products[]
+  marketplace_wishlist    marketplace_wishlist[]
   notifications           notifications[]
   password_resets         password_resets?
   payments                payments[]
@@ -601,6 +605,61 @@ model flower_watering {
 
   @@unique([flower_id, watering_date])
   @@index([user_id, watering_date])
+}
+
+model marketplace_products {
+  product_id     Int                        @id @default(autoincrement())
+  user_id        Int
+  inventory_id   Int?
+  name           String                     @db.VarChar(255)
+  description    String?
+  category       String                     @db.VarChar(100)
+  price          Decimal                    @db.Decimal(10, 2)
+  units          String                     @db.VarChar(50)
+  quantity       Int                        @default(1)
+  images         String[]                   @default([])
+  status         marketplace_product_status @default(DRAFT)
+  created_at     DateTime?                  @default(now()) @db.Timestamp(6)
+  published_at   DateTime?                  @db.Timestamp(6)
+  favorites      marketplace_favorites[]
+  inventory      inventory?                 @relation(fields: [inventory_id], references: [inventory_id], onUpdate: NoAction)
+  users          users                      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  wishlist_items marketplace_wishlist[]
+
+  @@index([user_id], map: "idx_marketplace_products_user_id")
+  @@index([category], map: "idx_marketplace_products_category")
+  @@index([status], map: "idx_marketplace_products_status")
+}
+
+model marketplace_favorites {
+  favorite_id Int                  @id @default(autoincrement())
+  user_id     Int
+  product_id  Int
+  created_at  DateTime?            @default(now()) @db.Timestamp(6)
+  product     marketplace_products @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction)
+  users       users                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, product_id])
+  @@index([user_id], map: "idx_marketplace_favorites_user_id")
+}
+
+model marketplace_wishlist {
+  wishlist_id Int                  @id @default(autoincrement())
+  user_id     Int
+  product_id  Int
+  created_at  DateTime?            @default(now()) @db.Timestamp(6)
+  product     marketplace_products @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction)
+  users       users                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, product_id])
+  @@index([user_id], map: "idx_marketplace_wishlist_user_id")
+}
+
+enum marketplace_product_status {
+  DRAFT
+  PUBLISHED
+  SOLD_OUT
+  ARCHIVED
 }
 
 enum payment_status {

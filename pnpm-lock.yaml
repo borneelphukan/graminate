@@ -850,11 +850,11 @@ importers:
   packages/shared:
     dependencies:
       zod:
-        specifier: 4.1.11
-        version: 4.1.11
+        specifier: ^3.22.4
+        version: 3.25.76
       zod-openapi:
         specifier: ^5.4.1
-        version: 5.4.6(zod@4.1.11)
+        version: 5.4.6(zod@3.25.76)
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -951,7 +951,7 @@ importers:
         version: 8.21.3(react-dom@19.1.0)(react@19.1.0)
       '@weser/schema':
         specifier: ^0.0.13
-        version: 0.0.13(zod@4.1.11)
+        version: 0.0.13(zod@3.25.76)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -9517,12 +9517,12 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
-  /@weser/schema@0.0.13(zod@4.1.11):
+  /@weser/schema@0.0.13(zod@3.25.76):
     resolution: {integrity: sha512-3gdS4uol3WGal5hMTGjXvGtBjNKYdqtgcp70rO57xjoe3xzzN6y8SNULlmwyuA4zzaH/4fhLY+qtXYdF7Fy/3g==}
     peerDependencies:
       zod: '*'
     dependencies:
-      zod: 4.1.11
+      zod: 3.25.76
     dev: false
 
   /@xhmikosr/archive-type@7.1.0:
@@ -21047,17 +21047,17 @@ packages:
       grammex: 3.1.12
       graphmatch: 1.1.1
 
-  /zod-openapi@5.4.6(zod@4.1.11):
+  /zod-openapi@5.4.6(zod@3.25.76):
     resolution: {integrity: sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==}
     engines: {node: '>=20'}
     peerDependencies:
       zod: ^3.25.74 || ^4.0.0
     dependencies:
-      zod: 4.1.11
+      zod: 3.25.76
     dev: false
 
-  /zod@4.1.11:
-    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
+  /zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
     dev: false
 
   /zwitch@2.0.4:

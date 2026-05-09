@@ -71,14 +71,14 @@ const Popup = ({
       break;
     case "info":
       defaultIcon = (
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-300">
           <Icon type="info" className="text-blue-200 text-2xl" />
         </div>
       );
       break;
     case "warning":
       defaultIcon = (
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-200">
+        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-300">
           <Icon type="warning" />
         </div>
       );

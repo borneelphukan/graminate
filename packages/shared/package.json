@@ -2,7 +2,7 @@
   "name": "@graminate/shared",
   "private": true,
   "version": "0.0.1",
-  "sideEffects": false,
+  "sideEffects": true,
   "main": "./dist/shared.cjs",
   "module": "./dist/shared.js",
   "types": "./dist/index.d.ts",
@@ -23,7 +23,7 @@
     "lint:fix": "pnpm eslint --fix"
   },
   "dependencies": {
-    "zod": "4.1.11",
+    "zod": "^3.22.4",
     "zod-openapi": "^5.4.1"
   },
   "devDependencies": {
