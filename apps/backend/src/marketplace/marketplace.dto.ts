@@ -123,3 +123,25 @@ export class ToggleWishlistDto {
   @IsInt()
   product_id: number;
 }
+
+export class AddToCartDto {
+  @IsNotEmpty()
+  @IsInt()
+  user_id: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  product_id: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  quantity?: number;
+}
+
+export class UpdateCartQuantityDto {
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  quantity: number;
+}

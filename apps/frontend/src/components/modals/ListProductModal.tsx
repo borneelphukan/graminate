@@ -1,9 +1,27 @@
-import { Icon, Dropdown, Button, Input, Popup, SegmentedControl, TextArea } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup, SegmentedControl, TextArea, Upload } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import Loader from "@/components/ui/Loader";
 import { UNITS } from "@/constants/options";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
+
+const dataURLtoFile = (dataurl: string, filename: string) => {
+  try {
+    const arr = dataurl.split(',');
+    if (arr.length < 2) return null;
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "image/jpeg";
+    const bstr = atob(arr[arr.length - 1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while(n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  } catch (e) {
+    return null;
+  }
+};
 
 type InventoryItem = {
   inventory_id: number;
@@ -19,6 +37,17 @@ type ListProductModalProps = {
   onClose: () => void;
   userId: number | string | undefined;
   onProductAdded: () => void;
+  productToEdit?: {
+    product_id: number;
+    name: string;
+    description: string | null;
+    category: string;
+    price: number;
+    units: string;
+    quantity: number;
+    inventory_id?: number | null;
+    images?: string[];
+  };
 };
 
 const ListProductModal = ({
@@ -26,6 +55,7 @@ const ListProductModal = ({
   onClose,
   userId,
   onProductAdded,
+  productToEdit,
 }: ListProductModalProps) => {
   const { subTypes } = useUserPreferences();
   const [source, setSource] = useState<"inventory" | "manual">("manual");
@@ -39,12 +69,14 @@ const ListProductModal = ({
   const [price, setPrice] = useState("");
   const [units, setUnits] = useState("");
   const [quantity, setQuantity] = useState("1");
+  const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [unitSuggestions, setUnitSuggestions] = useState<string[]>([]);
   const [showUnitSuggestions, setShowUnitSuggestions] = useState(false);
   const unitSuggestionsRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const [popup, setPopup] = useState<{
     isOpen: boolean;
@@ -73,15 +105,36 @@ const ListProductModal = ({
 
   useEffect(() => {
     if (isOpen && userId) {
-      setName("");
-      setDescription("");
-      setCategory("");
-      setPrice("");
-      setUnits("");
-      setQuantity("1");
-      setErrors({});
-      setSelectedInventoryId(null);
-      setSource("manual");
+      if (productToEdit) {
+        setName(productToEdit.name);
+        setDescription(productToEdit.description || "");
+        setCategory(productToEdit.category);
+        setPrice(String(productToEdit.price));
+        setUnits(productToEdit.units);
+        setQuantity(String(productToEdit.quantity));
+        setErrors({});
+        setSelectedInventoryId(productToEdit.inventory_id || null);
+        setSource(productToEdit.inventory_id ? "inventory" : "manual");
+        if (productToEdit.images && productToEdit.images.length > 0) {
+          const mappedFiles = productToEdit.images
+            .map((img, i) => dataURLtoFile(img, `Product_Image_${i + 1}`))
+            .filter((f): f is File => f !== null);
+          setFiles(mappedFiles);
+        } else {
+          setFiles([]);
+        }
+      } else {
+        setName("");
+        setDescription("");
+        setCategory("");
+        setPrice("");
+        setUnits("");
+        setQuantity("1");
+        setErrors({});
+        setSelectedInventoryId(null);
+        setSource("manual");
+        setFiles([]);
+      }
       document.body.style.overflow = "hidden";
 
       const fetchInventory = async () => {
@@ -102,7 +155,7 @@ const ListProductModal = ({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, userId]);
+  }, [isOpen, userId, productToEdit]);
 
   useEffect(() => {
     if (selectedInventoryId && source === "inventory") {
@@ -141,6 +194,46 @@ const ListProductModal = ({
     setShowUnitSuggestions(true);
   };
 
+  const formatText = (type: 'bold' | 'italic' | 'list' | 'h') => {
+    const el = descriptionRef.current;
+    if (!el) return;
+    
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const val = description;
+    const selectedText = val.substring(start, end);
+    
+    let newText = '';
+    let newCursorPos = end;
+
+    switch(type) {
+      case 'bold':
+        newText = val.substring(0, start) + `**${selectedText}**` + val.substring(end);
+        newCursorPos = start + (selectedText ? 2 + selectedText.length + 2 : 2);
+        break;
+      case 'italic':
+        newText = val.substring(0, start) + `*${selectedText}*` + val.substring(end);
+        newCursorPos = start + (selectedText ? 1 + selectedText.length + 1 : 1);
+        break;
+      case 'list':
+        const prefix = "\n- ";
+        newText = val.substring(0, start) + (selectedText ? selectedText.split('\n').map(l => `- ${l}`).join('\n') : prefix) + val.substring(end);
+        newCursorPos = start + (selectedText ? selectedText.length + 2 : prefix.length);
+        break;
+      case 'h':
+        newText = val.substring(0, start) + `### ${selectedText}` + val.substring(end);
+        newCursorPos = start + (selectedText ? 4 + selectedText.length : 4);
+        break;
+    }
+    
+    setDescription(newText);
+    
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -148,30 +241,60 @@ const ListProductModal = ({
 
     setIsLoading(true);
     try {
-      await axiosInstance.post("/marketplace/products/add", {
-        user_id: Number(userId),
-        inventory_id: source === "inventory" ? selectedInventoryId : undefined,
-        name: name.trim(),
-        description: description.trim() || undefined,
-        category,
-        price: Number(price),
-        units: units.trim(),
-        quantity: Number(quantity),
-        images: [],
-      });
-      setPopup({
-        isOpen: true,
-        title: "Success",
-        text: "Product draft created. Click 'Publish' to make it live.",
-        variant: "success",
-      });
+      const base64Images = await Promise.all(
+        files.map(
+          (file) =>
+            new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            })
+        )
+      );
+
+      if (productToEdit) {
+        await axiosInstance.put(`/marketplace/products/update/${productToEdit.product_id}`, {
+          name: name.trim(),
+          description: description.trim() || null,
+          category,
+          price: Number(price),
+          units: units.trim(),
+          quantity: Number(quantity),
+          images: base64Images,
+        });
+        setPopup({
+          isOpen: true,
+          title: "Success",
+          text: "Product listing updated successfully.",
+          variant: "success",
+        });
+      } else {
+        await axiosInstance.post("/marketplace/products/add", {
+          user_id: Number(userId),
+          inventory_id: source === "inventory" ? selectedInventoryId : undefined,
+          name: name.trim(),
+          description: description.trim() || undefined,
+          category,
+          price: Number(price),
+          units: units.trim(),
+          quantity: Number(quantity),
+          images: base64Images,
+        });
+        setPopup({
+          isOpen: true,
+          title: "Success",
+          text: "Product draft created. Click 'Publish' to make it live.",
+          variant: "success",
+        });
+      }
       onProductAdded();
     } catch (error) {
-      console.error("Error creating product:", error);
+      console.error("Error saving product:", error);
       setPopup({
         isOpen: true,
         title: "Error",
-        text: "Failed to create product listing.",
+        text: `Failed to ${productToEdit ? "update" : "create"} product listing.`,
         variant: "error",
       });
     } finally {
@@ -187,7 +310,7 @@ const ListProductModal = ({
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-400/20 shadow-sm w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-400 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              List New Product
+              {productToEdit ? "Edit Product Listing" : "List New Product"}
             </h3>
             <button
               type="button"
@@ -199,31 +322,33 @@ const ListProductModal = ({
             </button>
           </div>
 
-          <SegmentedControl
-            className="mb-6 w-full sm:w-fit text-dark dark:text-light"
-            defaultValue="first"
-            options={{
-              first: {
-                value: "manual",
-                label: "Manual Entry",
-                onClick: () => {
-                  setSource("manual");
-                  setSelectedInventoryId(null);
-                  setName("");
-                  setPrice("");
-                  setUnits("");
-                  setQuantity("1");
+          {!productToEdit && (
+            <SegmentedControl
+              className="mb-6 w-full sm:w-fit text-dark dark:text-light"
+              defaultValue="first"
+              options={{
+                first: {
+                  value: "manual",
+                  label: "Manual Entry",
+                  onClick: () => {
+                    setSource("manual");
+                    setSelectedInventoryId(null);
+                    setName("");
+                    setPrice("");
+                    setUnits("");
+                    setQuantity("1");
+                  },
                 },
-              },
-              second: {
-                value: "inventory",
-                label: "From Inventory",
-                onClick: () => setSource("inventory"),
-              },
-            }}
-          />
+                second: {
+                  value: "inventory",
+                  label: "From Inventory",
+                  onClick: () => setSource("inventory"),
+                },
+              }}
+            />
+          )}
 
-          {source === "inventory" && (
+          {!productToEdit && source === "inventory" && (
             <div className="mb-6">
               {isLoadingInventory ? (
                 <div className="flex justify-center py-4">
@@ -351,14 +476,72 @@ const ListProductModal = ({
               </div>
             </div>
 
-            <TextArea
-              id="product-description"
-              label="Description"
-              placeholder="Describe your product..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-dark dark:text-light">Product Images</label>
+              <Upload
+                multiple
+                value={files}
+                onValueChange={setFiles}
+                accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
+                maxSizeInMB={5}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-dark dark:text-light font-medium text-sm">
+                Description
+              </label>
+              <div className="flex flex-col border border-neutral-light-gray/40 dark:border-gray-600 rounded-lg overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-green-200 transition-all">
+                <div className="flex items-center gap-0.5 px-2 py-1.5 bg-gray-50 dark:bg-gray-900 border-b border-neutral-light-gray/40 dark:border-gray-700">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
+                    icon={{ left: 'format_bold' }} 
+                    onClick={() => formatText('bold')}
+                    title="Bold"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
+                    icon={{ left: 'format_italic' }} 
+                    onClick={() => formatText('italic')}
+                    title="Italic"
+                  />
+                  <div className="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
+                    icon={{ left: 'format_list_bulleted' }} 
+                    onClick={() => formatText('list')}
+                    title="Bullet List"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
+                    icon={{ left: 'format_h3' }} 
+                    onClick={() => formatText('h')}
+                    title="Heading"
+                  />
+                </div>
+                <textarea
+                  ref={descriptionRef}
+                  id="product-description"
+                  placeholder="Describe your product..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={4}
+                  className="w-full p-3 border-none bg-white dark:bg-gray-800 text-dark dark:text-light placeholder-gray-400 focus:outline-none focus:ring-0 text-sm resize-y min-h-[120px]"
+                />
+              </div>
+            </div>
 
 
             {errors.general && (
@@ -376,7 +559,7 @@ const ListProductModal = ({
                 disabled={isLoading}
               />
               <Button
-                label={isLoading ? "Creating..." : "Create Draft"}
+                label={isLoading ? "Saving..." : productToEdit ? "Save Changes" : "Create Draft"}
                 type="submit"
                 variant="primary"
                 disabled={isLoading}

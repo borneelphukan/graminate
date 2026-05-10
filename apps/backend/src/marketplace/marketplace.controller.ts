@@ -21,6 +21,8 @@ import {
   UpdateMarketplaceProductDto,
   ToggleFavoriteDto,
   ToggleWishlistDto,
+  AddToCartDto,
+  UpdateCartQuantityDto,
 } from './marketplace.dto';
 
 @Controller('marketplace')
@@ -127,5 +129,37 @@ export class MarketplaceController {
   @Get('interactions/user/:userId')
   async getUserInteractions(@Param('userId', ParseIntPipe) userId: number) {
     return this.marketplaceService.getUserInteractions(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('cart/user/:userId')
+  async getCart(@Param('userId', ParseIntPipe) userId: number) {
+    const items = await this.marketplaceService.getCart(userId);
+    return { items };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('cart/add')
+  async addToCart(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: AddToCartDto,
+  ) {
+    return this.marketplaceService.addToCart(dto.user_id, dto.product_id, dto.quantity);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('cart/update/:cartId')
+  async updateCartQuantity(
+    @Param('cartId', ParseIntPipe) cartId: number,
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: UpdateCartQuantityDto,
+  ) {
+    return this.marketplaceService.updateCartQuantity(cartId, dto.quantity);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('cart/remove/:cartId')
+  async removeFromCart(@Param('cartId', ParseIntPipe) cartId: number) {
+    return this.marketplaceService.removeFromCart(cartId);
   }
 }

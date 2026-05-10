@@ -507,6 +507,7 @@ model users {
   labours                 labours[]
   loans                   loans[]
   login_history           login_history[]
+  marketplace_cart        marketplace_cart[]
   marketplace_favorites   marketplace_favorites[]
   marketplace_products    marketplace_products[]
   marketplace_wishlist    marketplace_wishlist[]
@@ -625,6 +626,7 @@ model marketplace_products {
   inventory      inventory?                 @relation(fields: [inventory_id], references: [inventory_id], onUpdate: NoAction)
   users          users                      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
   wishlist_items marketplace_wishlist[]
+  cart_items     marketplace_cart[]
 
   @@index([user_id], map: "idx_marketplace_products_user_id")
   @@index([category], map: "idx_marketplace_products_category")
@@ -653,6 +655,20 @@ model marketplace_wishlist {
 
   @@unique([user_id, product_id])
   @@index([user_id], map: "idx_marketplace_wishlist_user_id")
+}
+
+model marketplace_cart {
+  cart_id    Int                  @id @default(autoincrement())
+  user_id    Int
+  product_id Int
+  quantity   Int                  @default(1)
+  created_at DateTime?            @default(now()) @db.Timestamp(6)
+  updated_at DateTime?            @default(now()) @db.Timestamp(6)
+  product    marketplace_products @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction)
+  users      users                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, product_id])
+  @@index([user_id], map: "idx_marketplace_cart_user_id")
 }
 
 enum marketplace_product_status {

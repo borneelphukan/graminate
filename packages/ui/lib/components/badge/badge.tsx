@@ -4,7 +4,7 @@ import React, { forwardRef } from "react";
 import { Icon, type IconType } from "../icon/icon";
 
 const badgeVariants = cva(
-  "flex flex-row items-center justify-center px-2 py-0.5 rounded-[var(--radius-lg)] shrink-0 relative font-medium text-center whitespace-nowrap border",
+  "flex flex-row items-center justify-center px-2 py-0.5 rounded-sm shrink-0 relative font-medium text-center whitespace-nowrap border",
   {
     variants: {
       type: {
@@ -18,12 +18,12 @@ const badgeVariants = cva(
         blue: "bg-blue-200 text-white",
         outline: "bg-transparent text-dark",
         dotted:
-          "bg-transparent text-dark border-neutral-gray/30 border-dashed",
+          "bg-transparent text-dark border-gray-300 border-dashed",
       },
       size: {
-        sm: "text-[0.625rem]/[0.875rem] gap-0.5",
-        md: "text-xs/[1.125rem] gap-1",
-        lg: "px-3 py-1 text-sm/5 gap-1.5",
+        sm: "text-xs gap-0.5",
+        md: "text-sm gap-1",
+        lg: "px-3 py-1 text-md gap-1.5",
       },
     },
     defaultVariants: {

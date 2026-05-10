@@ -342,4 +342,80 @@ export class MarketplaceService {
       );
     }
   }
+
+  async getCart(userId: number) {
+    try {
+      return await this.prisma.marketplace_cart.findMany({
+        where: { user_id: userId },
+        include: {
+          product: {
+            include: {
+              users: {
+                select: {
+                  user_id: true,
+                  first_name: true,
+                  last_name: true,
+                  business_name: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { created_at: 'desc' },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
+  }
+
+  async addToCart(userId: number, productId: number, quantity = 1) {
+    try {
+      const existing = await this.prisma.marketplace_cart.findUnique({
+        where: { user_id_product_id: { user_id: userId, product_id: productId } },
+      });
+
+      if (existing) {
+        return await this.prisma.marketplace_cart.update({
+          where: { cart_id: existing.cart_id },
+          data: { quantity: existing.quantity + quantity, updated_at: new Date() },
+        });
+      }
+
+      return await this.prisma.marketplace_cart.create({
+        data: { user_id: userId, product_id: productId, quantity },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
+  }
+
+  async updateCartQuantity(cartId: number, quantity: number) {
+    try {
+      return await this.prisma.marketplace_cart.update({
+        where: { cart_id: cartId },
+        data: { quantity, updated_at: new Date() },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
+  }
+
+  async removeFromCart(cartId: number) {
+    try {
+      await this.prisma.marketplace_cart.delete({
+        where: { cart_id: cartId },
+      });
+      return { success: true };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
+  }
 }

@@ -91,16 +91,16 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
               className="!text-5xl text-neutral-300"
             />
           </div>
-          <div className="text-neutral-dark-gray">
-            <span className="font-semibold text-brand-green">Select File</span>{" "}
+          <div className="text-dark dark:text-light">
+            <span className="font-semibold text-dark dark:text-light">Select File</span>{" "}
             or Drag and Drop
           </div>
-          <div className="text-neutral-dark-gray/60 text-sm">
-            Dateien | max. {maxSizeInMB} MB
+          <div className="text-dark dark:text-light text-sm">
+            Files | max. {maxSizeInMB} MB
           </div>
         </div>
         {acceptString && (
-          <div className="text-neutral-dark-gray/60 text-xs mt-1">
+          <div className="text-dark dark:text-light text-xs mt-1">
             Supported File Formats: {acceptString}
           </div>
         )}
@@ -110,34 +110,30 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
             {value.map((file, index) => (
               <div
                 key={`${file.name}-${index}`}
-                className="bg-neutral-light-gray/50 border-neutral-dark-gray/10 flex items-center justify-between rounded-[var(--radius-md)] border p-3"
+                className="bg-gray-500 border-gray-400 flex items-center justify-between rounded-sm border p-3"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="flex size-10 shrink-0 items-center justify-center">
+                  <div className="flex size-10 shrink-0 items-center justify-center text-dark dark:text-light">
                     <Icon type="description" />
                   </div>
                   <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium text-neutral-900">
+                    <span className="truncate text-sm font-medium text-dark dark:text-light">
                       {file.name}
                     </span>
-                    <span className="text-neutral-dark-gray/60 text-xs">
+                    <span className="text-dark dark:text-light text-xs">
                       {formatFileSize(file.size)}
                     </span>
                   </div>
                 </div>
                 <Button
-                  variant="ghost"
+                  variant="destructive"
                   size="icon"
+                  icon={{ left: "delete" }}
                   onClick={(e) => {
                     e.stopPropagation();
                     removeFile(index);
                   }}
-                >
-                  <Icon
-                    type="delete"
-                    className="text-neutral-dark-gray/60 hover:text-red-500"
-                  />
-                </Button>
+                />
               </div>
             ))}
           </div>
