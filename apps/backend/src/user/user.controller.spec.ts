@@ -32,6 +32,7 @@ describe('UserController', () => {
   const makeReq = (userId: number) => ({ user: { userId } }) as any;
 
   beforeEach(async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
