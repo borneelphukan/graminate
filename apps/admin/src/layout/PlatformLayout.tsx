@@ -29,6 +29,11 @@ const PlatformLayout = ({ children }: Props) => {
       icon: "payments",
       path: `/platform/${admin_id}/subscriptions`,
     },
+    {
+      label: "Marketplace",
+      icon: "storefront",
+      path: `/platform/${admin_id}/marketplace`,
+    },
   ];
 
   useEffect(() => {

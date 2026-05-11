@@ -145,3 +145,55 @@ export class UpdateCartQuantityDto {
   @Min(1)
   quantity: number;
 }
+
+export class SaveBankDetailsDto {
+  @IsNotEmpty()
+  @IsInt()
+  user_id: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
+  cardholder_name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(50)
+  card_number: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(10)
+  expiry_date: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  card_type?: string;
+}
+
+export class CreateCheckoutDto {
+  @IsNotEmpty()
+  @IsInt()
+  user_id: number;
+}
+
+export class VerifyPaymentDto {
+  @IsNotEmpty()
+  @IsString()
+  razorpay_order_id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  razorpay_payment_id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  razorpay_signature: string;
+}
+
+export class UpdateOrderStatusDto {
+  @IsNotEmpty()
+  @IsString()
+  status: string;
+}

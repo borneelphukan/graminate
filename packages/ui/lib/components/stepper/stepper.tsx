@@ -35,8 +35,9 @@ function Stepper({
     >
       <div
         data-slot="stepper"
+        data-orientation={orientation}
         className={cn(
-          "flex",
+          "flex group",
           orientation === "vertical" ? "flex-col gap-4" : "flex-row",
           className
         )}
@@ -126,9 +127,32 @@ function StepperItem({
         )}
         {...props}
       >
+        {orientation === "vertical" && !isLast && !disableConnector && (
+          <div
+            className={cn(
+              "absolute w-[3px] bg-border",
+              isSubStepper ? "bottom-[-0.5rem]" : "bottom-[-1rem]",
+              isSubStepper ? "left-[5px] top-[8px]" : "left-[19px] top-[20px]"
+            )}
+          >
+            <div
+              className={cn(
+                "w-full bg-green-200 transition-all duration-300 ease-linear"
+              )}
+              style={{
+                height: isCompleted
+                  ? "100%"
+                  : isActive && hasSubStepper
+                    ? "50%"
+                    : "0%",
+              }}
+            />
+          </div>
+        )}
+
         <div
           className={cn(
-            "flex w-full",
+            "flex w-full relative",
             orientation === "vertical"
               ? isSubStepper
                 ? "flex-row items-start gap-4"
@@ -136,53 +160,34 @@ function StepperItem({
               : "flex-col items-center text-center"
           )}
         >
-          {orientation === "vertical" && !isLast && !disableConnector && (
-            <div
-              className={cn(
-                "absolute w-[3px] bg-border",
-                isSubStepper ? "bottom-[-0.5rem]" : "bottom-[-1rem]",
-                isSubStepper ? "left-[5px] top-[8px]" : "left-[19px] top-[20px]"
+          {orientation === "horizontal" ? (
+            <div className="relative flex w-full h-10 items-center justify-center">
+              {!isLast && !disableConnector && (
+                <div
+                  className={cn(
+                    "absolute top-1/2 -translate-y-1/2 left-1/2 w-full h-[2px] bg-border group-data-[orientation=horizontal]:block"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "h-full bg-green-200 transition-all duration-300 ease-linear"
+                    )}
+                    style={{
+                      width: isCompleted
+                        ? "100%"
+                        : isActive && hasSubStepper
+                          ? "50%"
+                          : "0%",
+                    }}
+                  />
+                </div>
               )}
-            >
-              <div
-                className={cn(
-                  "w-full bg-brand-mute-green transition-all duration-300 ease-linear"
-                )}
-                style={{
-                  height: isCompleted
-                    ? "100%"
-                    : isActive && hasSubStepper
-                      ? "50%"
-                      : "0%",
-                }}
-              />
+              {indicator}
             </div>
+          ) : (
+            indicator
           )}
-
-          {orientation === "horizontal" && !isLast && !disableConnector && (
-            <div
-              className={cn(
-                "absolute top-[20px] left-[50%] w-full h-[2px] bg-border -z-10 group-data-[orientation=horizontal]:block"
-              )}
-            >
-              <div
-                className={cn(
-                  "h-full bg-brand-mute-green transition-all duration-300 ease-linear"
-                )}
-                style={{
-                  width: isCompleted
-                    ? "100%"
-                    : isActive && hasSubStepper
-                      ? "50%"
-                      : "0%",
-                }}
-              />
-            </div>
-          )}
-
-          {indicator}
-
-          <div className={cn("flex flex-col w-full pt-1.5")}>{content}</div>
+          <div className={cn("flex flex-col w-full pt-1.5 text-center items-center")}>{content}</div>
         </div>
       </div>
     </StepperItemContext.Provider>
@@ -211,11 +216,11 @@ function StepperIndicator({
   const { isSubStepper } = React.useContext(StepperContext);
 
   if (isSubStepper) {
-    let bgColor = "bg-neutral-light-gray";
+    let bgColor = "bg-gray-400";
     if (isActive) {
-      bgColor = "bg-brand-green ring-4 ring-brand-mute-green";
+      bgColor = "bg-green-200 ring-4 ring-green-200";
     } else if (isCompleted) {
-      bgColor = "bg-brand-mute-green ring-2 ring-brand-mute-green";
+      bgColor = "bg-green-200 ring-2 ring-green-200";
     }
 
     return (
@@ -235,12 +240,12 @@ function StepperIndicator({
     <div
       data-slot="stepper-indicator"
       className={cn(
-        "relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 bg-background",
+        "relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 bg-white dark:bg-gray-800",
         isActive
-          ? "border-2 border-card text-primary"
+          ? "border-2 border-green-200"
           : isCompleted
-            ? "bg-brand-mute-green text-white"
-            : "border-2 border-muted text-muted-foreground",
+            ? "bg-green-200 dark:bg-green-200 text-white border-2 border-green-200"
+            : "border-2 border-gray-400 text-gray-400",
         className
       )}
       {...props}
@@ -248,10 +253,8 @@ function StepperIndicator({
       {isActive && (
         <div
           className={cn(
-            "absolute -inset-[5px] rounded-full border-[3px] border-neutral-light-gray rotate-45 pointer-events-none",
-            !isFirst &&
-              !isLast &&
-              "border-b-brand-mute-green border-l-brand-mute-green"
+            "absolute -inset-[5px] rounded-full border-gray-400 rotate-45 pointer-events-none",
+            !isFirst && !isLast && "border-b-green-200 border-l-green-200"
           )}
         />
       )}
@@ -306,7 +309,7 @@ function StepperDescription({
   return (
     <p
       data-slot="stepper-description"
-      className={cn("text-sm text-muted-foreground mt-1", className)}
+      className={cn("text-sm text-gray-400 mt-1", className)}
       {...props}
     />
   );

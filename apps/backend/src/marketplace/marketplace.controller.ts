@@ -23,6 +23,10 @@ import {
   ToggleWishlistDto,
   AddToCartDto,
   UpdateCartQuantityDto,
+  SaveBankDetailsDto,
+  CreateCheckoutDto,
+  VerifyPaymentDto,
+  UpdateOrderStatusDto,
 } from './marketplace.dto';
 
 @Controller('marketplace')
@@ -161,5 +165,86 @@ export class MarketplaceController {
   @Delete('cart/remove/:cartId')
   async removeFromCart(@Param('cartId', ParseIntPipe) cartId: number) {
     return this.marketplaceService.removeFromCart(cartId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('bank/:userId')
+  async getBankDetails(@Param('userId', ParseIntPipe) userId: number) {
+    const details = await this.marketplaceService.getBankDetails(userId);
+    return { data: details };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('bank/save')
+  async saveBankDetails(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: SaveBankDetailsDto,
+  ) {
+    const result = await this.marketplaceService.saveBankDetails(dto);
+    return { data: result, message: 'Bank details saved successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('bank/:userId')
+  async deleteBankDetails(@Param('userId', ParseIntPipe) userId: number) {
+    return this.marketplaceService.deleteBankDetails(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('checkout/create-order')
+  async createCheckoutOrder(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: CreateCheckoutDto,
+  ) {
+    return this.marketplaceService.createCheckoutOrder(dto.user_id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('checkout/verify-payment')
+  async verifyPayment(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: VerifyPaymentDto,
+  ) {
+    return this.marketplaceService.verifyPayment(
+      dto.razorpay_order_id,
+      dto.razorpay_payment_id,
+      dto.razorpay_signature,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('orders/user/:userId')
+  async getOrdersByUser(@Param('userId', ParseIntPipe) userId: number) {
+    const orders = await this.marketplaceService.getOrdersByUser(userId);
+    return { orders };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('orders/:orderId')
+  async getOrderById(@Param('orderId', ParseIntPipe) orderId: number) {
+    return this.marketplaceService.getOrderById(orderId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('orders')
+  async getAllOrders() {
+    const orders = await this.marketplaceService.getAllOrders();
+    return { orders };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('orders/:orderId/update-status')
+  async updateOrderStatus(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    dto: UpdateOrderStatusDto,
+  ) {
+    return this.marketplaceService.updateOrderStatus(orderId, dto.status);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('orders/:orderId/release')
+  async releaseEscrow(@Param('orderId', ParseIntPipe) orderId: number) {
+    return this.marketplaceService.releaseEscrow(orderId);
   }
 }

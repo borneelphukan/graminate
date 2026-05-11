@@ -126,6 +126,10 @@ const SettingsBar = () => {
         label: t("account" as GeneralTranslationKeys),
         subItems: [
           {
+            label: "Marketplace",
+            href: `/${userId}/settings/marketplace`,
+          },
+          {
             label: t("billing" as GeneralTranslationKeys),
             href: `/${userId}/settings/billing`,
           },

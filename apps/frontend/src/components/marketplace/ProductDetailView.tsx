@@ -26,6 +26,7 @@ type ProductDetailViewProps = {
   };
   onCartUpdate?: () => void;
   isProducer?: boolean;
+  onBuy?: () => void;
 };
 
 const ProductDetailView = ({
@@ -34,6 +35,7 @@ const ProductDetailView = ({
   product,
   onCartUpdate,
   isProducer = false,
+  onBuy,
 }: ProductDetailViewProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -255,7 +257,11 @@ const ProductDetailView = ({
                     label="Buy"
                     variant="primary"
                     className="flex-1"
-                    disabled
+                    onClick={() => {
+                      handleAddToCart();
+                      if (onBuy) onBuy();
+                    }}
+                    disabled={product.quantity < 1}
                   />
                 </div>
               </div>

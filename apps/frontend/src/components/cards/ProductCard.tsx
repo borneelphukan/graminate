@@ -43,6 +43,7 @@ export interface ProductCardProps {
   onToggleFavorite?: (id: number) => void;
   onToggleWishlist?: (id: number) => void;
   onAddToCart?: (id: number) => void;
+  onBuy?: () => void;
   onEdit?: (product: MarketplaceProduct) => void;
   onView?: (product: MarketplaceProduct) => void;
   onPublish?: (id: number) => void;
@@ -59,6 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onToggleFavorite,
   onToggleWishlist,
   onAddToCart,
+  onBuy,
   onEdit,
   onView,
   onPublish,
@@ -261,7 +263,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 }}
                 title="Add to Cart"
               />
-              <Button label="Buy" variant="primary" disabled />
+              <Button
+                label="Buy"
+                variant="primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onBuy) onBuy();
+                }}
+              />
             </div>
           )}
 
