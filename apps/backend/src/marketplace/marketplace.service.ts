@@ -484,6 +484,19 @@ export class MarketplaceService {
       throw new BadRequestException('Cart is empty');
     }
 
+    for (const item of cartItems) {
+      if (item.quantity > item.product.quantity) {
+        throw new BadRequestException(
+          `Not enough stock for product "${item.product.name}". Available: ${item.product.quantity}`,
+        );
+      }
+      if (item.product.status !== 'PUBLISHED') {
+        throw new BadRequestException(
+          `Product "${item.product.name}" is no longer active on the marketplace`,
+        );
+      }
+    }
+
     const subtotal = cartItems.reduce(
       (sum, item) => sum + Number(item.product.price) * item.quantity,
       0,
@@ -577,17 +590,41 @@ export class MarketplaceService {
       throw new NotFoundException('Order not found');
     }
 
-    await this.prisma.marketplace_orders.update({
-      where: { order_id: order.order_id },
-      data: {
-        razorpay_payment_id: razorpayPaymentId,
-        status: 'PAID',
-        paid_at: new Date(),
-      },
-    });
+    await this.prisma.$transaction(async (tx) => {
+      // Update order status
+      await tx.marketplace_orders.update({
+        where: { order_id: order.order_id },
+        data: {
+          razorpay_payment_id: razorpayPaymentId,
+          status: 'PAID',
+          paid_at: new Date(),
+        },
+      });
 
-    await this.prisma.marketplace_cart.deleteMany({
-      where: { user_id: order.buyer_id },
+      // Reduce quantity for each product in the order
+      for (const item of order.items) {
+        const product = await tx.marketplace_products.findUnique({
+          where: { product_id: item.product_id },
+        });
+
+        if (product) {
+          const newQuantity = Math.max(0, product.quantity - item.quantity);
+          const newStatus = newQuantity <= 0 ? 'SOLD_OUT' : product.status;
+
+          await tx.marketplace_products.update({
+            where: { product_id: item.product_id },
+            data: {
+              quantity: newQuantity,
+              status: newStatus,
+            },
+          });
+        }
+      }
+
+      // Clear the user's cart
+      await tx.marketplace_cart.deleteMany({
+        where: { user_id: order.buyer_id },
+      });
     });
 
     return { success: true, order_id: order.order_id };

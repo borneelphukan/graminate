@@ -299,6 +299,8 @@ const MarketplacePage = () => {
             setPopup({ isOpen: true, title: "Payment Successful", text: "Your order has been placed successfully!", variant: "success" });
             fetchCart();
             fetchOrders();
+            fetchPublishedProducts();
+            fetchMyProducts();
             setActiveTab("orders");
           } catch {
             setPopup({ isOpen: true, title: "Verification Failed", text: "Payment could not be verified. Please contact support.", variant: "error" });
