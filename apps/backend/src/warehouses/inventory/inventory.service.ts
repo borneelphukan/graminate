@@ -8,6 +8,7 @@ interface InventoryFilters {
   offset?: number;
   itemGroup?: string;
   warehouseId?: number;
+  unassigned?: boolean;
 }
 
 @Injectable()
@@ -17,11 +18,15 @@ export class InventoryService {
     userId: number,
     filters: InventoryFilters,
   ): Promise<inventory[]> {
-    const { limit, offset, itemGroup, warehouseId } = filters;
+    const { limit, offset, itemGroup, warehouseId, unassigned } = filters;
 
     try {
       const where: Prisma.inventoryWhereInput = { user_id: userId };
-      if (warehouseId !== undefined) where.warehouse_id = warehouseId;
+      if (unassigned === true) {
+        where.warehouse_id = null;
+      } else if (warehouseId !== undefined) {
+        where.warehouse_id = warehouseId;
+      }
       if (itemGroup) where.item_group = itemGroup;
 
       const inventoryItems = await this.prisma.inventory.findMany({
@@ -92,9 +97,10 @@ export class InventoryService {
       price_per_unit,
       minimum_limit,
       feed,
+      warehouse_id,
     } = updateDto;
     try {
-      const updateData: Prisma.inventoryUpdateInput = {};
+      const updateData: Prisma.inventoryUncheckedUpdateInput = {};
       if (item_name !== undefined) updateData.item_name = item_name;
       if (item_group !== undefined) updateData.item_group = item_group;
       if (units !== undefined) updateData.units = units;
@@ -103,6 +109,7 @@ export class InventoryService {
         updateData.price_per_unit = price_per_unit;
       if (minimum_limit !== undefined) updateData.minimum_limit = minimum_limit;
       if (feed !== undefined) updateData.feed = feed;
+      if (warehouse_id !== undefined) updateData.warehouse_id = warehouse_id;
 
       const updatedItem = await this.prisma.inventory.update({
         where: { inventory_id: id },

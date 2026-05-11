@@ -104,6 +104,9 @@ const Warehouse = () => {
     title: string;
     text: string;
     variant: "success" | "error" | "info" | "warning";
+    onConfirm?: () => void;
+    showCancelButton?: boolean;
+    confirmButtonText?: string;
   }>({
     isOpen: false,
     title: "",
@@ -290,6 +293,46 @@ const Warehouse = () => {
     );
   }, [inventoryForWarehouse]);
 
+  const handleUnassignRows = async (selectedRows: any[]) => {
+    const inventoryIds = selectedRows.map((row) => row[0]).filter(Boolean);
+    if (inventoryIds.length === 0) return;
+
+    setPopup({
+      isOpen: true,
+      title: "Unassign Items",
+      text: `Sure you want to unassign ${inventoryIds.length} item(s) from ${dynamicWarehouseName}? They will be classified as unallocated.`,
+      variant: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Unassign",
+      onConfirm: async () => {
+        setPopup((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await Promise.all(
+            inventoryIds.map((id) =>
+              axiosInstance.put(`/inventory/update/${id}`, {
+                warehouse_id: null,
+              })
+            )
+          );
+          setPopup({
+            isOpen: true,
+            title: "Items Unassigned",
+            text: "Successfully moved selected items back to general queue.",
+            variant: "success",
+          });
+          fetchWarehouseData();
+        } catch (err) {
+          setPopup({
+            isOpen: true,
+            title: "Update Failed",
+            text: "Could not unassign one or more items. Please try again.",
+            variant: "error",
+          });
+        }
+      },
+    });
+  };
+
   return (
     <PlatformLayout>
       <Head>
@@ -456,6 +499,13 @@ const Warehouse = () => {
                   view="inventory"
                   loading={loadingInventory}
                   onDeleteRows={handleDeleteRows}
+                  customBulkActions={[
+                    {
+                      label: "Unassign",
+                      onClick: handleUnassignRows,
+                      className: "text-blue-200 dark:text-blue-400 hover:text-blue-300 hover:cursor-pointer dark:hover:text-blue-300 transition-colors whitespace-nowrap leading-none",
+                    },
+                  ]}
                 />
               </div>
             </div>
@@ -655,6 +705,9 @@ const Warehouse = () => {
           title={popup.title}
           text={popup.text}
           variant={popup.variant}
+          onConfirm={popup.onConfirm}
+          showCancelButton={popup.showCancelButton}
+          confirmButtonText={popup.confirmButtonText}
         />
       </div>
     </PlatformLayout>

@@ -618,6 +618,19 @@ export class MarketplaceService {
               status: newStatus,
             },
           });
+
+          // Create an inventory entry for the buyer, initially unassigned (null warehouse_id)
+          await tx.inventory.create({
+            data: {
+              user_id: order.buyer_id,
+              item_name: product.name,
+              item_group: product.category,
+              units: product.units,
+              quantity: item.quantity,
+              price_per_unit: item.unit_price,
+              warehouse_id: null, // Explicitly unassigned
+            },
+          });
         }
       }
 

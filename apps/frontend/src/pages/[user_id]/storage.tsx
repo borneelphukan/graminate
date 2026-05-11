@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { Popup, Button, Table } from "@graminate/ui";
+import { Popup, Button, Table, Icon, Dropdown, Badge } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useTableActions } from "@/hooks/useTableActions";
 import { PAGINATION_ITEMS } from "@/constants/options";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import WarehouseForm from "@/components/form/WarehouseForm";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 type View = "warehouse";
 
@@ -51,7 +52,107 @@ const WarehousePage = () => {
     text: "",
     variant: "info",
   });
+  const { userType } = useUserPreferences();
+  const isAllowedUser = userType === "Seller" || userType === "Producer";
+
+  const [unassignedItems, setUnassignedItems] = useState<any[]>([]);
+  const [pendingSelections, setPendingSelections] = useState<Record<number, string>>({});
+  const [isAssigning, setIsAssigning] = useState<number | null>(null);
+
   const { handleDeleteRows } = useTableActions(view, setPopup);
+
+  const fetchUnassignedItems = async () => {
+    if (!parsedUserId || !isAllowedUser) return;
+    try {
+      const res = await axiosInstance.get(`/inventory/${parsedUserId}?unassigned=true`);
+      setUnassignedItems(res.data.items || []);
+    } catch (err) {
+      console.error("Failed to fetch unassigned items:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (router.isReady && parsedUserId && isAllowedUser) {
+      fetchUnassignedItems();
+    }
+  }, [router.isReady, parsedUserId, isAllowedUser]);
+
+  const handleAssignWarehouse = async (inventoryId: number) => {
+    const selectedLabel = pendingSelections[inventoryId];
+    if (!selectedLabel) {
+      setPopup({
+        isOpen: true,
+        title: "Selection Needed",
+        text: "Please select a target warehouse first.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    const warehouseId = warehouseOptions.map[selectedLabel];
+
+    if (!warehouseId) {
+      setPopup({
+        isOpen: true,
+        title: "Error",
+        text: "Could not find selected warehouse ID.",
+        variant: "error",
+      });
+      return;
+    }
+
+    setIsAssigning(inventoryId);
+    try {
+      await axiosInstance.put(`/inventory/update/${inventoryId}`, {
+        warehouse_id: warehouseId,
+      });
+      setPopup({
+        isOpen: true,
+        title: "Success",
+        text: "Item successfully allocated to warehouse store.",
+        variant: "success",
+      });
+      fetchUnassignedItems();
+    } catch (err) {
+      setPopup({
+        isOpen: true,
+        title: "Update Failed",
+        text: "Unable to update item assignment.",
+        variant: "error",
+      });
+    } finally {
+      setIsAssigning(null);
+    }
+  };
+
+  const warehouseOptions = useMemo(() => {
+    const map: Record<string, number> = {};
+    const list: string[] = [];
+
+    warehouseRecords.forEach((w) => {
+      const isDuplicateName =
+        warehouseRecords.filter((x) => x.name === w.name).length > 1;
+      let label = w.name;
+
+      if (isDuplicateName) {
+        label = `${w.name} (${w.city || "No Location"})`;
+        // Second pass check for triple collision
+        const isFullyDuplicate =
+          warehouseRecords.filter(
+            (x) => `${x.name} (${x.city || "No Location"})` === label
+          ).length > 1;
+
+        if (isFullyDuplicate) {
+          label += ` #${w.warehouse_id}`;
+        }
+      }
+
+      map[label] = w.warehouse_id;
+      list.push(label);
+    });
+
+    return { map, list };
+  }, [warehouseRecords]);
 
   useEffect(() => {
     if (!router.isReady || !parsedUserId) return;
@@ -169,6 +270,56 @@ const WarehousePage = () => {
             />
           </div>
         </div>
+ 
+        {isAllowedUser && unassignedItems.length > 0 && (
+          <div className="mb-8 p-6 bg-gray-400/20 dark:bg-gray-800 rounded-2xl border border-gray-400 dark:border-gray-800 relative overflow-hidden transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-green-500/5 pointer-events-none" />
+            
+            <div className="flex items-center gap-3 mb-5 relative z-10">
+              <div>
+                <h2 className="text-base font-bold text-dark dark:text-light flex items-center gap-2">
+                  Unallocated Inventory
+                </h2>
+                <p className="text-xs text-dark/70 dark:text-light/60">Select a warehouse to store your newly purchased or produced items.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 relative z-10">
+              {unassignedItems.map((item) => (
+                <div key={item.inventory_id} className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border border-gray-400 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 transition-all flex flex-col group">
+                  <div className="flex flex-col h-full">
+                    <div className="flex justify-between items-start gap-2 mb-2">
+                      <h3 className="font-bold text-sm text-dark dark:text-light">
+                        {item.item_name}
+                      </h3>
+                      <Badge label={`${item.quantity} ${item.units}`} type="success" size="sm" className="whitespace-nowrap font-semibold" />
+                    </div>
+
+                    <div className="mt-auto space-y-3 pt-3 border-t border-gray-400 dark:border-gray-600">
+                      <Dropdown
+                        placeholder="Select Warehouse..."
+                        variant="small"
+                        width="full"
+                        items={warehouseOptions.list}
+                        selectedItem={pendingSelections[item.inventory_id] || ""}
+                        onSelect={(val) => setPendingSelections(prev => ({ ...prev, [item.inventory_id]: val }))}
+                      />
+                      <Button
+                        label={isAssigning === item.inventory_id ? "Processing..." : "Store Item"}
+                        variant="primary"
+                        size="sm"
+                        className="w-full font-semibold shadow-sm"
+                        icon={{ left: isAssigning === item.inventory_id ? "hourglass_empty" : "move_to_inbox" }}
+                        disabled={isAssigning !== null}
+                        onClick={() => handleAssignWarehouse(item.inventory_id)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <Table
           data={tableData}

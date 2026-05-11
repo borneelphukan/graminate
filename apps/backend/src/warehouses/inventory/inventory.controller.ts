@@ -28,6 +28,7 @@ export class InventoryController {
     @Query('offset') offset?: string,
     @Query('item_group') itemGroup?: string,
     @Query('warehouse_id') warehouseId?: string,
+    @Query('unassigned') unassigned?: string,
   ): Promise<{ items: inventory[] }> {
     const items = await this.inventoryService.findByUserIdWithFilters(
       Number(userId),
@@ -36,6 +37,7 @@ export class InventoryController {
         offset: offset ? Number(offset) : undefined,
         itemGroup: itemGroup,
         warehouseId: warehouseId ? Number(warehouseId) : undefined,
+        unassigned: unassigned === 'true',
       },
     );
     return { items };

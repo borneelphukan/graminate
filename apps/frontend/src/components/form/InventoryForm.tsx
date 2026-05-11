@@ -234,7 +234,6 @@ const InventoryForm = ({
       alert("Failed to save inventory item. Please try again.");
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md transition-opacity duration-300">
       <div

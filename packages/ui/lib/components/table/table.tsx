@@ -18,6 +18,12 @@ type TableData = {
   rows: RowType[];
 };
 
+export type CustomBulkAction = {
+  label: string;
+  onClick: (selectedRows: RowType[]) => void;
+  className?: string;
+};
+
 type Props = {
   onRowClick?: (row: RowType) => void;
   data: TableData;
@@ -37,6 +43,7 @@ type Props = {
   download?: boolean;
   onDeleteRows?: (selectedRows: RowType[]) => Promise<void>;
   onAction?: (row: RowType, action: string) => void;
+  customBulkActions?: CustomBulkAction[];
 };
 
 const Table = ({
@@ -56,6 +63,7 @@ const Table = ({
   download = true,
   onDeleteRows,
   onAction,
+  customBulkActions = [],
 }: Props) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<number | null>(null);
@@ -272,6 +280,22 @@ const Table = ({
               >
                 Delete
               </button>
+
+              {customBulkActions.map((action, idx) => (
+                <React.Fragment key={idx}>
+                  <div className="w-px h-3 bg-primary-200 dark:bg-primary-800 flex-shrink-0" />
+                  <button
+                    className={action.className || "text-amber-600 dark:text-amber-400 hover:text-amber-700 hover:cursor-pointer dark:hover:text-amber-300 transition-colors whitespace-nowrap leading-none font-medium"}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      const data = sortedAndPaginatedRows.filter((_, idx) => selectedRows[idx]);
+                      action.onClick(data);
+                    }}
+                  >
+                    {action.label}
+                  </button>
+                </React.Fragment>
+              ))}
             </div>
           )}
         </div>

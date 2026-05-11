@@ -77,6 +77,10 @@ export class UpdateInventoryDto {
 
   @IsOptional()
   @IsInt()
+  warehouse_id?: number | null;
+
+  @IsOptional()
+  @IsInt()
   @Min(0)
   minimum_limit?: number;
 
