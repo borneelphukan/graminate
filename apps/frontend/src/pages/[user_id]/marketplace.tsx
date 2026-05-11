@@ -744,7 +744,21 @@ const MarketplacePage = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-dark dark:text-light truncate">{item.product?.name}</p>
-                            <p className="text-xs text-dark dark:text-light">Qty: {item.quantity} × ₹{Number(item.unit_price).toLocaleString("en-IN")}</p>
+                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                              <p className="text-xs text-dark dark:text-light">Qty: {item.quantity} × ₹{Number(item.unit_price).toLocaleString("en-IN")}</p>
+                              {item.producer && (
+                                <Badge
+                                  size="sm"
+                                  type="default"
+                                  iconLeft="storefront"
+                                  label={
+                                    item.producer.business_name && item.producer.business_name !== "Individual Account"
+                                      ? item.producer.business_name
+                                      : `${item.producer.first_name} ${item.producer.last_name}`
+                                  }
+                                />
+                              )}
+                            </div>
                           </div>
                           <span className="text-sm font-bold text-dark dark:text-light">₹{(item.quantity * Number(item.unit_price)).toLocaleString("en-IN")}</span>
                         </div>
