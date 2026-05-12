@@ -35,6 +35,16 @@ type AdminUser = {
   last_name: string;
 };
 
+type WaitlistEntry = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  role: string;
+  joined_at: string;
+};
+
 const AdminUsersPage = () => {
   const router = useRouter();
   const { admin_id } = router.query;
@@ -47,6 +57,10 @@ const AdminUsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([]);
+  const [waitlistSearchQuery, setWaitlistSearchQuery] = useState("");
+  const [waitlistPage, setWaitlistPage] = useState(1);
+  const [waitlistItemsPerPage, setWaitlistItemsPerPage] = useState(25);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,24 +76,26 @@ const AdminUsersPage = () => {
       }
 
       try {
-        const [adminResponse, countResponse, usersResponse] = await Promise.all(
-          [
-            fetch(`${API_BASE_URL}/admin/me`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch(`${API_BASE_URL}/admin/user-count`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch(`${API_BASE_URL}/admin/all-users`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ]
-        );
+        const [adminResponse, countResponse, usersResponse, waitlistResponse] = await Promise.all([
+          fetch(`${API_BASE_URL}/admin/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_BASE_URL}/admin/user-count`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_BASE_URL}/admin/all-users`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(`${API_BASE_URL}/waitlist`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
         if (
           adminResponse.status === 401 ||
           countResponse.status === 401 ||
-          usersResponse.status === 401
+          usersResponse.status === 401 ||
+          waitlistResponse.status === 401
         ) {
           localStorage.removeItem("admin_token");
           router.push("/");
@@ -101,7 +117,15 @@ const AdminUsersPage = () => {
         const usersResult = await usersResponse.json();
         if (usersResult.data?.users) {
           setUsers(usersResult.data.users);
+        } else if (Array.isArray(usersResult)) {
+          setUsers(usersResult);
         }
+
+        if (waitlistResponse.ok) {
+          const waitlistResult = await waitlistResponse.json();
+          setWaitlist(Array.isArray(waitlistResult) ? waitlistResult : []);
+        }
+
       } catch (err: unknown) {
         const error = err as Error;
         console.error("Fetch error:", error);
@@ -251,6 +275,15 @@ const AdminUsersPage = () => {
     );
   }, [users, searchQuery]);
 
+  const filteredWaitlist = useMemo(() => {
+    if (!waitlistSearchQuery) return waitlist;
+    return waitlist.filter((entry) =>
+      Object.values(entry).some((value) =>
+        String(value).toLowerCase().includes(waitlistSearchQuery.toLowerCase())
+      )
+    );
+  }, [waitlist, waitlistSearchQuery]);
+
   const tableData: TableData = useMemo(() => ({
     columns: ["#", "User Name", "Contact Email", "Phone", "Business", "Plan", "Actions"],
     rows: filteredUsers.map((user) => [
@@ -263,6 +296,17 @@ const AdminUsersPage = () => {
       "ACTION_SLOT",
     ]),
   }), [filteredUsers]);
+
+  const waitlistTableData: TableData = useMemo(() => ({
+    columns: ["Applicant", "Email", "Phone", "Business Type", "Joined On"],
+    rows: filteredWaitlist.map((item) => [
+      `${item.first_name} ${item.last_name}`,
+      item.email,
+      item.phone || "N/A",
+      item.role,
+      item.joined_at ? new Date(item.joined_at).toLocaleDateString() : "N/A",
+    ]),
+  }), [filteredWaitlist]);
 
   return (
     <>
@@ -353,6 +397,32 @@ const AdminUsersPage = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              </section>
+
+              {/* Waitlist Section */}
+              <section className="flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-dark dark:text-light opacity-80 uppercase tracking-widest text-[11px]">
+                    Waitlist Subscriptions
+                  </h2>
+                </div>
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden p-1">
+                  <Table
+                    data={waitlistTableData}
+                    filteredRows={waitlistTableData.rows}
+                    currentPage={waitlistPage}
+                    setCurrentPage={setWaitlistPage}
+                    itemsPerPage={waitlistItemsPerPage}
+                    setItemsPerPage={setWaitlistItemsPerPage}
+                    paginationItems={["10 per page", "25 per page", "50 per page"]}
+                    searchQuery={waitlistSearchQuery}
+                    setSearchQuery={setWaitlistSearchQuery}
+                    totalRecordCount={filteredWaitlist.length}
+                    loading={isLoading}
+                    view="waitlist"
+                    onAction={() => {}}
+                  />
                 </div>
               </section>
 

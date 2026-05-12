@@ -11,11 +11,13 @@
     "company": "Company",
     "docs": "Docs",
     "forproducers": "For Producers",
-    "forsellers": "For Sellers"
+    "forsellers": "For Sellers",
+    "technology": "Technology",
+    "contact": "Contact"
   },
   "hero": {
-    "badge": "Next-Gen Farm Management",
-    "title": "Scale Your Agricultural Vision",
+    "badge": "Built for Indian Farms",
+    "title": "Track Your Agricultural Growth",
     "subtitle": "The first all-in-one ERP designed for the modern farmer. Combining specialized AI models with robust inventory, CRM, and livestock management tools.",
     "cta": "Start Your Free Trial",
     "explore": "Explore Features"
@@ -43,6 +45,10 @@
     "supply": {
       "title": "Secure Supply Chain",
       "content": "Integrated CRM and Smart Warehouse management with automated low-stock alerts and comprehensive vendor tracking."
+    },
+    "industry": {
+      "title": "Industry Expertise",
+      "content": "From family farms to national distribution networks, Graminate provides modern tools to maximize efficiency."
     },
     "transform": {
       "badge": "Digital Transformation in Agriculture",

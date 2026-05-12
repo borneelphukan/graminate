@@ -1,469 +1,281 @@
 import Head from "next/head";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import MembersCard from "@/components/cards/company/MembersCard";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-
-const teamMembers = [
-  {
-    avatar: "/images/people/borneel.png",
-    name: "Borneel B. Phukan",
-    role: "CEO / CTO",
-    description:
-      "Leading strategic and technical innovation of Graminate, ensuring the delivery of impactful, client-focused software solutions.",
-  },
-  // {
-  //   avatar: "/images/people/lisa.png",
-  //   name: "Lisa Klinnert",
-  //   role: "Secretary",
-  //   description:
-  //     "Chief of Human Resources with years of expertise in the medical science and medical technology sector, with proved expertise in HR management.",
-  // },
-];
+import { Button, Icon } from "@graminate/ui";
+import { useRouter } from "next/router";
+import DefaultLayout from "@/layout/DefaultLayout";
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" },
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-100px" },
+  transition: { duration: 0.6, ease: "easeOut" as const }
 };
 
 const staggerContainer = {
-  animate: {
+  initial: {},
+  whileInView: {
     transition: {
-      staggerChildren: 0.1,
-    },
+      staggerChildren: 0.15
+    }
   },
-};
-
-const imageAnimation = {
-  initial: { opacity: 0, scale: 0.9 },
-  animate: { opacity: 1, scale: 1 },
-  transition: { duration: 0.5, ease: "easeOut" },
+  viewport: { once: true }
 };
 
 export default function AboutUs() {
+  const router = useRouter();
+
   return (
-    <>
+    <DefaultLayout>
       <Head>
-        <title>About Us | Graminate</title>
+        <title>About | Graminate</title>
         <meta
           name="description"
-          content="Learn more about the team, mission, and values driving Graminate forward."
+          content="We build the intelligent infrastructure powering the next evolution of sustainable, high-performance farming."
         />
       </Head>
 
-      <Navbar contact />
-      <main className="isolate bg-white">
-        {/* Hero section */}
-        <div className="relative isolate -z-10 overflow-hidden bg-gradient-to-b from-green-200 pt-14">
-          <div
-            className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
-            aria-hidden="true"
+      {/* =================== CINEMATIC HERO =================== */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-950 pt-20">
+        {/* Ambient Cinematic Video/Image Background */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop"
+            alt="Cinematic Agrarian Landscape"
+            fill
+            unoptimized
+            priority
+            className="object-cover opacity-30 grayscale-[25%] scale-105 animate-[subtle-zoom_30s_infinite_alternate]"
           />
-          <div className="mx-auto max-w-7xl px-6 py-32 sm:py-40 lg:px-8">
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={staggerContainer}
-              className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8"
-            >
-              <motion.h1
-                variants={fadeInUp}
-                className="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:col-span-2 xl:col-auto"
-              >
-                We are a passionate team building the future of software.
-              </motion.h1>
-              <motion.div
-                variants={fadeInUp}
-                className="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1"
-              >
-                <p className="text-lg leading-8 text-gray-600">
-                  At Graminate, we combine technical expertise with creative
-                  thinking to deliver exceptional software solutions, optimize
-                  IT operations, and ensure product quality. We partner with our
-                  clients to turn their vision into reality.
-                </p>
-              </motion.div>
-              <motion.div
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={staggerContainer}
-                className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0 xl:mt-10"
-              >
-                <div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-                  <motion.div variants={imageAnimation} className="relative">
-                    <Image
-                      src="/images/about_us/team-collaboration.png"
-                      alt="Team working collaboratively"
-                      width={176}
-                      height={264}
-                      className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                    />
-                    <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                  </motion.div>
-                </div>
-                <div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
-                  <motion.div variants={imageAnimation} className="relative">
-                    <Image
-                      src="/images/about_us/code-closeup.png"
-                      alt="Close-up of code on screen"
-                      width={176}
-                      height={264}
-                      className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                    />
-                    <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                  </motion.div>
-                  <motion.div variants={imageAnimation} className="relative">
-                    <Image
-                      src="/images/about_us/office-space.png"
-                      alt="Modern office environment"
-                      width={176}
-                      height={264}
-                      className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                    />
-                    <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                  </motion.div>
-                </div>
-                <div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
-                  <motion.div variants={imageAnimation} className="relative">
-                    <Image
-                      src="/images/about_us/UI-Design.png"
-                      alt="UI design sketch"
-                      width={176}
-                      height={264}
-                      className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
-                    />
-                    <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                  </motion.div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/90 to-slate-950 z-10"></div>
         </div>
-        <div className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8">
+
+        <div className="container mx-auto px-6 lg:px-12 relative z-20 text-center">
           <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={staggerContainer}
-            className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none"
+            initial={{ opacity: 0, scale: 0.98, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-4xl mx-auto"
           >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-            >
-              Our Mission
-            </motion.h2>
-            <div className="mt-6 flex flex-col gap-x-8 gap-y-20 lg:flex-row">
-              <motion.div
-                variants={fadeInUp}
-                className="lg:w-full lg:max-w-2xl lg:flex-auto"
-              >
-                <p className="text-xl leading-8 text-gray-600">
-                  To empower businesses through innovative technology solutions,
-                  delivering exceptional value and fostering long-term
-                  partnerships built on trust, quality, and collaboration.
-                </p>
-                <p className="mt-8 text-base leading-7 text-gray-600">
-                  We strive to understand the unique challenges and
-                  opportunities of each client, crafting bespoke software,
-                  optimizing IT infrastructure, and ensuring robust quality
-                  assurance. Our goal is to be the catalyst for the success of
-                  our clients in the digital age.
-                </p>
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="lg:flex lg:flex-auto lg:justify-center"
-              >
-                <dl className="w-64 space-y-8 xl:w-80">
-                  <div className="flex flex-col-reverse gap-y-3 border-l border-gray-900/20 pl-6">
-                    <dt className="text-sm leading-6 text-gray-600">
-                      Team Members & Interns
-                    </dt>
-                    <dd className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
-                      10+
-                    </dd>
-                  </div>
-                  {/* <div className="flex flex-col-reverse gap-y-3 border-l border-gray-900/20 pl-6">
-                    <dt className="text-sm leading-6 text-gray-600">
-                      Seed Fund Investment
-                    </dt>
-                    <dd className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
-                      $300K
-                    </dd>
-                  </div> */}
-                  <div className="flex flex-col-reverse gap-y-3 border-l border-gray-900/20 pl-6">
-                    <dt className="text-sm leading-6 text-gray-600">
-                      Active Client Partnerships
-                    </dt>
-                    <dd className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
-                      2+
-                    </dd>
-                  </div>
-                </dl>
-              </motion.div>
+            <span className="inline-block bg-emerald-500/10 backdrop-blur-xl text-emerald-400 border border-emerald-500/20 rounded-full px-4 py-1 text-xs uppercase tracking-[0.3em] font-black mb-6">
+              Our Genesis
+            </span>
+            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-[0.95] mb-8">
+              Re-architecting <span className="text-emerald-400 font-medium">Agrarian</span> Horizons.
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed mb-10 text-balance">
+              Graminate was founded to dissolve the boundaries between traditional farming intelligence and state-of-the-art software automation.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button 
+                label="Join the Waitlist" 
+                variant="primary" 
+                className="!h-14 !px-8 shadow-lg shadow-emerald-950/50"
+                onClick={() => router.push("/waitlist")}
+              />
             </div>
           </motion.div>
         </div>
 
-        {/* <div className="mt-32 sm:mt-40 xl:mx-auto xl:max-w-7xl xl:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={imageAnimation}
-          >
-            <Image
-              src="/images/placeholder/team_photo.jpg" // Replace with a relevant, high-quality image
-              alt="Graminate team collaborating in the office"
-              width={1200} 
-              height={480}
-              className="aspect-[5/2] w-full object-cover xl:rounded-3xl shadow-lg"
-            />
-          </motion.div>
-        </div> */}
+        {/* Bottom Fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
+      </section>
 
-        <div className="mx-auto mt-12 max-w-7xl px-6 sm:mt-40 lg:px-8">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={staggerContainer}
-            className="mx-auto max-w-2xl lg:mx-0"
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-            >
-              Our Values
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="mt-6 text-lg leading-8 text-gray-600"
-            >
-              The core principles that guide our work, interactions, and
-              decisions every day.
-            </motion.p>
+      {/* =================== THE NARRATIVE (Problem vs Strategy) =================== */}
+      <section className="py-24 md:py-36 bg-slate-950 text-white">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            
+            {/* Sticky Left Header */}
+            <div className="lg:col-span-5 lg:sticky lg:top-32">
+              <motion.div {...fadeInUp}>
+                <span className="text-emerald-500 uppercase font-black tracking-[0.2em] text-xs mb-4 block">
+                  The Vision
+                </span>
+                <h2 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
+                  Solving Data <span className="text-emerald-400 font-medium italic">Fragmentation</span> at the Root.
+                </h2>
+              </motion.div>
+            </div>
+
+            {/* Longform Narrative Right */}
+            <div className="lg:col-span-7 space-y-10">
+              <motion.div {...fadeInUp} transition={{ delay: 0.1 }} className="border-l-2 border-emerald-500/30 pl-8 py-2">
+                <p className="text-xl md:text-2xl text-slate-300 leading-relaxed font-light">
+                  Agriculture is humanity’s most vital legacy, yet its operational logistics remain disconnected. From siloed climate inputs to disconnected inventory systems, modern farm managers must coordinate highly volatile variable chains in isolation.
+                </p>
+              </motion.div>
+
+              <motion.div {...fadeInUp} transition={{ delay: 0.2 }} className="space-y-6 text-slate-400 text-lg font-light leading-relaxed pl-8">
+                <p>
+                  At Graminate, we realized that technology alone is not the solution; orchestration is. Traditional software treats farming as an afterthought, serving generic CRM or simple accounting interfaces. We built Graminate as an absolute operating system designed exclusively for the multi-dimensional realities of crops, livestock, smart warehouses, and distributed supply chains.
+                </p>
+                <p>
+                  Through advanced telemetry harmonization and specialized large language models, our infrastructure empowers modern agrarian enterprises to forecast resource allocation, automate logistical replenishment, and safeguard operational histories within a single, intuitive, and cinematic interface.
+                </p>
+              </motion.div>
+
+              {/* Simple Statistic Matrix */}
+              <motion.div 
+                initial="initial"
+                whileInView="animate"
+                variants={staggerContainer}
+                viewport={{ once: true }}
+                className="grid grid-cols-2 gap-8 pt-8 pl-8"
+              >
+                {[
+                  { label: "Integrated Operations", value: "100%" },
+                  { label: "System Availability", value: "99.9%" },
+                ].map((stat, i) => (
+                  <motion.div 
+                    key={i} 
+                    variants={fadeInUp}
+                    className="border border-white/10 rounded-2xl p-6 bg-white/5 backdrop-blur-sm hover:border-emerald-500/30 transition-all duration-300"
+                  >
+                    <span className="block text-4xl md:text-5xl font-black text-white mb-1 font-mono">{stat.value}</span>
+                    <span className="text-slate-400 text-sm uppercase tracking-widest font-bold">{stat.label}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* =================== CORE PILLARS =================== */}
+      <section className="py-24 bg-slate-900 relative overflow-hidden">
+        {/* Faint Background Gradient */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/5 blur-3xl rounded-full"></div>
+
+        <div className="container mx-auto px-6 lg:px-12 relative z-10">
+          <motion.div {...fadeInUp} className="text-center mb-20 max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-6">
+              Foundational Pillars
+            </h2>
+            <p className="text-slate-400 text-lg font-light">
+              Built to secure durability, intelligence, and absolute precision.
+            </p>
           </motion.div>
-          <motion.dl
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.1 }} // Trigger animation earlier for the grid
-            variants={staggerContainer}
-            className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
-          >
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Innovation-Driven Solutions",
-                description:
-                  "We push the boundaries of technology to deliver cutting-edge software and product design, empowering businesses to thrive.",
+                icon: "psychology",
+                title: "Cognitive Agronomy",
+                desc: "Specialized generative models trained specifically on agro-ecological data pipelines, yielding instant diagnostic intelligence."
               },
               {
-                name: "Excellence in IT Operations",
-                description:
-                  "We optimize IT operations for seamless performance, scalability, and reliability, letting you focus on growth.",
+                icon: "account_tree",
+                title: "Absolute Orchestration",
+                desc: "Unified ERP schemas tracking assets, workflows, and transactional ledgers in instant synchrony."
               },
               {
-                name: "Quality at Every Stage",
-                description:
-                  "From rigorous testing to meticulous detail, we ensure every product and service meets the highest standards.",
-              },
-              {
-                name: "Collaborative Partnership",
-                description:
-                  "We build strong, transparent relationships through open communication and teamwork for effective, sustainable solutions.",
-              },
-              {
-                name: "Continuous Learning",
-                description:
-                  "The tech world evolves rapidly, and so do we. We embrace learning to bring the latest tools and best practices to every project.",
-              },
-              {
-                name: "Integrity & Respect",
-                description:
-                  "We operate with honesty and respect for our clients, team members, and the broader community in all interactions.",
-              },
-            ].map((value) => (
+                icon: "verified",
+                title: "Rigorous Transparency",
+                desc: "Traceable operational histories designed to streamline audits, verify compliance, and minimize logistic waste."
+              }
+            ].map((pillar, idx) => (
               <motion.div
-                key={value.name}
-                variants={fadeInUp}
-                className="transition-transform duration-300 hover:scale-[1.03] p-6 rounded-lg hover:shadow-md bg-gray-50/50" // Subtle hover effect + background
+                key={idx}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                className="bg-slate-950 border border-white/5 rounded-3xl p-10 shadow-2xl group hover:border-emerald-500/30 hover:-translate-y-2 transition-all duration-500"
               >
-                <dt className="font-semibold text-gray-900">{value.name}</dt>
-                <dd className="mt-1 text-gray-600">{value.description}</dd>
+                <div className="size-16 rounded-2xl bg-emerald-500/10 grid place-items-center mb-8 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                  <Icon type={pillar.icon} className="!text-[32px]" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">{pillar.title}</h3>
+                <p className="text-slate-400 leading-relaxed font-light text-base">{pillar.desc}</p>
               </motion.div>
             ))}
-          </motion.dl>
+          </div>
         </div>
+      </section>
 
-        {/* Logo cloud */}
-        <div className="relative isolate -z-10 mt-32 mb-24 sm:mt-40 sm:mb-32">
-          <div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden [mask-image:radial-gradient(50%_45%_at_50%_55%,white,transparent)]">
-            {/* Optional decorative SVG */}
-            <svg
-              className="h-[60rem] w-[100rem] flex-none stroke-gray-400"
-              aria-hidden="true"
-            >
-              <defs>
-                <pattern
-                  id="e9033f3e-f665-41a6-84ef-756f6778e6fe"
-                  width={200}
-                  height={200}
-                  x="50%"
-                  y="50%"
-                  patternUnits="userSpaceOnUse"
-                  patternTransform="translate(-100 0)"
+      {/* =================== LEADERSHIP SECTION =================== */}
+      <section className="py-24 md:py-32 bg-slate-50">
+        <div className="container mx-auto px-6 lg:px-12">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <div className="lg:col-span-4">
+              <motion.div {...fadeInUp}>
+                <span className="text-emerald-600 font-black uppercase tracking-[0.2em] text-xs mb-4 block">
+                  Leadership
+                </span>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
+                  The Architects.
+                </h2>
+                <p className="text-slate-600 font-light text-lg leading-relaxed">
+                  Driven by an unyielding curiosity and commitment to empowering agrarian legacies globally.
+                </p>
+              </motion.div>
+            </div>
+
+            <div className="lg:col-span-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Founder Card */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="group relative bg-white border border-slate-200 p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all duration-500 overflow-hidden"
                 >
-                  <path d="M.5 200V.5H200" fill="none" />
-                </pattern>
-              </defs>
-              <svg x="50%" y="50%" className="overflow-visible fill-gray-50">
-                <path
-                  d="M-300 0h201v201h-201Z M300 200h201v201h-201Z"
-                  strokeWidth={0}
-                />
-              </svg>
-              <rect
-                width="100%"
-                height="100%"
-                strokeWidth={0}
-                fill="url(#e9033f3e-f665-41a6-84ef-756f6778e6fe)"
-              />
-            </svg>
+                  <div className="relative w-full aspect-square rounded-3xl overflow-hidden mb-6">
+                    <Image 
+                      src="/images/people/borneel.png" 
+                      alt="Borneel B. Phukan"
+                      fill
+                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                    />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">Borneel B. Phukan</h3>
+                  <p className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-4 mt-1">CEO & Founder</p>
+                  <p className="text-slate-600 text-sm leading-relaxed font-light">
+                    Leading strategic and technical innovation of Graminate, ensuring the delivery of impactful, high-performance agrarian tools.
+                  </p>
+                </motion.div>
+              </div>
+            </div>
           </div>
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.5 }}
-              variants={fadeInUp}
-              className="text-center"
-            >
-              <h2 className="text-lg font-semibold leading-8 text-gray-900">
-                Trusted by innovative companies
-              </h2>
-            </motion.div>
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={staggerContainer}
-              className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5"
-            >
-              <motion.div
-                variants={fadeInUp}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              >
-                <Image
-                  src="/images/about_us/client_guwahati-jobs.png"
-                  alt="Guwahati-Jobs.in"
-                  width={158}
-                  height={48}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
-                />
-              </motion.div>
-              {/* <motion.div
-                variants={fadeInUp}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              >
-                <Image
-                  src="/images/about_us/client_guwahati-jobs.png"
-                  alt="Guwahati-Jobs.in"
-                  width={158}
-                  height={48}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
-                />
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              >
-                <Image
-                  src="/images/about_us/client_guwahati-jobs.png"
-                  alt="Guwahati-Jobs.in"
-                  width={158}
-                  height={48}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
-                />
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              >
-                <Image
-                  src="/images/about_us/client_guwahati-jobs.png"
-                  alt="Guwahati-Jobs.in"
-                  width={158}
-                  height={48}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
-                />
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="col-span-2 max-h-12 w-full object-contain lg:col-span-1"
-              >
-                <Image
-                  src="/images/about_us/client_guwahati-jobs.png"
-                  alt="Guwahati-Jobs.in"
-                  width={158}
-                  height={48}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
-                />
-              </motion.div> */}
-            </motion.div>
-          </div>
+
+        </div>
+      </section>
+
+      {/* =================== CALL TO ACTION =================== */}
+      <section className="relative py-24 md:py-36 bg-slate-950 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop"
+            alt="Agrarian Future Visualization"
+            fill
+            unoptimized
+            className="object-cover opacity-20 scale-105 grayscale-[40%]"
+          />
+          <div className="absolute inset-0 bg-slate-950/80 z-10"></div>
         </div>
 
-        {/* Team section */}
-        <div className="bg-gray-50 py-24 sm:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.5 }}
-              variants={staggerContainer}
-              className="mx-auto max-w-2xl text-center"
-            >
-              <motion.h2
-                variants={fadeInUp}
-                className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-              >
-                Meet Our Leadership
-              </motion.h2>
-              <motion.p
-                variants={fadeInUp}
-                className="mt-6 text-lg leading-8 text-gray-600"
-              >
-                We’re a dynamic group of individuals passionate about technology
-                and dedicated to delivering exceptional results for our clients.
-              </motion.p>
-            </motion.div>
-            <motion.ul
-              role="list"
-              initial="initial"
-              whileInView="animate"
-              variants={staggerContainer}
-              viewport={{ once: true, amount: 0.1 }}
-              className="mx-auto mt-20 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3" // Adjusted grid for better spacing if more members are added
-            >
-              {teamMembers.map((member) => (
-                <motion.li key={member.name} variants={fadeInUp}>
-                  <MembersCard
-                    avatar={member.avatar}
-                    name={member.name}
-                    role={member.role}
-                    description={member.description}
-                  />
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
+        <div className="container mx-auto px-6 lg:px-12 relative z-20 text-center max-w-3xl">
+          <motion.div {...fadeInUp}>
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tight">
+              Ready to Scale Your Enterprise?
+            </h2>
+            <p className="text-slate-400 text-lg font-light mb-10 leading-relaxed max-w-xl mx-auto">
+              Secure priority queue access to our next-generation deployment rollout today.
+            </p>
+            <Button 
+              label="Secure Early Access" 
+              variant="primary" 
+              className="h-16 px-10 rounded-full !text-lg active:scale-95 shadow-xl shadow-emerald-900/30 transition-all"
+              onClick={() => router.push("/waitlist")}
+            />
+          </motion.div>
         </div>
-      </main>
-      <Footer />
-    </>
+      </section>
+
+    </DefaultLayout>
   );
 }

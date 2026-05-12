@@ -1,278 +1,300 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import FeatureCard from "@/components/cards/company/FeatureCard";
-import JobCard from "@/components/cards/company/JobCard";
-import { reasonsForJoining, companyFeatures } from "@/lib/types";
-import { Icon } from "@graminate/ui";
-import { motion, Variants } from "framer-motion";
-
-import { Jobs } from "@/lib/types";
+import { Icon, Button } from "@graminate/ui";
+import { motion } from "framer-motion";
 import DefaultLayout from "@/layout/DefaultLayout";
 
-const jobs: Jobs[] = [
-  // {
-  //   position: "Frontend Developer",
-  //   type: "Full-time",
-  //   mode: "Remote",
-  //   description:
-  //     "Join our frontend team to build responsive user interfaces using React, TailwindCSS, and TypeScript.",
-  //   tasks: [
-  //     "Develop new UI features and components",
-  //     "Collaborate with designers and backend developers",
-  //     "Write clean, testable code",
-  //   ],
-  //   requirements: [
-  //     "2+ years experience with React and TypeScript",
-  //     "Familiarity with REST APIs",
-  //     "Good understanding of responsive design",
-  //   ],
-  //   benefits: [
-  //     "Fully remote team",
-  //     "Flexible working hours",
-  //     "Annual learning budget",
-  //   ],
-  //   jobpost: "https://www.linkedin.com/jobs/view/frontend-developer-123456",
-  // },
-];
-
-// Animation Variants
-const fadeInUp: Variants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-100px" },
+  transition: { duration: 0.6, ease: "easeOut" as const }
 };
 
-const fadeInUpTransition = { duration: 0.5, ease: "easeOut" as const };
+interface Job {
+  id: number;
+  position: string;
+  type: string;
+  mode: string;
+  description: string;
+}
 
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+export default function Careers() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const staggerItem: Variants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
-};
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const res = await fetch("/api/jobs/jobs");
+        const data = await res.json();
+        if (data.jobs) {
+          setJobs(data.jobs);
+        }
+      } catch (error) {
+        console.error("Failed to fetch operational mandates:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchJobs();
+  }, []);
 
-const Careers = () => {
   return (
-    <>
+    <DefaultLayout>
       <Head>
-        <title>Graminate | Careers</title>
+        <title>Careers | Graminate</title>
         <meta
           name="description"
-          content="Join the Graminate team. Explore open positions and learn why Graminate is a great place to work."
+          content="Join the architects building the future operating system for modern, high-performance agriculture."
         />
       </Head>
 
-      <DefaultLayout>
-        {/* Hero Section */}
-        <div className="relative bg-gradient-to-b from-emerald-50 to-white isolate overflow-hidden">
+      {/* =================== SECTION 1: CINEMATIC HERO =================== */}
+      <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden bg-slate-950 pt-24">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 grayscale scale-105 animate-[subtle-zoom_40s_infinite_alternate]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/95 to-slate-950 z-10"></div>
+        </div>
+
+        <div className="container mx-auto px-6 lg:px-12 relative z-20 text-center">
           <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-            className="mx-auto max-w-4xl py-24 sm:py-32 lg:py-36 px-6 lg:px-8 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="max-w-4xl mx-auto"
           >
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl font-bold tracking-tight text-gray-800 sm:text-6xl"
-            >
-              Build the Future with Us
-            </motion.h1>
-            <motion.p
-              variants={fadeInUp}
-              transition={{ delay: 0.2, ...fadeInUpTransition }}
-              className="mt-6 text-lg leading-8 text-gray-600"
-            >
-              We are constantly looking for passionate individuals to join our
-              innovative team. Discover your next opportunity at Graminate.
-            </motion.p>
-          </motion.div>
-          <div
-            className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-            aria-hidden="true"
-          >
-            <div
-              className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#a0f2d1] to-[#34d399] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-              style={{
-                clipPath:
-                  "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            <span className="inline-block bg-emerald-500/10 backdrop-blur-xl text-emerald-400 border border-emerald-500/20 rounded-full px-4 py-1 text-xs uppercase tracking-[0.3em] font-black mb-6">
+              Build With Us
+            </span>
+            <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter mb-8">
+              Build intelligence for the<span className="text-emerald-400 font-medium"> givers</span> of food.
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed text-balance mb-10">
+              We are assembling an elite team of engineers, designers, and builders dedicated to solving global data fragmentation across humanity’s most critical industry.
+            </p>
+            <Button 
+              label="Explore Open Positions" 
+              variant="primary" 
+              className="!h-14 !px-8 shadow-lg shadow-emerald-950/50 rounded-full"
+              onClick={() => {
+                const el = document.getElementById("open-positions");
+                el?.scrollIntoView({ behavior: "smooth" });
               }}
             />
-          </div>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Reasons for Joining Section */}
-        <div className="py-20 sm:py-24 bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={fadeInUp}
-              className="mx-auto max-w-3xl lg:text-center"
-            >
-              <h2 className="text-base font-semibold leading-7 text-emerald-600">
-                Why Graminate?
-              </h2>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Experience Growth, Innovation, and Collaboration
-              </p>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                We believe in fostering a supportive environment where talent
-                thrives. Here&apos;s what makes Graminate a special place to
-                work.
-              </p>
-            </motion.div>
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.1 }} // Adjust amount as needed
-              variants={staggerContainer}
-              className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none"
-            >
-              <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-                {companyFeatures.map((feature, index) => (
-                  <motion.div key={index} variants={staggerItem}>
-                    <FeatureCard feature={feature} />
+      {/* =================== SECTION 2: VALUES - HOW WE WORK =================== */}
+      <section className="py-24 md:py-36 bg-slate-950 border-t border-white/5">
+        <div className="container mx-auto px-6 lg:px-12">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-20">
+            <div className="lg:col-span-5 lg:sticky lg:top-32">
+              <motion.div {...fadeInUp}>
+                <span className="text-emerald-500 uppercase font-black tracking-[0.2em] text-xs mb-4 block">
+                  Our DNA
+                </span>
+                <h2 className="text-2xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+                  How We <span className="text-emerald-400 font-medium">Operate</span>.
+                </h2>
+                <p className="text-slate-400 mt-6 font-light text-lg max-w-md">
+                  Graminate is built upon a standard of absolute rigor. We do not deploy boilerplate solutions; we engineer for generational impact.
+                </p>
+              </motion.div>
+            </div>
+
+            <div className="lg:col-span-7">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {[
+                  {
+                    title: "First Principles Obsession",
+                    desc: "We dissect constraints to their raw variables. In agrarian operations, generic assumptions lead to logistic failure.",
+                    icon: "psychology_alt"
+                  },
+                  {
+                    title: "Unwavering Transparency",
+                    desc: "Information must flow friction-free. We maintain immediate synchrony across all communication nodes.",
+                    icon: "visibility"
+                  },
+                  {
+                    title: "Extreme Autonomy",
+                    desc: "We empower our builders with absolute agency. If you see a legacy structural failure, you own the solution.",
+                    icon: "offline_bolt"
+                  },
+                  {
+                    title: "Durability Over Polish",
+                    desc: "Agriculture is harsh. Our software is engineered to resist volatility, ensuring absolute uptime in rough conditions.",
+                    icon: "verified"
+                  }
+                ].map((value, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: idx * 0.15 }}
+                    className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-emerald-500/30 transition-all duration-500"
+                  >
+                    <div className="size-12 rounded-2xl bg-emerald-500/10 grid place-items-center text-emerald-400 mb-6">
+                      <Icon type={value.icon} className="!text-[24px]" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-3 tracking-tight">{value.title}</h3>
+                    <p className="text-slate-400 text-sm font-light leading-relaxed">{value.desc}</p>
                   </motion.div>
                 ))}
-              </dl>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Perks & Benefits Section */}
-        <div className="bg-gray-50 py-20 sm:py-24">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl lg:max-w-none lg:mx-0 lg:flex lg:items-center lg:gap-x-16">
-              <motion.div
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={fadeInUp}
-                className="lg:w-1/2 lg:flex-auto"
-              >
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                  Work Perks & Benefits
-                </h2>
-                <p className="mt-6 text-lg leading-8 text-gray-600">
-                  We invest in our team&apos;s well-being and professional
-                  development with a comprehensive benefits package.
-                </p>
-                <motion.ul
-                  role="list"
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={staggerContainer}
-                  className="mt-10 grid grid-cols-1 gap-x-8 gap-y-3 text-base leading-7 text-gray-700 sm:grid-cols-2"
-                >
-                  {reasonsForJoining.map((item, index) => (
-                    <motion.li
-                      key={index}
-                      variants={staggerItem}
-                      className="flex gap-x-3 items-center"
-                    >
-                      <Icon
-                        type="check_circle"
-                        className="size-5 flex-none text-emerald-500"
-                        aria-hidden="true"
-                      />
-                      {item}
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </motion.div>
-              {/* Optional: Add an image or illustration here */}
-              {/* <motion.div
-                     initial={{ opacity: 0, scale: 0.9 }}
-                     whileInView={{ opacity: 1, scale: 1 }}
-                     viewport={{ once: true }}
-                     transition={{ duration: 0.5, delay: 0.2 }}
-                     className="mt-16 sm:mt-24 lg:mt-0 lg:w-1/2 lg:flex-shrink-0">
-                    <img src="/path/to/your/image.jpg" alt="Team collaboration" className="rounded-xl shadow-lg"/>
-                 </motion.div> */}
+              </div>
             </div>
           </div>
+
+        </div>
+      </section>
+
+      {/* =================== SECTION 3: FOUNDER'S QUOTE =================== */}
+      <section className="py-24 md:py-36 bg-slate-900 relative overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-5">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] [background-size:32px_32px]"></div>
         </div>
 
-        {/* Available Positions Section */}
-        <div className="py-20 sm:py-24 bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={fadeInUp}
-              className="mx-auto max-w-3xl lg:text-center"
-            >
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                Open Positions
-              </h2>
-              <p className="mt-4 text-lg leading-8 text-gray-600">
-                Find your place at Graminate. Explore our current openings
-                below.
-              </p>
-            </motion.div>
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.1 }} // Trigger when 10% is visible
-              variants={staggerContainer}
-              className="mx-auto mt-16 max-w-4xl"
-            >
-              {jobs.length > 0 ? (
-                <div className="space-y-8">
-                  {jobs.map((job, index) => (
-                    <motion.div key={index} variants={staggerItem}>
-                      <JobCard {...job} />
-                    </motion.div>
-                  ))}
+        <div className="container mx-auto px-6 md:px-12 lg:px-20 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+            
+            {/* Left Side: Content */}
+            <div className="lg:col-span-6 order-2 lg:order-1 space-y-6">
+              <motion.div {...fadeInUp} className="space-y-6">
+                <span className="text-emerald-400 uppercase font-black tracking-[0.2em] text-xs block mb-2">
+                  FOUNDER & CEO
+                </span>
+                <blockquote className="text-2xl md:text-3xl leading-tight font-medium text-white tracking-tight text-balance">
+                  &ldquo;Traditional ERP systems operate in comfortable air-conditioned towers. We built Graminate to step directly onto the mud.&rdquo;
+                </blockquote>
+                <div className="pt-2">
+                  <cite className="block text-xl font-black text-white not-italic">Borneel B. Phukan</cite>
+                  <span className="block text-sm text-slate-500 font-medium mt-0.5">Founder & CEO</span>
                 </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="mt-10 text-center"
-                >
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
+                <div className="pt-4">
+                  <a 
+                    href="https://www.linkedin.com/in/borneelphukan/" 
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-[13px] tracking-wide px-5 py-2.5 rounded-full shadow-lg shadow-emerald-950/30 transition-all duration-300 active:scale-95"
                   >
-                    <path
-                      vectorEffect="non-scaling-stroke"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  <h3 className="mt-2 text-sm font-semibold text-gray-900">
-                    No open positions
-                  </h3>
+                    <svg className="size-4 fill-current" viewBox="0 0 448 512">
+                      <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/>
+                    </svg>
+                    <span>Connect on LinkedIn</span>
+                  </a>
+                </div>
+              </motion.div>
+            </div>
 
-                  <div className="mt-6">
-                    {/* Optional: Add a link to a general application or contact page */}
-                    {/* <button type="button" className="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">
-                        Contact Us
-                        </button> */}
-                  </div>
-                </motion.div>
-              )}
-            </motion.div>
+            {/* Right Side: Visual Layout */}
+            <div className="lg:col-span-6 order-1 lg:order-2 flex justify-center">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.97 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative w-full max-w-xl rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/50 group bg-slate-800"
+              >
+                <img 
+                  src="/images/people/borneel.png" 
+                  alt="Borneel B. Phukan" 
+                  className="w-full h-auto block grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-[1.03]" 
+                />
+              </motion.div>
+            </div>
+
           </div>
         </div>
-      </DefaultLayout>
-    </>
-  );
-};
+      </section>
 
-export default Careers;
+      {/* =================== SECTION 4: OPEN POSITIONS =================== */}
+      <section id="open-positions" className="py-24 md:py-36 bg-slate-950">
+        <div className="container mx-auto px-6 lg:px-12">
+          
+          <motion.div {...fadeInUp} className="max-w-3xl mb-16">
+            <span className="text-emerald-500 uppercase font-black tracking-[0.2em] text-xs mb-4 block">Opportunities</span>
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-none">
+              Open Positions.
+            </h2>
+          </motion.div>
+
+          <div className="space-y-6">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent"></div>
+                <p className="text-slate-500 text-sm mt-4 font-light">Syncing corporate mandates...</p>
+              </div>
+            ) : jobs.length > 0 ? (
+              jobs.map((job, idx) => (
+                <motion.div
+                  key={job.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="bg-white/5 border border-white/5 hover:border-emerald-500/20 rounded-3xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 group transition-all duration-300 shadow-xl"
+                >
+                  <div className="space-y-3 max-w-2xl">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight group-hover:text-emerald-400 transition-colors">
+                        {job.position}
+                      </h3>
+                      <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-full border border-emerald-500/20">
+                        {job.type}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-500 text-sm">
+                      <Icon type="location_on" className="!text-[16px] text-slate-600" />
+                      <span>{job.mode}</span>
+                    </div>
+                    <p className="text-slate-400 text-base font-light leading-relaxed pt-1">
+                      {job.description}
+                    </p>
+                  </div>
+                  
+                  <div className="shrink-0">
+                    <a 
+                      href={`mailto:careers@graminate.com?subject=Application for ${encodeURIComponent(job.position)}`}
+                      className="inline-flex items-center gap-2 bg-slate-900 hover:bg-emerald-600 text-white border border-white/10 hover:border-emerald-500/30 px-6 py-3.5 rounded-2xl font-bold transition-all duration-300 active:scale-95 select-none text-sm"
+                    >
+                      <span>Apply Protocol</span>
+                      <Icon type="arrow_right_alt" className="!text-[18px]" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="text-center bg-white/5 border border-white/5 rounded-[2.5rem] py-20 px-6">
+                <Icon type="work_off" className="text-slate-700 !text-[56px] mb-4 mx-auto block" />
+                <h3 className="text-xl font-bold text-white mb-2">No positions currently available</h3>
+                <p className="text-slate-400 text-sm font-light">We currently have zero public openings. Submit a general blueprint below.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Future Rollout Catch */}
+          <motion.div 
+            {...fadeInUp}
+            className="mt-16 border-t border-white/5 pt-16 text-center"
+          >
+            <h3 className="text-xl font-bold text-white mb-3">Don’t see your exact discipline?</h3>
+            <p className="text-slate-400 font-light leading-relaxed mb-8">
+              We always open slots for absolute talent. Initiate an unmapped application below.
+            </p>
+            <a 
+              href="mailto:careers@graminate.com" 
+              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold text-base group transition-colors"
+            >
+              <span>Submit Unsolicited Application</span>
+            </a>
+          </motion.div>
+
+        </div>
+      </section>
+
+    </DefaultLayout>
+  );
+}

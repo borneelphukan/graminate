@@ -51,20 +51,10 @@ const MAIN_NAV_ITEMS: {
   bannerKey?: string;
   data?: NavSection[];
 }[] = [
-  { label: "Home", path: "/" },
-  {
-    label: "Solutions",
-    path: "/industries",
-    bannerKey: "solutions",
-    data: SOLUTIONS_NAV_DATA,
-  },
-  { label: "Docs", path: "/docs" },
-  {
-    label: "Company",
-    path: "/company/about_us",
-    bannerKey: "company",
-    data: COMPANY_NAV_DATA,
-  },
+  { label: "aboutus", path: "/company/about_us" },
+  { label: "technology", path: "/technology" },
+  { label: "careers", path: "/company/career" },
+  { label: "contact", path: "/contact" },
 ];
 
 type BannerKey = (typeof MAIN_NAV_ITEMS)[number]["bannerKey"] | null;
@@ -313,7 +303,6 @@ const Navbar = ({
                       {[
                         { code: "en", label: "English", flag: "🇺🇸" },
                         { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
-                        { code: "as", label: "অসমীয়া", flag: "🇮🇳" },
                       ].map((lang) => (
                         <MenuItem key={lang.code}>
                           {({ active }) => (

@@ -16,6 +16,7 @@ import { PaymentModule } from './payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { FloricultureModule } from './floriculture/floriculture.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
+import { WaitlistModule } from './waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
     PrismaModule,
     FloricultureModule,
     MarketplaceModule,
+    WaitlistModule,
   ],
 })
 export class AppModule {}
