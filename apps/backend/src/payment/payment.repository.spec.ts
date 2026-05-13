@@ -1,8 +1,10 @@
 jest.mock('razorpay', () => {
   return jest.fn().mockImplementation(() => ({
     orders: {
-      create: jest.fn().mockResolvedValue({ id: 'order_test_123', amount: 500 }),
-    }
+      create: jest
+        .fn()
+        .mockResolvedValue({ id: 'order_test_123', amount: 500 }),
+    },
   }));
 });
 
@@ -26,7 +28,10 @@ describe('PaymentRepository', () => {
     process.env.RAZORPAY_KEY_SECRET = 'fake_secret';
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PaymentRepository, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        PaymentRepository,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     repository = module.get<PaymentRepository>(PaymentRepository);
   });
@@ -39,7 +44,10 @@ describe('PaymentRepository', () => {
   it('attempts external order create call during createOrder routine', async () => {
     mockPrisma.payments.create.mockResolvedValue({});
     const order = await repository.createOrder({
-      amount: 5, currency: 'INR', userId: 1, planType: 'BASIC'
+      amount: 5,
+      currency: 'INR',
+      userId: 1,
+      planType: 'BASIC',
     });
     expect(order.id).toBe('order_test_123');
   });

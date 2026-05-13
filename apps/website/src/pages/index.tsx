@@ -492,7 +492,7 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-emerald-100 text-lg md:text-xl mb-12 max-w-xl"
               >
-                Join forward-thinking agrarian pioneers using Graminate's intelligent Operating System.
+                Join forward-thinking agrarian pioneers using Graminate&apos;s intelligent Operating System.
               </motion.p>
 
               <motion.div 

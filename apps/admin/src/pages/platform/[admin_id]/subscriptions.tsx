@@ -281,7 +281,7 @@ const SubscriptionsPage = () => {
       />
       <Popup
         isOpen={popup.isOpen}
-        onClose={() => setPopup((prev: any) => ({ ...prev, isOpen: false }))}
+        onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
         title={popup.title}
         text={popup.text}
         variant={popup.variant}

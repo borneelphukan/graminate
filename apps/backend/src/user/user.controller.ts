@@ -33,9 +33,17 @@ export class UserController {
     } catch (err) {
       console.error('Registration error in controller:', err);
       if (err instanceof Error && err.name === 'ZodError') {
-        return { status: 400, data: { error: 'Validation failed', details: (err as any).errors } };
+        return {
+          status: 400,
+          data: { error: 'Validation failed', details: (err as any).errors },
+        };
       }
-      return { status: 500, data: { error: err instanceof Error ? err.message : 'Internal Server Error' } };
+      return {
+        status: 500,
+        data: {
+          error: err instanceof Error ? err.message : 'Internal Server Error',
+        },
+      };
     }
   }
 

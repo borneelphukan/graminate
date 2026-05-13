@@ -36,12 +36,17 @@ describe('FloricultureService', () => {
   describe('create', () => {
     it('normalizes date and serializes count', async () => {
       prisma.floriculture.create.mockResolvedValue({ id: 1 });
-      await service.create({ flower_name: 'Lily', planting_date: '2025-01-01' } as any);
-      expect(prisma.floriculture.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({
-          planting_date: expect.any(Date),
+      await service.create({
+        flower_name: 'Lily',
+        planting_date: '2025-01-01',
+      } as any);
+      expect(prisma.floriculture.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            planting_date: expect.any(Date),
+          }),
         }),
-      }));
+      );
     });
   });
 
@@ -49,16 +54,18 @@ describe('FloricultureService', () => {
     it('performs inclusion query on flowers with mapped date object', async () => {
       prisma.floriculture.findMany.mockResolvedValue([]);
       await service.getWateringByDate(1, '2025-01-02');
-      expect(prisma.floriculture.findMany).toHaveBeenCalledWith(expect.objectContaining({
-        where: { user_id: 1 },
-        include: {
-          flower_watering: {
-            where: {
-              watering_date: new Date('2025-01-02T00:00:00Z'),
+      expect(prisma.floriculture.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { user_id: 1 },
+          include: {
+            flower_watering: {
+              where: {
+                watering_date: new Date('2025-01-02T00:00:00Z'),
+              },
             },
           },
-        },
-      }));
+        }),
+      );
     });
   });
 
@@ -66,14 +73,16 @@ describe('FloricultureService', () => {
     it('upserts nested join data matching keys', async () => {
       prisma.flower_watering.upsert.mockResolvedValue({});
       await service.updateWatering(1, 5, '2025-05-01', true);
-      expect(prisma.flower_watering.upsert).toHaveBeenCalledWith(expect.objectContaining({
-        where: {
-          flower_id_watering_date: {
-            flower_id: 5,
-            watering_date: expect.any(Date),
+      expect(prisma.flower_watering.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            flower_id_watering_date: {
+              flower_id: 5,
+              watering_date: expect.any(Date),
+            },
           },
-        },
-      }));
+        }),
+      );
     });
   });
 

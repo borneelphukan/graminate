@@ -11,13 +11,16 @@ describe('LoansService', () => {
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-    }
+    },
   };
 
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LoansService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        LoansService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     service = module.get<LoansService>(LoansService);
   });

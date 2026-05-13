@@ -12,12 +12,16 @@ export class FloricultureService {
         user_id: data.user_id as number,
         flower_name: data.flower_name as string,
         flower_type: data.flower_type as string,
-        plants: (data as any).plants ? parseInt((data as any).plants.toString()) : null,
+        plants: (data as any).plants
+          ? parseInt((data as any).plants.toString())
+          : null,
         method: data.method as string,
         planting_date: data.planting_date
-          ? (data.planting_date instanceof Date
-              ? data.planting_date
-              : new Date(`${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`))
+          ? data.planting_date instanceof Date
+            ? data.planting_date
+            : new Date(
+                `${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`,
+              )
           : null,
       },
     });
@@ -95,13 +99,17 @@ export class FloricultureService {
     if (data.flower_type !== undefined)
       updateData.flower_type = data.flower_type;
     if ((data as any).plants !== undefined)
-      (updateData as any).plants = (data as any).plants ? parseInt((data as any).plants.toString()) : null;
+      (updateData as any).plants = (data as any).plants
+        ? parseInt((data as any).plants.toString())
+        : null;
     if (data.method !== undefined) updateData.method = data.method;
     if (data.planting_date !== undefined)
       updateData.planting_date = data.planting_date
-        ? (data.planting_date instanceof Date
-            ? data.planting_date
-            : new Date(`${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`))
+        ? data.planting_date instanceof Date
+          ? data.planting_date
+          : new Date(
+              `${(data.planting_date as any).toString().split('T')[0]}T00:00:00Z`,
+            )
         : null;
 
     return (this.prisma.floriculture as any).update({

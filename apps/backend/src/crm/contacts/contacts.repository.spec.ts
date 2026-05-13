@@ -41,8 +41,14 @@ describe('ContactsRepository', () => {
     it('creates record when validated successfully', async () => {
       mockPrisma.contacts.create.mockResolvedValue({ contact_id: 1 });
       const res = await repository.addContact({
-        user_id: 1, first_name: 'Jane', phone_number: '1234567890',
-        type: 'Lead', address_line_1: 'addr', city: 'city', state: 'state', postal_code: '123'
+        user_id: 1,
+        first_name: 'Jane',
+        phone_number: '1234567890',
+        type: 'Lead',
+        address_line_1: 'addr',
+        city: 'city',
+        state: 'state',
+        postal_code: '123',
       } as any);
       expect(res.status).toBe(201);
     });

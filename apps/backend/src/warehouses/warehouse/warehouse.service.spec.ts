@@ -11,13 +11,16 @@ describe('WarehouseService', () => {
       update: jest.fn(),
       delete: jest.fn(),
       deleteMany: jest.fn(),
-    }
+    },
   };
 
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [WarehouseService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        WarehouseService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     service = module.get<WarehouseService>(WarehouseService);
   });

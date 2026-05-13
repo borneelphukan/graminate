@@ -10,7 +10,6 @@ import * as crypto from 'crypto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { user_plan_type } from '@prisma/client';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Razorpay = require('razorpay');
 
 interface RazorpayOrder {
@@ -41,7 +40,7 @@ export class PaymentRepository {
     }
 
     this.razorpayKeySecret = keySecret;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+
     this.razorpay = new Razorpay({
       key_id: keyId,
       key_secret: keySecret,
@@ -60,7 +59,6 @@ export class PaymentRepository {
 
     let razorpayOrder: RazorpayOrder;
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       razorpayOrder = (await this.razorpay.orders.create(
         options,
       )) as RazorpayOrder;

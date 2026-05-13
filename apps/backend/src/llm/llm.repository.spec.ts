@@ -4,11 +4,13 @@ jest.mock('openai', () => {
       chat: {
         completions: {
           create: jest.fn().mockResolvedValue({
-            choices: [{ message: { content: 'Mock Response', tool_calls: null } }]
-          })
-        }
-      }
-    }))
+            choices: [
+              { message: { content: 'Mock Response', tool_calls: null } },
+            ],
+          }),
+        },
+      },
+    })),
   };
 });
 
@@ -39,7 +41,7 @@ describe('LlmRepository', () => {
     const res = await repository.generateResponse({
       history: [{ sender: 'user', text: 'Hello' }],
       userId: '1',
-      token: 'tok'
+      token: 'tok',
     });
     expect(res.answer).toBe('Mock Response');
   });

@@ -7,16 +7,18 @@ describe('OtpService', () => {
   let repo: OtpRepository;
 
   const mockRepo = {
-    sendOtp: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Sent' } }),
-    verifyOtp: jest.fn().mockResolvedValue({ status: 200, data: { success: true, message: 'OK' } }),
+    sendOtp: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Sent' } }),
+    verifyOtp: jest.fn().mockResolvedValue({
+      status: 200,
+      data: { success: true, message: 'OK' },
+    }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OtpService,
-        { provide: OtpRepository, useValue: mockRepo },
-      ],
+      providers: [OtpService, { provide: OtpRepository, useValue: mockRepo }],
     }).compile();
 
     service = module.get<OtpService>(OtpService);
@@ -33,7 +35,10 @@ describe('OtpService', () => {
 
   it('verifyOtp delegates to repository', async () => {
     const result = await service.verifyOtp('e@e.com', '123456');
-    expect(result).toEqual({ status: 200, data: { success: true, message: 'OK' } });
+    expect(result).toEqual({
+      status: 200,
+      data: { success: true, message: 'OK' },
+    });
     expect(repo.verifyOtp).toHaveBeenCalledWith('e@e.com', '123456');
   });
 });

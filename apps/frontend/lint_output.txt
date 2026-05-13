@@ -1,0 +1,223 @@
+
+> frontend@0.1.0 lint /Users/borneel/Development/graminate/apps/frontend
+> next lint
+
+
+./src/components/cards/ProductCard.tsx
+98:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+151:73  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+163:74  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+179:73  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+191:74  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+208:23  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+209:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+210:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+211:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+212:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+213:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+214:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+215:28  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+216:24  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/cards/SunlightCard.tsx
+44:25  Error: 'method' is defined but never used.  @typescript-eslint/no-unused-vars
+108:6  Warning: React Hook useEffect has a missing dependency: 'isPro'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+188:9  Error: 'sunriseMins' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+189:9  Error: 'sunsetMins' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/cards/finance/DebtAnalysis.tsx
+22:106  Error: 'isValidDate' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/cards/poultry/PoultryEggCard.tsx
+28:14  Error: 'addDaysDateFns' is defined but never used.  @typescript-eslint/no-unused-vars
+164:6  Warning: React Hook useMemo has a missing dependency: 'today'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/floriculture/FloricultureExplorer.tsx
+89:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+155:10  Error: 'wateringEvents' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+155:56  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+167:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+173:27  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+174:24  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+212:9  Error: 'nextWateringDate' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+261:18  Error: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/floriculture/WaterCalendar.tsx
+40:10  Error: 'loadingEvents' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+76:6  Warning: React Hook useEffect has a missing dependency: 'isPro'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+90:6  Warning: React Hook useMemo has a missing dependency: 'isPro'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/form/CRMForm.tsx
+73:10  Error: 'errors' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+143:10  Error: 'isLoadingExtras' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+382:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/form/LabourForm.tsx
+240:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/form/WarehouseForm.tsx
+66:28  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/marketplace/ProductDetailView.tsx
+82:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+112:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+152:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+185:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+186:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+187:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+188:29  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+189:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+190:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+191:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+192:34  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+193:30  Error: 'node' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/modals/ListProductModal.tsx
+1:66  Error: 'TextArea' is defined but never used.  @typescript-eslint/no-unused-vars
+21:12  Error: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/modals/SalaryModal.tsx
+97:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/modals/poultry/EggModal.tsx
+1:10  Error: 'Icon' is defined but never used.  @typescript-eslint/no-unused-vars
+238:32  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/tasks/TaskBoard.tsx
+347:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+475:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+1082:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/hooks/finance.ts
+395:6  Warning: React Hook useEffect has a missing dependency: 'onError'. Either include it or remove the dependency array. If 'onError' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/hooks/useTableActions.ts
+5:66  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+38:11  Error: 'pluralEntity' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/pages/[user_id]/apiculture/[apiary_id]/[hive_id].tsx
+240:6  Warning: React Hook useEffect has a missing dependency: 'userCity'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+301:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+776:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/apiculture/[apiary_id].tsx
+10:39  Error: 'Icon' is defined but never used.  @typescript-eslint/no-unused-vars
+98:10  Error: 'temperature' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+141:9  Error: 'formatTemperature' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+534:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/apiculture.tsx
+413:42  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/cattle_rearing/[id].tsx
+285:6  Warning: React Hook useEffect has a missing dependency: 'userCity'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/[user_id]/cattle_rearing.tsx
+368:42  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/companies/[id].tsx
+205:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+472:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/contacts/[id].tsx
+241:25  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+492:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/crm.tsx
+8:19  Error: 'CRMType' is defined but never used.  @typescript-eslint/no-unused-vars
+576:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/finance_dashboard.tsx
+636:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/finance_expenses.tsx
+300:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/finance_loans.tsx
+256:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/finance_receipts.tsx
+1:17  Error: 'Icon' is defined but never used.  @typescript-eslint/no-unused-vars
+2:40  Error: 'useRef' is defined but never used.  @typescript-eslint/no-unused-vars
+209:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/finance_sales.tsx
+6:18  Error: 'Table' is defined but never used.  @typescript-eslint/no-unused-vars
+327:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/labour_database.tsx
+186:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/labour_payment/[id].tsx
+248:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+252:30  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+253:37  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/labour_payment.tsx
+318:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/marketplace.tsx
+31:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+44:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+143:29  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+155:9  Warning: The 'handlePublish' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handlePublish' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+166:9  Warning: The 'handleUnpublish' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleUnpublish' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+177:9  Warning: The 'handleDelete' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleDelete' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+188:9  Warning: The 'handleToggleFavorite' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleToggleFavorite' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+206:9  Warning: The 'handleToggleWishlist' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleToggleWishlist' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+224:9  Warning: The 'handleAddToCart' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleAddToCart' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+292:35  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+312:34  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+324:9  Warning: The 'handleBuyNow' function makes the dependencies of useCallback Hook (at line 404) change on every render. Move it inside the useCallback callback. Alternatively, wrap the definition of 'handleBuyNow' in its own useCallback() Hook.  react-hooks/exhaustive-deps
+455:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+639:31  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+651:31  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+700:48  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+740:48  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+744:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+791:6  Warning: React Hook useMemo has missing dependencies: 'orderStatusDates', 'orderStatusIcons', 'orderStatusLabels', and 'orderStatusSteps'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+868:61  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/poultry/[id].tsx
+774:23  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+841:6  Warning: React Hook useEffect has missing dependencies: 'humidity', 'lightHours', 'temperature', and 'userCity'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/pages/[user_id]/poultry/poultry-health.tsx
+216:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/poultry.tsx
+380:42  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/pricing.tsx
+166:27  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+497:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/settings/floriculture_settings.tsx
+8:8  Error: 'axiosInstance' is defined but never used.  @typescript-eslint/no-unused-vars
+22:21  Error: 'setIsLoading' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/pages/[user_id]/settings/weather_settings.tsx
+6:20  Error: 'Checkbox' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/pages/[user_id]/storage.tsx
+3:32  Error: 'Icon' is defined but never used.  @typescript-eslint/no-unused-vars
+58:58  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+78:6  Warning: React Hook useEffect has a missing dependency: 'fetchUnassignedItems'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+116:14  Error: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+359:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/[user_id]/warehouse/[id].tsx
+207:9  Error: 'maxQuantity' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+296:51  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+324:18  Error: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+704:42  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/api/weather.ts
+30:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/pages/reset_password.tsx
+148:27  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  frontend@0.1.0 lint: `next lint`
+Exit status 1

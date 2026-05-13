@@ -32,7 +32,10 @@ describe('OtpController', () => {
 
   describe('sendOtp', () => {
     it('should call service and respond with correct status', async () => {
-      mockService.sendOtp.mockResolvedValue({ status: 200, data: { message: 'Sent' } });
+      mockService.sendOtp.mockResolvedValue({
+        status: 200,
+        data: { message: 'Sent' },
+      });
       const res = mockRes();
 
       await controller.sendOtp({ email: 'test@e.com' }, res);
@@ -45,7 +48,10 @@ describe('OtpController', () => {
 
   describe('verifyOtp', () => {
     it('should call service and respond with correct status', async () => {
-      mockService.verifyOtp.mockResolvedValue({ status: 200, data: { success: true, message: 'OK' } });
+      mockService.verifyOtp.mockResolvedValue({
+        status: 200,
+        data: { success: true, message: 'OK' },
+      });
       const res = mockRes();
 
       await controller.verifyOtp({ email: 'test@e.com', otp: '123456' }, res);

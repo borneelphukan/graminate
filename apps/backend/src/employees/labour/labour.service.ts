@@ -115,7 +115,10 @@ export class LabourService {
 
     const cleanAadhar = String(aadhar_card_number).replace(/\s/g, '');
     if (cleanAadhar.length > 12) {
-      return { status: 400, data: { error: 'Aadhar card number must be 12 digits.' } };
+      return {
+        status: 400,
+        data: { error: 'Aadhar card number must be 12 digits.' },
+      };
     }
 
     try {
@@ -270,7 +273,10 @@ export class LabourService {
       if (body.aadhar_card_number) {
         const cleanAadhar = String(body.aadhar_card_number).replace(/\s/g, '');
         if (cleanAadhar.length > 12) {
-          return { status: 400, data: { error: 'Aadhar card number must be 12 digits.' } };
+          return {
+            status: 400,
+            data: { error: 'Aadhar card number must be 12 digits.' },
+          };
         }
         updateData.aadhar_card_number = cleanAadhar;
       }
@@ -304,11 +310,17 @@ export class LabourService {
         updateData.bonus = new Prisma.Decimal(body.bonus);
       if (body.overtime_pay != null && !isNaN(Number(body.overtime_pay)))
         updateData.overtime_pay = new Prisma.Decimal(body.overtime_pay);
-      if (body.housing_allowance != null && !isNaN(Number(body.housing_allowance)))
+      if (
+        body.housing_allowance != null &&
+        !isNaN(Number(body.housing_allowance))
+      )
         updateData.housing_allowance = new Prisma.Decimal(
           body.housing_allowance,
         );
-      if (body.travel_allowance != null && !isNaN(Number(body.travel_allowance)))
+      if (
+        body.travel_allowance != null &&
+        !isNaN(Number(body.travel_allowance))
+      )
         updateData.travel_allowance = new Prisma.Decimal(body.travel_allowance);
       if (body.meal_allowance != null && !isNaN(Number(body.meal_allowance)))
         updateData.meal_allowance = new Prisma.Decimal(body.meal_allowance);

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { Button, Icon, Badge, Popup, Table, TableData, Dropdown } from "@graminate/ui";
+import { Button, Icon, Badge, Popup, Dropdown } from "@graminate/ui";
 import Loader from "@/components/ui/Loader";
 
 type OrderItem = {
@@ -57,9 +57,7 @@ const AdminMarketplacePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
   const [processingOrderId, setProcessingOrderId] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const searchQuery: string = "";
   const [filterStatus, setFilterStatus] = useState<string>("All");
 
   const [popup, setPopup] = useState<{
@@ -280,6 +278,7 @@ const AdminMarketplacePage = () => {
                             <div key={item.order_item_id} className="flex items-center gap-3 py-2 border-t border-gray-400 dark:border-gray-700">
                               <div className="w-10 h-10 rounded bg-gray-400 dark:bg-gray-700 flex items-center justify-center text-lg shrink-0 overflow-hidden">
                                 {item.product?.images?.[0] ? (
+                                  // eslint-disable-next-line @next/next/no-img-element
                                   <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
                                 ) : "📦"}
                               </div>

@@ -7,6 +7,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [WaitlistController],
   providers: [WaitlistService],
-  exports: [WaitlistService]
+  exports: [WaitlistService],
 })
 export class WaitlistModule {}

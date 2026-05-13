@@ -28,12 +28,16 @@ describe('HiveInspectionController', () => {
 
   it('getByHiveId packs in object key', async () => {
     mockService.findByHiveId.mockResolvedValue([{ id: 1 }]);
-    expect(await controller.getByHiveId(1)).toEqual({ inspections: [{ id: 1 }] });
+    expect(await controller.getByHiveId(1)).toEqual({
+      inspections: [{ id: 1 }],
+    });
   });
 
   it('deleteInspection throws NotFound when result is false', async () => {
     mockService.delete.mockResolvedValue(false);
-    await expect(controller.deleteInspection(1)).rejects.toThrow(NotFoundException);
+    await expect(controller.deleteInspection(1)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('deleteInspection returns message when successful', async () => {

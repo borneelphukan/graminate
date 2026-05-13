@@ -22,16 +22,17 @@ describe('CompaniesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CompaniesController],
-      providers: [
-        { provide: CompaniesService, useValue: mockService },
-      ],
+      providers: [{ provide: CompaniesService, useValue: mockService }],
     }).compile();
     controller = module.get<CompaniesController>(CompaniesController);
     service = module.get<CompaniesService>(CompaniesService);
   });
 
   it('executes response format delegation on fetch', async () => {
-    mockService.getCompanies.mockResolvedValue({ status: 200, data: { val: 'ok' } });
+    mockService.getCompanies.mockResolvedValue({
+      status: 200,
+      data: { val: 'ok' },
+    });
     await controller.getCompanies('5', mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({ val: 'ok' });

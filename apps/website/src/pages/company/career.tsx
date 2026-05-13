@@ -198,6 +198,7 @@ export default function Careers() {
                 transition={{ duration: 0.8 }}
                 className="relative w-full max-w-xl rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-2xl shadow-slate-200 group bg-slate-100"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="/images/people/borneel.png" 
                   alt="Borneel B. Phukan" 
@@ -210,7 +211,6 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* =================== SECTION 4: OPEN POSITIONS =================== */}
       <section id="open-positions" className="py-24 md:py-36 bg-white">
         <div className="container mx-auto px-6 lg:px-12">
           

@@ -12,13 +12,16 @@ describe('InventoryService', () => {
       update: jest.fn(),
       delete: jest.fn(),
       deleteMany: jest.fn(),
-    }
+    },
   };
 
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [InventoryService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        InventoryService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     service = module.get<InventoryService>(InventoryService);
   });

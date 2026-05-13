@@ -28,8 +28,12 @@ describe('CompaniesService', () => {
   it('delegates calls to repository straightforwardly', async () => {
     mockRepo.getCompanies.mockResolvedValue({ status: 200, data: {} });
     await service.getCompanies('1');
-    expect(mockRepo.getCompanies).toHaveBeenCalledWith('1', undefined, undefined);
-    
+    expect(mockRepo.getCompanies).toHaveBeenCalledWith(
+      '1',
+      undefined,
+      undefined,
+    );
+
     mockRepo.addCompany.mockResolvedValue({ status: 201, data: {} });
     await service.addCompany({ company_name: 'test' } as any);
     expect(mockRepo.addCompany).toHaveBeenCalled();

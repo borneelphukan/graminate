@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/router";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Button, Input, Popup } from "@graminate/ui";
 import DefaultLayout from "@/layout/LoginLayout";
 import Head from "next/head";

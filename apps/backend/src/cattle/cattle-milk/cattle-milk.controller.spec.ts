@@ -29,7 +29,10 @@ describe('CattleMilkController', () => {
   });
 
   it('findAnimalNamesByCattleId aggregates output array', async () => {
-    mockService.findAnimalNamesByCattleId.mockResolvedValue(['Bessie', 'Daisy']);
+    mockService.findAnimalNamesByCattleId.mockResolvedValue([
+      'Bessie',
+      'Daisy',
+    ]);
     const res = await controller.getAnimalNamesForHerd(100);
     expect(res).toEqual({ animalNames: ['Bessie', 'Daisy'] });
   });

@@ -36,9 +36,11 @@ describe('CompaniesRepository', () => {
       mockPrisma.companies.findMany.mockResolvedValue([]);
       const res = await repository.getCompanies('123');
       expect(res.status).toBe(200);
-      expect(mockPrisma.companies.findMany).toHaveBeenCalledWith(expect.objectContaining({
-        where: { user_id: 123 }
-      }));
+      expect(mockPrisma.companies.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { user_id: 123 },
+        }),
+      );
     });
 
     it('returns 400 for invalid ID', async () => {
@@ -49,20 +51,34 @@ describe('CompaniesRepository', () => {
 
   describe('addCompany', () => {
     it('validates regex and returns 400 for mismatch', async () => {
-      const res = await repository.addCompany({ 
-        user_id: 1, company_name: 'a', contact_person: 'b', email: 'c', 
+      const res = await repository.addCompany({
+        user_id: 1,
+        company_name: 'a',
+        contact_person: 'b',
+        email: 'c',
         phone_number: '123', // short
-        type: 'T', address_line_1: 'd', city: 'e', state: 'f', postal_code: '1' // short
+        type: 'T',
+        address_line_1: 'd',
+        city: 'e',
+        state: 'f',
+        postal_code: '1', // short
       } as any);
       expect(res.status).toBe(400);
     });
 
     it('returns 400 if company exists', async () => {
       mockPrisma.companies.findFirst.mockResolvedValue({ id: 1 });
-      const res = await repository.addCompany({ 
-        user_id: 1, company_name: 'X', contact_person: 'X', email: 'e', 
-        phone_number: '12345678901', type: 'T', 
-        address_line_1: 'd', city: 'c', state: 's', postal_code: '123456'
+      const res = await repository.addCompany({
+        user_id: 1,
+        company_name: 'X',
+        contact_person: 'X',
+        email: 'e',
+        phone_number: '12345678901',
+        type: 'T',
+        address_line_1: 'd',
+        city: 'c',
+        state: 's',
+        postal_code: '123456',
       } as any);
       expect(res.status).toBe(400);
       expect(res.data.error).toContain('exists');

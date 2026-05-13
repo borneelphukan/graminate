@@ -42,9 +42,11 @@ describe('CattleRearingService', () => {
     it('forwards user payload parameters correctly', async () => {
       prisma.cattle_rearing.create.mockResolvedValue({ id: 1 });
       await service.create({ breed: 'Angus', cattle_name: 'C1' } as any);
-      expect(prisma.cattle_rearing.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({ cattle_name: 'C1' }),
-      }));
+      expect(prisma.cattle_rearing.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ cattle_name: 'C1' }),
+        }),
+      );
     });
   });
 });

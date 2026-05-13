@@ -50,7 +50,10 @@ describe('UserController', () => {
 
   describe('register', () => {
     it('should register user successfully', async () => {
-      mockUserService.registerUser.mockResolvedValue({ status: 201, data: { message: 'OK' } });
+      mockUserService.registerUser.mockResolvedValue({
+        status: 201,
+        data: { message: 'OK' },
+      });
       const result = await controller.register({
         first_name: 'J',
         last_name: 'D',
@@ -85,7 +88,10 @@ describe('UserController', () => {
 
   describe('logout', () => {
     it('should delegate to UserService.logout', async () => {
-      mockUserService.logout.mockResolvedValue({ status: 200, data: { message: 'OK' } });
+      mockUserService.logout.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
       const result = await controller.logout('lid');
       expect(result.status).toBe(200);
     });
@@ -93,79 +99,120 @@ describe('UserController', () => {
 
   describe('getUser', () => {
     it('should return user when ownership matches', async () => {
-      mockUserService.getUserById.mockResolvedValue({ status: 200, data: { user: { user_id: 1 } } });
+      mockUserService.getUserById.mockResolvedValue({
+        status: 200,
+        data: { user: { user_id: 1 } },
+      });
       const result = await controller.getUser(1, makeReq(1));
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on ownership mismatch', async () => {
-      await expect(controller.getUser(1, makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(controller.getUser(1, makeReq(2))).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
   describe('updateUser', () => {
     it('should update when ownership matches', async () => {
-      mockUserService.updateUser.mockResolvedValue({ status: 200, data: { message: 'OK' } });
-      const result = await controller.updateUser('1', { first_name: 'X' }, makeReq(1));
+      mockUserService.updateUser.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
+      const result = await controller.updateUser(
+        '1',
+        { first_name: 'X' },
+        makeReq(1),
+      );
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.updateUser('1', {}, makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(controller.updateUser('1', {}, makeReq(2))).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
   describe('deleteUser', () => {
     it('should delete when ownership matches', async () => {
-      mockUserService.deleteUser.mockResolvedValue({ status: 200, data: { message: 'OK' } });
+      mockUserService.deleteUser.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
       const result = await controller.deleteUser('1', makeReq(1));
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.deleteUser('1', makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(controller.deleteUser('1', makeReq(2))).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
   describe('verifyPassword', () => {
     it('should verify when ownership matches', async () => {
-      mockUserService.verifyPassword.mockResolvedValue({ status: 200, data: { valid: true } });
+      mockUserService.verifyPassword.mockResolvedValue({
+        status: 200,
+        data: { valid: true },
+      });
       const result = await controller.verifyPassword('1', 'pass', makeReq(1));
       expect(result).toEqual({ valid: true });
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.verifyPassword('1', 'p', makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.verifyPassword('1', 'p', makeReq(2)),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('scheduleDowngrade', () => {
     it('should schedule when ownership matches', async () => {
-      mockUserService.scheduleDowngrade.mockResolvedValue({ status: 200, data: { message: 'OK' } });
-      const result = await controller.scheduleDowngrade('1', 'FREE', makeReq(1));
+      mockUserService.scheduleDowngrade.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
+      const result = await controller.scheduleDowngrade(
+        '1',
+        'FREE',
+        makeReq(1),
+      );
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.scheduleDowngrade('1', 'FREE', makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.scheduleDowngrade('1', 'FREE', makeReq(2)),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('getBillingHistory', () => {
     it('should return billing when ownership matches', async () => {
-      mockUserService.getBillingHistory.mockResolvedValue({ status: 200, data: { payments: [] } });
+      mockUserService.getBillingHistory.mockResolvedValue({
+        status: 200,
+        data: { payments: [] },
+      });
       const result = await controller.getBillingHistory('1', makeReq(1));
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.getBillingHistory('1', makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.getBillingHistory('1', makeReq(2)),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('getNotifications', () => {
     it('should return notifications when ownership matches', async () => {
-      mockUserService.getNotifications.mockResolvedValue({ status: 200, data: { notifications: [] } });
+      mockUserService.getNotifications.mockResolvedValue({
+        status: 200,
+        data: { notifications: [] },
+      });
       const result = await controller.getNotifications('1', makeReq(1));
       expect(result.status).toBe(200);
     });
@@ -173,15 +220,25 @@ describe('UserController', () => {
 
   describe('markNotificationsRead', () => {
     it('should mark read when ownership matches', async () => {
-      mockUserService.markNotificationsRead.mockResolvedValue({ status: 200, data: { message: 'OK' } });
-      const result = await controller.markNotificationsRead('1', undefined, makeReq(1));
+      mockUserService.markNotificationsRead.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
+      const result = await controller.markNotificationsRead(
+        '1',
+        undefined,
+        makeReq(1),
+      );
       expect(result.status).toBe(200);
     });
   });
 
   describe('deleteNotification', () => {
     it('should delete notification when ownership matches', async () => {
-      mockUserService.deleteNotification.mockResolvedValue({ status: 200, data: { message: 'OK' } });
+      mockUserService.deleteNotification.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
       const result = await controller.deleteNotification('1', '5', makeReq(1));
       expect(result.status).toBe(200);
     });
@@ -189,7 +246,10 @@ describe('UserController', () => {
 
   describe('clearAllNotifications', () => {
     it('should clear all when ownership matches', async () => {
-      mockUserService.clearAllNotifications.mockResolvedValue({ status: 200, data: { message: 'OK' } });
+      mockUserService.clearAllNotifications.mockResolvedValue({
+        status: 200,
+        data: { message: 'OK' },
+      });
       const result = await controller.clearAllNotifications('1', makeReq(1));
       expect(result.status).toBe(200);
     });
@@ -197,13 +257,18 @@ describe('UserController', () => {
 
   describe('getAvailableSubTypes', () => {
     it('should return sub-types when ownership matches', async () => {
-      mockUserService.getAvailableSubTypes.mockResolvedValue({ status: 200, data: { subTypes: ['Poultry'] } });
+      mockUserService.getAvailableSubTypes.mockResolvedValue({
+        status: 200,
+        data: { subTypes: ['Poultry'] },
+      });
       const result = await controller.getAvailableSubTypes('1', makeReq(1));
       expect(result.status).toBe(200);
     });
 
     it('should throw UnauthorizedException on mismatch', async () => {
-      await expect(controller.getAvailableSubTypes('1', makeReq(2))).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.getAvailableSubTypes('1', makeReq(2)),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });

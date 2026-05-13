@@ -5,7 +5,13 @@ import { PrismaService } from '../prisma/prisma.service';
 export class WaitlistService {
   constructor(private prisma: PrismaService) {}
 
-  async addToWaitlist(data: { first_name: string; last_name: string; email: string; phone: string; role: string }) {
+  async addToWaitlist(data: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    role: string;
+  }) {
     try {
       return await this.prisma.waitlist.create({
         data: {
@@ -14,7 +20,7 @@ export class WaitlistService {
           email: data.email,
           phone: data.phone,
           role: data.role,
-        }
+        },
       });
     } catch (e: any) {
       if (e.code === 'P2002') {
@@ -27,8 +33,8 @@ export class WaitlistService {
   async getWaitlist() {
     return this.prisma.waitlist.findMany({
       orderBy: {
-        joined_at: 'desc'
-      }
+        joined_at: 'desc',
+      },
     });
   }
 }

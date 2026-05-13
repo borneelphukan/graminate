@@ -176,7 +176,9 @@ export class UserRepository {
             plan: currentPlan,
             country: user.country || '',
             subscription_expires_at: currentExpiry,
-            opening_balance: user.opening_balance ? Number(user.opening_balance) : 0,
+            opening_balance: user.opening_balance
+              ? Number(user.opening_balance)
+              : 0,
             is_subscription_active: isSubscriptionActive,
             entity_type: user.entity_type,
             business_size: user.business_size,
@@ -733,7 +735,10 @@ export class UserRepository {
           type: data.type || 'info',
         },
       });
-      return { status: 201, data: { message: 'Notification created successfully' } };
+      return {
+        status: 201,
+        data: { message: 'Notification created successfully' },
+      };
     } catch (err) {
       console.error('Error creating notification:', err);
       return { status: 500, data: { error: 'Failed to create notification' } };

@@ -32,7 +32,10 @@ describe('PasswordController', () => {
 
   describe('forgotPassword', () => {
     it('should call service and respond with correct status', async () => {
-      mockService.handleForgot.mockResolvedValue({ status: 200, data: { message: 'Sent' } });
+      mockService.handleForgot.mockResolvedValue({
+        status: 200,
+        data: { message: 'Sent' },
+      });
       const res = mockRes();
 
       await controller.forgotPassword({ email: 'test@e.com' }, res);
@@ -45,7 +48,10 @@ describe('PasswordController', () => {
 
   describe('resetPassword', () => {
     it('should call service and respond with correct status', async () => {
-      mockService.handleReset.mockResolvedValue({ status: 200, data: { message: 'Done' } });
+      mockService.handleReset.mockResolvedValue({
+        status: 200,
+        data: { message: 'Done' },
+      });
       const res = mockRes();
       const body = { email: 'e', token: 't', newPassword: 'p' };
 

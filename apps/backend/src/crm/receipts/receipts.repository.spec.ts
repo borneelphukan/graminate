@@ -4,7 +4,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 
 describe('ReceiptsRepository', () => {
   let repository: ReceiptsRepository;
-  
+
   const mockPrisma: any = {
     invoices: {
       findMany: jest.fn(),
@@ -25,13 +25,18 @@ describe('ReceiptsRepository', () => {
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ReceiptsRepository, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        ReceiptsRepository,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     repository = module.get<ReceiptsRepository>(ReceiptsRepository);
   });
 
   it('fetches receipts with related items mapped', async () => {
-    mockPrisma.invoices.findMany.mockResolvedValue([{ invoice_id: 1, invoice_items: [{ id: 5 }] }]);
+    mockPrisma.invoices.findMany.mockResolvedValue([
+      { invoice_id: 1, invoice_items: [{ id: 5 }] },
+    ]);
     const res = await repository.getReceipts(1);
     expect(res.status).toBe(200);
     expect(res.data.receipts![0].items).toEqual([{ id: 5 }]);
@@ -40,8 +45,11 @@ describe('ReceiptsRepository', () => {
   it('processes transaction addReceipt pipeline', async () => {
     mockPrisma.invoices.create.mockResolvedValue({ invoice_id: 99 });
     const res = await repository.addReceipt({
-      user_id: 1, title: 'Inv', bill_to: 'User', due_date: '2025',
-      items: [{ description: 'A', quantity: 1, rate: 10 }]
+      user_id: 1,
+      title: 'Inv',
+      bill_to: 'User',
+      due_date: '2025',
+      items: [{ description: 'A', quantity: 1, rate: 10 }],
     } as any);
     expect(res.status).toBe(201);
     expect(mockPrisma.$transaction).toHaveBeenCalled();

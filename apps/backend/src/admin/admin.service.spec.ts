@@ -10,13 +10,25 @@ describe('AdminService', () => {
     getAdminProfile: jest.fn().mockResolvedValue({ status: 200, data: {} }),
     register: jest.fn().mockResolvedValue({ status: 201, data: {} }),
     login: jest.fn().mockResolvedValue({ status: 200, data: {} }),
-    getAllUsers: jest.fn().mockResolvedValue({ status: 200, data: { users: [] } }),
-    getUserCount: jest.fn().mockResolvedValue({ status: 200, data: { count: 0 } }),
+    getAllUsers: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { users: [] } }),
+    getUserCount: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { count: 0 } }),
     getUserById: jest.fn().mockResolvedValue({ status: 200, data: {} }),
-    getUserLoginHistory: jest.fn().mockResolvedValue({ status: 200, data: { history: [] } }),
-    deleteUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    updateUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    getUserBillingHistory: jest.fn().mockResolvedValue({ status: 200, data: { payments: [] } }),
+    getUserLoginHistory: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { history: [] } }),
+    deleteUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    updateUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    getUserBillingHistory: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { payments: [] } }),
   };
 
   beforeEach(async () => {

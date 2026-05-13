@@ -10,14 +10,28 @@ describe('AdminController', () => {
   const mockService = {
     getAdminProfile: jest.fn().mockResolvedValue({ status: 200, data: {} }),
     register: jest.fn().mockResolvedValue({ status: 201, data: {} }),
-    login: jest.fn().mockResolvedValue({ status: 200, data: { access_token: 'tok' } }),
-    getAllUsers: jest.fn().mockResolvedValue({ status: 200, data: { users: [] } }),
-    getUserCount: jest.fn().mockResolvedValue({ status: 200, data: { count: 0 } }),
+    login: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { access_token: 'tok' } }),
+    getAllUsers: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { users: [] } }),
+    getUserCount: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { count: 0 } }),
     getUserById: jest.fn().mockResolvedValue({ status: 200, data: {} }),
-    getUserLoginHistory: jest.fn().mockResolvedValue({ status: 200, data: { history: [] } }),
-    deleteUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    updateUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    getUserBillingHistory: jest.fn().mockResolvedValue({ status: 200, data: { payments: [] } }),
+    getUserLoginHistory: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { history: [] } }),
+    deleteUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    updateUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    getUserBillingHistory: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { payments: [] } }),
   };
 
   const adminReq = { user: { isAdmin: true, adminId: 'aid' } } as any;
@@ -42,15 +56,27 @@ describe('AdminController', () => {
     });
 
     it('should throw UnauthorizedException for non-admin', async () => {
-      await expect(controller.getProfile(nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.getProfile(nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
   describe('register', () => {
     it('should delegate to service', async () => {
-      const dto = { first_name: 'A', last_name: 'B', email: 'a@b.com', password: 'pass1234' };
+      const dto = {
+        first_name: 'A',
+        last_name: 'B',
+        email: 'a@b.com',
+        password: 'pass1234',
+      };
       await controller.register(dto);
-      expect(service.register).toHaveBeenCalledWith('A', 'B', 'a@b.com', 'pass1234');
+      expect(service.register).toHaveBeenCalledWith(
+        'A',
+        'B',
+        'a@b.com',
+        'pass1234',
+      );
     });
   });
 
@@ -68,7 +94,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.allUsers(nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.allUsers(nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -79,7 +107,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.userCount(nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.userCount(nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -90,7 +120,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.getUserById('1', nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.getUserById('1', nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -101,7 +133,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.getUserLoginHistory('1', nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.getUserLoginHistory('1', nonAdminReq),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -112,7 +146,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.deleteUser('1', nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.deleteUser('1', nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -123,7 +159,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.updateUser('1', {}, nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.updateUser('1', {}, nonAdminReq)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -134,7 +172,9 @@ describe('AdminController', () => {
     });
 
     it('should throw for non-admin', async () => {
-      await expect(controller.getUserBillingHistory('1', nonAdminReq)).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.getUserBillingHistory('1', nonAdminReq),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });

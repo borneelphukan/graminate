@@ -35,9 +35,11 @@ describe('HiveInspectionService', () => {
       prisma.hive_inspection.findMany.mockResolvedValue([{ inspection_id: 1 }]);
       const res = await service.findByHiveId(10);
       expect(res).toEqual([{ inspection_id: 1 }]);
-      expect(prisma.hive_inspection.findMany).toHaveBeenCalledWith(expect.objectContaining({
-        where: { hive_id: 10 },
-      }));
+      expect(prisma.hive_inspection.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { hive_id: 10 },
+        }),
+      );
     });
   });
 
@@ -60,9 +62,11 @@ describe('HiveInspectionService', () => {
 
       const out = await service.create(dto);
       expect(out).toHaveProperty('id');
-      expect(prisma.hive_inspection.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({ inspection_date: expect.any(Date) }),
-      }));
+      expect(prisma.hive_inspection.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ inspection_date: expect.any(Date) }),
+        }),
+      );
     });
   });
 

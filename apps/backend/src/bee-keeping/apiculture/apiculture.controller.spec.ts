@@ -27,9 +27,7 @@ describe('ApicultureController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ApicultureController],
-      providers: [
-        { provide: ApicultureService, useValue: mockService },
-      ],
+      providers: [{ provide: ApicultureService, useValue: mockService }],
     }).compile();
 
     controller = module.get<ApicultureController>(ApicultureController);
@@ -80,7 +78,9 @@ describe('ApicultureController', () => {
   describe('updateApiary', () => {
     it('should throw NOT_FOUND if response is null', async () => {
       mockService.update.mockResolvedValue(null);
-      await expect(controller.updateApiary(1, { apiary_name: 'fail' } as any)).rejects.toThrow(HttpException);
+      await expect(
+        controller.updateApiary(1, { apiary_name: 'fail' } as any),
+      ).rejects.toThrow(HttpException);
     });
 
     it('should return updated data', async () => {

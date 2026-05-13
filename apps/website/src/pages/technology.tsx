@@ -79,6 +79,7 @@ export default function Technology() {
             {/* Tech Matrix Right (Minimalist Geometric Design) */}
             <div className="lg:col-span-5 relative flex justify-center">
               <div className="relative w-full max-w-[500px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="/images/assets/screenshot-1.png" 
                   alt="Graminate Dashboard Environment"

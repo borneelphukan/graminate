@@ -28,7 +28,11 @@ export class FloricultureController {
 
   @Post('add')
   create(@Body() body: Partial<floriculture>): Promise<floriculture> {
-    if (body && ((body as any).planting_date === '' || (body as any).planting_date === 'Invalid Date')) {
+    if (
+      body &&
+      ((body as any).planting_date === '' ||
+        (body as any).planting_date === 'Invalid Date')
+    ) {
       (body as any).planting_date = null;
     }
     const parsed = floricultureSchema.partial().parse(body);
@@ -95,7 +99,10 @@ export class FloricultureController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: any,
   ): Promise<floriculture> {
-    if (body && (body.planting_date === '' || body.planting_date === 'Invalid Date')) {
+    if (
+      body &&
+      (body.planting_date === '' || body.planting_date === 'Invalid Date')
+    ) {
       body.planting_date = null;
     }
     const parsed = floricultureSchema.partial().parse(body);

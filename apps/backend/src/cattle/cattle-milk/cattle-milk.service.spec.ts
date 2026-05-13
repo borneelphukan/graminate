@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CattleMilkService } from './cattle-milk.service';
 import { PrismaService } from '@/prisma/prisma.service';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('CattleMilkService', () => {
   let service: CattleMilkService;
@@ -34,7 +37,9 @@ describe('CattleMilkService', () => {
   describe('findByUserId', () => {
     it('bubbles internal server error on throw', async () => {
       prisma.cattle_milk.findMany.mockRejectedValue(new Error('Oops'));
-      await expect(service.findByUserId(1)).rejects.toThrow(InternalServerErrorException);
+      await expect(service.findByUserId(1)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 
@@ -48,10 +53,16 @@ describe('CattleMilkService', () => {
   describe('create', () => {
     it('handles creation values passing properly', async () => {
       prisma.cattle_milk.create.mockResolvedValue({ id: 1 });
-      await service.create({ cattle_id: 1, milk_produced: 4.5, date_collected: '2025-01-01' } as any);
-      expect(prisma.cattle_milk.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({ milk_produced: 4.5 }),
-      }));
+      await service.create({
+        cattle_id: 1,
+        milk_produced: 4.5,
+        date_collected: '2025-01-01',
+      } as any);
+      expect(prisma.cattle_milk.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ milk_produced: 4.5 }),
+        }),
+      );
     });
   });
 

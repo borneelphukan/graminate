@@ -17,7 +17,10 @@ describe('MarketplaceService', () => {
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MarketplaceService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        MarketplaceService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     service = module.get<MarketplaceService>(MarketplaceService);
   });

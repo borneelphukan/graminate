@@ -20,7 +20,10 @@ describe('PoultryHealthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PoultryHealthService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        PoultryHealthService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
 
     service = module.get<PoultryHealthService>(PoultryHealthService);
@@ -31,9 +34,11 @@ describe('PoultryHealthService', () => {
     it('initializes with ISO dates when provided for followup', async () => {
       prisma.poultry_health.create.mockResolvedValue({ id: 1 });
       await service.create({ next_appointment: '2025-01-01' } as any);
-      expect(prisma.poultry_health.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({ next_appointment: expect.any(Date) }),
-      }));
+      expect(prisma.poultry_health.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ next_appointment: expect.any(Date) }),
+        }),
+      );
     });
   });
 

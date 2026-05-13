@@ -50,8 +50,8 @@ export class OtpRepository {
       pass: (process.env.EMAIL_PASS || '').trim(),
     },
     tls: {
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   });
 
   async sendOtp(email: string): Promise<{

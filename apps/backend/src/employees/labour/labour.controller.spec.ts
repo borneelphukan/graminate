@@ -21,7 +21,10 @@ describe('LabourController', () => {
   });
 
   it('forwards service result map onto standard res response handler', async () => {
-    mockService.getLabours.mockResolvedValue({ status: 200, data: { labours: [] } });
+    mockService.getLabours.mockResolvedValue({
+      status: 200,
+      data: { labours: [] },
+    });
     await controller.getLabours('1', mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(200);
   });

@@ -38,7 +38,10 @@ describe('AuthService', () => {
     it('should delegate to AuthRepository.validateUser', async () => {
       const result = await service.validateUser('john@example.com', 'pass');
       expect(result).toEqual(mockUser);
-      expect(repo.validateUser).toHaveBeenCalledWith('john@example.com', 'pass');
+      expect(repo.validateUser).toHaveBeenCalledWith(
+        'john@example.com',
+        'pass',
+      );
     });
   });
 

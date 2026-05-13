@@ -19,7 +19,10 @@ describe('PoultryFeedsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PoultryFeedsService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        PoultryFeedsService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
 
     service = module.get<PoultryFeedsService>(PoultryFeedsService);
@@ -29,10 +32,12 @@ describe('PoultryFeedsService', () => {
   it('findByUserIdWithFilters routes limit and filter conditions correctly', async () => {
     prisma.poultry_feeds.findMany.mockResolvedValue([]);
     await service.findByUserIdWithFilters(1, { limit: 5 });
-    expect(prisma.poultry_feeds.findMany).toHaveBeenCalledWith(expect.objectContaining({
-      take: 5,
-      where: expect.objectContaining({ user_id: 1 }),
-    }));
+    expect(prisma.poultry_feeds.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        take: 5,
+        where: expect.objectContaining({ user_id: 1 }),
+      }),
+    );
   });
 
   it('delete properly performs cleanup return hook', async () => {

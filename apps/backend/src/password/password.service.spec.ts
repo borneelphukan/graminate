@@ -7,8 +7,12 @@ describe('PasswordService', () => {
   let repo: PasswordRepository;
 
   const mockRepo = {
-    handleForgot: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Sent' } }),
-    handleReset: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Reset' } }),
+    handleForgot: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Sent' } }),
+    handleReset: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Reset' } }),
   };
 
   beforeEach(async () => {

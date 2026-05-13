@@ -17,34 +17,6 @@ type NavSection = {
   links: NavLink[];
 };
 
-const SOLUTIONS_NAV_DATA: NavSection[] = [
-  {
-    title: "Platform Solutions",
-    path: "/industries",
-    links: [
-      {
-        label: "For Producers",
-        href: "/industries#producers",
-      },
-      {
-        label: "For Sellers",
-        href: "/industries#sellers",
-      },
-    ],
-  },
-];
-
-const COMPANY_NAV_DATA: NavSection[] = [
-  {
-    title: "About Graminate",
-    path: "/company/about_us",
-    links: [
-      { label: "About Us", href: "/company/about_us" },
-      { label: "Careers", href: "/company/career" },
-    ],
-  },
-];
-
 const MAIN_NAV_ITEMS: {
   label: string;
   path: string;

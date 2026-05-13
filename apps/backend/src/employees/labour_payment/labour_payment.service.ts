@@ -63,11 +63,7 @@ export class LabourPaymentService {
       payment_status,
     } = body;
 
-    if (
-      !labour_id ||
-      !payment_date ||
-      salary_paid === undefined
-    ) {
+    if (!labour_id || !payment_date || salary_paid === undefined) {
       return { status: 400, data: { error: 'Missing required fields' } };
     }
 
@@ -84,7 +80,8 @@ export class LabourPaymentService {
       const travel = Number(travel_allowance || 0);
       const meal = Number(meal_allowance || 0);
 
-      const total_amount = salary + bonusVal + overtime + housing + travel + meal;
+      const total_amount =
+        salary + bonusVal + overtime + housing + travel + meal;
 
       const newPayment = await this.prisma.labour_payments.create({
         data: {

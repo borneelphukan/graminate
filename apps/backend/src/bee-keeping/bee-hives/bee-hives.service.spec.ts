@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BeeHivesService } from './bee-hives.service';
 import { PrismaService } from '@/prisma/prisma.service';
-import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 describe('BeeHivesService', () => {
@@ -65,20 +68,27 @@ describe('BeeHivesService', () => {
     });
 
     it('should fill nulls when no inspections present', async () => {
-      prisma.bee_hives.findMany.mockResolvedValue([{ hive_id: 1, hive_inspection: [] }]);
+      prisma.bee_hives.findMany.mockResolvedValue([
+        { hive_id: 1, hive_inspection: [] },
+      ]);
       const result = await service.findByApiaryId(1);
       expect(result[0].last_inspection_id).toBeNull();
     });
 
     it('should bubble server error on reject', async () => {
       prisma.bee_hives.findMany.mockRejectedValue(new Error('Boom'));
-      await expect(service.findByApiaryId(1)).rejects.toThrow(InternalServerErrorException);
+      await expect(service.findByApiaryId(1)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 
   describe('findById', () => {
     it('should return data on hit', async () => {
-      prisma.bee_hives.findUnique.mockResolvedValue({ hive_id: 2, hive_inspection: [] });
+      prisma.bee_hives.findUnique.mockResolvedValue({
+        hive_id: 2,
+        hive_inspection: [],
+      });
       const result = await service.findById(2);
       expect(result.hive_id).toBe(2);
     });
@@ -96,26 +106,36 @@ describe('BeeHivesService', () => {
 
       const res = await service.create(createInput);
       expect(res.hive_id).toBe(5);
-      expect(prisma.bee_hives.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({
-          installation_date: expect.any(Date),
+      expect(prisma.bee_hives.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            installation_date: expect.any(Date),
+          }),
         }),
-      }));
+      );
     });
   });
 
   describe('update', () => {
     it('should patch update fields', async () => {
       const updateDto = { hive_name: 'Renamed' };
-      prisma.bee_hives.update.mockResolvedValue({ hive_id: 1, hive_name: 'Renamed' });
+      prisma.bee_hives.update.mockResolvedValue({
+        hive_id: 1,
+        hive_name: 'Renamed',
+      });
       const res = await service.update(1, updateDto);
       expect(res.hive_name).toBe('Renamed');
     });
 
     it('should handle prisma P2025 constraint as NotFound', async () => {
-      const err = new Prisma.PrismaClientKnownRequestError('err', { code: 'P2025', clientVersion: '1' });
+      const err = new Prisma.PrismaClientKnownRequestError('err', {
+        code: 'P2025',
+        clientVersion: '1',
+      });
       prisma.bee_hives.update.mockRejectedValue(err);
-      await expect(service.update(1, { hive_name: 'X' })).rejects.toThrow(NotFoundException);
+      await expect(service.update(1, { hive_name: 'X' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

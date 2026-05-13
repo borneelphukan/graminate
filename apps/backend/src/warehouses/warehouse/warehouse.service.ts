@@ -55,8 +55,6 @@ export class WarehouseService {
         data.users = { connect: { user_id: Number(user_id) } };
       }
 
-
-
       const newWarehouse = await this.prisma.warehouse.create({ data });
 
       return newWarehouse;

@@ -18,7 +18,10 @@ describe('LabourService', () => {
   beforeEach(async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LabourService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        LabourService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
     service = module.get<LabourService>(LabourService);
   });

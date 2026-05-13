@@ -19,7 +19,10 @@ describe('PoultryEggsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PoultryEggsService, { provide: PrismaService, useValue: mockPrisma }],
+      providers: [
+        PoultryEggsService,
+        { provide: PrismaService, useValue: mockPrisma },
+      ],
     }).compile();
 
     service = module.get<PoultryEggsService>(PoultryEggsService);
@@ -29,12 +32,18 @@ describe('PoultryEggsService', () => {
   describe('findByUserIdWithFilters', () => {
     it('applies filter options explicitly down into prisma select block', async () => {
       prisma.poultry_eggs.findMany.mockResolvedValue([]);
-      await service.findByUserIdWithFilters(1, { limit: 10, offset: 5, flockId: 100 });
-      expect(prisma.poultry_eggs.findMany).toHaveBeenCalledWith(expect.objectContaining({
-        take: 10,
-        skip: 5,
-        where: expect.objectContaining({ flock_id: 100, user_id: 1 }),
-      }));
+      await service.findByUserIdWithFilters(1, {
+        limit: 10,
+        offset: 5,
+        flockId: 100,
+      });
+      expect(prisma.poultry_eggs.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          take: 10,
+          skip: 5,
+          where: expect.objectContaining({ flock_id: 100, user_id: 1 }),
+        }),
+      );
     });
   });
 
@@ -42,11 +51,13 @@ describe('PoultryEggsService', () => {
     it('formats incoming inputs ensuring typed dates are parsed', async () => {
       prisma.poultry_eggs.create.mockResolvedValue({ id: 1 });
       await service.create({ date_collected: '2025-01-01' } as any);
-      expect(prisma.poultry_eggs.create).toHaveBeenCalledWith(expect.objectContaining({
-        data: expect.objectContaining({
-          date_collected: expect.any(Date),
+      expect(prisma.poultry_eggs.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            date_collected: expect.any(Date),
+          }),
         }),
-      }));
+      );
     });
   });
 });

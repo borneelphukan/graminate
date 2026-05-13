@@ -7,32 +7,61 @@ describe('UserService', () => {
   let repo: UserRepository;
 
   const mockRepo = {
-    getUserCount: jest.fn().mockResolvedValue({ status: 200, data: { count: 5 } }),
-    getAllUsers: jest.fn().mockResolvedValue({ status: 200, data: { users: [] } }),
-    getAvailableSubTypes: jest.fn().mockResolvedValue({ status: 200, data: { subTypes: [] } }),
-    getUserById: jest.fn().mockResolvedValue({ status: 200, data: { user: {} } }),
-    updateUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Updated' } }),
-    logout: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Done' } }),
+    getUserCount: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { count: 5 } }),
+    getAllUsers: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { users: [] } }),
+    getAvailableSubTypes: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { subTypes: [] } }),
+    getUserById: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { user: {} } }),
+    updateUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Updated' } }),
+    logout: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Done' } }),
     validateUser: jest.fn().mockResolvedValue({ user_id: 1 }),
-    registerUser: jest.fn().mockResolvedValue({ status: 201, data: { message: 'OK' } }),
-    deleteUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Deleted' } }),
-    verifyPassword: jest.fn().mockResolvedValue({ status: 200, data: { valid: true } }),
-    scheduleDowngrade: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    getBillingHistory: jest.fn().mockResolvedValue({ status: 200, data: { payments: [] } }),
-    getNotifications: jest.fn().mockResolvedValue({ status: 200, data: { notifications: [] } }),
-    markNotificationsRead: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    deleteNotification: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
-    clearAllNotifications: jest.fn().mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    registerUser: jest
+      .fn()
+      .mockResolvedValue({ status: 201, data: { message: 'OK' } }),
+    deleteUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Deleted' } }),
+    verifyPassword: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { valid: true } }),
+    scheduleDowngrade: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    getBillingHistory: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { payments: [] } }),
+    getNotifications: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { notifications: [] } }),
+    markNotificationsRead: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    deleteNotification: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
+    clearAllNotifications: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'OK' } }),
     findByEmail: jest.fn().mockResolvedValue({ user_id: 1 }),
-    createNotification: jest.fn().mockResolvedValue({ status: 201, data: { message: 'OK' } }),
+    createNotification: jest
+      .fn()
+      .mockResolvedValue({ status: 201, data: { message: 'OK' } }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UserService,
-        { provide: UserRepository, useValue: mockRepo },
-      ],
+      providers: [UserService, { provide: UserRepository, useValue: mockRepo }],
     }).compile();
 
     service = module.get<UserService>(UserService);
@@ -128,6 +157,9 @@ describe('UserService', () => {
 
   it('createNotification delegates', async () => {
     await service.createNotification('1', { title: 'T', message: 'M' });
-    expect(repo.createNotification).toHaveBeenCalledWith('1', { title: 'T', message: 'M' });
+    expect(repo.createNotification).toHaveBeenCalledWith('1', {
+      title: 'T',
+      message: 'M',
+    });
   });
 });

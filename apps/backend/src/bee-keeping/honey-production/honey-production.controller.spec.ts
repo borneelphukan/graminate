@@ -22,7 +22,9 @@ describe('HoneyProductionController', () => {
       providers: [{ provide: HoneyProductionService, useValue: mockService }],
     }).compile();
 
-    controller = module.get<HoneyProductionController>(HoneyProductionController);
+    controller = module.get<HoneyProductionController>(
+      HoneyProductionController,
+    );
     service = module.get<HoneyProductionService>(HoneyProductionService);
   });
 
@@ -34,7 +36,9 @@ describe('HoneyProductionController', () => {
 
   it('handles delete validation lifecycle', async () => {
     mockService.delete.mockResolvedValue(false);
-    await expect(controller.deleteHarvest(1)).rejects.toThrow(NotFoundException);
+    await expect(controller.deleteHarvest(1)).rejects.toThrow(
+      NotFoundException,
+    );
 
     mockService.delete.mockResolvedValue(true);
     expect((await controller.deleteHarvest(1)).message).toContain('deleted');

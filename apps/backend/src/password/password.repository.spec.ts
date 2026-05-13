@@ -19,7 +19,9 @@ jest.mock('nodemailer', () => ({
 jest.mock('mjml', () => jest.fn().mockReturnValue({ html: '<p>Reset</p>' }));
 
 jest.mock('fs', () => ({
-  readFileSync: jest.fn().mockReturnValue('<mjml>{{firstName}}{{resetLink}}</mjml>'),
+  readFileSync: jest
+    .fn()
+    .mockReturnValue('<mjml>{{firstName}}{{resetLink}}</mjml>'),
 }));
 
 jest.mock('path', () => ({
@@ -95,9 +97,7 @@ describe('PasswordRepository', () => {
         token: 'stored-hash',
         expires_at: new Date(Date.now() + 3600000),
       });
-      mockVerify
-        .mockResolvedValueOnce(true)
-        .mockResolvedValueOnce(false);
+      mockVerify.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
       prisma.users.findUnique.mockResolvedValue({ password: 'old-hash' });
       mockHash.mockResolvedValue('new-hash');
       prisma.users.update.mockResolvedValue({});
@@ -163,9 +163,7 @@ describe('PasswordRepository', () => {
         token: 'hash',
         expires_at: new Date(Date.now() + 3600000),
       });
-      mockVerify
-        .mockResolvedValueOnce(true)
-        .mockResolvedValueOnce(true);
+      mockVerify.mockResolvedValueOnce(true).mockResolvedValueOnce(true);
       prisma.users.findUnique.mockResolvedValue({ password: 'old-hash' });
 
       const result = await repo.handleReset({

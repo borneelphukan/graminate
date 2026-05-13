@@ -37,19 +37,32 @@ describe('ApicultureService', () => {
 
   describe('findByUserId', () => {
     it('should return apiaries with count mapped', async () => {
-      const mockData = [{ apiary_id: 1, apiary_name: 'Hive A', _count: { bee_hives: 5 } }];
+      const mockData = [
+        { apiary_id: 1, apiary_name: 'Hive A', _count: { bee_hives: 5 } },
+      ];
       prisma.apiculture.findMany.mockResolvedValue(mockData);
 
       const result = await service.findByUserId(1);
-      expect(result).toEqual([{ apiary_id: 1, apiary_name: 'Hive A', number_of_hives: 5, _count: { bee_hives: 5 } }]);
-      expect(prisma.apiculture.findMany).toHaveBeenCalledWith(expect.objectContaining({
-        where: { user_id: 1 },
-      }));
+      expect(result).toEqual([
+        {
+          apiary_id: 1,
+          apiary_name: 'Hive A',
+          number_of_hives: 5,
+          _count: { bee_hives: 5 },
+        },
+      ]);
+      expect(prisma.apiculture.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { user_id: 1 },
+        }),
+      );
     });
 
     it('should throw internal server error on fail', async () => {
       prisma.apiculture.findMany.mockRejectedValue(new Error('DB Fail'));
-      await expect(service.findByUserId(1)).rejects.toThrow(InternalServerErrorException);
+      await expect(service.findByUserId(1)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 
@@ -59,7 +72,11 @@ describe('ApicultureService', () => {
       prisma.apiculture.findUnique.mockResolvedValue(mockData);
 
       const result = await service.findById(1);
-      expect(result).toEqual({ apiary_id: 1, _count: { bee_hives: 10 }, number_of_hives: 10 });
+      expect(result).toEqual({
+        apiary_id: 1,
+        _count: { bee_hives: 10 },
+        number_of_hives: 10,
+      });
     });
 
     it('should return null when missing', async () => {
@@ -75,21 +92,37 @@ describe('ApicultureService', () => {
       prisma.apiculture.create.mockResolvedValue({ apiary_id: 2, ...dto });
 
       const result = await service.create(dto);
-      expect(result).toEqual({ apiary_id: 2, user_id: 1, apiary_name: 'New', number_of_hives: 0 });
+      expect(result).toEqual({
+        apiary_id: 2,
+        user_id: 1,
+        apiary_name: 'New',
+        number_of_hives: 0,
+      });
     });
   });
 
   describe('update', () => {
     it('should perform update and map response', async () => {
-      const mockData = { apiary_id: 1, _count: { bee_hives: 3 }, apiary_name: 'Updated' };
+      const mockData = {
+        apiary_id: 1,
+        _count: { bee_hives: 3 },
+        apiary_name: 'Updated',
+      };
       prisma.apiculture.update.mockResolvedValue(mockData);
 
       const result = await service.update(1, { apiary_name: 'Updated' });
-      expect(result).toEqual({ apiary_id: 1, _count: { bee_hives: 3 }, apiary_name: 'Updated', number_of_hives: 3 });
+      expect(result).toEqual({
+        apiary_id: 1,
+        _count: { bee_hives: 3 },
+        apiary_name: 'Updated',
+        number_of_hives: 3,
+      });
     });
 
     it('should fetch by id directly if no data keys provided', async () => {
-      const findSpy = jest.spyOn(service, 'findById').mockResolvedValue({} as any);
+      const findSpy = jest
+        .spyOn(service, 'findById')
+        .mockResolvedValue({} as any);
       await service.update(1, {});
       expect(findSpy).toHaveBeenCalledWith(1);
       expect(prisma.apiculture.update).not.toHaveBeenCalled();
@@ -109,7 +142,9 @@ describe('ApicultureService', () => {
       prisma.apiculture.deleteMany.mockResolvedValue({ count: 1 });
       const result = await service.resetForUser(1);
       expect(result.message).toContain('data reset');
-      expect(prisma.apiculture.deleteMany).toHaveBeenCalledWith({ where: { user_id: 1 } });
+      expect(prisma.apiculture.deleteMany).toHaveBeenCalledWith({
+        where: { user_id: 1 },
+      });
     });
 
     it('resetTable should clear all', async () => {

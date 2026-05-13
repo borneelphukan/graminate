@@ -103,8 +103,17 @@ describe('UserRepository', () => {
   describe('getAllUsers', () => {
     it('should return users with is_subscription_active flag', async () => {
       prisma.users.findMany.mockResolvedValue([
-        { ...mockUser, plan: 'PRO', subscription_expires_at: new Date(Date.now() + 86400000) },
-        { ...mockUser, user_id: 2, plan: 'FREE', subscription_expires_at: null },
+        {
+          ...mockUser,
+          plan: 'PRO',
+          subscription_expires_at: new Date(Date.now() + 86400000),
+        },
+        {
+          ...mockUser,
+          user_id: 2,
+          plan: 'FREE',
+          subscription_expires_at: null,
+        },
       ]);
       const result = await repo.getAllUsers();
       expect(result.status).toBe(200);
@@ -114,7 +123,9 @@ describe('UserRepository', () => {
 
     it('should throw InternalServerErrorException on DB error', async () => {
       prisma.users.findMany.mockRejectedValue(new Error('DB fail'));
-      await expect(repo.getAllUsers()).rejects.toThrow(InternalServerErrorException);
+      await expect(repo.getAllUsers()).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 
@@ -123,7 +134,12 @@ describe('UserRepository', () => {
       prisma.users.findUnique.mockResolvedValue({ type: 'Producer' });
       const result = await repo.getAvailableSubTypes('1');
       expect(result.status).toBe(200);
-      expect(result.data.subTypes).toEqual(['Poultry', 'Cattle Rearing', 'Apiculture', 'Floriculture']);
+      expect(result.data.subTypes).toEqual([
+        'Poultry',
+        'Cattle Rearing',
+        'Apiculture',
+        'Floriculture',
+      ]);
     });
 
     it('should return 404 when user not found', async () => {
@@ -239,7 +255,9 @@ describe('UserRepository', () => {
       (argon2.hash as jest.Mock).mockResolvedValue('hashed');
       prisma.users.create.mockRejectedValue(new Error('DB fail'));
 
-      await expect(repo.registerUser(registerBody)).rejects.toThrow(InternalServerErrorException);
+      await expect(repo.registerUser(registerBody)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 
@@ -270,7 +288,9 @@ describe('UserRepository', () => {
       prisma.users.findUnique.mockResolvedValue(mockUser);
       prisma.users.update.mockResolvedValue({});
 
-      await repo.updateUser('1', { sub_type: ['Poultry', 'InvalidType'] as any });
+      await repo.updateUser('1', {
+        sub_type: ['Poultry', 'InvalidType'] as any,
+      });
       const updateCall = prisma.users.update.mock.calls[0][0];
       expect(updateCall.data.sub_type).toEqual(['Poultry']);
     });
@@ -327,13 +347,17 @@ describe('UserRepository', () => {
 
     it('should throw on invalid email', async () => {
       prisma.users.findUnique.mockResolvedValue(null);
-      await expect(repo.validateUser('bad@example.com', 'pass')).rejects.toThrow('Invalid email or password');
+      await expect(
+        repo.validateUser('bad@example.com', 'pass'),
+      ).rejects.toThrow('Invalid email or password');
     });
 
     it('should throw on invalid password', async () => {
       prisma.users.findUnique.mockResolvedValue(mockUser);
       (argon2.verify as jest.Mock).mockResolvedValue(false);
-      await expect(repo.validateUser('john@example.com', 'wrong')).rejects.toThrow('Invalid email or password');
+      await expect(
+        repo.validateUser('john@example.com', 'wrong'),
+      ).rejects.toThrow('Invalid email or password');
     });
   });
 
@@ -380,7 +404,10 @@ describe('UserRepository', () => {
 
   describe('scheduleDowngrade', () => {
     it('should schedule downgrade from PRO to FREE', async () => {
-      prisma.users.findUnique.mockResolvedValue({ plan: 'PRO', subscription_expires_at: new Date(Date.now() + 86400000) });
+      prisma.users.findUnique.mockResolvedValue({
+        plan: 'PRO',
+        subscription_expires_at: new Date(Date.now() + 86400000),
+      });
       prisma.users.update.mockResolvedValue({});
 
       const result = await repo.scheduleDowngrade('1', 'FREE');
@@ -389,7 +416,10 @@ describe('UserRepository', () => {
     });
 
     it('should reject upgrade or same-level plan', async () => {
-      prisma.users.findUnique.mockResolvedValue({ plan: 'FREE', subscription_expires_at: null });
+      prisma.users.findUnique.mockResolvedValue({
+        plan: 'FREE',
+        subscription_expires_at: null,
+      });
       const result = await repo.scheduleDowngrade('1', 'PRO');
       expect(result.status).toBe(400);
     });
@@ -418,7 +448,9 @@ describe('UserRepository', () => {
 
   describe('getNotifications', () => {
     it('should return notifications', async () => {
-      prisma.notifications.findMany.mockResolvedValue([{ notification_id: 1, title: 'Test' }]);
+      prisma.notifications.findMany.mockResolvedValue([
+        { notification_id: 1, title: 'Test' },
+      ]);
       const result = await repo.getNotifications('1');
       expect(result.status).toBe(200);
       expect(result.data.notifications).toHaveLength(1);
@@ -472,7 +504,10 @@ describe('UserRepository', () => {
   describe('createNotification', () => {
     it('should create notification successfully', async () => {
       prisma.notifications.create.mockResolvedValue({});
-      const result = await repo.createNotification('1', { title: 'Test', message: 'Hello' });
+      const result = await repo.createNotification('1', {
+        title: 'Test',
+        message: 'Hello',
+      });
       expect(result.status).toBe(201);
     });
   });

@@ -74,18 +74,18 @@ describe('AuthRepository', () => {
     it('should throw UnauthorizedException when user not found', async () => {
       (userService.findByEmail as jest.Mock).mockResolvedValue(null);
 
-      await expect(repo.validateUser('unknown@example.com', 'password')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        repo.validateUser('unknown@example.com', 'password'),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException when password is invalid', async () => {
       (userService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
       (argon2.verify as jest.Mock).mockResolvedValue(false);
 
-      await expect(repo.validateUser('john@example.com', 'wrong')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        repo.validateUser('john@example.com', 'wrong'),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -121,7 +121,9 @@ describe('AuthRepository', () => {
     it('should propagate UnauthorizedException from validateUser', async () => {
       (userService.findByEmail as jest.Mock).mockResolvedValue(null);
 
-      await expect(repo.login('bad@example.com', 'pass')).rejects.toThrow(UnauthorizedException);
+      await expect(repo.login('bad@example.com', 'pass')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

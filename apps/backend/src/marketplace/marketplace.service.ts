@@ -84,9 +84,7 @@ export class MarketplaceService {
         },
       });
       if (!product) {
-        throw new NotFoundException(
-          `Product with ID ${productId} not found.`,
-        );
+        throw new NotFoundException(`Product with ID ${productId} not found.`);
       }
       return product;
     } catch (error) {
@@ -380,13 +378,18 @@ export class MarketplaceService {
   async addToCart(userId: number, productId: number, quantity = 1) {
     try {
       const existing = await this.prisma.marketplace_cart.findUnique({
-        where: { user_id_product_id: { user_id: userId, product_id: productId } },
+        where: {
+          user_id_product_id: { user_id: userId, product_id: productId },
+        },
       });
 
       if (existing) {
         return await this.prisma.marketplace_cart.update({
           where: { cart_id: existing.cart_id },
-          data: { quantity: existing.quantity + quantity, updated_at: new Date() },
+          data: {
+            quantity: existing.quantity + quantity,
+            updated_at: new Date(),
+          },
         });
       }
 
@@ -510,7 +513,9 @@ export class MarketplaceService {
     const keySecret = this.configService.get<string>('RAZORPAY_KEY_SECRET');
 
     if (!keyId || !keySecret) {
-      throw new InternalServerErrorException('Razorpay credentials not configured');
+      throw new InternalServerErrorException(
+        'Razorpay credentials not configured',
+      );
     }
 
     const razorpayRes = await fetch('https://api.razorpay.com/v1/orders', {
@@ -569,7 +574,9 @@ export class MarketplaceService {
   ) {
     const keySecret = this.configService.get<string>('RAZORPAY_KEY_SECRET');
     if (!keySecret) {
-      throw new InternalServerErrorException('Razorpay credentials not configured');
+      throw new InternalServerErrorException(
+        'Razorpay credentials not configured',
+      );
     }
 
     const generatedSignature = crypto
@@ -651,7 +658,13 @@ export class MarketplaceService {
         items: {
           include: {
             product: { select: { name: true, images: true, units: true } },
-            producer: { select: { first_name: true, last_name: true, business_name: true } },
+            producer: {
+              select: {
+                first_name: true,
+                last_name: true,
+                business_name: true,
+              },
+            },
           },
         },
       },
@@ -662,11 +675,26 @@ export class MarketplaceService {
     const order = await this.prisma.marketplace_orders.findUnique({
       where: { order_id: orderId },
       include: {
-        buyer: { select: { first_name: true, last_name: true, email: true, business_name: true } },
+        buyer: {
+          select: {
+            first_name: true,
+            last_name: true,
+            email: true,
+            business_name: true,
+          },
+        },
         items: {
           include: {
-            product: { select: { name: true, images: true, units: true, category: true } },
-            producer: { select: { first_name: true, last_name: true, business_name: true } },
+            product: {
+              select: { name: true, images: true, units: true, category: true },
+            },
+            producer: {
+              select: {
+                first_name: true,
+                last_name: true,
+                business_name: true,
+              },
+            },
           },
         },
       },
@@ -679,11 +707,24 @@ export class MarketplaceService {
     return this.prisma.marketplace_orders.findMany({
       orderBy: { created_at: 'desc' },
       include: {
-        buyer: { select: { first_name: true, last_name: true, email: true, business_name: true } },
+        buyer: {
+          select: {
+            first_name: true,
+            last_name: true,
+            email: true,
+            business_name: true,
+          },
+        },
         items: {
           include: {
             product: { select: { name: true, images: true, units: true } },
-            producer: { select: { first_name: true, last_name: true, business_name: true } },
+            producer: {
+              select: {
+                first_name: true,
+                last_name: true,
+                business_name: true,
+              },
+            },
           },
         },
       },
@@ -691,13 +732,20 @@ export class MarketplaceService {
   }
 
   async updateOrderStatus(orderId: number, status: string) {
-    const validStatuses = ['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'RELEASED', 'CANCELLED'];
+    const validStatuses = [
+      'PENDING',
+      'PAID',
+      'SHIPPED',
+      'DELIVERED',
+      'RELEASED',
+      'CANCELLED',
+    ];
     if (!validStatuses.includes(status)) {
       throw new BadRequestException('Invalid order status');
     }
 
     const updateData: any = { status: status as any };
-    
+
     if (status === 'SHIPPED') {
       updateData.shipped_at = new Date();
       updateData.delivered_at = null;
@@ -722,7 +770,9 @@ export class MarketplaceService {
 
     if (!order) throw new NotFoundException('Order not found');
     if (order.status !== 'DELIVERED' && order.status !== 'PAID') {
-      throw new BadRequestException('Order must be PAID or DELIVERED to release escrow');
+      throw new BadRequestException(
+        'Order must be PAID or DELIVERED to release escrow',
+      );
     }
 
     await this.prisma.$transaction([

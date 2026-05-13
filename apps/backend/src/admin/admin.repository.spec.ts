@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  UnauthorizedException,
-  ConflictException,
-} from '@nestjs/common';
+import { UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
@@ -43,11 +40,21 @@ describe('AdminRepository', () => {
   let userService: UserService;
 
   const mockUserService = {
-    getAllUsers: jest.fn().mockResolvedValue({ status: 200, data: { users: [] } }),
-    getUserCount: jest.fn().mockResolvedValue({ status: 200, data: { count: 0 } }),
-    getUserById: jest.fn().mockResolvedValue({ status: 200, data: { user: {} } }),
-    deleteUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Deleted' } }),
-    updateUser: jest.fn().mockResolvedValue({ status: 200, data: { message: 'Updated' } }),
+    getAllUsers: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { users: [] } }),
+    getUserCount: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { count: 0 } }),
+    getUserById: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { user: {} } }),
+    deleteUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Deleted' } }),
+    updateUser: jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { message: 'Updated' } }),
   };
 
   beforeEach(async () => {
@@ -55,7 +62,10 @@ describe('AdminRepository', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminRepository,
-        { provide: JwtService, useValue: { sign: jest.fn().mockReturnValue('admin-jwt') } },
+        {
+          provide: JwtService,
+          useValue: { sign: jest.fn().mockReturnValue('admin-jwt') },
+        },
         { provide: PrismaService, useValue: prismaMock },
         { provide: UserService, useValue: mockUserService },
       ],
@@ -79,7 +89,9 @@ describe('AdminRepository', () => {
 
     it('should throw UnauthorizedException when admin not found', async () => {
       prisma.admin.findUnique.mockResolvedValue(null);
-      await expect(repo.getAdminProfile('bad')).rejects.toThrow(UnauthorizedException);
+      await expect(repo.getAdminProfile('bad')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -94,14 +106,21 @@ describe('AdminRepository', () => {
         email: 'new@admin.com',
       });
 
-      const result = await repo.register('New', 'Admin', 'new@admin.com', 'pass123');
+      const result = await repo.register(
+        'New',
+        'Admin',
+        'new@admin.com',
+        'pass123',
+      );
       expect(result.status).toBe(201);
       expect(result.data.message).toBe('Admin registered');
     });
 
     it('should throw ConflictException when email exists', async () => {
       prisma.admin.findUnique.mockResolvedValue(mockAdmin);
-      await expect(repo.register('X', 'Y', 'admin@example.com', 'p')).rejects.toThrow(ConflictException);
+      await expect(
+        repo.register('X', 'Y', 'admin@example.com', 'p'),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -121,13 +140,17 @@ describe('AdminRepository', () => {
 
     it('should throw UnauthorizedException when admin not found', async () => {
       prisma.admin.findUnique.mockResolvedValue(null);
-      await expect(repo.login('bad@e.com', 'p')).rejects.toThrow(UnauthorizedException);
+      await expect(repo.login('bad@e.com', 'p')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException on wrong password', async () => {
       prisma.admin.findUnique.mockResolvedValue(mockAdmin);
       (argon2.verify as jest.Mock).mockResolvedValue(false);
-      await expect(repo.login('admin@example.com', 'wrong')).rejects.toThrow(UnauthorizedException);
+      await expect(repo.login('admin@example.com', 'wrong')).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -154,7 +177,9 @@ describe('AdminRepository', () => {
 
     it('updateUser delegates', async () => {
       await repo.updateUser('1', { first_name: 'X' });
-      expect(userService.updateUser).toHaveBeenCalledWith('1', { first_name: 'X' });
+      expect(userService.updateUser).toHaveBeenCalledWith('1', {
+        first_name: 'X',
+      });
     });
   });
 

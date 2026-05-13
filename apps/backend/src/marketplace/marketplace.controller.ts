@@ -148,7 +148,11 @@ export class MarketplaceController {
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: AddToCartDto,
   ) {
-    return this.marketplaceService.addToCart(dto.user_id, dto.product_id, dto.quantity);
+    return this.marketplaceService.addToCart(
+      dto.user_id,
+      dto.product_id,
+      dto.quantity,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
