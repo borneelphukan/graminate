@@ -1,0 +1,12 @@
+[build]
+  # Turborepo builds require running from the root, so we change directory up to the root
+  command = "cd ../.. && npx turbo build --filter=admin"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--version" # Suppress NPM logs, using PNPM
+
