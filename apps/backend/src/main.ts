@@ -10,13 +10,17 @@ async function bootstrap() {
   app.use(urlencoded({ limit: '50mb', extended: true }));
   app.setGlobalPrefix('api');
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : [
+        'http://localhost:3000',
+        'http://localhost:3002',
+        'http://localhost:3003',
+        'http://localhost:8081',
+      ];
+
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3002',
-      'http://localhost:3003',
-      'http://localhost:8081',
-    ],
+    origin: allowedOrigins,
     credentials: true,
   });
 
