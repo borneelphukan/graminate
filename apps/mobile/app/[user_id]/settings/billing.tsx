@@ -386,7 +386,7 @@ const BillingScreen = () => {
                     numberOfPages={Math.ceil(
                       filteredPayments.length / itemsPerPage
                     )}
-                    onPageChange={(p) => setPage(p)}
+                    onPageChange={(p: number) => setPage(p)}
                     label={`${from + 1}-${to} of ${filteredPayments.length}`}
                     numberOfItemsPerPage={itemsPerPage}
                     showFastPaginationControls

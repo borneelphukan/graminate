@@ -169,7 +169,7 @@ const WeatherSettingsScreen = () => {
               label="Set Your Location"
               placeholder="Enter city or zip code"
               value={weatherSettings.location}
-              onChangeText={(val) =>
+              onChangeText={(val: string) =>
                 setWeatherSettings((prev) => ({ ...prev, location: val }))
               }
             />

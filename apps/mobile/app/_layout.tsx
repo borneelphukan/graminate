@@ -10,6 +10,8 @@ import {
   Provider as PaperProvider,
 } from "react-native-paper";
 import "react-native-reanimated";
+import "../global.css";
+
 
 import {
   UserPreferencesProvider,

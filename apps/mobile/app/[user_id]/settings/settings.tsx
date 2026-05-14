@@ -168,7 +168,7 @@ const SettingsScreen = () => {
                       onPress={() =>
                         item.routeName && router.push(item.routeName as any)
                       }
-                      left={(props) => {
+                      left={(props: any) => {
                         let iconElement;
                         if (typeof item.icon === "function") {
                           const CustomIcon = item.icon;
@@ -188,7 +188,7 @@ const SettingsScreen = () => {
                           <List.Icon {...props} icon={() => iconElement} />
                         );
                       }}
-                      right={(props) => (
+                      right={(props: any) => (
                         <List.Icon
                           {...props}
                           icon={() => (

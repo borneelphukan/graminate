@@ -155,7 +155,7 @@ const AccountSettingsScreen = () => {
                 label="Password"
                 placeholder="Enter your password"
                 value={password}
-                onChangeText={(val) => {
+                onChangeText={(val: string) => {
                   setPassword(val);
                   setPasswordError(null);
                 }}

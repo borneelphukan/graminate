@@ -225,7 +225,7 @@ const AuthScreen = () => {
         mode="outlined"
         label="Email"
         value={email}
-        onChangeText={(text) => {
+        onChangeText={(text: string) => {
           setEmail(text);
           clearErrors();
         }}
@@ -239,7 +239,7 @@ const AuthScreen = () => {
         mode="outlined"
         label="Password"
         value={password}
-        onChangeText={(text) => {
+        onChangeText={(text: string) => {
           setPassword(text);
           clearErrors();
         }}

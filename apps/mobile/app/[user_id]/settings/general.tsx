@@ -245,7 +245,7 @@ const GeneralSettingsScreen = () => {
               label="Phone Number"
               placeholder="Enter Phone Number"
               value={user.phoneNumber}
-              onChangeText={(val) =>
+              onChangeText={(val: string) =>
                 setUser((prev) => ({ ...prev, phoneNumber: val }))
               }
               mode="outlined"
@@ -291,7 +291,7 @@ const GeneralSettingsScreen = () => {
               label="Address Line 1"
               placeholder="Enter Address Line 1"
               value={user.addressLine1}
-              onChangeText={(val) =>
+              onChangeText={(val: string) =>
                 setUser((prev) => ({ ...prev, addressLine1: val }))
               }
               mode="outlined"
@@ -311,7 +311,7 @@ const GeneralSettingsScreen = () => {
               label="Address Line 2 (Optional)"
               placeholder="Enter Address Line 2"
               value={user.addressLine2}
-              onChangeText={(val) =>
+              onChangeText={(val: string) =>
                 setUser((prev) => ({ ...prev, addressLine2: val }))
               }
               mode="outlined"
@@ -321,7 +321,7 @@ const GeneralSettingsScreen = () => {
                 label="City"
                 placeholder="Enter City"
                 value={user.city}
-                onChangeText={(val) =>
+                onChangeText={(val: string) =>
                   setUser((prev) => ({ ...prev, city: val }))
                 }
                 style={styles.halfWidth}
@@ -342,7 +342,7 @@ const GeneralSettingsScreen = () => {
                 label="State"
                 placeholder="Enter State"
                 value={user.state}
-                onChangeText={(val) =>
+                onChangeText={(val: string) =>
                   setUser((prev) => ({ ...prev, state: val }))
                 }
                 style={styles.halfWidth}
@@ -364,7 +364,7 @@ const GeneralSettingsScreen = () => {
               label="Postal Code"
               placeholder="Enter Postal Code"
               value={user.postalCode}
-              onChangeText={(val) =>
+              onChangeText={(val: string) =>
                 setUser((prev) => ({ ...prev, postalCode: val }))
               }
               mode="outlined"

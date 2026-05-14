@@ -894,7 +894,7 @@ const CRM = () => {
               anchor={
                 <Button
                   onPress={() => setSortMenuVisible(true)}
-                  icon={({ size, color }) => (
+                  icon={({ size, color }: any) => (
                     <Icon
                       type={(sortOrder === "desc" ? "arrow-down" : "arrow-up") as any}
                       size={size}
@@ -936,7 +936,7 @@ const CRM = () => {
         </View>
         {renderContent()}
         <FAB
-          icon={({ size, color }) => (
+          icon={({ size, color }: any) => (
             <Icon type={"plus" as any} size={size} color={color} />
           )}
           label={VIEW_CONFIG[view].addText}

@@ -5,10 +5,10 @@ import {
   Card,
   Icon,
   Text,
+  IconSource,
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
-import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 
 type VeterinaryCardProps = {
   birdsVaccinated: number | null;

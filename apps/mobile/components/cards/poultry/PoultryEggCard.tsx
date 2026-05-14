@@ -21,10 +21,10 @@ import {
   Menu,
   SegmentedButtons,
   Text,
+  IconSource,
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
-import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 
 // --- Type Definitions ---
 type LatestEggMetrics = {
@@ -417,7 +417,7 @@ const PoultryEggCard = ({
           </Text>
           <SegmentedButtons
             value={activeView}
-            onValueChange={(value) => setActiveView(value as ViewOption)}
+            onValueChange={(value: string) => setActiveView(value as ViewOption)}
             buttons={viewToggleOptions}
           />
         </View>

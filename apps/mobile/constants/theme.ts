@@ -78,3 +78,21 @@ export const AppDarkTheme = {
     },
   },
 };
+
+export const Colors = {
+  light: {
+    text: brandColors.foregroundLight,
+    background: brandColors.backgroundLight,
+    tint: brandColors.green100,
+    tabIconDefault: '#ccc',
+    tabIconSelected: brandColors.green100,
+  },
+  dark: {
+    text: brandColors.foregroundDark,
+    background: brandColors.backgroundDark,
+    tint: brandColors.green200,
+    tabIconDefault: '#ccc',
+    tabIconSelected: brandColors.green200,
+  },
+};
+
