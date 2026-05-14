@@ -50,9 +50,23 @@
       "title": "Industry Expertise",
       "content": "From family farms to national distribution networks, Graminate provides modern tools to maximize efficiency."
     },
+    "future": {
+      "titlePrefix": "Addressing the ",
+      "titleHighlight": "Complexities",
+      "titleSuffix": " of Future Farming.",
+      "desc": "Traditional data silos lead to resource wastage. Graminate harmonizes disparate variables into one intelligent ecosystem."
+    },
     "transform": {
       "badge": "Digital Transformation in Agriculture",
       "title": "Innovative Tools to Future-Proof Your Farm",
+      "core": "Strategic Core",
+      "orchestration": "Seamless orchestration across every layer of your agrarian business model.",
+      "governanceTitle": "Total Governance",
+      "governanceDesc": "Rigorous tracking of access controls and operational histories.",
+      "efficiencyTitle": "High Efficiency",
+      "efficiencyDesc": "Optimized supply paths that reduce delivery overhead.",
+      "sustainabilityTitle": "Sustainability Driven",
+      "sustainabilityDesc": "Eco-optimized logistics workflows to improve carbon scores.",
       "desc1": "At {brand}, we bridge the gap between traditional agriculture and modern technology. Our platform empowers farmers with data-driven insights that were previously reserved for giant industrial operations.",
       "desc2": "By blending deep expertise in agricultural science with cutting-edge software engineering, we provide a seamless experience for tracking livestock health, managing large inventories, and optimizing workflows.",
       "desc3": "Whether you are an individual farmer or managing a cooperative, {brand} provides the strategic tools needed for the evolution of modern, sustainable agriculture.",
@@ -60,7 +74,16 @@
     },
     "onboarding": {
       "title": "Getting Started with {brand}",
-      "subtitle": "A simplified onboarding process designed to get your farm running on our platform with minimal disruption."
+      "subtitle": "A simplified onboarding process designed to get your farm running on our platform with minimal disruption.",
+      "scalabilityPrefix": "Scalable. ",
+      "scalabilityHighlight": "Simpler.",
+      "scalabilitySuffix": " Immediate.",
+      "step1Title": "Setup Profile",
+      "step1Desc": "Configure initial currency and units.",
+      "step2Title": "Select Modules",
+      "step2Desc": "Activate Specialized Modules.",
+      "step3Title": "Sync Data",
+      "step3Desc": "Import your farm assets."
     },
     "mission": {
       "badge": "Our Mission",
@@ -68,13 +91,51 @@
       "desc1": "At {brand}, we believe that the backbone of our society deserves the most advanced tools. We transform complex agricultural workflows into intuitive, high-performance digital experiences.",
       "desc2": "From independent poultry farmers to large-scale dairy cooperatives, we provide the code that enables your vision. Let’s lead the agricultural revolution together.",
       "cta": "Explore Our Plans"
+    },
+    "faq": {
+      "badge": "Information Hub",
+      "title": "Frequently Asked",
+      "q1": "Is Graminate suitable for individual smallholders?",
+      "a1": "Absolutely. While enterprise-scalable, Graminate has lightweight entry modules designed specifically for managing independent farms efficiently.",
+      "q2": "Does the AI assistant require internet connection?",
+      "a2": "Certain forecasting and chat functionalities require a connection, however, localized tracking tools will synchronize automatically once you re-connect.",
+      "q3": "Can I integrate with external IoT sensors?",
+      "a3": "Yes, our API supports major agricultural sensors for automated environmental condition logging directly into your ERP dashboard."
+    },
+    "cta": {
+      "title": "Ready to scale your vision?",
+      "desc": "Join forward-thinking agrarian pioneers using Graminate's intelligent Operating System.",
+      "placeholder": "Enter email for early access",
+      "button": "Get Started"
+    },
+    "meta": {
+      "titleSuffix": "Precise Agricultural Operating System",
+      "description": "The definitive modular management ecosystem for modern agriculture, powered by actionable data and AI models."
     }
   },
   "footer": {
     "tagline": "Empowering the backbone of society with next-generation agricultural ERP and specialized AI. Building the future of farming, one byte at a time.",
+    "tagline_short": "Helping farmers grow more with intelligent software.",
+    "product_heading": "Product",
+    "legal_heading": "Legal",
+    "built_in_india": "Built in India",
+    "company_name": "Graminate Technologies Private Limited",
     "rights": "All rights reserved.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
+    "product": {
+      "technology": "Technology",
+      "about_us": "About Us",
+      "careers": "Careers",
+      "contact": "Contact",
+      "waitlist": "Waitlist"
+    },
+    "legal": {
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "cookies": "Cookie Policy",
+      "posh": "POSH Policy"
+    },
     "links": {
       "erp": "Farm Management ERP",
       "ai": "AI Assistant",
@@ -104,6 +165,53 @@
     "research": {
       "title": "Research & Institutions",
       "desc": "Data-driven insights for agricultural universities and research bodies studying breed productivity and crop yields."
+    }
+  },
+  "aboutus": {
+    "meta": {
+      "title": "About | Graminate",
+      "desc": "We build the intelligent infrastructure powering the next evolution of sustainable, high-performance farming."
+    },
+    "hero": {
+      "genesis": "Our Genesis",
+      "titlePrefix": "Re-architecting ",
+      "titleHighlight": "Agrarian",
+      "titleSuffix": " Horizons.",
+      "desc": "Graminate was founded to dissolve the boundaries between traditional farming intelligence and state-of-the-art software automation.",
+      "waitlist": "Join the Waitlist"
+    },
+    "narrative": {
+      "vision": "The Vision",
+      "titlePrefix": "Solving Data ",
+      "titleHighlight": "Fragmentation",
+      "titleSuffix": " at the Root.",
+      "highlight": "Agriculture is humanity’s most vital legacy, yet its operational logistics remain disconnected. From siloed climate inputs to disconnected inventory systems, modern farm managers must coordinate highly volatile variable chains in isolation.",
+      "p1": "At Graminate, we realized that technology alone is not the solution; orchestration is. Traditional software treats farming as an afterthought, serving generic CRM or simple accounting interfaces. We built Graminate as an absolute operating system designed exclusively for the multi-dimensional realities of crops, livestock, smart warehouses, and distributed supply chains.",
+      "p2": "Through advanced telemetry harmonization and specialized large language models, our infrastructure empowers modern agrarian enterprises to forecast resource allocation, automate logistical replenishment, and safeguard operational histories within a single, intuitive, and cinematic interface.",
+      "stat_integrated": "Integrated Operations",
+      "stat_availability": "System Availability"
+    },
+    "pillars": {
+      "title": "Foundational Pillars",
+      "desc": "Built to secure durability, intelligence, and absolute precision.",
+      "p1_title": "Cognitive Agronomy",
+      "p1_desc": "Specialized generative models trained specifically on agro-ecological data pipelines, yielding instant diagnostic intelligence.",
+      "p2_title": "Absolute Orchestration",
+      "p2_desc": "Unified ERP schemas tracking assets, workflows, and transactional ledgers in instant synchrony.",
+      "p3_title": "Rigorous Transparency",
+      "p3_desc": "Traceable operational histories designed to streamline audits, verify compliance, and minimize logistic waste."
+    },
+    "leadership": {
+      "badge": "Leadership",
+      "title": "The Founders.",
+      "desc": "Driven by an unyielding curiosity and commitment to empowering agrarian legacies across India.",
+      "ceo_role": "CEO & Founder",
+      "ceo_bio": "Leading strategic and technical innovation of Graminate, ensuring the delivery of impactful, high-performance agrarian tools."
+    },
+    "cta": {
+      "title": "Ready to Scale Your Enterprise?",
+      "desc": "Secure priority queue access to our next-generation deployment rollout today.",
+      "btn": "Secure Early Access"
     }
   }
 }

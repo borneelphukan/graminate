@@ -7,18 +7,18 @@ const Footer = () => {
   const { t } = useTranslation();
 
   const productLinks = [
-    { label: "Technology", href: "/technology" },
-    { label: "About Us", href: "/company/about_us" },
-    { label: "Careers", href: "/company/career" },
-    { label: "Contact", href: "/contact" },
-    { label: "Waitlist", href: "/waitlist" },
+    { label: t("footer.product.technology"), href: "/technology" },
+    { label: t("footer.product.about_us"), href: "/company/about_us" },
+    { label: t("footer.product.careers"), href: "/company/career" },
+    { label: t("footer.product.contact"), href: "/contact" },
+    { label: t("footer.product.waitlist"), href: "/waitlist" },
   ];
 
   const legalLinks = [
-    { label: "Terms and Conditions", href: "/terms" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Cookie Policy", href: "/cookies" },
-    { label: "POSH Policy", href: "/posh" },
+    { label: t("footer.legal.terms"), href: "/terms" },
+    { label: t("footer.legal.privacy"), href: "/privacy" },
+    { label: t("footer.legal.cookies"), href: "/cookies" },
+    { label: t("footer.legal.posh"), href: "/posh" },
   ];
 
   return (
@@ -32,7 +32,7 @@ const Footer = () => {
               {t("nav.brand")}
             </h2>
             <p className="text-base text-gray-400 leading-relaxed max-w-sm">
-              Helping farmers grow more with intelligent software.
+              {t("footer.tagline_short")}
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-5 text-gray-500 pt-2">
@@ -78,7 +78,7 @@ const Footer = () => {
             {/* Product Column */}
             <div>
               <h3 className="text-sm font-bold text-white uppercase tracking-widest">
-                Product
+                {t("footer.product_heading")}
               </h3>
               <ul role="list" className="mt-4 space-y-3">
                 {productLinks.map((link) => (
@@ -97,7 +97,7 @@ const Footer = () => {
             {/* Legal Column */}
             <div>
               <h3 className="text-sm font-bold text-white uppercase tracking-widest">
-                Legal
+                {t("footer.legal_heading")}
               </h3>
               <ul role="list" className="mt-4 space-y-3">
                 {legalLinks.map((link) => (
@@ -119,10 +119,10 @@ const Footer = () => {
         {/* Bottom Bottom Bar */}
         <div className="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-500">
-            Graminate Technologies Private Limited
+            {t("footer.company_name")}
           </p>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-            <span>Built in India</span>
+            <span>{t("footer.built_in_india")}</span>
             <span className="text-sm" role="img" aria-label="India Flag">🇮🇳</span>
           </div>
         </div>

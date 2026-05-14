@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button, Icon } from "@graminate/ui";
 import { useRouter } from "next/router";
 import DefaultLayout from "@/layout/DefaultLayout";
+import { useTranslation } from "@/contexts/I18nContext";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -24,14 +25,15 @@ const staggerContainer = {
 
 export default function AboutUs() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <DefaultLayout>
       <Head>
-        <title>About | Graminate</title>
+        <title>{t("aboutus.meta.title")}</title>
         <meta
           name="description"
-          content="We build the intelligent infrastructure powering the next evolution of sustainable, high-performance farming."
+          content={t("aboutus.meta.desc")}
         />
       </Head>
 
@@ -58,18 +60,18 @@ export default function AboutUs() {
             className="max-w-4xl mx-auto"
           >
             <span className="inline-block bg-emerald-500/10 backdrop-blur-xl text-emerald-600 border border-emerald-500/20 rounded-full px-4 py-1 text-xs uppercase tracking-[0.3em] font-black mb-6">
-              Our Genesis
+              {t("aboutus.hero.genesis")}
             </span>
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter leading-[0.95] mb-8">
-              Re-architecting <span className="text-emerald-600 font-medium">Agrarian</span> Horizons.
+              {t("aboutus.hero.titlePrefix")}<span className="text-emerald-600 font-medium">{t("aboutus.hero.titleHighlight")}</span>{t("aboutus.hero.titleSuffix")}
             </h1>
             <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed mb-10 text-balance">
-              Graminate was founded to dissolve the boundaries between traditional farming intelligence and state-of-the-art software automation.
+              {t("aboutus.hero.desc")}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
-                label="Join the Waitlist" 
+                label={t("aboutus.hero.waitlist")} 
                 variant="primary" 
                 className="!h-14 !px-8 shadow-lg shadow-emerald-600/10 rounded-full"
                 onClick={() => router.push("/waitlist")}
@@ -91,10 +93,10 @@ export default function AboutUs() {
             <div className="lg:col-span-5 lg:sticky lg:top-32">
               <motion.div {...fadeInUp}>
                 <span className="text-emerald-600 uppercase font-black tracking-[0.2em] text-xs mb-4 block">
-                  The Vision
+                  {t("aboutus.narrative.vision")}
                 </span>
                 <h2 className="text-2xl md:text-4xl font-bold leading-[1.05] tracking-tight text-slate-900">
-                  Solving Data <span className="text-emerald-600 font-medium">Fragmentation</span> at the Root.
+                  {t("aboutus.narrative.titlePrefix")}<span className="text-emerald-600 font-medium">{t("aboutus.narrative.titleHighlight")}</span>{t("aboutus.narrative.titleSuffix")}
                 </h2>
               </motion.div>
             </div>
@@ -103,16 +105,16 @@ export default function AboutUs() {
             <div className="lg:col-span-7 space-y-10">
               <motion.div {...fadeInUp} transition={{ delay: 0.1 }} className="border-l-2 border-emerald-500/30 pl-8 py-2">
                 <p className="text-xl md:text-2xl text-slate-800 leading-relaxed font-light">
-                  Agriculture is humanity’s most vital legacy, yet its operational logistics remain disconnected. From siloed climate inputs to disconnected inventory systems, modern farm managers must coordinate highly volatile variable chains in isolation.
+                  {t("aboutus.narrative.highlight")}
                 </p>
               </motion.div>
 
               <motion.div {...fadeInUp} transition={{ delay: 0.2 }} className="space-y-6 text-slate-600 text-lg font-light leading-relaxed pl-8">
                 <p>
-                  At Graminate, we realized that technology alone is not the solution; orchestration is. Traditional software treats farming as an afterthought, serving generic CRM or simple accounting interfaces. We built Graminate as an absolute operating system designed exclusively for the multi-dimensional realities of crops, livestock, smart warehouses, and distributed supply chains.
+                  {t("aboutus.narrative.p1")}
                 </p>
                 <p>
-                  Through advanced telemetry harmonization and specialized large language models, our infrastructure empowers modern agrarian enterprises to forecast resource allocation, automate logistical replenishment, and safeguard operational histories within a single, intuitive, and cinematic interface.
+                  {t("aboutus.narrative.p2")}
                 </p>
               </motion.div>
 
@@ -125,8 +127,8 @@ export default function AboutUs() {
                 className="grid grid-cols-2 gap-8 pt-8 pl-8"
               >
                 {[
-                  { label: "Integrated Operations", value: "100%" },
-                  { label: "System Availability", value: "99.9%" },
+                  { label: t("aboutus.narrative.stat_integrated"), value: "100%" },
+                  { label: t("aboutus.narrative.stat_availability"), value: "99.9%" },
                 ].map((stat, i) => (
                   <motion.div 
                     key={i} 
@@ -152,10 +154,10 @@ export default function AboutUs() {
         <div className="container mx-auto px-6 lg:px-12 relative z-10">
           <motion.div {...fadeInUp} className="text-center mb-20 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">
-              Foundational Pillars
+              {t("aboutus.pillars.title")}
             </h2>
             <p className="text-slate-600 text-lg font-light">
-              Built to secure durability, intelligence, and absolute precision.
+              {t("aboutus.pillars.desc")}
             </p>
           </motion.div>
 
@@ -163,18 +165,18 @@ export default function AboutUs() {
             {[
               {
                 icon: "psychology",
-                title: "Cognitive Agronomy",
-                desc: "Specialized generative models trained specifically on agro-ecological data pipelines, yielding instant diagnostic intelligence."
+                title: t("aboutus.pillars.p1_title"),
+                desc: t("aboutus.pillars.p1_desc")
               },
               {
                 icon: "account_tree",
-                title: "Absolute Orchestration",
-                desc: "Unified ERP schemas tracking assets, workflows, and transactional ledgers in instant synchrony."
+                title: t("aboutus.pillars.p2_title"),
+                desc: t("aboutus.pillars.p2_desc")
               },
               {
                 icon: "verified",
-                title: "Rigorous Transparency",
-                desc: "Traceable operational histories designed to streamline audits, verify compliance, and minimize logistic waste."
+                title: t("aboutus.pillars.p3_title"),
+                desc: t("aboutus.pillars.p3_desc")
               }
             ].map((pillar, idx) => (
               <motion.div
@@ -204,13 +206,13 @@ export default function AboutUs() {
             <div className="lg:col-span-4">
               <motion.div {...fadeInUp}>
                 <span className="text-emerald-600 font-black uppercase tracking-[0.2em] text-xs mb-4 block">
-                  Leadership
+                  {t("aboutus.leadership.badge")}
                 </span>
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-6">
-                  The Founders.
+                  {t("aboutus.leadership.title")}
                 </h2>
                 <p className="text-slate-600 font-light text-lg leading-relaxed">
-                  Driven by an unyielding curiosity and commitment to empowering agrarian legacies across India.
+                  {t("aboutus.leadership.desc")}
                 </p>
               </motion.div>
             </div>
@@ -233,9 +235,9 @@ export default function AboutUs() {
                     />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900">Borneel B. Phukan</h3>
-                  <p className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-4 mt-1">CEO & Founder</p>
+                  <p className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-4 mt-1">{t("aboutus.leadership.ceo_role")}</p>
                   <p className="text-slate-600 text-sm leading-relaxed font-light">
-                    Leading strategic and technical innovation of Graminate, ensuring the delivery of impactful, high-performance agrarian tools.
+                    {t("aboutus.leadership.ceo_bio")}
                   </p>
                 </motion.div>
               </div>
@@ -261,13 +263,13 @@ export default function AboutUs() {
         <div className="container mx-auto px-6 lg:px-12 relative z-20 text-center max-w-3xl">
           <motion.div {...fadeInUp}>
             <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-6 tracking-tight">
-              Ready to Scale Your Enterprise?
+              {t("aboutus.cta.title")}
             </h2>
             <p className="text-slate-600 text-lg font-light mb-10 leading-relaxed max-w-xl mx-auto">
-              Secure priority queue access to our next-generation deployment rollout today.
+              {t("aboutus.cta.desc")}
             </p>
             <Button 
-              label="Secure Early Access" 
+              label={t("aboutus.cta.btn")} 
               variant="primary" 
               className="h-16 px-10 rounded-full !text-lg active:scale-95 shadow-lg shadow-emerald-600/10 transition-all"
               onClick={() => router.push("/waitlist")}

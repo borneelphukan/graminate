@@ -77,9 +77,9 @@ const Navbar = ({
     const userId = localStorage.getItem("user_id");
 
     if (token && userId) {
-      window.location.assign(`http://localhost:3000/${userId}`);
+      window.location.assign(`https://graminate.netlify.app/${userId}`);
     } else {
-      window.location.assign("http://localhost:3000/login");
+      window.location.assign("https://graminate.netlify.app/login");
     }
   };
 
@@ -275,6 +275,7 @@ const Navbar = ({
                       {[
                         { code: "en", label: "English", flag: "🇺🇸" },
                         { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+                        { code: "as", label: "অসমীয়া", flag: "🇮🇳" },
                       ].map((lang) => (
                         <MenuItem key={lang.code}>
                           {({ active }) => (
@@ -336,7 +337,7 @@ const Navbar = ({
                 {signIn && (
                   <button
                     onClick={handleLogin}
-                    className="block border-b border-gray-300 p-2 hover:text-gray-300 w-full text-center"
+                    className="block border-b border-gray-700 p-2 hover:text-gray-300 w-full text-center"
                   >
                     {t("nav.login")}
                   </button>
@@ -358,10 +359,10 @@ const Navbar = ({
                   return (
                     <div key={item.label}>
                       <button
-                        className="block w-full border-b border-gray-300 p-2 text-center hover:text-gray-300"
+                        className="block w-full border-b border-gray-700 p-2 text-center hover:text-gray-300 capitalize"
                         onClick={() => handleMobileDropdownToggle(key)}
                       >
-                        {item.label}
+                        {t(`nav.${item.label.toLowerCase()}`)}
                       </button>
                       {isOpen && (
                         <div className="mt-2 bg-gray-700/50 backdrop-blur-sm p-4 rounded-2xl border border-white/5 space-y-4 shadow-inner">
@@ -375,10 +376,10 @@ const Navbar = ({
                     <Link
                       key={item.label}
                       href={item.path}
-                      className="block border-b border-gray-300 p-2 hover:text-gray-300"
+                      className="block border-b border-gray-700 p-2 hover:text-gray-300 capitalize"
                       onClick={closeBannersAndMenu}
                     >
-                      {item.label}
+                      {t(`nav.${item.label.toLowerCase()}`)}
                     </Link>
                   );
                 }
@@ -392,6 +393,31 @@ const Navbar = ({
                   {t("nav.login")}
                 </button>
               )}
+
+              {/* Mobile Language Selector */}
+              <div className="flex justify-center items-center gap-4 mt-6 pt-6 border-t border-gray-700">
+                {[
+                  { code: "en", label: "EN", flag: "🇺🇸" },
+                  { code: "hi", label: "HI", flag: "🇮🇳" },
+                  { code: "as", label: "AS", flag: "🇮🇳" },
+                ].map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      router.push(router.pathname, router.asPath, { locale: lang.code });
+                      closeBannersAndMenu();
+                    }}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-black border transition-all duration-200 ${
+                      router.locale === lang.code 
+                        ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)] scale-105" 
+                        : "bg-gray-800/80 text-gray-400 border-gray-700 hover:text-white hover:border-gray-600"
+                    }`}
+                  >
+                    <span className="text-sm leading-none">{lang.flag}</span>
+                    <span className="tracking-wider leading-none">{lang.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </Transition>
         </div>

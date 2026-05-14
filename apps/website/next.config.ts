@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     ],
   },
   i18n: {
-    locales: ["en", "hi"],
+    locales: ["en", "hi", "as"],
     defaultLocale: "en",
   },
   transpilePackages: ["@graminate/ui"],

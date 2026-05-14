@@ -128,46 +128,46 @@ export default function Home() {
   const onboardingSteps = [
     {
       num: "01",
-      title: "Setup Profile",
-      desc: "Configure initial currency and units.",
+      title: t("home.onboarding.step1Title"),
+      desc: t("home.onboarding.step1Desc"),
       icon: "account_circle"
     },
     {
       num: "02",
-      title: "Select Modules",
-      desc: "Activate Specialized Modules.",
+      title: t("home.onboarding.step2Title"),
+      desc: t("home.onboarding.step2Desc"),
       icon: "widgets"
     },
     {
       num: "03",
-      title: "Sync Data",
-      desc: "Import your farm assets.",
+      title: t("home.onboarding.step3Title"),
+      desc: t("home.onboarding.step3Desc"),
       icon: "cloud_sync"
     }
   ];
 
   const faqs = [
     {
-      q: "Is Graminate suitable for individual smallholders?",
-      a: "Absolutely. While enterprise-scalable, Graminate has lightweight entry modules designed specifically for managing independent farms efficiently."
+      q: t("home.faq.q1"),
+      a: t("home.faq.a1")
     },
     {
-      q: "Does the AI assistant require internet connection?",
-      a: "Certain forecasting and chat functionalities require a connection, however, localized tracking tools will synchronize automatically once you re-connect."
+      q: t("home.faq.q2"),
+      a: t("home.faq.a2")
     },
     {
-      q: "Can I integrate with external IoT sensors?",
-      a: "Yes, our API supports major agricultural sensors for automated environmental condition logging directly into your ERP dashboard."
+      q: t("home.faq.q3"),
+      a: t("home.faq.a3")
     }
   ];
 
   return (
     <>
       <Head>
-        <title>{t("nav.brand")} | Precise Agricultural Operating System</title>
+        <title>{t("nav.brand")} | {t("home.meta.titleSuffix")}</title>
         <meta
           name="description"
-          content="The definitive modular management ecosystem for modern agriculture, powered by actionable data and AI models."
+          content={t("home.meta.description")}
         />
       </Head>
 
@@ -277,12 +277,12 @@ export default function Home() {
               >
                 <div>
                   <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-balance leading-[1.1]">
-                    Addressing the <span className="text-emerald-400 font-medium italic">Complexities</span> of Future Farming.
+                    {t("home.future.titlePrefix")}<span className="text-emerald-400 font-medium italic">{t("home.future.titleHighlight")}</span>{t("home.future.titleSuffix")}
                   </h2>
                 </div>
                 <div className="flex items-center">
                   <p className="text-slate-400 text-lg max-w-md border-l-2 border-emerald-500/50 pl-6 py-2">
-                    Traditional data silos lead to resource wastage. Graminate harmonizes disparate variables into one intelligent ecosystem.
+                    {t("home.future.desc")}
                   </p>
                 </div>
               </motion.div>
@@ -338,21 +338,21 @@ export default function Home() {
                 className="text-center mb-20"
               >
                 <motion.p variants={staggerItem} className="text-emerald-600 font-bold tracking-[0.2em] text-sm uppercase mb-4">
-                  Strategic Core
+                  {t("home.transform.core")}
                 </motion.p>
                 <motion.h2 variants={staggerItem} className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
                   {t("home.transform.title")}
                 </motion.h2>
                 <motion.p variants={staggerItem} className="mt-5 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                  Seamless orchestration across every layer of your agrarian business model.
+                  {t("home.transform.orchestration")}
                 </motion.p>
               </motion.div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                  { icon: "verified_user", color: "bg-emerald-500", title: "Total Governance", desc: "Rigorous tracking of access controls and operational histories." },
-                  { icon: "rocket_launch", color: "bg-blue-500", title: "High Efficiency", desc: "Optimized supply paths that reduce delivery overhead." },
-                  { icon: "eco", color: "bg-green-500", title: "Sustainability Driven", desc: "Eco-optimized logistics workflows to improve carbon scores." }
+                  { icon: "verified_user", color: "bg-emerald-500", title: t("home.transform.governanceTitle"), desc: t("home.transform.governanceDesc") },
+                  { icon: "rocket_launch", color: "bg-blue-500", title: t("home.transform.efficiencyTitle"), desc: t("home.transform.efficiencyDesc") },
+                  { icon: "eco", color: "bg-green-500", title: t("home.transform.sustainabilityTitle"), desc: t("home.transform.sustainabilityDesc") }
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -391,7 +391,7 @@ export default function Home() {
                 className="text-center mb-20"
               >
                 <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
-                  Scalable. <span className="text-emerald-600 font-medium">Simpler.</span> Immediate.
+                  {t("home.onboarding.scalabilityPrefix")}<span className="text-emerald-600 font-medium">{t("home.onboarding.scalabilityHighlight")}</span>{t("home.onboarding.scalabilitySuffix")}
                 </h2>
               </motion.div>
 
@@ -435,9 +435,9 @@ export default function Home() {
                 viewport={{ once: true }}
                 className="text-center mb-16"
               >
-                <p className="text-sm font-bold tracking-[0.2em] text-emerald-600 uppercase mb-3">Information Hub</p>
+                <p className="text-sm font-bold tracking-[0.2em] text-emerald-600 uppercase mb-3">{t("home.faq.badge")}</p>
                 <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                  Frequently Asked
+                  {t("home.faq.title")}
                 </h2>
               </motion.div>
 
@@ -482,7 +482,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-[1.05] mb-8"
               >
-                Ready to scale your vision?
+                {t("home.cta.title")}
               </motion.h2>
               
               <motion.p 
@@ -492,7 +492,7 @@ export default function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-emerald-100 text-lg md:text-xl mb-12 max-w-xl"
               >
-                Join forward-thinking agrarian pioneers using Graminate&apos;s intelligent Operating System.
+                {t("home.cta.desc")}
               </motion.p>
 
               <motion.div 
@@ -504,7 +504,7 @@ export default function Home() {
               >
                 <input 
                   type="email" 
-                  placeholder="Enter email for early access" 
+                  placeholder={t("home.cta.placeholder")} 
                   value={footerEmail}
                   onChange={(e) => setFooterEmail(e.target.value)}
                   className="w-full h-14 px-8 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl text-white placeholder:text-emerald-100/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-lg"
@@ -513,7 +513,7 @@ export default function Home() {
                   onClick={() => router.push(`/waitlist?email=${encodeURIComponent(footerEmail)}`)}
                   className="w-full sm:w-auto h-14 px-8 bg-emerald-500 text-white font-black rounded-full hover:bg-white hover:text-emerald-900 transition-all duration-300 whitespace-nowrap shadow-xl"
                 >
-                  Get Started
+                  {t("home.cta.button")}
                 </button>
               </motion.div>
             </div>

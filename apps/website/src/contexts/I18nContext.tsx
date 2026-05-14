@@ -2,12 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import en from "../translations/en.json";
 import hi from "../translations/hi.json";
+import as from "../translations/as.json";
 
 interface Translation {
   [key: string]: string | Translation;
 }
 
-const translations: Record<string, Translation> = { en, hi };
+const translations: Record<string, Translation> = { en, hi, as };
 
 type Region = "India" | "Global";
 
@@ -21,7 +22,7 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 const REGION_LOCALES: Record<Region, string[]> = {
-  India: ["en", "hi"],
+  India: ["en", "hi", "as"],
   Global: ["en"],
 };
 
@@ -67,7 +68,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const keys = path.split(".");
     let current: string | Translation = translations[locale || defaultLocale || "en"];
     for (const key of keys) {
-      if (typeof current === "string" || !current[key]) return path;
+      if (typeof current === "string" || current[key] === undefined) return path;
       current = current[key];
     }
     return typeof current === "string" ? current : path;
