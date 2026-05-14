@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(urlencoded({ limit: '50mb', extended: true }));
   app.setGlobalPrefix('api');
 
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
+  const rawOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
     : [
         'http://localhost:3000',
@@ -18,6 +18,13 @@ async function bootstrap() {
         'http://localhost:3003',
         'http://localhost:8081',
       ];
+
+  // Clean whitespace and remove any trailing slashes automatically
+  const allowedOrigins = rawOrigins.map((origin) =>
+    origin.trim().replace(/\/+$/, ''),
+  );
+
+  console.log('🚀 [CORS] Whitelisted Origins:', allowedOrigins);
 
   app.enableCors({
     origin: allowedOrigins,
