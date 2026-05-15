@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Text, Card, useTheme, ActivityIndicator, Modal, Portal, Divider, Button } from "react-native-paper";
+import { Text, Card, useTheme, ActivityIndicator, Modal, Portal, Divider, Button } from "@/components/ui";
 import { Icon } from "../ui/Icon";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";

@@ -17,7 +17,7 @@ import {
   Text,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type ItemRecord = {
   inventory_id: number;

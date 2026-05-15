@@ -29,7 +29,7 @@ import {
   Menu,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 // No need for a custom 'api' instance here anymore, we'll use axiosInstance
 

@@ -25,7 +25,7 @@ import {
   Searchbar,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type SubTypeValue = { name: string; value: number };
 export type MetricBreakdown = { total: number; breakdown: SubTypeValue[] };

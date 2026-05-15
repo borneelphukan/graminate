@@ -8,7 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
   Provider as PaperProvider,
-} from "react-native-paper";
+} from "@/components/ui";
 import "react-native-reanimated";
 import "../global.css";
 

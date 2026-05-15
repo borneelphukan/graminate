@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { Button, IconButton, Menu, Surface } from "react-native-paper";
+import { Button, IconButton, Menu, Surface } from "@/components/ui";
 
 type NavButton = {
   name: string;

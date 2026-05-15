@@ -11,7 +11,7 @@ import {
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type EggRecord = {
   egg_id?: number;

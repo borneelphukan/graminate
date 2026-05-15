@@ -12,7 +12,7 @@ module.exports = function (api) {
         {
           root: ["./"],
           alias: {
-            "react-native-paper": "./components/ui/nativewind-ui",
+            "react-native-paper": "./components/ui",
             "@": "./",
           },
         },

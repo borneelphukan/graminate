@@ -20,7 +20,7 @@ import {
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 export type DailyFinancialEntry = {
   date: Date;

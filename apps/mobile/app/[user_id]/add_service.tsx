@@ -21,7 +21,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import Toast from "react-native-toast-message";
 
 // Using the centralized axiosInstance from @/lib/axiosInstance

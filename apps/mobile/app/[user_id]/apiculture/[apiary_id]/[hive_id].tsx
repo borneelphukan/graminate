@@ -20,7 +20,7 @@ import {
   SegmentedButtons,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type HiveView = "status" | "inspection";
 type HiveData = HiveFormData & { hive_id: number; apiary_id: number };

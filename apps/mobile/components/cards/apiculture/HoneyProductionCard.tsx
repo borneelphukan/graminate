@@ -28,7 +28,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 const TIME_RANGE_OPTIONS = ["Weekly", "Bi-Weekly", "1 Month"] as const;
 type TimeRange = (typeof TIME_RANGE_OPTIONS)[number];

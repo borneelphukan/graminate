@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react';
+import { useColorScheme } from 'react-native';
 
 export const brandColors = {
   primary: "#2b7860",
@@ -39,9 +40,31 @@ const ThemeContext = createContext({
 export const useTheme = () => useContext(ThemeContext);
 
 export const Provider = ({ children, theme }: any) => {
-  const activeColors = theme?.colors ? { ...brandColors, ...theme.colors } : brandColors;
+  const systemColorScheme = useColorScheme();
+  const isDark = theme?.dark ?? (systemColorScheme === 'dark');
+
+  const activeColors = {
+    ...brandColors,
+    ...(isDark ? {
+      background: "#121212",
+      surface: "#1e1e1e",
+      surfaceVariant: "#27272a",
+      onSurface: "#ffffff",
+      onSurfaceVariant: "#a1a1aa",
+      elevation: {
+        level0: "transparent",
+        level1: "#1e1e1e",
+        level2: "#27272a",
+        level3: "#3f3f46",
+        level4: "#52525b",
+        level5: "#71717a",
+      }
+    } : {}),
+    ...(theme?.colors || {})
+  };
+
   return (
-    <ThemeContext.Provider value={{ colors: activeColors, roundness: theme?.roundness ?? 4, dark: theme?.dark || false }}>
+    <ThemeContext.Provider value={{ colors: activeColors, roundness: theme?.roundness ?? 4, dark: isDark }}>
       {children}
     </ThemeContext.Provider>
   );

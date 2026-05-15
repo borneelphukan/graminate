@@ -13,10 +13,10 @@
         "../../packages/ui/lib/*"
       ],
       "react-native-paper": [
-        "./components/ui/nativewind-ui/index.tsx"
+        "./components/ui/index.tsx"
       ],
       "react-native-paper/*": [
-        "./components/ui/nativewind-ui/*"
+        "./components/ui/*"
       ]
     }
   },

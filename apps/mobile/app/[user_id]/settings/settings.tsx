@@ -10,9 +10,10 @@ import {
   ActivityIndicator,
   Appbar,
   Card,
+  Divider,
   List,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type SettingsItem = {
   label: string;
@@ -159,15 +160,18 @@ const SettingsScreen = () => {
           ) : (
             <ScrollView contentContainerStyle={styles.container}>
               {settingsMenu.map((section) => (
-                <Card key={section.label} style={styles.card}>
-                  <List.Subheader>{section.label}</List.Subheader>
-                  {section.items.map((item) => (
-                    <List.Item
-                      key={item.label}
-                      title={item.label}
-                      onPress={() =>
-                        item.routeName && router.push(item.routeName as any)
-                      }
+                <Card key={section.label} className="p-0 overflow-hidden">
+                  <List.Subheader style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
+                    {section.label}
+                  </List.Subheader>
+                  {section.items.map((item, idx) => (
+                    <React.Fragment key={item.label}>
+                      {idx > 0 && <Divider className="my-0" />}
+                      <List.Item
+                        title={item.label}
+                        onPress={() =>
+                          item.routeName && router.push(item.routeName as any)
+                        }
                       left={(props: any) => {
                         let iconElement;
                         if (typeof item.icon === "function") {
@@ -201,6 +205,7 @@ const SettingsScreen = () => {
                         />
                       )}
                     />
+                    </React.Fragment>
                   ))}
                 </Card>
               ))}

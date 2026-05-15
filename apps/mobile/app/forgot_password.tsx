@@ -17,7 +17,7 @@ import {
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 

@@ -15,7 +15,7 @@ import {
   Searchbar,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type ExpenseRecord = {
   expense_id: number;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from "react-native";
-import { Text, Searchbar, Button, Menu, useTheme, Card, SegmentedButtons, ActivityIndicator, Divider, FAB, IconButton } from "react-native-paper";
+import { Text, Searchbar, Button, Menu, useTheme, Card, SegmentedButtons, ActivityIndicator, Divider, FAB, IconButton } from "@/components/ui";
 import axiosInstance from "@/lib/axiosInstance";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 

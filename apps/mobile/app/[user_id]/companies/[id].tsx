@@ -24,7 +24,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 // Using axiosInstance for all API calls
 

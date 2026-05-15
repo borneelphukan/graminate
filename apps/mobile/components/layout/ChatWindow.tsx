@@ -21,7 +21,7 @@ import {
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 type Message = {

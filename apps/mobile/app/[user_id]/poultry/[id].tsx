@@ -26,7 +26,7 @@ import {
   Divider,
   List,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type FlockData = {
   flock_id?: number;

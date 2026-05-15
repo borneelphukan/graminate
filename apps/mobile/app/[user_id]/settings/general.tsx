@@ -15,7 +15,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type TimeFormatOption = "12-hour" | "24-hour";
 type SupportedLanguage = "English" | "Hindi" | "Assamese";

@@ -24,7 +24,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { ActivityIndicator, Appbar, useTheme } from "react-native-paper";
+import { ActivityIndicator, Appbar, useTheme } from "@/components/ui";
 
 const TOTAL_DAYS_FOR_HISTORICAL_DATA = 180;
 const today = new Date();

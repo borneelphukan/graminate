@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Card, Text, useTheme } from "react-native-paper";
+import { Card, Text, useTheme } from "@/components/ui";
 
 type BudgetCardProps = {
   title: string;

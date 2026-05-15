@@ -21,7 +21,7 @@ import {
   Searchbar,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { format } from "date-fns";
 
 type Payment = {

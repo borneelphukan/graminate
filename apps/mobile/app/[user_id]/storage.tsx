@@ -17,7 +17,7 @@ import {
   Searchbar,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 const api = axios.create({ baseURL: API_URL });

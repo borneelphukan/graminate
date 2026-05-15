@@ -24,7 +24,7 @@ import {
   IconSource,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 // --- Type Definitions ---
 type LatestEggMetrics = {

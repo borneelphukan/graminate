@@ -20,7 +20,7 @@ import {
   Divider,
   Switch,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 interface SidebarProps {
   closeSidebar: () => void;

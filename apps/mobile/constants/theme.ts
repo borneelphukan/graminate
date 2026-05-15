@@ -1,4 +1,4 @@
-import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
+import { MD3DarkTheme, MD3LightTheme } from "@/components/ui";
 
 // Brand colors from packages/ui/lib/main.css
 const brandColors = {

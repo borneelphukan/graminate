@@ -11,7 +11,7 @@ import {
   Badge,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import NotificationBar from "./NotificationBar";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;

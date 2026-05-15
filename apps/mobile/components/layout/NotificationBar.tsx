@@ -18,7 +18,7 @@ import {
   Surface,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { Notification, NotificationProps } from "./Notification";
 
 type NotificationBarProps = {

@@ -10,7 +10,7 @@ import {
   Surface,
   Text,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import ChatWindow from "./ChatWindow";
 import Navbar from "./Navbar";

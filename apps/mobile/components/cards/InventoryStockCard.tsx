@@ -7,7 +7,7 @@ import {
   Text,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import axiosInstance from "@/lib/axiosInstance";
 
 type ItemRecord = {

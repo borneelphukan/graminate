@@ -8,7 +8,7 @@ import {
   IconSource,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type VeterinaryCardProps = {
   birdsVaccinated: number | null;

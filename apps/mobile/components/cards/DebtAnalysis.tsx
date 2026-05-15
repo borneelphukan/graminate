@@ -19,7 +19,7 @@ import {
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { DailyFinancialEntry } from "./WorkingCapital";
 
 const TIME_RANGE_OPTIONS = ["Weekly", "Monthly", "3 Months"] as const;

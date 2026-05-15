@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Appbar, List, useTheme } from "react-native-paper";
+import { Appbar, List, useTheme } from "@/components/ui";
 
 export type NotificationProps = {
   id: number;

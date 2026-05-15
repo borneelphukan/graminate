@@ -7,7 +7,7 @@ import {
   Modal,
   Portal,
   Text,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type PasswordModalProps = {
   isOpen: boolean;

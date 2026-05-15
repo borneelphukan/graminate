@@ -14,7 +14,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 export const UNITS = [
   "kg",

@@ -36,7 +36,7 @@ import {
   TextInput,
   TouchableRipple,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 

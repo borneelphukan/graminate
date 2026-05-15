@@ -6,7 +6,7 @@ import {
   Searchbar,
   ActivityIndicator,
   useTheme,
-} from "react-native-paper";
+} from "@/components/ui";
 
 type RowType = any[];
 

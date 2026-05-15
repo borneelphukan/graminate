@@ -15,7 +15,7 @@ import {
   Button,
   Text,
   IconButton,
-} from "react-native-paper";
+} from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../modals/FormModal";
 import { Calendar, DateData } from "react-native-calendars";

@@ -3,8 +3,10 @@ import { View, Text as RNText, TouchableOpacity } from 'react-native';
 
 export const Card = ({ children, style, className = '', onPress }: any) => {
   const Comp = onPress ? TouchableOpacity : View;
+  const hasPadding = className.match(/p[xy]?-\d+/) !== null;
+  const paddingClass = hasPadding ? '' : 'p-4';
   return (
-    <Comp onPress={onPress} className={`bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden p-4 my-2 ${className}`} style={style}>
+    <Comp onPress={onPress} className={`bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2 ${paddingClass} ${className}`} style={style}>
       {children}
     </Comp>
   );
