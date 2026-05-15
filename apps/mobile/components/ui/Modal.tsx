@@ -4,11 +4,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Portal = ({ children }: any) => <>{children}</>;
 
-export const Modal = ({ visible, onDismiss, children, contentContainerStyle }: any) => (
+export const Modal = ({ visible, onDismiss, children, contentContainerStyle, className = '' }: any) => (
   <RNModal visible={visible} onRequestClose={onDismiss} transparent={true} animationType="fade">
     <View className="flex-1 justify-center items-center bg-black/50">
       <Pressable className="absolute inset-0" onPress={onDismiss} />
-      <View className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl w-[90%] p-6 max-h-[80%]" style={contentContainerStyle}>
+      <View className={`bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl w-[90%] p-6 max-h-[80%] ${className}`} style={contentContainerStyle}>
         {children}
       </View>
     </View>

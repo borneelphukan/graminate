@@ -1,4 +1,4 @@
-import { MD3DarkTheme, MD3LightTheme } from "@/components/ui";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 // Brand colors from packages/ui/lib/main.css
 const brandColors = {
@@ -27,21 +27,33 @@ const brandColors = {
   foregroundDark: "#ededed",
 };
 
+const baseThemeColors = {
+  primary: brandColors.green100,
+  primaryContainer: brandColors.green300,
+  secondary: brandColors.green200,
+  secondaryContainer: brandColors.green400,
+  background: brandColors.backgroundLight,
+  surface: brandColors.gray50,
+  surfaceVariant: brandColors.gray400,
+  surfaceDisabled: brandColors.gray500,
+  onPrimary: "#ffffff",
+  onSecondaryContainer: brandColors.gray100,
+  onPrimaryContainer: brandColors.gray100,
+  onSurface: brandColors.foregroundLight,
+  onSurfaceVariant: brandColors.gray200,
+  onSurfaceDisabled: brandColors.gray300,
+  error: brandColors.red200,
+  errorContainer: "#fee2e2",
+  outline: brandColors.gray300,
+  outlineVariant: brandColors.gray400,
+  backdrop: "rgba(0,0,0,0.4)",
+};
+
 export const AppLightTheme = {
-  ...MD3LightTheme,
+  dark: false,
+  roundness: 4,
   colors: {
-    ...MD3LightTheme.colors,
-    primary: brandColors.green100,
-    primaryContainer: brandColors.green300,
-    secondary: brandColors.green200,
-    secondaryContainer: brandColors.green400,
-    background: brandColors.backgroundLight,
-    surface: brandColors.gray50,
-    surfaceVariant: brandColors.gray400,
-    onSurface: brandColors.foregroundLight,
-    onSurfaceVariant: brandColors.gray200,
-    error: brandColors.red200,
-    outline: brandColors.gray300,
+    ...baseThemeColors,
     elevation: {
       level0: "transparent",
       level1: "#f8f9fa",
@@ -54,9 +66,10 @@ export const AppLightTheme = {
 };
 
 export const AppDarkTheme = {
-  ...MD3DarkTheme,
+  dark: true,
+  roundness: 4,
   colors: {
-    ...MD3DarkTheme.colors,
+    ...baseThemeColors,
     primary: brandColors.green200, // Brighter green for dark mode
     primaryContainer: brandColors.green100,
     secondary: brandColors.green300,
@@ -66,7 +79,6 @@ export const AppDarkTheme = {
     surfaceVariant: brandColors.gray800,
     onSurface: brandColors.foregroundDark,
     onSurfaceVariant: brandColors.gray300,
-    error: brandColors.red200,
     outline: brandColors.gray700,
     elevation: {
       level0: "transparent",
@@ -96,3 +108,7 @@ export const Colors = {
   },
 };
 
+export const useTheme = () => {
+  const { darkMode } = useUserPreferences();
+  return darkMode ? AppDarkTheme : AppLightTheme;
+};

@@ -5,7 +5,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
+import { Alert, FlatList, SafeAreaView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -48,17 +48,17 @@ const ReceiptCard = ({
 }) => {
   const theme = useTheme();
   return (
-    <Card onPress={onPress} style={styles.card}>
+    <Card onPress={onPress} className="mb-3 rounded-xl">
       <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
       <Card.Content>
-        <View style={styles.cardRow}>
-          <View style={styles.infoItem}>
+        <View className="flex-row justify-between mt-2">
+          <View className="flex-row items-center gap-1">
             <Icon
               type={"calendar-month" as any}
               size={16}
               color={theme.colors.error}
             />
-            <Text style={[styles.infoText, { color: theme.colors.error }]}>
+            <Text className="text-[13px]" style={{ color: theme.colors.error }}>
               Due: {formatDate(item.due_date)}
             </Text>
           </View>
@@ -178,23 +178,24 @@ const FinanceReceipts = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.background }]}
+        className="flex-1"
+        style={{ backgroundColor: theme.colors.background }}
       >
         <Appbar.Header elevated>
           <Appbar.BackAction onPress={() => router.back()} />
           <Appbar.Content title="Receipts Ledger" />
         </Appbar.Header>
 
-        <View style={styles.container}>
+        <View className="flex-1 p-4">
           <Searchbar
             placeholder="Search receipts..."
             onChangeText={setSearchQuery}
             value={searchQuery}
-            style={styles.searchBar}
+            className="mb-4 bg-transparent rounded-xl"
           />
 
           {loading ? (
-            <View style={styles.centered}>
+            <View className="flex-1 justify-center items-center p-5">
               <ActivityIndicator size="large" />
             </View>
           ) : (
@@ -213,11 +214,11 @@ const FinanceReceipts = () => {
                 />
               )}
               keyExtractor={(item) => item.invoice_id.toString()}
-              contentContainerStyle={styles.listContent}
+              contentContainerClassName="pb-20"
               onRefresh={fetchData}
               refreshing={loading}
               ListEmptyComponent={
-                <View style={styles.centered}>
+                <View className="flex-1 justify-center items-center p-5">
                   <Text style={{ color: theme.colors.onSurfaceDisabled }}>
                     No receipts found.
                   </Text>
@@ -230,7 +231,8 @@ const FinanceReceipts = () => {
         <FAB
           icon="plus"
           label="Add Receipt"
-          style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+          className="absolute right-4 bottom-4 rounded-full"
+          style={{ backgroundColor: theme.colors.primary }}
           color="white"
           onPress={() => setFormVisible(true)}
         />
@@ -248,37 +250,5 @@ const FinanceReceipts = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  container: { flex: 1, padding: 16 },
-  searchBar: {
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: "transparent",
-  },
-  listContent: { paddingBottom: 80 },
-  card: { marginBottom: 12, borderRadius: 12 },
-  cardRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  infoItem: { flexDirection: "row", alignItems: "center", gap: 4 },
-  infoText: { fontSize: 13 },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    borderRadius: 28,
-  },
-});
 
 export default FinanceReceipts;

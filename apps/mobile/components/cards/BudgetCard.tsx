@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Card, Text, useTheme } from "@/components/ui";
 
 type BudgetCardProps = {
@@ -8,8 +8,8 @@ type BudgetCardProps = {
   value: number;
   date: Date;
   icon: string;
-  bgColor: string;
-  iconValueColor: string;
+  className?: string;
+  textColorClassName?: string;
   onPress?: () => void;
 };
 
@@ -27,8 +27,8 @@ const BudgetCard = ({
   value,
   date,
   icon,
-  bgColor,
-  iconValueColor,
+  className = '',
+  textColorClassName = '',
   onPress,
 }: BudgetCardProps) => {
   const theme = useTheme();
@@ -38,31 +38,32 @@ const BudgetCard = ({
   });
 
   return (
-    <Card style={[styles.card, { backgroundColor: bgColor }]} onPress={onPress}>
-      <Card.Content style={styles.content}>
-        <View style={styles.header}>
+    <Card className={`flex-1 my-0 ${className}`} onPress={onPress}>
+      <Card.Content className="flex-1 p-6">
+        <View className="flex-row items-center mb-2 gap-2">
           <Icon
             type={(icon) as any}
             size={24}
-            color={iconValueColor}
-            style={styles.icon}
+            className={`${textColorClassName} opacity-80`}
           />
           <Text
             variant="labelMedium"
-            style={[styles.title, { color: theme.colors.onSurface }]}
+            className="uppercase"
+            style={{ color: theme.colors.onSurface }}
           >
             {title}
           </Text>
         </View>
         <Text
           variant="headlineSmall"
-          style={[styles.value, { color: iconValueColor }]}
+          className={`mt-1 font-bold ${textColorClassName}`}
         >
           {formatCurrency(value)}
         </Text>
         <Text
           variant="bodySmall"
-          style={[styles.date, { color: theme.colors.onSurfaceVariant }]}
+          className="mt-auto pt-2 opacity-90"
+          style={{ color: theme.colors.onSurfaceVariant }}
         >
           {formattedDate}
         </Text>
@@ -70,36 +71,5 @@ const BudgetCard = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 24,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-    gap: 8,
-  },
-  icon: {
-    opacity: 0.8,
-  },
-  title: {
-    textTransform: "uppercase",
-  },
-  value: {
-    marginTop: 4,
-    fontWeight: "bold",
-  },
-  date: {
-    marginTop: "auto",
-    paddingTop: 8,
-    opacity: 0.9,
-  },
-});
 
 export default BudgetCard;

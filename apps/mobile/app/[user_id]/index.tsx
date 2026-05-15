@@ -20,7 +20,6 @@ import {
   Alert,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   View,
 } from "react-native";
 import Calendar from "@/components/calendar";
@@ -221,15 +220,13 @@ const FirstLoginModal = ({
       <Modal
         visible={isOpen}
         onDismiss={onClose}
-        contentContainerStyle={[
-          styles.modalContent,
-          { backgroundColor: theme.colors.surface },
-        ]}
+        className="p-5 m-5 rounded-2xl"
+        contentContainerStyle={{ backgroundColor: theme.colors.surface }}
       >
-        <Text variant="titleLarge" style={styles.modalTitle}>
+        <Text variant="titleLarge" className="mb-2">
           Setup Your Account
         </Text>
-        <Text variant="bodyMedium" style={styles.modalSubtitle}>
+        <Text variant="bodyMedium" className="mb-4">
           Please provide your business details to continue.
         </Text>
         <TextInput
@@ -237,19 +234,19 @@ const FirstLoginModal = ({
           mode="outlined"
           value={businessName}
           onChangeText={setBusinessName}
-          style={styles.modalInput}
+          className="mb-3"
         />
         <TextInput
           label="Business Type"
           mode="outlined"
           value={businessType}
           onChangeText={setBusinessType}
-          style={styles.modalInput}
+          className="mb-3"
         />
         <Button
           mode="contained"
           onPress={() => onSubmit(businessName, businessType)}
-          style={styles.modalButton}
+          className="mt-2"
         >
           Save & Continue
         </Button>
@@ -641,10 +638,11 @@ const DashboardScreen = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.background }]}
+        className="flex-1"
+        style={{ backgroundColor: theme.colors.background }}
       >
-        <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.header}>
+        <ScrollView contentContainerClassName="p-4">
+          <View className="flex-row justify-between items-start mb-4">
             <View>
               <Text variant="headlineSmall">
                 {isUserDataLoading
@@ -652,7 +650,7 @@ const DashboardScreen = () => {
                   : `Hello ${userData?.first_name || "User"},`}
               </Text>
             </View>
-            <View style={styles.dateTimeContainer}>
+            <View className="items-end">
               <Text variant="titleMedium">{formatDate(currentDateTime)}</Text>
               <Text
                 variant="bodyMedium"
@@ -662,18 +660,18 @@ const DashboardScreen = () => {
               </Text>
             </View>
           </View>
-          <Divider style={styles.divider} />
+          <Divider className="my-2" />
           <Button
             mode="text"
             onPress={() => {
               setTempSelectedWidgets(widgets);
               setIsWidgetModalOpen(true);
             }}
-            style={styles.manageButton}
+            className="self-start mb-4"
           >
             Manage Widgets
           </Button>
-          <View style={styles.widgetContainer}>
+          <View className="gap-6">
             {isUserDataLoading ? (
               <ActivityIndicator size="large" />
             ) : (
@@ -809,25 +807,5 @@ const DashboardScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  container: { padding: 16 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  dateTimeContainer: { alignItems: "flex-end" },
-  divider: { marginVertical: 8 },
-  manageButton: { alignSelf: "flex-start", marginBottom: 16 },
-  widgetContainer: { gap: 24 },
-  modalContent: { padding: 20, margin: 20, borderRadius: 16 },
-  modalTitle: { marginBottom: 8 },
-  modalSubtitle: { marginBottom: 16 },
-  modalInput: { marginBottom: 12 },
-  modalButton: { marginTop: 8 },
-});
 
 export default DashboardScreen;

@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { isAxiosError } from "axios";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
+import { Alert, FlatList, SafeAreaView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -57,58 +57,58 @@ const WarehouseCard = ({
     .filter(Boolean)
     .join(", ");
   return (
-    <Card onPress={onPress} style={styles.warehouseCard}>
+    <Card onPress={onPress} className="mb-3">
       <Card.Title
         title={item.name}
         titleVariant="titleLarge"
-        right={() => <Chip style={styles.chip}>{item.type}</Chip>}
+        right={() => <Chip className="mr-2">{item.type}</Chip>}
       />
       <Card.Content>
         {!!addressString && (
-          <View style={styles.infoRow}>
+          <View className="flex-row items-center mt-2 mr-4">
             <Icon
               type={"map-marker" as any}
               size={16}
               color={theme.colors.onSurfaceVariant}
             />
-            <Text variant="bodyMedium" style={styles.infoText}>
+            <Text variant="bodyMedium" className="ml-2 shrink">
               {addressString}
             </Text>
           </View>
         )}
-        <View style={styles.contactRow}>
+        <View className="flex-row flex-wrap mt-2 pt-2 border-t border-black/10">
           {item.contact_person && (
-            <View style={styles.infoRow}>
+            <View className="flex-row items-center mt-2 mr-4">
               <Icon
                 type={"account" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
-              <Text variant="bodyMedium" style={styles.infoText}>
+              <Text variant="bodyMedium" className="ml-2 shrink">
                 {item.contact_person}
               </Text>
             </View>
           )}
           {item.phone && (
-            <View style={styles.infoRow}>
+            <View className="flex-row items-center mt-2 mr-4">
               <Icon
                 type={"phone" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
-              <Text variant="bodyMedium" style={styles.infoText}>
+              <Text variant="bodyMedium" className="ml-2 shrink">
                 {item.phone}
               </Text>
             </View>
           )}
           {item.storage_capacity != null && (
-            <View style={styles.infoRow}>
+            <View className="flex-row items-center mt-2 mr-4">
               <Icon
                 type={"package-variant-closed" as any}
                 size={16}
                 color={theme.colors.onSurfaceVariant}
               />
-              <Text variant="bodyMedium" style={styles.infoText}>
+              <Text variant="bodyMedium" className="ml-2 shrink">
                 {String(item.storage_capacity)}
               </Text>
             </View>
@@ -256,26 +256,26 @@ const StoragePage = () => {
   const renderContent = () => {
     if (!user_id)
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
           <Text style={{ color: theme.colors.error }}>User ID not found.</Text>
         </View>
       );
     if (loading && warehouses.length === 0)
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
           <ActivityIndicator size="large" />
         </View>
       );
     if (error)
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
           <Text style={{ color: theme.colors.error }}>{error}</Text>
           <Button onPress={fetchWarehouses}>Retry</Button>
         </View>
       );
     if (filteredWarehouses.length === 0) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
           <Icon
             type={"warehouse" as any}
             size={64}
@@ -298,7 +298,7 @@ const StoragePage = () => {
         keyExtractor={(item) => item.warehouse_id.toString()}
         onRefresh={fetchWarehouses}
         refreshing={loading}
-        contentContainerStyle={styles.listContent}
+        contentContainerClassName="p-4 pb-20"
       />
     );
   };
@@ -306,7 +306,8 @@ const StoragePage = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.background }]}
+        className="flex-1"
+        style={{ backgroundColor: theme.colors.background }}
       >
         <Appbar.Header>
           <Appbar.Action
@@ -330,7 +331,7 @@ const StoragePage = () => {
           placeholder="Search warehouses..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
+          className="mx-4 mt-2"
         />
         {renderContent()}
         <FAB
@@ -341,7 +342,7 @@ const StoragePage = () => {
               color={theme.colors.onPrimaryContainer}
             />
           )}
-          style={styles.fab}
+          className="absolute right-4 bottom-4"
           onPress={() => setIsFormVisible(true)}
         />
         <BottomDrawer
@@ -355,37 +356,5 @@ const StoragePage = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  searchbar: { marginHorizontal: 16, marginTop: 8 },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-    gap: 16,
-    textAlign: "center",
-  },
-  listContent: { padding: 16, paddingBottom: 80 },
-  warehouseCard: { marginBottom: 12 },
-  chip: { marginRight: 8 },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 8,
-    marginRight: 16,
-  },
-  infoText: { marginLeft: 8, flexShrink: 1 },
-  contactRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-  },
-  fab: { position: "absolute", margin: 16, right: 0, bottom: 0 },
-});
 
 export default StoragePage;

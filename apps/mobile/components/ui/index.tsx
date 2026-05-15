@@ -1,4 +1,4 @@
-export * from './theme';
+export { useTheme } from '@/constants/theme';
 export * from './Text';
 export * from './Button';
 export * from './FAB';

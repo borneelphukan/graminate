@@ -38,6 +38,7 @@ type UserPreferencesContextType = {
     userId: string | number,
     widgets: string[]
   ) => Promise<void>;
+  isPreferencesLoading: boolean;
 };
 
 const UserPreferencesContext = createContext<
@@ -65,6 +66,7 @@ export const UserPreferencesProvider = ({
   const [subTypes, setSubTypesState] = useState<string[]>([]);
   const [widgets, setWidgetsState] = useState<string[]>([]);
   const [isSubTypesLoading, setIsSubTypesLoading] = useState(true);
+  const [isPreferencesLoading, setIsPreferencesLoading] = useState(true);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -87,6 +89,8 @@ export const UserPreferencesProvider = ({
           setDarkModeState(storedDarkMode === "true");
       } catch (e) {
         console.error("Failed to load preferences from storage", e);
+      } finally {
+        setIsPreferencesLoading(false);
       }
     };
     loadPreferences();
@@ -186,6 +190,7 @@ export const UserPreferencesProvider = ({
         widgets,
         setWidgets,
         updateUserWidgets,
+        isPreferencesLoading,
       }}
     >
       {children}

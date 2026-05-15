@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text as RNText, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '@/constants/theme';
 
 export const TextInput = ({ 
   label, 
   value, 
   onChangeText, 
   error, 
+  required,
+  hint,
   secureTextEntry,
   right,
   left,
@@ -15,34 +18,115 @@ export const TextInput = ({
   placeholder,
   editable = true,
   mode = 'outlined',
+  onFocus,
+  onBlur,
   ...rest 
 }: any) => {
+  const { colors } = useTheme();
+  const [isFocused, setIsFocused] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const handleFocus = (e: any) => {
+    setIsFocused(true);
+    if (onFocus) onFocus(e);
+  };
+
+  const handleBlur = (e: any) => {
+    setIsFocused(false);
+    if (onBlur) onBlur(e);
+  };
+
+  const isPasswordField = secureTextEntry;
+  const actualSecureTextEntry = isPasswordField && !isPasswordVisible;
+
+  const labelColor = error ? colors.error : colors.onSurfaceVariant;
+  const borderColor = error 
+    ? colors.error 
+    : isFocused 
+      ? colors.primary 
+      : colors.outline;
+  const bgColor = editable ? colors.background : colors.surfaceDisabled;
+  const textColor = colors.onSurface;
+  const placeholderColor = colors.onSurfaceVariant;
+
   return (
     <View className={`my-1 w-full ${className}`} style={style}>
-      {label && <RNText className={`mb-1.5 text-xs font-medium ${error ? 'text-red-500' : 'text-gray-600 dark:text-gray-400'}`}>{label}</RNText>}
-      <View className={`flex-row items-center w-full px-3 py-2.5 rounded-lg bg-white dark:bg-[#121212] border ${error ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'} focus:border-[#2b7860]`}>
+      {label && (
+        <View className="flex-row items-center mb-1.5">
+          <RNText 
+            className="font-medium text-sm" 
+            style={{ color: labelColor }}
+          >
+            {label}
+          </RNText>
+          {required && (
+            <RNText className="text-red-500 ml-1 text-sm">*</RNText>
+          )}
+        </View>
+      )}
+      <View 
+        className="flex-row items-center w-full px-3 py-2 rounded-lg border"
+        style={{ 
+          backgroundColor: bgColor, 
+          borderColor: borderColor,
+          borderWidth: isFocused || error ? 1.5 : 1,
+          opacity: editable ? 1 : 0.7
+        }}
+      >
         {left && <View className="mr-2">{left}</View>}
         <RNTextInput 
           value={value}
           placeholder={placeholder}
           onChangeText={onChangeText}
-          secureTextEntry={secureTextEntry}
+          secureTextEntry={actualSecureTextEntry}
           editable={editable}
-          className="flex-1 text-sm text-gray-900 dark:text-white"
-          placeholderTextColor="#9ca3af"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className="flex-1 text-sm"
+          style={{ color: textColor, paddingVertical: 0 }}
+          placeholderTextColor={placeholderColor}
           {...rest}
         />
+        {isPasswordField && !right && (
+          <TouchableOpacity 
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)} 
+            className="ml-2"
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons 
+              name={isPasswordVisible ? "eye-off" : "eye"} 
+              size={20} 
+              color={colors.onSurfaceVariant} 
+            />
+          </TouchableOpacity>
+        )}
         {right && <View className="ml-2">{right}</View>}
       </View>
+      {(hint || (typeof error === 'string' && error)) && (
+        <View className="flex-col gap-1 pt-1 px-1">
+          {hint && (
+            <RNText className="text-xs font-normal" style={{ color: colors.secondary }}>
+              {hint}
+            </RNText>
+          )}
+          {typeof error === 'string' && error && (
+            <RNText className="text-xs text-red-500">
+              {error}
+            </RNText>
+          )}
+        </View>
+      )}
     </View>
   );
 };
 
 TextInput.Icon = ({ icon, onPress, color }: any) => {
+  const { colors } = useTheme();
   const renderIcon = () => {
     if (!icon) return null;
-    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={20} color={color || "#49494d"} />;
-    if (typeof icon === 'function') return icon({ color: color || "#49494d", size: 20 });
+    const iconColor = color || colors.onSurfaceVariant;
+    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={20} color={iconColor} />;
+    if (typeof icon === 'function') return icon({ color: iconColor, size: 20 });
     return icon;
   };
   return (
@@ -52,16 +136,31 @@ TextInput.Icon = ({ icon, onPress, color }: any) => {
   );
 };
 
-export const Searchbar = ({ value, onChangeText, placeholder, style, className = '', ...rest }: any) => (
-  <View className={`flex-row items-center bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 my-2 ${className}`} style={style}>
-    <MaterialCommunityIcons name="magnify" size={20} color="#6b7280" style={{ marginRight: 8 }} />
-    <RNTextInput
-      value={value}
-      placeholder={placeholder}
-      onChangeText={onChangeText}
-      className="flex-1 text-sm text-gray-900 dark:text-white"
-      placeholderTextColor="#9ca3af"
-      {...rest}
-    />
-  </View>
-);
+export const Searchbar = ({ value, onChangeText, placeholder, style, className = '', ...rest }: any) => {
+  const { colors } = useTheme();
+  return (
+    <View 
+      className={`flex-row items-center border rounded-full px-4 py-2 my-2 ${className}`} 
+      style={[{ 
+        backgroundColor: colors.surface, 
+        borderColor: colors.outlineVariant 
+      }, style]}
+    >
+      <MaterialCommunityIcons 
+        name="magnify" 
+        size={20} 
+        color={colors.onSurfaceVariant} 
+        style={{ marginRight: 8 }} 
+      />
+      <RNTextInput
+        value={value}
+        placeholder={placeholder}
+        onChangeText={onChangeText}
+        className="flex-1 text-sm"
+        style={{ color: colors.onSurface }}
+        placeholderTextColor={colors.onSurfaceVariant}
+        {...rest}
+      />
+    </View>
+  );
+};

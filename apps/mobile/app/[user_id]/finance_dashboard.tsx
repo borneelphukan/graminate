@@ -21,7 +21,6 @@ import {
   Alert,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   View,
 } from "react-native";
 import { ActivityIndicator, Appbar, useTheme } from "@/components/ui";
@@ -416,45 +415,44 @@ const FinanceDashboardScreen = () => {
     });
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
-    const isDark = theme.dark;
     return [
       {
         title: "Revenue",
         value: totals.revenue,
         icon: "cash-multiple",
-        bgColor: isDark ? "#14532d" : "#dcfce7",
-        iconValueColor: isDark ? "#86efac" : "#16a34a",
+        className: "bg-green-300 dark:bg-green-100",
+        textColorClassName: "text-green-100 dark:text-green-300",
         route: `/${user_id}/finance_sales`,
       },
       {
         title: "COGS",
         value: totals.cogs,
         icon: "cart-plus",
-        bgColor: isDark ? "#713f12" : "#fef3c7",
-        iconValueColor: isDark ? "#fcd34d" : "#b45309",
+        className: "bg-yellow-300 dark:bg-yellow-100",
+        textColorClassName: "text-yellow-100 dark:text-yellow-300",
         route: `/${user_id}/finance_expenses`,
       },
       {
         title: "Gross Profit",
         value: grossProfit,
         icon: "chart-pie",
-        bgColor: isDark ? "#164e63" : "#cffafe",
-        iconValueColor: isDark ? "#67e8f9" : "#0891b2",
+        className: "bg-cyan-300 dark:bg-cyan-100",
+        textColorClassName: "text-cyan-100 dark:text-cyan-300",
       },
       {
         title: "Expenses",
         value: totals.expenses,
         icon: "credit-card",
-        bgColor: isDark ? "#7f1d1d" : "#fee2e2",
-        iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
+        className: "bg-red-300 dark:bg-red-100",
+        textColorClassName: "text-red-100 dark:text-red-300",
         route: `/${user_id}/finance_expenses`,
       },
       {
         title: "Net Profit",
         value: netProfit,
         icon: "piggy-bank",
-        bgColor: isDark ? "#1e3a8a" : "#dbeafe",
-        iconValueColor: isDark ? "#93c5fd" : "#2563eb",
+        className: "bg-indigo-300 dark:bg-indigo-100",
+        textColorClassName: "text-indigo-100 dark:text-indigo-300",
       },
     ];
   }, [fullHistoricalData, theme.dark, user_id]);
@@ -462,16 +460,16 @@ const FinanceDashboardScreen = () => {
   const renderContent = () => {
     if (isLoadingData) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       );
     }
     return (
-      <View style={styles.widgetContainer}>
-        <View style={styles.cardGrid}>
+      <View className="gap-8">
+        <View className="flex-row flex-wrap -m-2">
           {currentMonthCardData.map((card, index) => (
-            <View key={index} style={styles.cardWrapper}>
+            <View key={index} className="w-1/2 p-2">
               <BudgetCard
                 {...card}
                 date={today}
@@ -527,24 +525,11 @@ const FinanceDashboardScreen = () => {
             />
           )}
         </Appbar.Header>
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerClassName="p-4">
           {renderContent()}
         </ScrollView>
       </SafeAreaView>
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: { padding: 16 },
-  widgetContainer: { gap: 32 },
-  cardGrid: { flexDirection: "row", flexWrap: "wrap", margin: -8 },
-  cardWrapper: { width: "50%", padding: 8 },
-});
-
 export default FinanceDashboardScreen;

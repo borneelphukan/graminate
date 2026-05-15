@@ -6,9 +6,6 @@ import {
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import {
-  Provider as PaperProvider,
-} from "@/components/ui";
 import "react-native-reanimated";
 import "../global.css";
 
@@ -18,15 +15,20 @@ import {
   useUserPreferences,
 } from "@/contexts/UserPreferencesContext";
 import { AppDarkTheme, AppLightTheme } from "@/constants/theme";
+import * as SplashScreen from "expo-splash-screen";
+import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export const unstable_settings = {
   initialRouteName: "index",
 };
 
 function ThemedApp() {
-  const { darkMode } = useUserPreferences();
+  const { darkMode, isPreferencesLoading } = useUserPreferences();
+  const [splashAnimationFinished, setSplashAnimationFinished] = React.useState(false);
 
-  const paperTheme = darkMode ? AppDarkTheme : AppLightTheme;
   const navigationTheme = darkMode
     ? {
         ...DarkTheme,
@@ -52,25 +54,29 @@ function ThemedApp() {
       };
 
   return (
-    <PaperProvider theme={paperTheme}>
-      <ThemeProvider value={navigationTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="forgot_password" />
-          <Stack.Screen name="[user_id]" />
-          <Stack.Screen
-            name="modal"
-            options={{ presentation: "modal", title: "Modal" }}
-          />
-        </Stack>
-        <StatusBar style={darkMode ? "light" : "dark"} />
-      </ThemeProvider>
-    </PaperProvider>
+    <ThemeProvider value={navigationTheme}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="forgot_password" />
+        <Stack.Screen name="[user_id]" />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: "modal", title: "Modal" }}
+        />
+      </Stack>
+      <StatusBar style={darkMode ? "light" : "dark"} />
+      {!splashAnimationFinished && (
+        <AnimatedSplashScreen
+          isAppReady={!isPreferencesLoading}
+          onAnimationComplete={() => setSplashAnimationFinished(true)}
+        />
+      )}
+    </ThemeProvider>
   );
 }
 

@@ -16,7 +16,7 @@ import {
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -291,7 +291,7 @@ const FloricultureScreen = () => {
       </Appbar.Header>
 
       <ScrollView style={{ backgroundColor: theme.colors.background }}>
-        <View style={styles.toggleContainer}>
+        <View className="items-end px-4 pt-2">
           <Button
             icon={() => (
               <Icon
@@ -308,16 +308,16 @@ const FloricultureScreen = () => {
 
         {showFinancials && (
           isLoadingFinancials ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : (
-            <View style={styles.cardGrid}>
+            <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
               {financialCardData.map((card, index) => (
                 <View
                   key={index}
-                  style={
+                  className={
                     index === financialCardData.length - 1
-                      ? styles.fullWidthCard
-                      : styles.halfWidthCard
+                      ? "w-full"
+                      : "w-[48%]"
                   }
                 >
                   <BudgetCard {...card} date={today} />
@@ -331,12 +331,12 @@ const FloricultureScreen = () => {
           placeholder="Search Crops..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
+          className="mx-4 mb-4"
         />
 
-        <View style={styles.listContainer}>
+        <View className="px-4">
           {loading ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : filteredRecords.length > 0 ? (
             filteredRecords.map((item) => (
               <Card
@@ -345,11 +345,11 @@ const FloricultureScreen = () => {
                   setEditingRecord(item);
                   setIsFormVisible(true);
                 }}
-                style={styles.cropCard}
+                className="mb-3"
               >
                 <Card.Title title={item.flower_name} titleVariant="titleLarge" />
                 <Card.Content>
-                  <View style={styles.cardDetails}>
+                  <View className="flex-row justify-between mb-1">
                     <Text variant="bodyMedium">Type: {item.flower_type || "N/A"}</Text>
                     <Text variant="bodyMedium">Area: {item.area || "N/A"} sq.ft</Text>
                   </View>
@@ -360,27 +360,27 @@ const FloricultureScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No records found. Tap &apos;+&apos; to add your first crop.</Text>
+            <Text className="text-center mt-10 p-4">No records found. Tap &apos;+&apos; to add your first crop.</Text>
           )}
         </View>
 
-        <View style={styles.projectSection}>
-          <View style={styles.projectHeader}>
-            <Text variant="headlineSmall" style={styles.projectTitle}>
+        <View className="mt-8 pt-8 border-t border-gray-500/20">
+          <View className="px-4 mb-4">
+            <Text variant="headlineSmall" className="font-bold">
               Your Floriculture Tasks
             </Text>
-            <Text variant="bodyMedium" style={styles.projectSubtitle}>
+            <Text variant="bodyMedium" className="text-gray-500 mt-1">
               All your floriculture tasks visualized
             </Text>
           </View>
-          <View style={styles.projectBoardContainer}>
+          <View className="bg-gray-500/5 rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard userId={numericUserId} projectTitle="Floriculture" />
             )}
           </View>
         </View>
 
-        <View style={styles.widgetContainer}>
+        <View className="gap-4 mt-4 pb-8">
           {user_id && (
             <WarehouseWidget userId={user_id} serviceName="Floriculture" />
           )}
@@ -409,61 +409,5 @@ const FloricultureScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  toggleContainer: {
-    alignItems: "flex-end",
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  },
-  loader: { marginVertical: 16 },
-  cardGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    gap: 12,
-  },
-  halfWidthCard: {
-    width: "48%",
-  },
-  fullWidthCard: {
-    width: "100%",
-  },
-  searchbar: { marginHorizontal: 16, marginBottom: 16 },
-  listContainer: { paddingHorizontal: 16 },
-  cropCard: { marginBottom: 12 },
-  cardDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  emptyText: { textAlign: "center", marginTop: 40, padding: 16 },
-  widgetContainer: { gap: 16, marginTop: 16, paddingBottom: 32 },
-  projectSection: {
-    marginTop: 32,
-    paddingTop: 32,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(128, 128, 128, 0.2)",
-  },
-  projectHeader: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  projectTitle: {
-    fontWeight: "bold",
-  },
-  projectSubtitle: {
-    color: "#6b7280",
-    marginTop: 4,
-  },
-  projectBoardContainer: {
-    backgroundColor: "rgba(128, 128, 128, 0.05)",
-    borderRadius: 24,
-    paddingVertical: 16,
-    marginHorizontal: 16,
-  },
-});
 
 export default FloricultureScreen;
