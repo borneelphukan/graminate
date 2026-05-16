@@ -13,7 +13,7 @@ import {
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -59,9 +59,7 @@ const ApicultureScreen = () => {
   const theme = useTheme();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-  const navbarBg = "#1f2937"; // gray-800
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
+
 
   const [apicultureRecords, setApicultureRecords] = useState<ExistingApiaryData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -75,12 +73,12 @@ const ApicultureScreen = () => {
   const memoizedBackIcon = useCallback(
     () => (
       <Icon
-        type={"arrow-left" as any}
+        type={"chevron-left" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const memoizedAddIcon = useCallback(
@@ -88,10 +86,10 @@ const ApicultureScreen = () => {
       <Icon
         type={"plus" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -265,19 +263,15 @@ const ApicultureScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
           title="Apiculture"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
-          subtitle={loadingApiculture ? "Loading..." : `${filteredApicultureRecords.length} Bee Yard(s)`}
-          subtitleStyle={{ color: navbarIconColor }}
+          subtitle={
+            loadingApiculture
+              ? "Loading..."
+              : `${filteredApicultureRecords.length} Bee Yard(s)`
+          }
         />
         <Appbar.Action
           icon={memoizedAddIcon}
@@ -289,7 +283,7 @@ const ApicultureScreen = () => {
       </Appbar.Header>
 
       <ScrollView style={{ backgroundColor: theme.colors.background }}>
-        <View style={styles.toggleContainer}>
+        <View className="items-end px-4 pt-2">
           <Button
             icon={() => (
               <Icon
@@ -306,16 +300,16 @@ const ApicultureScreen = () => {
 
         {showFinancials && (
           isLoadingFinancials ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : (
-            <View style={styles.cardGrid}>
+            <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
               {apicultureFinancialCardData.map((card, index) => (
                 <View
                   key={index}
-                  style={
+                  className={
                     index === apicultureFinancialCardData.length - 1
-                      ? styles.fullWidthCard
-                      : styles.halfWidthCard
+                      ? "w-full"
+                      : "w-[48%]"
                   }
                 >
                   <BudgetCard {...card} date={today} />
@@ -329,12 +323,12 @@ const ApicultureScreen = () => {
           placeholder="Search Bee Yards..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
+          className="mx-4 mb-4"
         />
 
-        <View style={styles.listContainer}>
+        <View className="px-4">
           {loadingApiculture ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : filteredApicultureRecords.length > 0 ? (
             filteredApicultureRecords.map((item) => (
               <Card
@@ -343,11 +337,11 @@ const ApicultureScreen = () => {
                   setEditingApiary(item);
                   setIsFormVisible(true);
                 }}
-                style={styles.apiaryCard}
+                className="mb-3"
               >
                 <Card.Title title={item.apiary_name} titleVariant="titleLarge" />
                 <Card.Content>
-                  <View style={styles.cardDetails}>
+                  <View className="flex-row justify-between mb-1">
                     <Text variant="bodyMedium">Hives: {item.number_of_hives}</Text>
                     <Text variant="bodyMedium">Area: {item.area != null ? `${item.area}m²` : "N/A"}</Text>
                   </View>
@@ -358,27 +352,27 @@ const ApicultureScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No bee yards found. Tap &apos;+&apos; to add your first yard.</Text>
+            <Text className="text-center mt-10 p-4">No bee yards found. Tap &apos;+&apos; to add your first yard.</Text>
           )}
         </View>
 
-        <View style={styles.projectSection}>
-          <View style={styles.projectHeader}>
-            <Text variant="headlineSmall" style={styles.projectTitle}>
+        <View className="mt-8 pt-8 border-t border-[rgba(128,128,128,0.2)]">
+          <View className="px-4 mb-4">
+            <Text variant="headlineSmall" className="font-bold">
               Your Apiculture Tasks
             </Text>
-            <Text variant="bodyMedium" style={styles.projectSubtitle}>
+            <Text variant="bodyMedium" className="text-gray-500 mt-1">
               All your apiculture tasks visualized
             </Text>
           </View>
-          <View style={styles.projectBoardContainer}>
+          <View className="bg-[rgba(128,128,128,0.05)] rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard userId={numericUserId} projectTitle="Apiculture" />
             )}
           </View>
         </View>
 
-        <View style={styles.widgetContainer}>
+        <View className="gap-4 mt-4 pb-8">
           {user_id && (
             <WarehouseWidget userId={user_id} serviceName="Apiculture" />
           )}
@@ -408,61 +402,5 @@ const ApicultureScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  toggleContainer: {
-    alignItems: "flex-end",
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  },
-  loader: { marginVertical: 16 },
-  cardGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    gap: 12,
-  },
-  halfWidthCard: {
-    width: "48%",
-  },
-  fullWidthCard: {
-    width: "100%",
-  },
-  searchbar: { marginHorizontal: 16, marginBottom: 16 },
-  listContainer: { paddingHorizontal: 16 },
-  apiaryCard: { marginBottom: 12 },
-  cardDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  emptyText: { textAlign: "center", marginTop: 40, padding: 16 },
-  widgetContainer: { gap: 16, marginTop: 16, paddingBottom: 32 },
-  projectSection: {
-    marginTop: 32,
-    paddingTop: 32,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(128, 128, 128, 0.2)",
-  },
-  projectHeader: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  projectTitle: {
-    fontWeight: "bold",
-  },
-  projectSubtitle: {
-    color: "#6b7280",
-    marginTop: 4,
-  },
-  projectBoardContainer: {
-    backgroundColor: "rgba(128, 128, 128, 0.05)",
-    borderRadius: 24,
-    paddingVertical: 16,
-    marginHorizontal: 16,
-  },
-});
 
 export default ApicultureScreen;

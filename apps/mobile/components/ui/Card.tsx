@@ -6,7 +6,7 @@ export const Card = ({ children, style, className = '', onPress }: any) => {
   const hasPadding = className.match(/p[xy]?-\d+/) !== null;
   const paddingClass = hasPadding ? '' : 'p-4';
   return (
-    <Comp onPress={onPress} className={`bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2 ${paddingClass} ${className}`} style={style}>
+    <Comp onPress={onPress} className={`bg-light dark:bg-gray-700 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2 ${paddingClass} ${className}`} style={style}>
       {children}
     </Comp>
   );
@@ -17,8 +17,8 @@ Card.Title = ({ title, subtitle, left, right, titleVariant, subtitleVariant }: a
     <View className="flex-row items-center flex-1">
       {left && <View className="mr-3">{left()}</View>}
       <View className="flex-1">
-        <RNText className="text-base font-bold text-gray-900 dark:text-gray-100">{title}</RNText>
-        {subtitle && <RNText className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</RNText>}
+        <RNText className="text-base font-bold text-dark dark:text-light">{title}</RNText>
+        {subtitle && <RNText className="text-xs text-dark dark:text-light mt-0.5">{subtitle}</RNText>}
       </View>
     </View>
     {right && <View>{right()}</View>}

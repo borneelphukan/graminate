@@ -6,7 +6,6 @@ import React, {
 } from "react";
 import {
   View,
-  StyleSheet,
   Pressable,
   FlatList,
   ScrollView,
@@ -21,6 +20,7 @@ import {
   Checkbox,
   SegmentedButtons,
   Divider,
+  Badge,
 } from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import axiosInstance from "@/lib/axiosInstance";
@@ -100,9 +100,9 @@ const CalendarHeader = ({
   const monthName = format(new Date(calendarYear, calendarMonth), "MMMM");
   
   return (
-    <View style={styles.headerContainer}>
+    <View className="flex-row justify-between items-center mb-5">
       <IconButton icon="chevron-left" onPress={previousMonth} iconColor={theme.colors.onSurface} />
-      <Text variant="headlineSmall" style={[styles.headerTitle, { color: theme.colors.onSurface }]}>
+      <Text variant="headlineSmall" className="font-bold" style={{ color: theme.colors.onSurface }}>
         {`${monthName} ${calendarYear}`}
       </Text>
       <IconButton icon="chevron-right" onPress={nextMonth} iconColor={theme.colors.onSurface} />
@@ -134,15 +134,15 @@ const CalendarGrid = ({
   const theme = useTheme();
   
   return (
-    <View style={styles.gridContainer}>
-      <View style={styles.dayAbbrRow}>
+    <View className="w-full">
+      <View className="flex-row justify-around mb-3">
         {dayAbbreviations.map((dayAbbr) => (
-          <Text key={dayAbbr} style={[styles.dayAbbrText, { color: theme.colors.onSurfaceVariant }]}>
+          <Text key={dayAbbr} className="w-10 text-center text-[12px] font-semibold" style={{ color: theme.colors.onSurfaceVariant }}>
             {dayAbbr}
           </Text>
         ))}
       </View>
-      <View style={styles.daysGrid}>
+      <View className="flex-row flex-wrap">
         {calendarDays.map((day, index) => {
           const date = day ? new Date(calendarYear, calendarMonth, day) : null;
           const dateKey = date ? getDateKey(date) : null;
@@ -152,15 +152,15 @@ const CalendarGrid = ({
           return (
             <Pressable
               key={index}
-              style={styles.dayCell}
+              className="w-[14.28%] h-[60px] justify-center items-center"
               onPress={() => day && !isPastDate && handleDateChange(date!)}
               disabled={!day || isPastDate}
             >
-              <View style={[styles.dayCircle, containerStyle]}>
-                <Text style={[styles.dayText, textStyle]}>{day}</Text>
+              <View className="w-10 h-10 rounded-full justify-center items-center" style={containerStyle}>
+                <Text className="text-base font-medium" style={textStyle}>{day}</Text>
               </View>
               {hasTasks && (
-                <View style={[styles.taskIndicator, { backgroundColor: theme.colors.primary }]} />
+                <View className="w-1 h-1 rounded-full absolute bottom-2" style={{ backgroundColor: theme.colors.primary }} />
               )}
             </Pressable>
           );
@@ -194,10 +194,10 @@ const TaskListView = ({
   const isPastDate = isPast(startOfDay(selectedDate)) && !isToday(selectedDate);
 
   return (
-    <View style={styles.flex}>
-      <View style={styles.viewHeader}>
-        <IconButton icon="arrow-left" onPress={() => setShowTasks(false)} />
-        <View style={styles.headerTextContainer}>
+    <View className="flex-1">
+      <View className="flex-row items-center p-2 h-[70px]">
+        <IconButton icon="chevron-left" onPress={() => setShowTasks(false)} />
+        <View className="flex-1 ml-2">
           <Text variant="titleLarge" style={{ fontWeight: "bold" }}>{dateFormatted}</Text>
           <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
             {tasks.length} task(s) scheduled
@@ -216,13 +216,13 @@ const TaskListView = ({
       <Divider />
 
       {isLoading ? (
-        <ActivityIndicator style={styles.centered} />
+        <ActivityIndicator className="flex-1 justify-center items-center p-5" />
       ) : tasks.length === 0 ? (
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center p-5 gap-4">
           <Icon type="calendar-blank" size={64} color={theme.colors.onSurfaceDisabled} />
-          <Text variant="bodyLarge" style={styles.emptyText}>No tasks for this day.</Text>
+          <Text variant="bodyLarge" className="mt-4 text-gray-500">No tasks for this day.</Text>
           {!isPastDate && (
-            <Button mode="contained" onPress={() => setShowAddTask(true)} style={styles.emptyButton}>
+            <Button mode="contained" onPress={() => setShowAddTask(true)} className="mt-5">
               Add Your First Task
             </Button>
           )}
@@ -231,37 +231,35 @@ const TaskListView = ({
         <FlatList
           data={tasks}
           keyExtractor={(item) => item.task_id.toString()}
-          contentContainerStyle={styles.taskList}
+          contentContainerClassName="p-4"
           renderItem={({ item }) => (
-            <View style={styles.taskCard}>
+            <View className="flex-row items-center bg-[rgba(0,0,0,0.03)] p-3 rounded-xl mb-3">
               <Checkbox
                 status={item.status === "Completed" ? "checked" : "unchecked"}
                 onPress={() => updateTaskStatus(item.task_id, item.status === "Completed" ? "To Do" : "Completed")}
               />
-              <View style={styles.taskInfo}>
+              <View className="flex-1 ml-3">
                 <Text
                   variant="bodyLarge"
                   style={[
-                    styles.taskTitle,
-                    item.status === "Completed" && styles.taskCompletedText
+                    item.status === "Completed" && { textDecorationLine: "line-through", opacity: 0.5 }
                   ]}
                 >
                   {item.name}
                 </Text>
-                <View style={styles.taskMeta}>
-                  <Text variant="bodySmall" style={styles.taskTime}>{item.time}</Text>
-                  <View
-                    style={[
-                      styles.priorityBadge,
-                      {
-                        backgroundColor:
-                          item.priority === "High"
-                            ? theme.colors.errorContainer
-                            : item.priority === "Medium"
-                            ? "#FFF4E5" // Light Amber
-                            : theme.colors.primaryContainer,
-                      },
-                    ]}
+                <View className="flex-row items-center mt-1">
+                  <Text variant="bodySmall" className="text-dark dark:text-light mr-3">{item.time}</Text>
+                  <Badge
+                    className="ml-2 px-2 rounded-md"
+                    size={20}
+                    style={{
+                      backgroundColor:
+                        item.priority === "High"
+                          ? theme.colors.errorContainer
+                          : item.priority === "Medium"
+                          ? "#FFF4E5" // Light Amber
+                          : theme.colors.primaryContainer,
+                    }}
                   >
                     <Text
                       variant="labelSmall"
@@ -278,7 +276,7 @@ const TaskListView = ({
                     >
                       {item.priority.toUpperCase()}
                     </Text>
-                  </View>
+                  </Badge>
                 </View>
               </View>
               <IconButton
@@ -358,16 +356,16 @@ const AddTaskView = ({
   };
 
   return (
-    <ScrollView style={styles.flex} contentContainerStyle={styles.addFormContainer}>
-      <Text variant="headlineSmall" style={styles.formTitle}>New Task</Text>
+    <ScrollView className="flex-1" contentContainerClassName="p-5">
+      <Text variant="headlineSmall" className="font-bold mb-6 text-center">New Task</Text>
       
-      <View style={styles.formGroup}>
+      <View className="gap-4">
         <TextInput
           label="What needs to be done?"
           value={taskName}
           onChangeText={setTaskName}
           mode="outlined"
-          style={styles.input}
+          className="bg-transparent"
         />
         
         <View>
@@ -377,11 +375,11 @@ const AddTaskView = ({
             onChangeText={setProject}
             onFocus={() => setShowSuggestions(true)}
             mode="outlined"
-            style={styles.input}
+            className="bg-transparent"
             right={<TextInput.Icon icon="chevron-down" />}
           />
           {showSuggestions && (
-            <View style={[styles.suggestions, { backgroundColor: theme.colors.surfaceVariant }]}>
+            <View className="rounded-lg mt-1 elevation-3" style={{ backgroundColor: theme.colors.surfaceVariant }}>
               {filteredSuggestions.map((item, idx) => (
                 <Pressable
                   key={idx}
@@ -389,13 +387,13 @@ const AddTaskView = ({
                     setProject(item);
                     setShowSuggestions(false);
                   }}
-                  style={styles.suggestionItem}
+                  className="p-3 border-b border-[rgba(0,0,0,0.1)]"
                 >
                   <Text>{item}</Text>
                 </Pressable>
               ))}
               {filteredSuggestions.length === 0 && (
-                <Text style={styles.suggestionItem}>No categories found</Text>
+                <Text className="p-3 border-b border-[rgba(0,0,0,0.1)]">No categories found</Text>
               )}
             </View>
           )}
@@ -406,13 +404,13 @@ const AddTaskView = ({
           value={time}
           onChangeText={setTime}
           mode="outlined"
-          style={styles.input}
+          className="bg-transparent"
         />
 
-        <Text variant="labelLarge" style={styles.label}>Priority</Text>
+        <Text variant="labelLarge" className="mt-2 font-semibold">Priority</Text>
         <SegmentedButtons
           value={priority}
-          onValueChange={v => setPriority(v as any)}
+          onValueChange={(v: any) => setPriority(v as any)}
           buttons={[
             { value: "Low", label: "Low" },
             { value: "Medium", label: "Medium" },
@@ -421,8 +419,8 @@ const AddTaskView = ({
         />
       </View>
 
-      <View style={styles.formButtons}>
-        <Button mode="outlined" onPress={() => setShowAddTask(false)} style={styles.button}>
+      <View className="flex-row gap-3 mt-8">
+        <Button mode="outlined" onPress={() => setShowAddTask(false)} className="flex-1">
           Cancel
         </Button>
         <Button
@@ -430,7 +428,7 @@ const AddTaskView = ({
           onPress={handleSave}
           loading={loading}
           disabled={!taskName || !project || loading}
-          style={styles.button}
+          className="flex-1"
         >
           Save Task
         </Button>
@@ -561,7 +559,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
   };
 
   return (
-    <View style={[styles.main, { backgroundColor: theme.colors.background }]}>
+    <View className="border border-gray-400 dark:border-gray-800 rounded-xl overflow-hidden min-h-[450px]" style={{ backgroundColor: theme.colors.background }}>
       {showAddTask ? (
         <AddTaskView
           selectedDate={selectedDate}
@@ -584,7 +582,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
           isLoading={isLoadingTasks}
         />
       ) : (
-        <View style={styles.calendarView}>
+        <View className="p-4">
           <CalendarHeader
             calendarMonth={calendarMonth}
             calendarYear={calendarYear}
@@ -616,48 +614,5 @@ const Calendar = ({ route, userId: propUserId }: any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  main: { flex: 1, minHeight: 450 },
-  flex: { flex: 1 },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
-  calendarView: { padding: 16 },
-  headerContainer: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
-  headerTitle: { fontWeight: "bold" },
-  gridContainer: { width: "100%" },
-  dayAbbrRow: { flexDirection: "row", justifyContent: "space-around", marginBottom: 12 },
-  dayAbbrText: { width: 40, textAlign: "center", fontSize: 12, fontWeight: "600" },
-  daysGrid: { flexDirection: "row", flexWrap: "wrap" },
-  dayCell: { width: `${100 / 7}%`, height: 60, justifyContent: "center", alignItems: "center" },
-  dayCircle: { width: 40, height: 40, borderRadius: 20, justifyContent: "center", alignItems: "center" },
-  dayText: { fontSize: 16, fontWeight: "500" },
-  taskIndicator: { width: 4, height: 4, borderRadius: 2, position: "absolute", bottom: 8 },
-  viewHeader: { flexDirection: "row", alignItems: "center", padding: 8, height: 70 },
-  headerTextContainer: { flex: 1, marginLeft: 8 },
-  emptyText: { marginTop: 16, color: "#666" },
-  emptyButton: { marginTop: 20 },
-  taskList: { padding: 16 },
-  taskCard: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(0,0,0,0.03)", padding: 12, borderRadius: 12, marginBottom: 12 },
-  taskInfo: { flex: 1, marginLeft: 12 },
-  taskTitle: { fontWeight: "600" },
-  taskCompletedText: { textDecorationLine: "line-through", opacity: 0.5 },
-  taskMeta: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  taskTime: { color: "#666", marginRight: 12 },
-  priorityBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    marginLeft: 8,
-  },
-  addFormContainer: { padding: 20 },
-  formTitle: { fontWeight: "bold", marginBottom: 24, textAlign: "center" },
-  formGroup: { gap: 16 },
-  input: { backgroundColor: "transparent" },
-  label: { marginTop: 8, fontWeight: "600" },
-  suggestions: { borderRadius: 8, marginTop: 4, elevation: 3 },
-  suggestionItem: { padding: 12, borderBottomWidth: 0.5, borderBottomColor: "rgba(0,0,0,0.1)" },
-  formButtons: { flexDirection: "row", gap: 12, marginTop: 32 },
-  button: { flex: 1 },
-});
 
 export default Calendar;

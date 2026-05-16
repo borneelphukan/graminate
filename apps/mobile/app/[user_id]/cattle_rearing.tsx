@@ -16,7 +16,7 @@ import {
 } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -58,9 +58,7 @@ const CattleRearingScreen = () => {
   const theme = useTheme();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-  const navbarBg = "#1f2937"; // gray-800
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
+
 
   const [cattleRecords, setCattleRecords] = useState<CattleApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -74,12 +72,12 @@ const CattleRearingScreen = () => {
   const memoizedBackIcon = useCallback(
     () => (
       <Icon
-        type={"arrow-left" as any}
+        type={"chevron-left" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const memoizedAddIcon = useCallback(
@@ -87,10 +85,10 @@ const CattleRearingScreen = () => {
       <Icon
         type={"plus" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -265,19 +263,13 @@ const CattleRearingScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
           title="Cattle Rearing"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
-          subtitle={loadingCattle ? "Loading..." : `${filteredCattleRecords.length} Herd(s)`}
-          subtitleStyle={{ color: navbarIconColor }}
+          subtitle={
+            loadingCattle ? "Loading..." : `${cattleRecords.length} Cattle`
+          }
         />
         <Appbar.Action
           icon={memoizedAddIcon}
@@ -289,7 +281,7 @@ const CattleRearingScreen = () => {
       </Appbar.Header>
 
       <ScrollView style={{ backgroundColor: theme.colors.background }}>
-        <View style={styles.toggleContainer}>
+        <View className="items-end px-4 pt-2">
           <Button
             icon={() => (
               <Icon
@@ -306,16 +298,16 @@ const CattleRearingScreen = () => {
 
         {showFinancials && (
           isLoadingFinancials ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : (
-            <View style={styles.cardGrid}>
+            <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
               {cattleFinancialCardData.map((card, index) => (
                 <View
                   key={index}
-                  style={
+                  className={
                     index === cattleFinancialCardData.length - 1
-                      ? styles.fullWidthCard
-                      : styles.halfWidthCard
+                      ? "w-full"
+                      : "w-[48%]"
                   }
                 >
                   <BudgetCard {...card} date={today} />
@@ -329,12 +321,12 @@ const CattleRearingScreen = () => {
           placeholder="Search Herds..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
+          className="mx-4 mb-4"
         />
 
-        <View style={styles.listContainer}>
+        <View className="px-4">
           {loadingCattle ? (
-            <ActivityIndicator style={styles.loader} />
+            <ActivityIndicator className="my-4" />
           ) : filteredCattleRecords.length > 0 ? (
             filteredCattleRecords.map((item) => (
               <Card
@@ -343,11 +335,11 @@ const CattleRearingScreen = () => {
                   setEditingCattle(item);
                   setIsFormVisible(true);
                 }}
-                style={styles.cattleCard}
+                className="mb-3"
               >
                 <Card.Title title={item.cattle_name} titleVariant="titleLarge" />
                 <Card.Content>
-                  <View style={styles.cardDetails}>
+                  <View className="flex-row justify-between mb-1">
                     <Text variant="bodyMedium">Type: {item.cattle_type || "N/A"}</Text>
                     <Text variant="bodyMedium">Count: {item.number_of_animals}</Text>
                   </View>
@@ -358,27 +350,27 @@ const CattleRearingScreen = () => {
               </Card>
             ))
           ) : (
-            <Text style={styles.emptyText}>No records found. Tap &apos;+&apos; to add your first herd.</Text>
+            <Text className="text-center mt-10 p-4">No records found. Tap &apos;+&apos; to add your first herd.</Text>
           )}
         </View>
 
-        <View style={styles.projectSection}>
-          <View style={styles.projectHeader}>
-            <Text variant="headlineSmall" style={styles.projectTitle}>
+        <View className="mt-8 pt-8 border-t border-[rgba(128,128,128,0.2)]">
+          <View className="px-4 mb-4">
+            <Text variant="headlineSmall" className="font-bold">
               Your Cattle Rearing Tasks
             </Text>
-            <Text variant="bodyMedium" style={styles.projectSubtitle}>
+            <Text variant="bodyMedium" className="text-gray-500 mt-1">
               All your cattle rearing tasks visualized
             </Text>
           </View>
-          <View style={styles.projectBoardContainer}>
+          <View className="bg-[rgba(128,128,128,0.05)] rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard userId={numericUserId} projectTitle="Cattle Rearing" />
             )}
           </View>
         </View>
 
-        <View style={styles.widgetContainer}>
+        <View className="gap-4 mt-4 pb-8">
           {user_id && (
             <WarehouseWidget userId={user_id} serviceName="Cattle Rearing" />
           )}
@@ -406,61 +398,4 @@ const CattleRearingScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  toggleContainer: {
-    alignItems: "flex-end",
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  },
-  loader: { marginVertical: 16 },
-  cardGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    gap: 12,
-  },
-  halfWidthCard: {
-    width: "48%",
-  },
-  fullWidthCard: {
-    width: "100%",
-  },
-  searchbar: { marginHorizontal: 16, marginBottom: 16 },
-  listContainer: { paddingHorizontal: 16 },
-  cattleCard: { marginBottom: 12 },
-  cardDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
-  },
-  emptyText: { textAlign: "center", marginTop: 40, padding: 16 },
-  widgetContainer: { gap: 16, marginTop: 16, paddingBottom: 32 },
-  projectSection: {
-    marginTop: 32,
-    paddingTop: 32,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(128, 128, 128, 0.2)",
-  },
-  projectHeader: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  projectTitle: {
-    fontWeight: "bold",
-  },
-  projectSubtitle: {
-    color: "#6b7280",
-    marginTop: 4,
-  },
-  projectBoardContainer: {
-    backgroundColor: "rgba(128, 128, 128, 0.05)",
-    borderRadius: 24,
-    paddingVertical: 16,
-    marginHorizontal: 16,
-  },
-});
-
 export default CattleRearingScreen;

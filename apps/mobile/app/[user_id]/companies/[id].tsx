@@ -244,7 +244,7 @@ Email: ${formData.email || "N/A"}
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow-left" as any}
+              type={"chevron-left" as any}
               size={22}
               color={theme.colors.onSurface}
             />
@@ -378,7 +378,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Company Name"
                 value={formData.companyName}
-                onChangeText={(val) => handleInputChange("companyName", val)}
+                onChangeText={(val: string) => handleInputChange("companyName", val)}
                 left={
                   <TextInput.Icon
                     icon={() => (
@@ -395,7 +395,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Contact Person"
                 value={formData.contactPerson}
-                onChangeText={(val) => handleInputChange("contactPerson", val)}
+                onChangeText={(val: string) => handleInputChange("contactPerson", val)}
                 left={
                   <TextInput.Icon
                     icon={() => (
@@ -412,7 +412,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Email"
                 value={formData.email}
-                onChangeText={(val) => handleInputChange("email", val)}
+                onChangeText={(val: string) => handleInputChange("email", val)}
                 keyboardType="email-address"
                 left={
                   <TextInput.Icon
@@ -430,7 +430,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Phone Number"
                 value={formData.phoneNumber}
-                onChangeText={(val) => handleInputChange("phoneNumber", val)}
+                onChangeText={(val: string) => handleInputChange("phoneNumber", val)}
                 keyboardType="phone-pad"
                 left={
                   <TextInput.Icon
@@ -448,7 +448,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Website"
                 value={formData.website}
-                onChangeText={(val) => handleInputChange("website", val)}
+                onChangeText={(val: string) => handleInputChange("website", val)}
                 left={
                   <TextInput.Icon
                     icon={() => (
@@ -465,7 +465,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Industry"
                 value={formData.industry}
-                onChangeText={(val) => handleInputChange("industry", val)}
+                onChangeText={(val: string) => handleInputChange("industry", val)}
                 left={
                   <TextInput.Icon
                     icon={() => (
@@ -525,7 +525,7 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Address Line 1"
                 value={formData.addressLine1}
-                onChangeText={(val) => handleInputChange("addressLine1", val)}
+                onChangeText={(val: string) => handleInputChange("addressLine1", val)}
                 left={
                   <TextInput.Icon
                     icon={() => (
@@ -542,25 +542,25 @@ Email: ${formData.email || "N/A"}
                 mode="outlined"
                 label="Address Line 2"
                 value={formData.addressLine2}
-                onChangeText={(val) => handleInputChange("addressLine2", val)}
+                onChangeText={(val: string) => handleInputChange("addressLine2", val)}
               />
               <TextInput
                 mode="outlined"
                 label="City"
                 value={formData.city}
-                onChangeText={(val) => handleInputChange("city", val)}
+                onChangeText={(val: string) => handleInputChange("city", val)}
               />
               <TextInput
                 mode="outlined"
                 label="State"
                 value={formData.state}
-                onChangeText={(val) => handleInputChange("state", val)}
+                onChangeText={(val: string) => handleInputChange("state", val)}
               />
               <TextInput
                 mode="outlined"
                 label="Postal / Zip Code"
                 value={formData.postalCode}
-                onChangeText={(val) => handleInputChange("postalCode", val)}
+                onChangeText={(val: string) => handleInputChange("postalCode", val)}
                 keyboardType="numeric"
               />
             </Card.Content>

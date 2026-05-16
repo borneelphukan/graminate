@@ -4,16 +4,25 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const Portal = ({ children }: any) => <>{children}</>;
 
-export const Modal = ({ visible, onDismiss, children, contentContainerStyle, className = '' }: any) => (
-  <RNModal visible={visible} onRequestClose={onDismiss} transparent={true} animationType="fade">
-    <View className="flex-1 justify-center items-center bg-black/50">
-      <Pressable className="absolute inset-0" onPress={onDismiss} />
-      <View className={`bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-xl w-[90%] p-6 max-h-[80%] ${className}`} style={contentContainerStyle}>
-        {children}
+export const Modal = ({ visible, onDismiss, children, contentContainerStyle, className = '', containerClassName = 'justify-center items-center bg-black/50' }: any) => {
+  const hasWidth = className.includes('w-') || (contentContainerStyle && contentContainerStyle.width);
+  const hasPadding = className.includes('p-') || (contentContainerStyle && contentContainerStyle.padding);
+  const hasRounding = className.includes('rounded-') || (contentContainerStyle && contentContainerStyle.borderRadius);
+
+  return (
+    <RNModal visible={visible} onRequestClose={onDismiss} transparent={true} animationType="fade">
+      <View className={`flex-1 ${containerClassName}`}>
+        <Pressable className="absolute inset-0" onPress={onDismiss} />
+        <View 
+          className={`bg-white dark:bg-[#1e1e1e] shadow-xl ${!hasWidth ? 'w-[90%]' : ''} ${!hasPadding ? 'p-6' : ''} ${!hasRounding ? 'rounded-2xl' : ''} ${className}`} 
+          style={contentContainerStyle}
+        >
+          {children}
+        </View>
       </View>
-    </View>
-  </RNModal>
-);
+    </RNModal>
+  );
+};
 
 export const Dialog = ({ visible, onDismiss, children, style }: any) => (
   <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={style}>

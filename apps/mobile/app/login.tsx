@@ -11,7 +11,6 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   View,
 } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -156,12 +155,12 @@ const AuthScreen = () => {
       icon={() => (
         <Image
           source={{ uri: iconUri }}
-          style={styles.socialIcon}
+          className="w-6 h-6 mr-4"
           resizeMode="contain"
         />
       )}
-      style={styles.socialButton}
-      labelStyle={styles.socialButtonLabel}
+      className="border"
+      labelStyle={{ fontSize: 16 }}
       onPress={() =>
         Alert.alert("Social Login", "This feature is coming soon!")
       }
@@ -171,43 +170,42 @@ const AuthScreen = () => {
   );
 
   const OrSeparator = () => (
-    <View style={styles.separatorContainer}>
-      <Divider style={styles.divider} />
-      <Text variant="labelMedium" style={styles.separatorText}>
+    <View className="flex-row items-center my-6">
+      <Divider className="flex-1" />
+      <Text variant="labelMedium" className="mx-4">
         OR
       </Text>
-      <Divider style={styles.divider} />
+      <Divider className="flex-1" />
     </View>
   );
 
   const renderHeader = () => (
-    <View style={styles.headerContainer}>
+    <View className="items-center justify-center py-8 px-4">
       {!isLoginView && (
         <IconButton
-          icon="arrow-left"
+          icon="chevron-left"
           onPress={toggleView}
-          style={styles.backButton}
+          className="absolute top-4 left-4 z-10"
           iconColor={theme.colors.onPrimary}
           size={28}
         />
       )}
       <Image
         source={require("@/assets/images/logo.png")}
-        style={styles.logo}
+        className="w-16 h-16 mb-4"
         resizeMode="contain"
       />
       <Text
         variant="headlineLarge"
-        style={[styles.headerTitle, { color: theme.colors.onPrimary }]}
+        className="font-bold"
+        style={{ color: theme.colors.onPrimary }}
       >
         {isLoginView ? "Welcome" : "Create Account"}
       </Text>
       <Text
         variant="bodyLarge"
-        style={[
-          styles.headerSubtitle,
-          { color: theme.colors.onPrimaryContainer },
-        ]}
+        className="mt-2"
+        style={{ color: theme.colors.onPrimaryContainer }}
       >
         {isLoginView ? "Sign in to continue" : "Let's get you started!"}
       </Text>
@@ -252,14 +250,14 @@ const AuthScreen = () => {
       <Button
         mode="text"
         onPress={() => router.push("/forgot_password")}
-        style={styles.forgotPasswordButton}
+        className="self-end -mt-2"
       >
         Forgot Password?
       </Button>
       <HelperText
         type="error"
         visible={!!generalError}
-        style={styles.generalError}
+        className="text-center mb-2"
       >
         {generalError}
       </HelperText>
@@ -268,12 +266,12 @@ const AuthScreen = () => {
         onPress={handleLogin}
         loading={loading}
         disabled={loading}
-        style={styles.mainButton}
-        labelStyle={styles.mainButtonLabel}
+        className="py-2 mt-2 rounded-full"
+        labelStyle={{ fontSize: 16, fontWeight: "bold" }}
       >
         Sign In
       </Button>
-      <View style={styles.toggleViewContainer}>
+      <View className="flex-row justify-center items-center mt-auto pb-2">
         <Text variant="bodyMedium">Don&apos;t have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Sign Up
@@ -285,9 +283,9 @@ const AuthScreen = () => {
   const renderRegisterForm = () => (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.formScrollView}
+      contentContainerClassName="pb-8"
     >
-      <View style={styles.inputGroup}>
+      <View className="gap-4 mb-6">
         <TextInput
           mode="outlined"
           label="First Name"
@@ -337,8 +335,8 @@ const AuthScreen = () => {
         onPress={handleRegister}
         loading={loading}
         disabled={loading}
-        style={styles.mainButton}
-        labelStyle={styles.mainButtonLabel}
+        className="py-2 mt-2 rounded-full"
+        labelStyle={{ fontSize: 16, fontWeight: "bold" }}
       >
         Create Account
       </Button>
@@ -347,7 +345,7 @@ const AuthScreen = () => {
         title="Sign up with Google"
         iconUri="https://img.icons8.com/color/48/000000/google-logo.png"
       />
-      <View style={styles.toggleViewContainer}>
+      <View className="flex-row justify-center items-center mt-auto pb-2">
         <Text variant="bodyMedium">Already have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Log In
@@ -359,7 +357,8 @@ const AuthScreen = () => {
   return (
     <>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.primary }]}
+        className="flex-1"
+        style={{ backgroundColor: theme.colors.primary }}
       >
         <StatusBar
           barStyle="light-content"
@@ -367,14 +366,12 @@ const AuthScreen = () => {
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.flex}
+          className="flex-1"
         >
           {renderHeader()}
           <View
-            style={[
-              styles.formContainer,
-              { backgroundColor: theme.colors.background },
-            ]}
+            className="flex-1 rounded-t-[40px] p-8"
+            style={{ backgroundColor: theme.colors.background }}
           >
             {isLoginView ? renderLoginForm() : renderRegisterForm()}
           </View>
@@ -384,10 +381,8 @@ const AuthScreen = () => {
         <Modal
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
-          contentContainerStyle={[
-            styles.modalContent,
-            { backgroundColor: theme.colors.surface },
-          ]}
+          className="p-5 m-5 rounded-2xl"
+          contentContainerStyle={{ backgroundColor: theme.colors.surface }}
         >
           <Calendar
             onDayPress={handleDayPress}
@@ -415,49 +410,5 @@ const AuthScreen = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  headerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 32,
-    paddingHorizontal: 16,
-  },
-  backButton: { position: "absolute", top: 16, left: 16, zIndex: 10 },
-  logo: { width: 64, height: 64, marginBottom: 16 },
-  headerTitle: { fontWeight: "bold" },
-  headerSubtitle: { marginTop: 8 },
-  formContainer: {
-    flex: 1,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    padding: 32,
-  },
-  socialButton: { borderWidth: 1 },
-  socialIcon: { width: 24, height: 24, marginRight: 16 },
-  socialButtonLabel: { fontSize: 16 },
-  separatorContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 24,
-  },
-  divider: { flex: 1 },
-  separatorText: { marginHorizontal: 16 },
-  forgotPasswordButton: { alignSelf: "flex-end", marginTop: -8 },
-  generalError: { textAlign: "center", marginBottom: 8 },
-  mainButton: { paddingVertical: 8, marginTop: 8, borderRadius: 50 },
-  mainButtonLabel: { fontSize: 16, fontWeight: "bold" },
-  toggleViewContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "auto",
-    paddingBottom: 8,
-  },
-  formScrollView: { paddingBottom: 32 },
-  inputGroup: { gap: 16, marginBottom: 24 },
-  modalContent: { padding: 20, margin: 20, borderRadius: 16 },
-});
 
 export default AuthScreen;

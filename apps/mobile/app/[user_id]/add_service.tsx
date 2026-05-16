@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute } from "@react-navigation/native";
 import axiosInstance from "@/lib/axiosInstance";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -312,22 +312,23 @@ const AddServiceScreen = () => {
     const iconSize = 30;
 
     return (
-      <View key={subType} style={styles.cardWrapper}>
+      <View key={subType} className="w-1/2 p-2">
         <TouchableRipple
           onPress={isLocked ? undefined : onPress}
-          style={[styles.cardRipple, { borderRadius: theme.roundness }]}
+          className="flex-1"
+          style={{ borderRadius: theme.roundness }}
         >
           <Card
+            className="flex-1"
             style={[
-              styles.card,
               isLocked && { backgroundColor: theme.colors.surfaceVariant },
               isSelected && { backgroundColor: theme.colors.primaryContainer },
             ]}
           >
-            <Card.Content style={styles.cardContent}>
+            <Card.Content className="items-center justify-center px-4 py-6 gap-3">
               {isLocked && (
-                <View style={[styles.lockedBadge, { backgroundColor: theme.colors.primary }]}>
-                  <Text style={styles.lockedBadgeText}>Unlock Pro</Text>
+                <View className="absolute top-2 right-2 px-1.5 py-0.5 rounded z-10" style={{ backgroundColor: theme.colors.primary }}>
+                  <Text className="text-white text-[10px] font-bold">Unlock Pro</Text>
                 </View>
               )}
               {/* Conditionally render FontAwesomeIcon or a custom component */}
@@ -342,16 +343,14 @@ const AddServiceScreen = () => {
               )}
               <Text
                 variant="labelLarge"
-                style={[
-                  styles.cardText,
-                  {
-                    color: isLocked
-                      ? theme.colors.onSurfaceVariant
-                      : isSelected
-                      ? theme.colors.primary
-                      : theme.colors.onSurface,
-                  },
-                ]}
+                className="text-center"
+                style={{
+                  color: isLocked
+                    ? theme.colors.onSurfaceVariant
+                    : isSelected
+                    ? theme.colors.primary
+                    : theme.colors.onSurface,
+                }}
               >
                 {subType}
               </Text>
@@ -368,7 +367,8 @@ const AddServiceScreen = () => {
   if (isLoading) {
     return (
       <View
-        style={[styles.centered, { backgroundColor: theme.colors.background }]}
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: theme.colors.background }}
       >
         <ActivityIndicator size="large" />
       </View>
@@ -388,18 +388,16 @@ const AddServiceScreen = () => {
         <Modal
           visible={isModalOpen}
           onDismiss={() => setIsModalOpen(false)}
-          contentContainerStyle={[
-            styles.modal,
-            {
-              backgroundColor: theme.colors.elevation.level3,
-              borderRadius: theme.roundness,
-            },
-          ]}
+          className="m-5"
+          contentContainerStyle={{
+            backgroundColor: theme.colors.elevation.level3,
+            borderRadius: theme.roundness,
+          }}
         >
           <Card>
             <Card.Title title="Confirm Password" />
             <Card.Content>
-              <Text variant="bodyMedium" style={styles.modalText}>
+              <Text variant="bodyMedium" className="mb-4">
                 Enter your password to remove the selected service(s) and all
                 related data.
               </Text>
@@ -408,7 +406,7 @@ const AddServiceScreen = () => {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!isPasswordVisible}
-                style={styles.input}
+                className="mb-2"
                 error={!!modalError}
                 disabled={isVerifyingPassword}
                 right={
@@ -453,14 +451,14 @@ const AddServiceScreen = () => {
 
       <ScrollView
         style={{ backgroundColor: theme.colors.background }}
-        contentContainerStyle={styles.container}
+        contentContainerClassName="p-4"
       >
         {servicesToShow.length > 0 ? (
           <>
-            <Card style={styles.sectionCard}>
+            <Card className="mb-6">
               <Card.Title title="Add Services" />
               <Card.Content>
-                <View style={styles.grid}>
+                <View className="flex-row flex-wrap -m-2">
                   {servicesToShow.map((subType) =>
                     renderServiceCard(
                       subType,
@@ -483,13 +481,13 @@ const AddServiceScreen = () => {
               onPress={handleAddSubmit}
               disabled={isSubmitting || selectedSubTypes.size === 0 || isProLocked}
               loading={isSubmitting}
-              style={styles.button}
+              className="self-end"
             >
               {isProLocked ? "Upgrade for more" : "Add Selected Services"}
             </Button>
           </>
         ) : (
-          <Card style={styles.sectionCard}>
+          <Card className="mb-6">
             <Card.Title title="Available Services" />
             <Card.Content>
               <Text>You have subscribed to all available services.</Text>
@@ -499,11 +497,11 @@ const AddServiceScreen = () => {
 
         {subTypes.length > 0 && (
           <>
-            <Divider style={styles.divider} />
-            <Card style={styles.sectionCard}>
+            <Divider className="my-6" />
+            <Card className="mb-6">
               <Card.Title title="Current Services" />
               <Card.Content>
-                <View style={styles.grid}>
+                <View className="flex-row flex-wrap -m-2">
                   {subTypes.map((subType) =>
                     renderServiceCard(
                       subType,
@@ -524,7 +522,7 @@ const AddServiceScreen = () => {
               onPress={handleOpenConfirmationModal}
               disabled={isRemoving || servicesToRemove.size === 0}
               loading={isRemoving}
-              style={styles.button}
+              className="self-end"
               buttonColor={theme.colors.error}
             >
               Remove Selected Services
@@ -536,73 +534,5 @@ const AddServiceScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    padding: 16,
-  },
-  divider: {
-    marginVertical: 24,
-  },
-  sectionCard: {
-    marginBottom: 24,
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    margin: -8,
-  },
-  cardWrapper: {
-    width: "50%",
-    padding: 8,
-  },
-  cardRipple: {
-    flex: 1,
-  },
-  card: {
-    flex: 1,
-  },
-  cardContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    gap: 12,
-  },
-  cardText: {
-    textAlign: "center",
-  },
-  button: {
-    alignSelf: "flex-end",
-  },
-  modal: {
-    margin: 20,
-  },
-  modalText: {
-    marginBottom: 16,
-  },
-  input: {
-    marginBottom: 8,
-  },
-  lockedBadge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    zIndex: 1,
-  },
-  lockedBadgeText: {
-    color: "white",
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-});
 
 export default AddServiceScreen;

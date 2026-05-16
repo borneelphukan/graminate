@@ -61,10 +61,6 @@ const FloricultureScreen = () => {
     return d;
   }, []);
 
-  const navbarBg = "#1f2937"; // gray-800
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
-
   const [records, setRecords] = useState<FloricultureApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,12 +73,12 @@ const FloricultureScreen = () => {
   const memoizedBackIcon = useCallback(
     () => (
       <Icon
-        type={"arrow-left" as any}
+        type={"chevron-left" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const memoizedAddIcon = useCallback(
@@ -90,10 +86,10 @@ const FloricultureScreen = () => {
       <Icon
         type={"plus" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -267,19 +263,11 @@ const FloricultureScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
           title="Floriculture"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
           subtitle={loading ? "Loading..." : `${filteredRecords.length} Crop(s)`}
-          subtitleStyle={{ color: navbarIconColor }}
         />
         <Appbar.Action
           icon={memoizedAddIcon}
@@ -297,7 +285,7 @@ const FloricultureScreen = () => {
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
                 size={16}
-                color={theme.colors.primary}
+                color={"text-light"}
               />
             )}
             onPress={() => setShowFinancials(!showFinancials)}

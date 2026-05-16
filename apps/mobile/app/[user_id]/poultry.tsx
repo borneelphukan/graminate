@@ -157,9 +157,7 @@ const PoultryScreen = () => {
   const theme = useTheme();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-  const navbarBg = "#1f2937"; // gray-800 (slightly lighter than navbar gray-900)
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
+
 
   const [flockRecords, setFlockRecords] = useState<FlockApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -174,12 +172,12 @@ const PoultryScreen = () => {
   const memoizedBackIcon = useCallback(
     () => (
       <Icon
-        type={"arrow-left" as any}
+        type={"chevron-left" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const memoizedAddIcon = useCallback(
@@ -187,10 +185,10 @@ const PoultryScreen = () => {
       <Icon
         type={"plus" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   const processSalesData = useCallback(
@@ -351,26 +349,20 @@ const PoultryScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action
           icon={memoizedBackIcon}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title="Poultry Flocks"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
+          titleStyle={{ color: theme.colors.onSurface, fontWeight: "bold" }}
           subtitle={
             loadingFlocks
               ? "Loading..."
               : `${filteredFlockRecords.length} Record(s)`
           }
-          subtitleStyle={{ color: navbarIconColor }}
+          subtitleStyle={{ color: theme.colors.onSurfaceVariant }}
         />
         <Appbar.Action
           icon={memoizedAddIcon}

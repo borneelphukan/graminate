@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
-import { Alert, FlatList, SafeAreaView, StyleSheet, View } from "react-native";
+import { Alert, FlatList, SafeAreaView, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -106,17 +106,17 @@ const ContactCard = ({
 }) => {
   const theme = useTheme();
   return (
-    <Card onPress={onPress} style={styles.card}>
+    <Card onPress={onPress} className="mb-3">
       <Card.Title
         title={`${item.first_name} ${item.last_name || ""}`}
         subtitle={item.type}
       />
       <Card.Content>
-        <View style={styles.cardRow}>
+        <View className="flex-row justify-between items-center mt-3">
           {item.email && (
-            <View style={styles.infoItem}>
+            <View className="flex-row items-center">
               <Icon type={"email" as any} size={16} />
-              <Text style={styles.infoText}>{item.email}</Text>
+              <Text className="ml-2">{item.email}</Text>
             </View>
           )}
           <Text
@@ -140,17 +140,17 @@ const CompanyCard = ({
 }) => {
   const theme = useTheme();
   return (
-    <Card onPress={onPress} style={styles.card}>
+    <Card onPress={onPress} className="mb-3">
       <Card.Title
         title={item.company_name}
         subtitle={`Contact: ${item.contact_person}`}
       />
       <Card.Content>
-        <View style={styles.cardRow}>
+        <View className="flex-row justify-between items-center mt-3">
           {item.phone_number && (
-            <View style={styles.infoItem}>
+            <View className="flex-row items-center">
               <Icon type={"phone" as any} size={16} />
-              <Text style={styles.infoText}>{item.phone_number}</Text>
+              <Text className="ml-2">{item.phone_number}</Text>
             </View>
           )}
           <Text
@@ -174,7 +174,7 @@ const ContractCard = ({
 }) => {
   const theme = useTheme();
   return (
-    <Card onPress={onPress} style={styles.card}>
+    <Card onPress={onPress} className="mb-3">
       <Card.Title
         title={item.deal_name}
         titleNumberOfLines={2}
@@ -194,7 +194,7 @@ const ContractCard = ({
         >
           Partner: {item.partner}
         </Text>
-        <View style={styles.cardRow}>
+        <View className="flex-row justify-between items-center mt-3">
           <Chip>{item.stage}</Chip>
           <Text
             variant="labelSmall"
@@ -217,17 +217,17 @@ const ReceiptCard = ({
 }) => {
   const theme = useTheme();
   return (
-    <Card onPress={onPress} style={styles.card}>
+    <Card onPress={onPress} className="mb-3">
       <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
       <Card.Content>
-        <View style={styles.cardRow}>
-          <View style={styles.infoItem}>
+        <View className="flex-row justify-between items-center mt-3">
+          <View className="flex-row items-center">
             <Icon
               type={"calendar-month" as any}
               size={16}
               color={theme.colors.error}
             />
-            <Text style={[styles.infoText, { color: theme.colors.error }]}>
+            <Text className="ml-2" style={{ color: theme.colors.error }}>
               Due: {formatDate(item.due_date)}
             </Text>
           </View>
@@ -244,12 +244,12 @@ const ReceiptCard = ({
 };
 
 const ProjectGroupCard = ({ group, onPress }: { group: ProjectGroup; onPress: () => void }) => (
-  <Card style={styles.card} onPress={onPress}>
+  <Card className="mb-3" onPress={onPress}>
     <Card.Title
       title={group.title}
       right={() => (
         <View style={{ flexDirection: "row", alignItems: "center", marginRight: 16 }}>
-          <Text style={styles.countText}>
+          <Text className="mr-4 text-sm">
             {group.count} task{group.count !== 1 ? "s" : ""}
           </Text>
           <Icon type="chevron-right" size={20} />
@@ -772,13 +772,13 @@ const CRM = () => {
   const renderContent = () => {
     if (loading)
       return (
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center p-4 gap-4">
           <ActivityIndicator size="large" />
         </View>
       );
     if (error)
       return (
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center p-4 gap-4">
           <Text style={{ color: theme.colors.error }}>{error}</Text>
           <Button onPress={() => fetchData(view)}>Try Again</Button>
         </View>
@@ -809,7 +809,7 @@ const CRM = () => {
 
       if (groupedTasksData.length === 0) {
         return (
-          <View style={styles.centered}>
+          <View className="flex-1 justify-center items-center p-4 gap-4">
             <Icon
               type={(VIEW_CONFIG[view].icon) as any}
               size={64}
@@ -835,14 +835,14 @@ const CRM = () => {
           keyExtractor={(item) => item.title}
           onRefresh={() => fetchData(view)}
           refreshing={loading}
-          contentContainerStyle={styles.listContent}
+          contentContainerClassName="p-4 pb-24"
         />
       );
     }
 
     if (sortedData.length === 0) {
       return (
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center p-4 gap-4">
           <Icon
             type={(VIEW_CONFIG[view].icon) as any}
             size={64}
@@ -863,7 +863,7 @@ const CRM = () => {
         keyExtractor={keyExtractor}
         onRefresh={() => fetchData(view)}
         refreshing={loading}
-        contentContainerStyle={styles.listContent}
+        contentContainerClassName="p-4 pb-24"
       />
     );
   };
@@ -872,19 +872,18 @@ const CRM = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.background }]}
+        className="flex-1"
+        style={{ backgroundColor: theme.colors.background }}
       >
         <View
-          style={[
-            styles.header,
-            { borderBottomColor: theme.colors.outlineVariant },
-          ]}
+          className="p-4 gap-4 border-b"
+          style={{ borderBottomColor: theme.colors.outlineVariant }}
         >
           <Text variant="headlineMedium" style={{ marginBottom: 8 }}>
             {VIEW_CONFIG[view].title}
           </Text>
 
-          <View style={styles.controlsRow}>
+          <View className="flex-row justify-between items-center">
             <Text variant="labelMedium">
               {resultCount} Result{resultCount !== 1 ? "s" : ""}
             </Text>
@@ -940,7 +939,7 @@ const CRM = () => {
             <Icon type={"plus" as any} size={size} color={color} />
           )}
           label={VIEW_CONFIG[view].addText}
-          style={styles.fab}
+          className="absolute m-4 right-0 bottom-0"
           onPress={handleAddButtonPress}
         />
         <BottomDrawer
@@ -987,36 +986,5 @@ const CRM = () => {
     </PlatformLayout>
   );
 };
-
-// --- Styles (No Changes) ---
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-    gap: 16,
-  },
-  header: { padding: 16, gap: 16, borderBottomWidth: 1 },
-  titleContainer: { flexDirection: "row", alignItems: "center", gap: 8 },
-  controlsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  listContent: { padding: 16, paddingBottom: 96 },
-  card: { marginBottom: 12 },
-  cardRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 12,
-  },
-  infoItem: { flexDirection: "row", alignItems: "center" },
-  infoText: { marginLeft: 8 },
-  countText: { marginRight: 16, fontSize: 14 },
-  fab: { position: "absolute", margin: 16, right: 0, bottom: 0 },
-});
 
 export default CRM;

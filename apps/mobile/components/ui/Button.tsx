@@ -35,9 +35,11 @@ export const Button = ({
   if (disabled || loading) baseClass += "opacity-60 ";
 
   const renderIcon = () => {
-    if (loading) return <RNActivityIndicator size="small" color={mode === 'contained' ? 'white' : '#2b7860'} className="mr-2" />;
-    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={18} color={mode === 'contained' ? 'white' : '#2b7860'} style={{ marginRight: 8 }} />;
-    if (typeof icon === 'function') return <View className="mr-2">{icon()}</View>;
+    const iconColor = mode === 'contained' ? 'white' : '#2b7860';
+    const iconSize = 18;
+    if (loading) return <RNActivityIndicator size="small" color={iconColor} className="mr-2" />;
+    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={iconSize} color={iconColor} style={{ marginRight: 8 }} />;
+    if (typeof icon === 'function') return <View className="mr-2">{icon({ color: iconColor, size: iconSize })}</View>;
     return null;
   };
 

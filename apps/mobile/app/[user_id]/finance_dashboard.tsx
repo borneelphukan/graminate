@@ -510,7 +510,7 @@ const FinanceDashboardScreen = () => {
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"arrow-left" as any}
+                type={"chevron-left" as any}
                 size={22}
                 color={theme.colors.onSurface}
               />

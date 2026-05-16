@@ -416,7 +416,7 @@ const PoultryDetailScreen = () => {
           <Card>
             <Card.Actions>
               <Button
-                icon="arrow-left"
+                icon="chevron-left"
                 onPress={() => router.push(`/${user_id}/poultry`)}
               >
                 All Flocks

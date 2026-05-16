@@ -54,7 +54,7 @@ const ForgotPasswordScreen = () => {
   const renderFormView = () => (
     <View style={styles.container}>
       <IconButton
-        icon="arrow-left"
+        icon="chevron-left"
         size={28}
         onPress={() => router.back()}
         style={styles.backButton}

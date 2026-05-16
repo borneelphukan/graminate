@@ -116,19 +116,17 @@ const SettingsScreen = () => {
   }, [user_id, userType, subTypes, isLoading]);
 
   // Colors from Navbar to match theme
-  const navbarBg = "#1f2937"; // gray-800 (slightly lighter than navbar gray-900)
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
+
 
   const memoizedBackIcon = useCallback(
     () => (
       <Icon
-        type={"arrow-left" as any}
+        type={"chevron-left" as any}
         size={22}
-        color={navbarIconColor}
+        color={theme.colors.onSurface}
       />
     ),
-    [navbarIconColor]
+    [theme.colors.onSurface]
   );
 
   return (
@@ -136,20 +134,13 @@ const SettingsScreen = () => {
       <SafeAreaView
         style={[styles.flex, { backgroundColor: theme.colors.background }]}
       >
-        <Appbar.Header
-          style={{
-            backgroundColor: navbarBg,
-            borderBottomWidth: 1,
-            borderBottomColor: navbarBorder,
-          }}
-        >
+        <Appbar.Header>
           <Appbar.Action
             icon={memoizedBackIcon}
             onPress={() => router.back()}
           />
           <Appbar.Content
             title="Settings"
-            titleStyle={{ color: "white", fontWeight: "bold" }}
           />
         </Appbar.Header>
         <View style={styles.flex}>

@@ -149,7 +149,7 @@ const BillingScreen = () => {
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow-left"}
+              type={"chevron-left"}
               size={22}
               color={theme.colors.onSurface}
             />

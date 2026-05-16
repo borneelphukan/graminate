@@ -101,7 +101,8 @@ export const FormModal = ({
       <Modal
         visible={isVisible}
         onDismiss={handleClose}
-        contentContainerStyle={styles.modalContainer}
+        containerClassName="justify-end bg-transparent"
+        className="w-full p-0 rounded-b-none"
       >
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
           <Pressable
@@ -126,7 +127,7 @@ export const FormModal = ({
                 borderColor: theme.dark ? "#1f2937" : "#e5e7eb"
               },
             ]}
-            elevation={5}
+            elevation={0}
           >
             <Appbar.Header 
               elevated={false} 
@@ -195,7 +196,6 @@ export const FormModal = ({
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
     justifyContent: "flex-end",
   },
   backdrop: {
@@ -211,6 +211,8 @@ const styles = StyleSheet.create({
     maxHeight: SCREEN_HEIGHT * 0.85,
     borderWidth: 1,
     borderBottomWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
     overflow: 'hidden',
   },
   header: {

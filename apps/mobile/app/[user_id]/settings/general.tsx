@@ -83,9 +83,7 @@ const GeneralSettingsScreen = () => {
   const theme = useTheme();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
 
-  const navbarBg = "#1f2937"; // gray-800
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#374151"; // gray-700
+
 
   const [isLoadingPageData, setIsLoadingPageData] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -170,26 +168,19 @@ const GeneralSettingsScreen = () => {
   if (isLoadingPageData) {
     return (
       <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow-left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={navbarIconColor}
+              color={theme.colors.onSurface}
             />
           )}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title="Profile Settings"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
         />
       </Appbar.Header>
         <View style={styles.centeredContainer}>
@@ -201,28 +192,20 @@ const GeneralSettingsScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
-      >
+      <Appbar.Header>
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"arrow-left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={navbarIconColor}
+              color={theme.colors.onSurface}
             />
           )}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title="Profile Settings"
-          titleStyle={{ color: "white", fontWeight: "bold" }}
           subtitle="Update your personal details"
-          subtitleStyle={{ color: navbarIconColor }}
         />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.container}>
