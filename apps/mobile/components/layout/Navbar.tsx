@@ -114,31 +114,27 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
       .toUpperCase();
   };
 
-  // Colors from packages/ui/lib/main.css to match web navbar
-  const navbarBg = "#111827"; // gray-800
-  const navbarIconColor = "#bbbbbc"; // gray-300
-  const navbarBorder = "#1f2937"; // gray-700
-  const badgeColor = "#e53e3e"; // red-200 from main.css (close to red-600)
 
-  const memoizedBarsIcon = useCallback(
-    () => <Icon type={"menu"} size={22} color={navbarIconColor} />,
-    [navbarIconColor]
+
+   const memoizedBarsIcon = useCallback(
+    () => <Icon type={"menu"} size={22} className="text-light" />,
+    []
   );
 
   const memoizedSparklesIcon = useCallback(
-    () => <Sparkles size={38} color={navbarIconColor} />,
-    [navbarIconColor]
+    () => <Sparkles size={28} className="text-light" />,
+    []
   );
 
   const memoizedBellIcon = useCallback(
-    () => <Icon type={"bell"} size={22} color={navbarIconColor} />,
-    [navbarIconColor]
+    () => <Icon type={"bell"} size={22} className="text-light" />,
+    []
   );
 
   return (
     <>
       <Appbar.Header
-        className="bg-gray-800 border-b border-gray-700"
+        className="bg-gray-900"
       >
         <Appbar.Action
           icon={memoizedBarsIcon}

@@ -14,7 +14,6 @@ import {
   Portal,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 
 type ModalType = "confirmDelete" | "password" | "info" | null;
@@ -27,7 +26,6 @@ type PopupContent = {
 const AccountSettingsScreen = () => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
 
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [popupContent, setPopupContent] = useState<PopupContent>({
@@ -136,7 +134,7 @@ const AccountSettingsScreen = () => {
               <Button onPress={() => setActiveModal(null)}>Cancel</Button>
               <Button
                 onPress={handleConfirmDeletion}
-                textColor={theme.colors.error}
+                className="text-red-600"
               >
                 Delete
               </Button>
@@ -194,10 +192,10 @@ const AccountSettingsScreen = () => {
                       ? "check-circle"
                       : "alert-circle"}
                   size={48}
-                  color={
+                  className={
                     popupContent.type === "success"
-                      ? theme.colors.primary
-                      : theme.colors.error
+                      ? "text-emerald-600"
+                      : "text-red-600"
                   }
                 />
               )}
@@ -224,7 +222,7 @@ const AccountSettingsScreen = () => {
             <Icon
               type={"chevron-left"}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           )}
           onPress={() => router.back()}
@@ -232,15 +230,15 @@ const AccountSettingsScreen = () => {
         <Appbar.Content title="Account Settings" />
       </Appbar.Header>
       <ScrollView
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        className="flex-1 p-4 bg-white dark:bg-gray-900"
       >
         <Card>
-          <Card.Content style={styles.cardContent}>
+          <Card.Content className="gap-4">
             <View>
               <Text variant="titleMedium">Delete Account</Text>
               <Text
                 variant="bodyMedium"
-                style={{ color: theme.colors.onSurfaceVariant }}
+                className="text-gray-500"
               >
                 Once you delete your account, there is no going back. Please be
                 certain.
@@ -251,8 +249,7 @@ const AccountSettingsScreen = () => {
               onPress={() => openModal("confirmDelete")}
               disabled={!user_id || isDeleting}
               loading={isDeleting}
-              buttonColor={theme.colors.error}
-              style={styles.deleteButton}
+              className="self-start bg-red-600"
             >
               {isDeleting ? "Deleting..." : "Delete Account"}
             </Button>
@@ -263,11 +260,5 @@ const AccountSettingsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  cardContent: { gap: 16 },
-  deleteButton: { alignSelf: "flex-start" },
-});
 
 export default AccountSettingsScreen;

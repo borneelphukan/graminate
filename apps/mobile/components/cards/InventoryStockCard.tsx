@@ -6,7 +6,6 @@ import {
   Chip,
   Text,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 import axiosInstance from "@/lib/axiosInstance";
 
@@ -29,7 +28,6 @@ const InventoryStockCard = ({
   title,
   category,
 }: InventoryStockProps) => {
-  const theme = useTheme();
   const [inventoryItems, setInventoryItems] = useState<ItemRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,27 +68,27 @@ const InventoryStockCard = ({
     if (quantity === 0)
       return {
         text: "Unavailable",
-        bg: theme.dark ? "#991b1b" : theme.colors.errorContainer,
-        text_color: theme.dark ? "#fca5a5" : theme.colors.error,
+        bg: "bg-red-100 dark:bg-red-900",
+        text_color: "text-red-700 dark:text-red-300",
       };
     const effectiveMinLimit = minimum_limit ?? 0;
     if (effectiveMinLimit > 0 && quantity < effectiveMinLimit)
       return {
         text: "Limited",
-        bg: theme.dark ? "#92400e" : "#fed7aa",
-        text_color: theme.dark ? "#fcd34d" : "#b45309",
+        bg: "bg-orange-100 dark:bg-orange-900",
+        text_color: "text-orange-700 dark:text-orange-300",
       };
     return {
       text: "Available",
-      bg: theme.dark ? "#166534" : "#dcfce7",
-      text_color: theme.dark ? "#86efac" : "#16a34a",
+      bg: "bg-green-100 dark:bg-green-900",
+      text_color: "text-green-700 dark:text-green-300",
     };
   };
 
   const renderContent = () => {
     if (loading) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center gap-3">
           <ActivityIndicator animating={true} />
         </View>
       );
@@ -98,26 +96,21 @@ const InventoryStockCard = ({
 
     if (error) {
       return (
-        <View style={styles.centeredContainer}>
-          <Text style={{ color: theme.colors.error }}>{error}</Text>
+        <View className="flex-1 justify-center items-center gap-3">
+          <Text className="text-red-600">{error}</Text>
         </View>
       );
     }
 
     if (inventoryItems.length === 0) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center gap-3">
           <Icon
             type={"archive" as any}
             size={48}
-            color={theme.colors.onSurfaceDisabled}
+            className="text-gray-400"
           />
-          <Text
-            style={[
-              styles.emptyText,
-              { color: theme.colors.onSurfaceDisabled },
-            ]}
-          >
+          <Text className="mt-3 text-center text-gray-400">
             No items for {category}.
           </Text>
         </View>
@@ -125,25 +118,26 @@ const InventoryStockCard = ({
     }
 
     return (
-      <ScrollView style={styles.itemList} showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {inventoryItems.map((item) => {
           const status = getItemStatus(item);
           return (
-            <View key={item.inventory_id} style={styles.itemRow}>
+            <View key={item.inventory_id} className="flex-row items-center py-2 border-b border-gray-100 dark:border-gray-800">
               <Text
-                style={[styles.itemText, { color: theme.colors.onSurface }]}
+                className="flex-1 text-sm text-black dark:text-white"
                 numberOfLines={1}
               >
                 {item.item_name}
               </Text>
-              <Text style={styles.itemQuantity}>
+              <Text className="font-bold mx-4 text-black dark:text-white">
                 {item.quantity} {item.units}
               </Text>
               <Chip
-                textStyle={{ color: status.text_color }}
-                style={{ backgroundColor: status.bg }}
+                className={status.bg}
+                textStyle={{ color: "inherit" }} // NativeWind handles classes on Chip? No, typically textStyle is needed.
+                // Wait, if I use className on Chip, it might not affect text.
               >
-                {status.text}
+                <Text className={status.text_color}>{status.text}</Text>
               </Chip>
             </View>
           );
@@ -153,21 +147,9 @@ const InventoryStockCard = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.surface,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 5,
-        },
-      ]}
-    >
-      <View style={styles.header}>
-        <Text variant="headlineSmall" style={{ color: theme.colors.onSurface }}>
+    <View className="h-[320px] rounded-lg p-6 shadow-md bg-white dark:bg-gray-900">
+      <View className="flex-row justify-between items-center mb-4">
+        <Text variant="headlineSmall">
           {title}
         </Text>
         <TouchableRipple
@@ -176,83 +158,24 @@ const InventoryStockCard = ({
             setQuantitySortAsc(newAsc);
             setInventoryItems((prev) => sortItems(prev, newAsc));
           }}
-          style={styles.sortButton}
+          className="py-1 px-2 rounded bg-gray-200 dark:bg-gray-800"
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              style={[styles.sortButtonText, { color: theme.colors.onSurface }]}
-            >
+          <View className="flex-row items-center">
+            <Text className="text-xs font-medium mr-2">
               Quantity
             </Text>
             <Icon
               type={(quantitySortAsc ? "chevron-up" : "chevron-down") as any}
               size={12}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           </View>
         </TouchableRipple>
       </View>
 
-      <View style={styles.listContainer}>{renderContent()}</View>
+      <View className="flex-1 overflow-hidden">{renderContent()}</View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    height: 320,
-    borderRadius: 8,
-    padding: 24,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sortButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-    backgroundColor: "rgba(128, 128, 128, 0.2)",
-  },
-  sortButtonText: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginRight: 8,
-  },
-  listContainer: {
-    flex: 1,
-    overflow: "hidden",
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
-  },
-  emptyText: {
-    marginTop: 12,
-    textAlign: "center",
-  },
-  itemList: {
-    flex: 1,
-  },
-  itemRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(128, 128, 128, 0.1)",
-  },
-  itemText: {
-    flex: 1,
-    fontSize: 14,
-  },
-  itemQuantity: {
-    fontWeight: "bold",
-    marginHorizontal: 16,
-  },
-});
 
 export default InventoryStockCard;

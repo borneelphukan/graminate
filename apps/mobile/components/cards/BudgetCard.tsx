@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import React from "react";
 import { View } from "react-native";
-import { Card, Text, useTheme } from "@/components/ui";
+import { Card, Text } from "@/components/ui";
 
 type BudgetCardProps = {
   title: string;
@@ -31,7 +31,6 @@ const BudgetCard = ({
   textColorClassName = '',
   onPress,
 }: BudgetCardProps) => {
-  const theme = useTheme();
   const formattedDate = date.toLocaleString("default", {
     month: "long",
     year: "numeric",
@@ -48,8 +47,7 @@ const BudgetCard = ({
           />
           <Text
             variant="labelMedium"
-            className="uppercase"
-            style={{ color: theme.colors.onSurface }}
+            className="uppercase text-black dark:text-white"
           >
             {title}
           </Text>
@@ -62,8 +60,7 @@ const BudgetCard = ({
         </Text>
         <Text
           variant="bodySmall"
-          className="mt-auto pt-2 opacity-90"
-          style={{ color: theme.colors.onSurfaceVariant }}
+          className="mt-auto pt-2 opacity-90 text-gray-500"
         >
           {formattedDate}
         </Text>

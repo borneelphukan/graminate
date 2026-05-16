@@ -18,14 +18,13 @@ import {
 } from "date-fns";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import {
   Appbar,
   Button,
   Card,
   Divider,
   List,
-  useTheme,
 } from "@/components/ui";
 
 type FlockData = {
@@ -116,7 +115,6 @@ const PoultryDetailScreen = () => {
     user_id: string;
     id: string;
   }>();
-  const theme = useTheme();
 
   const [selectedFlockData, setSelectedFlockData] = useState<FlockData | null>(
     null
@@ -152,15 +150,14 @@ const PoultryDetailScreen = () => {
   const [targetFeedingsPerDay] = useState<number>(7);
   const [loadingCalculatedFeedData, setLoadingCalculatedFeedData] =
     useState(true);
-
   const getFeedLevelColor = useCallback(
     (days: number): string => {
-      if (!isFinite(days) || days < 0) return theme.colors.onSurfaceDisabled;
-      if (days < 3) return theme.colors.error;
-      if (days < 7) return "#F59E0B"; // Amber
-      return theme.colors.primary;
+      if (!isFinite(days) || days < 0) return "#9ca3af"; // gray-400
+      if (days < 3) return "#ef4444"; // red-500
+      if (days < 7) return "#f59e0b"; // amber-500
+      return "#10b981"; // emerald-500
     },
-    [theme]
+    []
   );
 
   const fetchFlockData = useCallback(async () => {
@@ -396,7 +393,7 @@ const PoultryDetailScreen = () => {
   if (loadingFlockData) {
     return (
       <PlatformLayout>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -405,14 +402,15 @@ const PoultryDetailScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => router.back()} />
+      <Appbar.Header className="bg-gray-900">
+        <Appbar.BackAction onPress={() => router.back()} color="white" />
         <Appbar.Content
           title={selectedFlockData?.flock_name || "Flock Details"}
+          titleStyle={{ color: "white" }}
         />
       </Appbar.Header>
-      <ScrollView style={{ backgroundColor: theme.colors.background }}>
-        <View style={styles.container}>
+      <ScrollView className="bg-gray-50 dark:bg-gray-950">
+        <View className="p-4 gap-6">
           <Card>
             <Card.Actions>
               <Button
@@ -424,44 +422,58 @@ const PoultryDetailScreen = () => {
               <Button onPress={() => setShowFlockForm(true)}>Edit Flock</Button>
             </Card.Actions>
             <Divider />
-            <Card.Content style={styles.detailsGrid}>
-              <List.Item
-                title={selectedFlockData?.quantity}
-                description="Total Birds"
-                left={() => <List.Icon icon="food-drumstick" />}
-              />
-              <List.Item
-                title={selectedFlockData?.flock_type}
-                description="Flock Type"
-                left={() => <List.Icon icon="food-drumstick" />}
-              />
-              <List.Item
-                title={flockAge}
-                description="Flock Age"
-                left={() => <List.Icon icon="calendar" />}
-              />
-              <List.Item
-                title={selectedFlockData?.breed}
-                description="Breed"
-                left={() => <List.Icon icon="bird" />}
-              />
-              <List.Item
-                title={selectedFlockData?.housing_type}
-                description="Housing"
-                left={() => <List.Icon icon="warehouse" />}
-              />
-              <List.Item
-                title={selectedFlockData?.source}
-                description="Source"
-                left={() => <List.Icon icon="office-building" />}
-              />
-              {selectedFlockData?.notes && (
+            <Card.Content className="flex-row flex-wrap">
+              <View className="w-1/2">
                 <List.Item
-                  title={selectedFlockData.notes}
-                  description="Notes"
-                  left={() => <List.Icon icon="note-text-outline" />}
-                  titleNumberOfLines={4}
+                  title={selectedFlockData?.quantity}
+                  description="Total Birds"
+                  left={() => <List.Icon icon="food-drumstick" />}
                 />
+              </View>
+              <View className="w-1/2">
+                <List.Item
+                  title={selectedFlockData?.flock_type}
+                  description="Flock Type"
+                  left={() => <List.Icon icon="food-drumstick" />}
+                />
+              </View>
+              <View className="w-1/2">
+                <List.Item
+                  title={flockAge}
+                  description="Flock Age"
+                  left={() => <List.Icon icon="calendar" />}
+                />
+              </View>
+              <View className="w-1/2">
+                <List.Item
+                  title={selectedFlockData?.breed}
+                  description="Breed"
+                  left={() => <List.Icon icon="bird" />}
+                />
+              </View>
+              <View className="w-1/2">
+                <List.Item
+                  title={selectedFlockData?.housing_type}
+                  description="Housing"
+                  left={() => <List.Icon icon="warehouse" />}
+                />
+              </View>
+              <View className="w-1/2">
+                <List.Item
+                  title={selectedFlockData?.source}
+                  description="Source"
+                  left={() => <List.Icon icon="office-building" />}
+                />
+              </View>
+              {selectedFlockData?.notes && (
+                <View className="w-full">
+                  <List.Item
+                    title={selectedFlockData.notes}
+                    description="Notes"
+                    left={() => <List.Icon icon="note-text-outline" />}
+                    titleNumberOfLines={4}
+                  />
+                </View>
               )}
             </Card.Content>
           </Card>
@@ -523,11 +535,5 @@ const PoultryDetailScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 24 },
-  detailsGrid: { flexDirection: "row", flexWrap: "wrap" },
-});
 
 export default PoultryDetailScreen;

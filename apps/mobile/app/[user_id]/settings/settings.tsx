@@ -12,7 +12,6 @@ import {
   Card,
   Divider,
   List,
-  useTheme,
 } from "@/components/ui";
 
 type SettingsItem = {
@@ -32,7 +31,6 @@ const SettingsScreen = () => {
     isSubTypesLoading: isLoading,
     fetchUserSubTypes,
   } = useUserPreferences();
-  const theme = useTheme();
 
   useEffect(() => {
     if (user_id) {
@@ -123,16 +121,16 @@ const SettingsScreen = () => {
       <Icon
         type={"chevron-left" as any}
         size={22}
-        color={theme.colors.onSurface}
+        className="text-black dark:text-white"
       />
     ),
-    [theme.colors.onSurface]
+    []
   );
 
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={[styles.flex, { backgroundColor: theme.colors.background }]}
+        className="flex-1 bg-white dark:bg-gray-900"
       >
         <Appbar.Header>
           <Appbar.Action
@@ -143,13 +141,13 @@ const SettingsScreen = () => {
             title="Settings"
           />
         </Appbar.Header>
-        <View style={styles.flex}>
+        <View className="flex-1">
           {isLoading ? (
-            <View style={styles.centeredContainer}>
+            <View className="flex-1 justify-center items-center">
               <ActivityIndicator size="large" />
             </View>
           ) : (
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView contentContainerClassName="p-4 gap-6">
               {settingsMenu.map((section) => (
                 <Card key={section.label} className="p-0 overflow-hidden">
                   <List.Subheader style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
@@ -207,16 +205,5 @@ const SettingsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: { padding: 16, gap: 24 },
-  card: {},
-});
 
 export default SettingsScreen;

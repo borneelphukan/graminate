@@ -11,7 +11,6 @@ import {
   Platform,
   ScrollView,
   Share,
-  StyleSheet,
   View,
 } from "react-native";
 import {
@@ -23,7 +22,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 // Using axiosInstance for all API calls
@@ -77,7 +75,6 @@ const CompanyDetails = () => {
     user_id: string;
     data: string;
   }>();
-  const theme = useTheme();
   const [company, setCompany] = useState<Company | null>(null);
   const [formData, setFormData] = useState<Form>(initialFormState);
   const [initialFormData, setInitialFormData] =
@@ -219,20 +216,20 @@ Email: ${formData.email || "N/A"}
   if (!company)
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header className="bg-gray-900">
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"chevron_left" as any}
+                type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-light"
               />
             )}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Company Details" />
+          <Appbar.Content title="Company Details" titleStyle={{ color: "white" }} />
         </Appbar.Header>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -240,18 +237,18 @@ Email: ${formData.email || "N/A"}
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-gray-900">
         <Appbar.Action
           icon={() => (
             <Icon
               type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-light"
             />
           )}
           onPress={() => router.back()}
         />
-        <Appbar.Content title="Company Details" />
+        <Appbar.Content title="Company Details" titleStyle={{ color: "white" }} />
         <Menu
           visible={isMoreMenuVisible}
           onDismiss={() => setMoreMenuVisible(false)}
@@ -261,7 +258,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"dots-vertical" as any}
                   size={22}
-                  color={theme.colors.onSurface}
+                  className="text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -278,10 +275,10 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"delete" as any}
                 size={20}
-                color={theme.colors.error}
+                className="text-red-600"
               />
             )}
-            titleStyle={{ color: theme.colors.error }}
+            titleStyle={{ color: "#e53e3e" }}
           />
           <Menu.Item
             onPress={() => {
@@ -293,7 +290,7 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"share" as any}
                 size={20}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400"
               />
             )}
           />
@@ -301,34 +298,30 @@ Email: ${formData.email || "N/A"}
       </Appbar.Header>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={{ padding: 16, gap: 24, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.nameHeader}>
-            <Text variant="headlineMedium" style={styles.textCenter}>
+          <View className="items-center py-4 gap-2">
+            <Text variant="headlineMedium" className="text-center">
               {formData.companyName}
             </Text>
             <Text
               variant="titleMedium"
-              style={{ color: theme.colors.onSurfaceVariant }}
+              className="text-gray-500"
             >
               {formData.contactPerson}
             </Text>
           </View>
-          <View style={styles.actionsRow}>
+          <View className="flex-row justify-around flex-wrap py-2">
             <Button
               icon={() => (
                 <Icon
                   type={"phone" as any}
                   size={18}
-                  color={
-                    formData.phoneNumber
-                      ? theme.colors.primary
-                      : theme.colors.onSurfaceDisabled
-                  }
+                  className={formData.phoneNumber ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={() => handleActionPress("tel", formData.phoneNumber)}
@@ -341,11 +334,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"email" as any}
                   size={18}
-                  color={
-                    formData.email
-                      ? theme.colors.primary
-                      : theme.colors.onSurfaceDisabled
-                  }
+                  className={formData.email ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={() => handleActionPress("mailto", formData.email)}
@@ -358,11 +347,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"web" as any}
                   size={18}
-                  color={
-                    formData.website
-                      ? theme.colors.primary
-                      : theme.colors.onSurfaceDisabled
-                  }
+                  className={formData.website ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={() => handleActionPress("web", formData.website)}
@@ -371,9 +356,9 @@ Email: ${formData.email || "N/A"}
               Website
             </Button>
           </View>
-          <Card style={styles.card}>
+          <Card className="bg-light dark:bg-gray-800 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2">
             <Card.Title title="Company Information" />
-            <Card.Content style={styles.cardContent}>
+            <Card.Content className="gap-4">
               <TextInput
                 mode="outlined"
                 label="Company Name"
@@ -385,7 +370,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"domain" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -402,7 +387,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"account" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -420,7 +405,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"email" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -438,7 +423,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"phone" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -455,7 +440,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"web" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -472,7 +457,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"factory" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -495,7 +480,7 @@ Email: ${formData.email || "N/A"}
                               <Icon
                                 type={"chevron-down" as any}
                                 size={16}
-                                color={theme.colors.onSurfaceVariant}
+                                className="text-gray-500"
                               />
                             )}
                           />
@@ -518,9 +503,9 @@ Email: ${formData.email || "N/A"}
               </Menu>
             </Card.Content>
           </Card>
-          <Card style={styles.card}>
+          <Card className="bg-light dark:bg-gray-800 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2">
             <Card.Title title="Address" />
-            <Card.Content style={styles.cardContent}>
+            <Card.Content className="gap-4">
               <TextInput
                 mode="outlined"
                 label="Address Line 1"
@@ -532,7 +517,7 @@ Email: ${formData.email || "N/A"}
                       <Icon
                         type={"map-marker" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -566,23 +551,23 @@ Email: ${formData.email || "N/A"}
             </Card.Content>
           </Card>
         </ScrollView>
-        <Appbar style={styles.footer}>
+        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
               <Icon
                 type={"close" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-green-200"
               />
             )}
           >
             Cancel
           </Button>
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="contained"
             onPress={handleSave}
             disabled={!hasChanges || saving}
@@ -591,48 +576,16 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"content-save" as any}
                 size={18}
-                color={
-                  !hasChanges || saving
-                    ? theme.colors.onSurfaceDisabled
-                    : theme.colors.onPrimary
-                }
+                className={!hasChanges || saving ? "text-gray-300" : "text-white"}
               />
             )}
           >
-            Save Changes
+            Save
           </Button>
         </Appbar>
       </KeyboardAvoidingView>
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 24, paddingBottom: 80 },
-  nameHeader: { alignItems: "center", paddingVertical: 16, gap: 8 },
-  textCenter: { textAlign: "center" },
-  actionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    flexWrap: "wrap",
-    paddingVertical: 8,
-  },
-  card: {},
-  cardContent: { gap: 16 },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
-  },
-  footerButton: { flex: 1, marginHorizontal: 8 },
-});
 
 export default CompanyDetails;

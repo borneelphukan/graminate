@@ -10,7 +10,6 @@ import {
   Platform,
   ScrollView,
   Share,
-  StyleSheet,
   View,
 } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -27,7 +26,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 // Using axiosInstance for all API calls
@@ -100,7 +98,6 @@ const ReceiptDetails = () => {
     user_id: string;
     data: string;
   }>();
-  const theme = useTheme();
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [formData, setFormData] = useState<Form>(initialFormState);
   const [initialFormData, setInitialFormData] =
@@ -279,20 +276,20 @@ Total Amount: ₹${total.toFixed(2)}
   if (!receipt) {
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header className="bg-gray-900">
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"chevron_left" as any}
+                type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-light"
               />
             )}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Loading..." />
+          <Appbar.Content title="Loading..." titleStyle={{ color: "white" }} />
         </Appbar.Header>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -301,18 +298,18 @@ Total Amount: ₹${total.toFixed(2)}
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-gray-900">
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"chevron_left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-light"
             />
           )}
           onPress={() => router.back()}
         />
-        <Appbar.Content title="Receipt Details" />
+        <Appbar.Content title="Receipt Details" titleStyle={{ color: "white" }} />
         <Menu
           visible={isMoreMenuVisible}
           onDismiss={() => setMoreMenuVisible(false)}
@@ -320,9 +317,9 @@ Total Amount: ₹${total.toFixed(2)}
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"more_vert" as any}
+                  type={"dots-vertical" as any}
                   size={22}
-                  color={theme.colors.onSurface}
+                  className="text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -339,10 +336,10 @@ Total Amount: ₹${total.toFixed(2)}
               <Icon
                 type={"delete" as any}
                 size={20}
-                color={theme.colors.error}
+                className="text-red-600"
               />
             )}
-            titleStyle={{ color: theme.colors.error }}
+            titleStyle={{ color: "#e53e3e" }}
           />
           <Menu.Item
             onPress={() => {
@@ -354,7 +351,7 @@ Total Amount: ₹${total.toFixed(2)}
               <Icon
                 type={"share" as any}
                 size={20}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400"
               />
             )}
           />
@@ -362,24 +359,24 @@ Total Amount: ₹${total.toFixed(2)}
       </Appbar.Header>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
           <TextInput
             mode="outlined"
             label="Invoice Title"
             value={formData.title}
-            onChangeText={(val) => handleInputChange("title", val)}
+            onChangeText={(val: string) => handleInputChange("title", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"receipt_long" as any}
+                    type={"receipt-long" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -389,14 +386,14 @@ Total Amount: ₹${total.toFixed(2)}
             mode="outlined"
             label="Bill To"
             value={formData.billTo}
-            onChangeText={(val) => handleInputChange("billTo", val)}
+            onChangeText={(val: string) => handleInputChange("billTo", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"person" as any}
+                    type={"account" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -415,7 +412,7 @@ Total Amount: ₹${total.toFixed(2)}
                       <Icon
                         type={"today" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -426,7 +423,7 @@ Total Amount: ₹${total.toFixed(2)}
                       <Icon
                         type={"calendar-month" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-500"
                       />
                     )}
                   />
@@ -438,14 +435,14 @@ Total Amount: ₹${total.toFixed(2)}
             mode="outlined"
             label="Invoice Number (Optional)"
             value={formData.receiptNumber}
-            onChangeText={(val) => handleInputChange("receiptNumber", val)}
+            onChangeText={(val: string) => handleInputChange("receiptNumber", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
                     type={"tag" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -455,24 +452,24 @@ Total Amount: ₹${total.toFixed(2)}
             mode="outlined"
             label="Payment Terms (Optional)"
             value={formData.paymentTerms}
-            onChangeText={(val) => handleInputChange("paymentTerms", val)}
+            onChangeText={(val: string) => handleInputChange("paymentTerms", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"contract" as any}
+                    type={"description" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
             }
           />
-          <Text variant="titleMedium" style={styles.itemsHeader}>
+          <Text variant="titleMedium" className="mt-4 mb-2">
             Items
           </Text>
           {formData.items.map((item, index) => (
-            <Card key={index} style={styles.itemCard} mode="outlined">
+            <Card key={index} className="mb-3 border border-gray-200 dark:border-gray-800" mode="outlined">
               <Card.Title
                 title={`Item #${index + 1}`}
                 right={() =>
@@ -482,7 +479,7 @@ Total Amount: ₹${total.toFixed(2)}
                         <Icon
                           type={"delete" as any}
                           size={18}
-                          color={theme.colors.error}
+                          className="text-red-600"
                         />
                       )}
                       onPress={() => removeItem(index)}
@@ -490,12 +487,12 @@ Total Amount: ₹${total.toFixed(2)}
                   ) : null
                 }
               />
-              <Card.Content style={styles.itemContent}>
+              <Card.Content className="gap-3">
                 <TextInput
                   mode="outlined"
                   label="Description"
                   value={item.description}
-                  onChangeText={(text) =>
+                  onChangeText={(text: string) =>
                     handleItemChange(index, "description", text)
                   }
                   left={
@@ -504,20 +501,20 @@ Total Amount: ₹${total.toFixed(2)}
                         <Icon
                           type={"edit" as any}
                           size={16}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-500"
                         />
                       )}
                     />
                   }
                 />
-                <View style={styles.row}>
+                <View className="flex-row gap-4">
                   <TextInput
-                    style={styles.itemInput}
+                    className="flex-1"
                     mode="outlined"
                     label="Quantity"
                     keyboardType="numeric"
                     value={item.quantity}
-                    onChangeText={(text) =>
+                    onChangeText={(text: string) =>
                       handleItemChange(index, "quantity", text)
                     }
                     left={
@@ -526,28 +523,28 @@ Total Amount: ₹${total.toFixed(2)}
                           <Icon
                             type={"inventory" as any}
                             size={16}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
                     }
                   />
                   <TextInput
-                    style={styles.itemInput}
+                    className="flex-1"
                     mode="outlined"
                     label="Rate"
                     keyboardType="numeric"
                     value={item.rate}
-                    onChangeText={(text) =>
+                    onChangeText={(text: string) =>
                       handleItemChange(index, "rate", text)
                     }
                     left={
                       <TextInput.Icon
                         icon={() => (
                           <Icon
-                            type={"currency_rupee" as any}
+                            type={"currency-rupee" as any}
                             size={16}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
@@ -562,122 +559,118 @@ Total Amount: ₹${total.toFixed(2)}
               <Icon
                 type={"plus" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-green-200"
               />
             )}
             mode="outlined"
             onPress={addItem}
-            style={styles.addItemButton}
+            className="mt-2"
           >
             Add Item
           </Button>
-          <View style={styles.row}>
+          <View className="flex-row gap-4">
             <TextInput
-              style={styles.thirdWidth}
+              className="flex-1"
               mode="outlined"
-              label="Tax"
+              label="Tax %"
               keyboardType="numeric"
               value={formData.tax}
-              onChangeText={(text) => handleInputChange("tax", text)}
+              onChangeText={(text: string) => handleInputChange("tax", text)}
               left={
                 <TextInput.Icon
                   icon={() => (
                     <Icon
                       type={"percent" as any}
                       size={16}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-500"
                     />
                   )}
                 />
               }
             />
             <TextInput
-              style={styles.thirdWidth}
+              className="flex-1"
               mode="outlined"
               label="Discount"
               keyboardType="numeric"
               value={formData.discount}
-              onChangeText={(text) => handleInputChange("discount", text)}
+              onChangeText={(text: string) => handleInputChange("discount", text)}
               left={
                 <TextInput.Icon
                   icon={() => (
                     <Icon
                       type={"sell" as any}
                       size={16}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-500"
                     />
                   )}
                 />
               }
             />
             <TextInput
-              style={styles.thirdWidth}
+              className="flex-1"
               mode="outlined"
               label="Shipping"
               keyboardType="numeric"
               value={formData.shipping}
-              onChangeText={(text) => handleInputChange("shipping", text)}
+              onChangeText={(text: string) => handleInputChange("shipping", text)}
               left={
                 <TextInput.Icon
                   icon={() => (
                     <Icon
-                      type={"local_shipping" as any}
+                      type={"local-shipping" as any}
                       size={16}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-500"
                     />
                   )}
                 />
               }
             />
           </View>
-          <Card style={styles.summaryCard}>
+          <Card className="mt-6 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <Card.Content>
-              <View style={styles.summaryRow}>
+              <View className="flex-row justify-between py-1">
                 <Text variant="bodyLarge">Subtotal</Text>
                 <Text variant="bodyLarge">₹{subtotal.toFixed(2)}</Text>
               </View>
-              <Divider style={styles.summaryDivider} />
-              <View style={styles.summaryRow}>
+              <Divider className="my-2" />
+              <View className="flex-row justify-between py-1">
                 <Text variant="titleMedium">Total</Text>
                 <Text variant="titleMedium">₹{total.toFixed(2)}</Text>
               </View>
             </Card.Content>
           </Card>
         </ScrollView>
-        <Appbar style={styles.footer}>
+        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
               <Icon
                 type={"close" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-green-200"
               />
             )}
           >
             Cancel
           </Button>
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="contained"
             onPress={handleSave}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
-                color={
-                  !hasChanges || saving
-                    ? theme.colors.onSurfaceDisabled
-                    : theme.colors.onPrimary
-                }
+                className={!hasChanges || saving ? "text-gray-300" : "text-white"}
               />
             )}
           >
-            Save Changes
+            Save
           </Button>
         </Appbar>
       </KeyboardAvoidingView>
@@ -686,12 +679,7 @@ Total Amount: ₹${total.toFixed(2)}
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
         >
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.colors.surface },
-            ]}
-          >
+          <View className="m-5 rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
             <Calendar
               onDayPress={handleDayPress}
               markedDates={
@@ -700,16 +688,16 @@ Total Amount: ₹${total.toFixed(2)}
                   : {}
               }
               theme={{
-                backgroundColor: theme.colors.surface,
-                calendarBackground: theme.colors.surface,
-                textSectionTitleColor: theme.colors.onSurfaceVariant,
-                selectedDayBackgroundColor: theme.colors.primary,
-                selectedDayTextColor: theme.colors.onPrimary,
-                todayTextColor: theme.colors.primary,
-                dayTextColor: theme.colors.onSurface,
-                textDisabledColor: theme.colors.onSurfaceDisabled,
-                arrowColor: theme.colors.primary,
-                monthTextColor: theme.colors.onSurface,
+                backgroundColor: "transparent",
+                calendarBackground: "transparent",
+                textSectionTitleColor: "#9ca3af",
+                selectedDayBackgroundColor: "#2b7860",
+                selectedDayTextColor: "#ffffff",
+                todayTextColor: "#2b7860",
+                dayTextColor: "#374151",
+                textDisabledColor: "#d1d5db",
+                arrowColor: "#2b7860",
+                monthTextColor: "#111827",
               }}
             />
           </View>
@@ -718,38 +706,5 @@ Total Amount: ₹${total.toFixed(2)}
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 16, paddingBottom: 80 },
-  row: { flexDirection: "row", gap: 16 },
-  thirdWidth: { flex: 1 },
-  itemsHeader: { marginTop: 16, marginBottom: 8 },
-  itemCard: { marginBottom: 12 },
-  itemContent: { gap: 12 },
-  itemInput: { flex: 1 },
-  addItemButton: { marginTop: 8 },
-  summaryCard: { marginTop: 24, elevation: 2 },
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 4,
-  },
-  summaryDivider: { marginVertical: 8 },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
-  },
-  footerButton: { flex: 1, marginHorizontal: 8 },
-  modalContent: { margin: 20, borderRadius: 16, overflow: "hidden" },
-});
 
 export default ReceiptDetails;

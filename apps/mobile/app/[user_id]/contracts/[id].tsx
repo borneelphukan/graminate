@@ -10,7 +10,6 @@ import {
   Platform,
   ScrollView,
   Share,
-  StyleSheet,
   View,
 } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -23,7 +22,6 @@ import {
   Portal,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 // Using axiosInstance for all API calls
@@ -75,7 +73,6 @@ const ContractDetails = () => {
     user_id: string;
     data: string;
   }>();
-  const theme = useTheme();
   const [contract, setContract] = useState<Contract | null>(null);
   const [formData, setFormData] = useState<Form>(initialFormState);
   const [initialFormData, setInitialFormData] =
@@ -221,20 +218,20 @@ Stage: ${formData.stage || "N/A"}
   if (!contract) {
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header className="bg-gray-900">
           <Appbar.Action
             icon={() => (
               <Icon
-                type={"chevron_left" as any}
+                type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-light"
               />
             )}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Loading..." />
+          <Appbar.Content title="Loading..." titleStyle={{ color: "white" }} />
         </Appbar.Header>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -243,18 +240,18 @@ Stage: ${formData.stage || "N/A"}
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-gray-900">
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"chevron_left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-light"
             />
           )}
           onPress={() => router.back()}
         />
-        <Appbar.Content title={formData.dealName || "Contract Details"} />
+        <Appbar.Content title={formData.dealName || "Contract Details"} titleStyle={{ color: "white" }} />
         <Menu
           visible={isMoreMenuVisible}
           onDismiss={() => setMoreMenuVisible(false)}
@@ -262,9 +259,9 @@ Stage: ${formData.stage || "N/A"}
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"more_vert" as any}
+                  type={"dots-vertical" as any}
                   size={22}
-                  color={theme.colors.onSurface}
+                  className="text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -281,10 +278,10 @@ Stage: ${formData.stage || "N/A"}
               <Icon
                 type={"delete" as any}
                 size={20}
-                color={theme.colors.error}
+                className="text-red-600"
               />
             )}
-            titleStyle={{ color: theme.colors.error }}
+            titleStyle={{ color: "#e53e3e" }}
           />
           <Menu.Item
             onPress={() => {
@@ -296,7 +293,7 @@ Stage: ${formData.stage || "N/A"}
               <Icon
                 type={"share" as any}
                 size={20}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400"
               />
             )}
           />
@@ -304,24 +301,24 @@ Stage: ${formData.stage || "N/A"}
       </Appbar.Header>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
           <TextInput
             mode="outlined"
             label="Contract Title"
             value={formData.dealName}
-            onChangeText={(val) => handleInputChange("dealName", val)}
+            onChangeText={(val: string) => handleInputChange("dealName", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
                     type={"draw" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -331,14 +328,14 @@ Stage: ${formData.stage || "N/A"}
             mode="outlined"
             label="Partner / Client"
             value={formData.partner}
-            onChangeText={(val) => handleInputChange("partner", val)}
+            onChangeText={(val: string) => handleInputChange("partner", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
                     type={"account-cog" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -348,15 +345,15 @@ Stage: ${formData.stage || "N/A"}
             mode="outlined"
             label="Amount (₹)"
             value={formData.amount}
-            onChangeText={(val) => handleInputChange("amount", val)}
+            onChangeText={(val: string) => handleInputChange("amount", val)}
             keyboardType="numeric"
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
-                    type={"currency_rupee" as any}
+                    type={"currency-rupee" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
@@ -366,23 +363,23 @@ Stage: ${formData.stage || "N/A"}
             mode="outlined"
             label="Category"
             value={formData.category}
-            onChangeText={(val) => handleInputChange("category", val)}
+            onChangeText={(val: string) => handleInputChange("category", val)}
             left={
               <TextInput.Icon
                 icon={() => (
                   <Icon
                     type={"sell" as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-500"
                   />
                 )}
               />
             }
           />
-          <View style={styles.row}>
+          <View className="flex-row gap-4">
             <TouchableRipple
               onPress={() => showDatePicker("startDate")}
-              style={styles.halfWidth}
+              className="flex-1"
             >
               <View pointerEvents="none">
                 <TextInput
@@ -396,7 +393,7 @@ Stage: ${formData.stage || "N/A"}
                         <Icon
                           type={"calendar-month" as any}
                           size={18}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-500"
                         />
                       )}
                     />
@@ -406,7 +403,7 @@ Stage: ${formData.stage || "N/A"}
             </TouchableRipple>
             <TouchableRipple
               onPress={() => showDatePicker("endDate")}
-              style={styles.halfWidth}
+              className="flex-1"
             >
               <View pointerEvents="none">
                 <TextInput
@@ -420,7 +417,7 @@ Stage: ${formData.stage || "N/A"}
                         <Icon
                           type={"calendar-month" as any}
                           size={18}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-500"
                         />
                       )}
                     />
@@ -444,9 +441,9 @@ Stage: ${formData.stage || "N/A"}
                       <TextInput.Icon
                         icon={() => (
                           <Icon
-                            type={"show_chart" as any}
+                            type={"show-chart" as any}
                             size={18}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
@@ -457,7 +454,7 @@ Stage: ${formData.stage || "N/A"}
                           <Icon
                             type={"chevron-down" as any}
                             size={16}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
@@ -495,7 +492,7 @@ Stage: ${formData.stage || "N/A"}
                           <Icon
                             type={"warning" as any}
                             size={18}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
@@ -506,7 +503,7 @@ Stage: ${formData.stage || "N/A"}
                           <Icon
                             type={"chevron-down" as any}
                             size={16}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-500"
                           />
                         )}
                       />
@@ -528,40 +525,36 @@ Stage: ${formData.stage || "N/A"}
             ))}
           </Menu>
         </ScrollView>
-        <Appbar style={styles.footer}>
+        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
               <Icon
                 type={"close" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-green-200"
               />
             )}
           >
             Cancel
           </Button>
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="contained"
             onPress={handleSave}
             disabled={!hasChanges || saving}
             loading={saving}
             icon={() => (
               <Icon
-                type={"save" as any}
+                type={"content-save" as any}
                 size={18}
-                color={
-                  !hasChanges || saving
-                    ? theme.colors.onSurfaceDisabled
-                    : theme.colors.onPrimary
-                }
+                className={!hasChanges || saving ? "text-gray-300" : "text-white"}
               />
             )}
           >
-            Save Changes
+            Save
           </Button>
         </Appbar>
       </KeyboardAvoidingView>
@@ -570,12 +563,7 @@ Stage: ${formData.stage || "N/A"}
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
         >
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.colors.surface },
-            ]}
-          >
+          <View className="m-5 rounded-2xl overflow-hidden bg-white dark:bg-gray-800">
             <Calendar
               onDayPress={handleDayPress}
               markedDates={
@@ -584,16 +572,16 @@ Stage: ${formData.stage || "N/A"}
                   : {}
               }
               theme={{
-                backgroundColor: theme.colors.surface,
-                calendarBackground: theme.colors.surface,
-                textSectionTitleColor: theme.colors.onSurfaceVariant,
-                selectedDayBackgroundColor: theme.colors.primary,
-                selectedDayTextColor: theme.colors.onPrimary,
-                todayTextColor: theme.colors.primary,
-                dayTextColor: theme.colors.onSurface,
-                textDisabledColor: theme.colors.onSurfaceDisabled,
-                arrowColor: theme.colors.primary,
-                monthTextColor: theme.colors.onSurface,
+                backgroundColor: "transparent",
+                calendarBackground: "transparent",
+                textSectionTitleColor: "#9ca3af",
+                selectedDayBackgroundColor: "#2b7860",
+                selectedDayTextColor: "#ffffff",
+                todayTextColor: "#2b7860",
+                dayTextColor: "#374151",
+                textDisabledColor: "#d1d5db",
+                arrowColor: "#2b7860",
+                monthTextColor: "#111827",
               }}
             />
           </View>
@@ -602,26 +590,5 @@ Stage: ${formData.stage || "N/A"}
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 16, paddingBottom: 80 },
-  row: { flexDirection: "row", gap: 16 },
-  halfWidth: { flex: 1 },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
-  },
-  footerButton: { flex: 1, marginHorizontal: 8 },
-  modalContent: { margin: 20, borderRadius: 16, overflow: "hidden" },
-});
 
 export default ContractDetails;

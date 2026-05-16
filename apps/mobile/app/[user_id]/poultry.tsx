@@ -302,7 +302,7 @@ const PoultryScreen = () => {
         title: "Poultry Revenue",
         value: totals.revenue,
         icon: "currency-inr",
-        className: "bg-green-100/10 dark:bg-green-900/20",
+        className: "bg-gray-400 dark:bg-gray-700",
         textColorClassName: "text-green-600 dark:text-green-400",
       },
       {

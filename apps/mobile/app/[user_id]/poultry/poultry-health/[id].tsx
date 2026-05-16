@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   ScrollView,
   Share,
-  StyleSheet,
   View,
 } from "react-native";
 import {
@@ -22,7 +21,6 @@ import {
   Divider,
   List,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type PoultryHealthRecord = {
@@ -49,7 +47,6 @@ type FlockData = {
 const PoultryHealthDetailsScreen = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const theme = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [record, setRecord] = useState<PoultryHealthRecord | null>(null);
@@ -126,7 +123,7 @@ const PoultryHealthDetailsScreen = () => {
   if (loading) {
     return (
       <PlatformLayout>
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center p-4">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -136,15 +133,15 @@ const PoultryHealthDetailsScreen = () => {
   if (!record) {
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header className="bg-white dark:bg-gray-800">
           <Appbar.BackAction onPress={() => router.back()} />
           <Appbar.Content title="Error" />
         </Appbar.Header>
-        <View style={styles.centeredContainer}>
-          <Text variant="titleLarge" style={{ color: theme.colors.error }}>
+        <View className="flex-1 justify-center items-center p-4">
+          <Text variant="titleLarge" className="text-red-600">
             Record Not Found
           </Text>
-          <Button onPress={() => router.back()} style={styles.button}>
+          <Button onPress={() => router.back()} className="mt-4">
             Go Back
           </Button>
         </View>
@@ -154,20 +151,20 @@ const PoultryHealthDetailsScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-white dark:bg-gray-800">
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title={`Record #${record.poultry_health_id}`} />
         <Appbar.Action icon="share-variant" onPress={onShare} />
       </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Card>
+      <ScrollView contentContainerClassName="p-4 bg-white dark:bg-gray-900">
+        <Card className="rounded-2xl bg-white dark:bg-gray-800">
           <Card.Title
             title={flockData?.flock_name || "Health Record"}
             titleVariant="headlineSmall"
             subtitle={`Report ID: #${record.poultry_health_id} • ${formatDate(
               record.created_at
             )}`}
-            subtitleStyle={styles.subtitle}
+            subtitleStyle={{ marginTop: -4 }}
           />
           <Card.Content>
             <List.Section>
@@ -222,7 +219,7 @@ const PoultryHealthDetailsScreen = () => {
                 <Divider />
                 <List.Section>
                   <List.Subheader>Remarks</List.Subheader>
-                  <Text style={styles.remarksText}>{record.remarks}</Text>
+                  <Text className="px-4 leading-6 text-black dark:text-white">{record.remarks}</Text>
                 </List.Section>
               </>
             )}
@@ -231,7 +228,7 @@ const PoultryHealthDetailsScreen = () => {
                 <Divider />
                 <List.Section>
                   <List.Subheader>Next Appointment</List.Subheader>
-                  <Chip icon="calendar-check" style={styles.chip}>
+                  <Chip icon="calendar-check" className="self-start ml-4">
                     {formatDate(record.next_appointment)}
                   </Chip>
                 </List.Section>
@@ -243,19 +240,5 @@ const PoultryHealthDetailsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  container: { padding: 16 },
-  button: { marginTop: 16 },
-  subtitle: { marginTop: -4 },
-  remarksText: { paddingHorizontal: 16, lineHeight: 22 },
-  chip: { alignSelf: "flex-start", marginLeft: 16 },
-});
 
 export default PoultryHealthDetailsScreen;

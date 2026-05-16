@@ -18,7 +18,6 @@ import {
   Menu,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 import { DailyFinancialEntry } from "./WorkingCapital";
 
@@ -41,7 +40,7 @@ const PaperMenuDropdown = ({ label, items, selectedValue, onSelect, icon = "chev
           mode="outlined"
           onPress={() => setVisible(true)}
           icon={icon}
-          contentStyle={styles.dropdownButton}
+          className="flex-row-reverse justify-between"
         >
           {`${label}: ${selectedValue}`}
         </Button>
@@ -81,7 +80,6 @@ const DebtAnalysis = ({
   loans,
   isLoadingData,
 }: DebtAnalysisProps) => {
-  const theme = useTheme();
   const [selectedChartType, setSelectedChartType] = useState<ChartType>("Debt Trend");
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>("Monthly");
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -165,18 +163,18 @@ const DebtAnalysis = ({
       name: d.loan_name,
       population: Number(d.amount),
       color: ["#EF4444", "#F59E0B", "#3B82F6", "#10B981", "#8B5CF6"][index % 5],
-      legendFontColor: theme.dark ? "#D1D5DB" : "#4B5563",
+      legendFontColor: "#9ca3af", // gray-400
       legendFontSize: 12,
     }));
-  }, [loans, theme.dark]);
+  }, [loans]);
 
   const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
+    backgroundColor: "transparent",
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
     decimalPlaces: 0,
     color: (opacity = 1) => `rgba(239, 68, 68, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(${theme.dark ? "255, 255, 255" : "0, 0, 0"}, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
     propsForDots: {
       r: "4",
       strokeWidth: "2",
@@ -196,7 +194,7 @@ const DebtAnalysis = ({
 
   if (isLoadingData) {
     return (
-      <Card style={styles.loadingContainer}>
+      <Card className="h-96 items-center justify-center p-4">
         <ActivityIndicator size="large" />
       </Card>
     );
@@ -204,15 +202,15 @@ const DebtAnalysis = ({
 
   return (
     <Card>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text variant="titleLarge" style={styles.centeredText}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <Text variant="titleLarge" className="text-center">
           Loans & Debt Analysis
         </Text>
-        <Text variant="bodyMedium" style={[styles.centeredText, styles.subtitle]}>
+        <Text variant="bodyMedium" className="text-center mb-4 text-gray-500">
           Outstanding Liabilities & Repayment Trends
         </Text>
 
-        <View style={styles.controlsContainer}>
+        <View className="gap-3 mb-6">
           <TextInput
             mode="outlined"
             label="Start Date"
@@ -220,7 +218,7 @@ const DebtAnalysis = ({
             value={startDate ? format(startDate, "yyyy-MM-dd") : ""}
             onChangeText={handleDateChange(setStartDate)}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           <TextInput
             mode="outlined"
@@ -230,11 +228,11 @@ const DebtAnalysis = ({
             onChangeText={handleDateChange(setEndDate)}
             disabled={!startDate}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           
-          <View style={styles.dropdownRow}>
-            <View style={{ flex: 1 }}>
+          <View className="flex-row gap-2">
+            <View className="flex-1">
               <PaperMenuDropdown
                 label="Analysis"
                 items={CHART_TYPES}
@@ -244,7 +242,7 @@ const DebtAnalysis = ({
               />
             </View>
             {!isCustomDateRangeActive && selectedChartType === "Debt Trend" && (
-              <View style={{ flex: 1 }}>
+              <View className="flex-1">
                 <PaperMenuDropdown
                   label="Range"
                   items={TIME_RANGE_OPTIONS}
@@ -256,7 +254,7 @@ const DebtAnalysis = ({
           </View>
         </View>
 
-        <View style={styles.chartSection}>
+        <View className="items-center gap-2 mt-4">
           {selectedChartType === "Debt Trend" ? (
             lineData.labels.length > 0 ? (
               <>
@@ -266,15 +264,18 @@ const DebtAnalysis = ({
                   height={250}
                   chartConfig={chartConfig}
                   bezier
-                  style={styles.chart}
+                  style={{
+                    marginVertical: 16,
+                    borderRadius: 16,
+                  }}
                 />
-                <Text variant="labelMedium" style={[styles.centeredText, { color: theme.colors.onSurfaceVariant }]}>
+                <Text variant="labelMedium" className="text-center text-gray-500">
                   Timeline
                 </Text>
               </>
             ) : (
-              <View style={[styles.noDataContainer, { borderColor: theme.colors.outline, backgroundColor: theme.colors.surfaceVariant }]}>
-                <Text style={{ color: theme.colors.onSurfaceVariant }}>No data available for this period.</Text>
+              <View className="h-64 w-full items-center justify-center p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg mt-4 bg-gray-50 dark:bg-gray-900">
+                <Text className="text-gray-500">No data available for this period.</Text>
               </View>
             )
           ) : (
@@ -290,15 +291,15 @@ const DebtAnalysis = ({
                 absolute
               />
             ) : (
-              <View style={[styles.noDataContainer, { borderColor: theme.colors.outline, backgroundColor: theme.colors.surfaceVariant }]}>
-                <Text style={{ color: theme.colors.onSurfaceVariant }}>No active loans found.</Text>
+              <View className="h-64 w-full items-center justify-center p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg mt-4 bg-gray-50 dark:bg-gray-900">
+                <Text className="text-gray-500">No active loans found.</Text>
               </View>
             )
           )}
         </View>
 
         {selectedChartType === "Debt Trend" && totalPages > 1 && (
-          <View style={styles.paginationContainer}>
+          <View className="flex-row justify-center items-center gap-2 mt-4">
             <Button
               icon="chevron-left"
               mode="text"
@@ -312,7 +313,7 @@ const DebtAnalysis = ({
               mode="text"
               onPress={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={currentPage >= totalPages - 1}
-              contentStyle={styles.nextButton}
+              className="flex-row-reverse"
             >
               Next
             </Button>
@@ -322,45 +323,5 @@ const DebtAnalysis = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    height: 384,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-  },
-  container: { padding: 16 },
-  centeredText: { textAlign: "center" },
-  subtitle: { marginBottom: 16, color: "#6B7280" },
-  controlsContainer: { gap: 12, marginBottom: 24 },
-  dropdownRow: { flexDirection: "row", gap: 8 },
-  dropdownButton: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-  },
-  input: { backgroundColor: "transparent" },
-  chartSection: { alignItems: "center", gap: 8, marginTop: 16 },
-  chart: { marginVertical: 16, borderRadius: 16 },
-  paginationContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 16,
-  },
-  nextButton: { flexDirection: "row-reverse" },
-  noDataContainer: {
-    height: 256,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-});
 
 export default DebtAnalysis;

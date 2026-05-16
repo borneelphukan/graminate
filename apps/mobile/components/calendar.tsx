@@ -15,7 +15,6 @@ import {
   IconButton,
   Button,
   TextInput,
-  useTheme,
   ActivityIndicator,
   Checkbox,
   SegmentedButtons,
@@ -96,16 +95,15 @@ const CalendarHeader = ({
   previousMonth,
   nextMonth,
 }: CalendarHeaderProps) => {
-  const theme = useTheme();
   const monthName = format(new Date(calendarYear, calendarMonth), "MMMM");
   
   return (
     <View className="flex-row justify-between items-center mb-5">
-      <IconButton icon="chevron-left" onPress={previousMonth} iconColor={theme.colors.onSurface} />
-      <Text variant="headlineSmall" className="font-bold" style={{ color: theme.colors.onSurface }}>
+      <IconButton icon="chevron-left" onPress={previousMonth} className="text-black dark:text-white" />
+      <Text variant="headlineSmall" className="font-bold text-black dark:text-white">
         {`${monthName} ${calendarYear}`}
       </Text>
-      <IconButton icon="chevron-right" onPress={nextMonth} iconColor={theme.colors.onSurface} />
+      <IconButton icon="chevron-right" onPress={nextMonth} className="text-black dark:text-white" />
     </View>
   );
 };
@@ -131,13 +129,12 @@ const CalendarGrid = ({
   tasksPresence,
   getDateKey,
 }: CalendarGridProps) => {
-  const theme = useTheme();
   
   return (
     <View className="w-full">
       <View className="flex-row justify-around mb-3">
         {dayAbbreviations.map((dayAbbr) => (
-          <Text key={dayAbbr} className="w-10 text-center text-[12px] font-semibold" style={{ color: theme.colors.onSurfaceVariant }}>
+          <Text key={dayAbbr} className="w-10 text-center text-[12px] font-semibold text-gray-500">
             {dayAbbr}
           </Text>
         ))}
@@ -156,11 +153,13 @@ const CalendarGrid = ({
               onPress={() => day && !isPastDate && handleDateChange(date!)}
               disabled={!day || isPastDate}
             >
-              <View className="w-10 h-10 rounded-full justify-center items-center" style={containerStyle}>
-                <Text className="text-base font-medium" style={textStyle}>{day}</Text>
+              <View 
+                className={`w-10 h-10 rounded-full justify-center items-center ${containerStyle}`}
+              >
+                <Text className={`text-base font-medium ${textStyle}`}>{day}</Text>
               </View>
               {hasTasks && (
-                <View className="w-1 h-1 rounded-full absolute bottom-2" style={{ backgroundColor: theme.colors.primary }} />
+                <View className="w-1 h-1 rounded-full absolute bottom-2 bg-emerald-600" />
               )}
             </Pressable>
           );
@@ -189,7 +188,6 @@ const TaskListView = ({
   setShowAddTask,
   isLoading,
 }: TaskListViewProps) => {
-  const theme = useTheme();
   const dateFormatted = format(selectedDate, "EEEE, MMMM do");
   const isPastDate = isPast(startOfDay(selectedDate)) && !isToday(selectedDate);
 
@@ -198,15 +196,15 @@ const TaskListView = ({
       <View className="flex-row items-center p-2 h-[70px]">
         <IconButton icon="chevron-left" onPress={() => setShowTasks(false)} />
         <View className="flex-1 ml-2">
-          <Text variant="titleLarge" style={{ fontWeight: "bold" }}>{dateFormatted}</Text>
-          <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+          <Text variant="titleLarge" className="font-bold">{dateFormatted}</Text>
+          <Text variant="bodySmall" className="text-gray-500">
             {tasks.length} task(s) scheduled
           </Text>
         </View>
         {!isPastDate && (
           <IconButton
             icon="plus-circle"
-            iconColor={theme.colors.primary}
+            className="text-emerald-600"
             size={28}
             onPress={() => setShowAddTask(true)}
           />
@@ -219,7 +217,7 @@ const TaskListView = ({
         <ActivityIndicator className="flex-1 justify-center items-center p-5" />
       ) : tasks.length === 0 ? (
         <View className="flex-1 justify-center items-center p-5 gap-4">
-          <Icon type="calendar-blank" size={64} color={theme.colors.onSurfaceDisabled} />
+          <Icon type="calendar-blank" size={64} className="text-gray-300" />
           <Text variant="bodyLarge" className="mt-4 text-gray-500">No tasks for this day.</Text>
           {!isPastDate && (
             <Button mode="contained" onPress={() => setShowAddTask(true)} className="mt-5">
@@ -233,7 +231,7 @@ const TaskListView = ({
           keyExtractor={(item) => item.task_id.toString()}
           contentContainerClassName="p-4"
           renderItem={({ item }) => (
-            <View className="flex-row items-center p-3 rounded-xl mb-3">
+            <View className="flex-row items-center p-3 rounded-xl mb-3 bg-gray-50 dark:bg-gray-800">
               <Checkbox
                 status={item.status === "Completed" ? "checked" : "unchecked"}
                 onPress={() => updateTaskStatus(item.task_id, item.status === "Completed" ? "To Do" : "Completed")}
@@ -241,38 +239,31 @@ const TaskListView = ({
               <View className="flex-1 ml-3">
                 <Text
                   variant="bodyLarge"
-                  style={[
-                    item.status === "Completed" && { textDecorationLine: "line-through", opacity: 0.5 }
-                  ]}
+                  className={item.status === "Completed" ? "line-through opacity-50" : ""}
                 >
                   {item.name}
                 </Text>
                 <View className="flex-row items-center mt-1">
                   <Text variant="bodySmall" className="text-dark dark:text-light mr-3">{item.time}</Text>
                   <Badge
-                    className="ml-2 px-2 rounded-md"
+                    className={`ml-2 px-2 rounded-md ${
+                      item.priority === "High"
+                        ? "bg-red-100 dark:bg-red-900"
+                        : item.priority === "Medium"
+                        ? "bg-amber-100 dark:bg-amber-900"
+                        : "bg-emerald-100 dark:bg-emerald-900"
+                    }`}
                     size={20}
-                    style={{
-                      backgroundColor:
-                        item.priority === "High"
-                          ? theme.colors.errorContainer
-                          : item.priority === "Medium"
-                          ? "#FFF4E5" // Light Amber
-                          : theme.colors.primaryContainer,
-                    }}
                   >
                     <Text
                       variant="labelSmall"
-                      style={{
-                        color:
-                          item.priority === "High"
-                            ? theme.colors.error
-                            : item.priority === "Medium"
-                            ? "#B26200" // Dark Amber
-                            : theme.colors.primary,
-                        fontWeight: "bold",
-                        fontSize: 10,
-                      }}
+                      className={`font-bold text-[10px] ${
+                        item.priority === "High"
+                          ? "text-red-700 dark:text-red-300"
+                          : item.priority === "Medium"
+                          ? "text-amber-700 dark:text-amber-300"
+                          : "text-emerald-700 dark:text-emerald-300"
+                      }`}
                     >
                       {item.priority.toUpperCase()}
                     </Text>
@@ -281,7 +272,7 @@ const TaskListView = ({
               </View>
               <IconButton
                 icon="delete-outline"
-                iconColor={theme.colors.onSurfaceVariant}
+                className="text-gray-500"
                 size={20}
                 onPress={() => removeTask(item.task_id)}
               />
@@ -308,7 +299,6 @@ const AddTaskView = ({
   refreshTasks,
   subTypes,
 }: AddTaskViewProps) => {
-  const theme = useTheme();
   const [taskName, setTaskName] = useState("");
   const [project, setProject] = useState("");
   const [time, setTime] = useState("12:00 PM");
@@ -379,7 +369,7 @@ const AddTaskView = ({
             right={<TextInput.Icon icon="chevron-down" />}
           />
           {showSuggestions && (
-            <View className="rounded-lg mt-1 elevation-3" style={{ backgroundColor: theme.colors.surfaceVariant }}>
+            <View className="rounded-lg mt-1 elevation-3 bg-white dark:bg-gray-800">
               {filteredSuggestions.map((item, idx) => (
                 <Pressable
                   key={idx}
@@ -439,7 +429,6 @@ const AddTaskView = ({
 
 const Calendar = ({ route, userId: propUserId }: any) => {
   const userId = propUserId || route?.params?.user_id;
-  const theme = useTheme();
   
   const [displayedTasks, setDisplayedTasks] = useState<DisplayTask[]>([]);
   const [tasksForGrid, setTasksForGrid] = useState<TasksPresence>({});
@@ -535,7 +524,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
   const calendarDays = generateCalendarDays(calendarMonth, calendarYear);
 
   const getDayStyles = (day: number | null) => {
-    if (!day) return { containerStyle: {}, textStyle: {}, isPastDate: false };
+    if (!day) return { containerStyle: "", textStyle: "", isPastDate: false };
     
     const d = new Date(calendarYear, calendarMonth, day);
     const dateKey = getDateKey(d);
@@ -543,23 +532,23 @@ const Calendar = ({ route, userId: propUserId }: any) => {
     const isPastDate = isPast(startOfDay(d)) && !isTodayDate;
     const isSelected = getDateKey(selectedDate) === dateKey;
 
-    let containerStyle = {};
-    let textStyle = { color: theme.colors.onSurface };
+    let containerStyle = "";
+    let textStyle = "text-black dark:text-white";
 
     if (isSelected) {
-      containerStyle = { backgroundColor: theme.colors.primary };
-      textStyle = { color: theme.colors.onPrimary };
+      containerStyle = "bg-emerald-600";
+      textStyle = "text-white";
     } else if (isTodayDate) {
-      containerStyle = { borderColor: theme.colors.primary, borderWidth: 2 };
+      containerStyle = "border-2 border-emerald-600";
     } else if (isPastDate) {
-      textStyle = { color: theme.colors.onSurfaceDisabled };
+      textStyle = "text-gray-400";
     }
 
     return { containerStyle, textStyle, isPastDate };
   };
 
   return (
-    <View className="border border-gray-400 dark:border-gray-800 rounded-xl overflow-hidden min-h-[450px]" style={{ backgroundColor: theme.colors.background }}>
+    <View className="border border-gray-400 dark:border-gray-800 rounded-xl overflow-hidden min-h-[450px] bg-white dark:bg-gray-900">
       {showAddTask ? (
         <AddTaskView
           selectedDate={selectedDate}

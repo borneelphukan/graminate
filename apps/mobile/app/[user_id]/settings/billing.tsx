@@ -20,7 +20,6 @@ import {
   Divider,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 import { format } from "date-fns";
 
@@ -38,7 +37,6 @@ type Payment = {
 const BillingScreen = () => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
   const { plan, fetchUserSubTypes } = useUserPreferences();
 
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -151,7 +149,7 @@ const BillingScreen = () => {
             <Icon
               type={"chevron-left"}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           )}
           onPress={() => router.back()}
@@ -160,72 +158,69 @@ const BillingScreen = () => {
       </Appbar.Header>
 
       {isLoading ? (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       ) : (
         <ScrollView
-          style={[
-            styles.container,
-            { backgroundColor: theme.colors.background },
-          ]}
+          className="flex-1 p-4 bg-white dark:bg-gray-900"
         >
           {/* Subscription Overview */}
-          <Card style={styles.card}>
+          <Card className="mb-4">
             <Card.Content>
               <Text
                 variant="titleMedium"
-                style={{ fontWeight: "bold", marginBottom: 16 }}
+                className="font-bold mb-4"
               >
                 Subscription Overview
               </Text>
-
+ 
               {/* Current Plan */}
-              <View style={styles.overviewRow}>
+              <View className="py-1">
                 <Text
                   variant="bodySmall"
-                  style={{ color: theme.colors.onSurfaceVariant }}
+                  className="text-gray-500"
                 >
                   Current Plan
                 </Text>
                 <Chip
                   mode="flat"
-                  style={{
-                    backgroundColor:
-                      plan === "PRO"
-                        ? "#dcfce7"
-                        : plan === "BASIC"
-                        ? "#dbeafe"
-                        : "#f3f4f6",
-                    alignSelf: "flex-start",
-                    marginTop: 4,
-                  }}
+                  className={`self-start mt-1 ${
+                    plan === "PRO"
+                      ? "bg-green-100 dark:bg-green-900"
+                      : plan === "BASIC"
+                      ? "bg-blue-100 dark:bg-blue-900"
+                      : "bg-gray-100 dark:bg-gray-800"
+                  }`}
                   textStyle={{
                     fontWeight: "bold",
                     fontSize: 12,
-                    color:
-                      plan === "PRO"
-                        ? "#166534"
-                        : plan === "BASIC"
-                        ? "#1e40af"
-                        : "#374151",
+                    color: "inherit"
                   }}
                 >
-                  {planLabel.toUpperCase()}
+                  <Text className={
+                    plan === "PRO"
+                      ? "text-green-700 dark:text-green-300"
+                      : plan === "BASIC"
+                      ? "text-blue-700 dark:text-blue-300"
+                      : "text-gray-700 dark:text-gray-300"
+                  }>
+                    {planLabel.toUpperCase()}
+                  </Text>
                 </Chip>
               </View>
 
-              <Divider style={{ marginVertical: 12 }} />
-
+              <Divider className="my-3" />
+ 
               {/* Next Transaction Date */}
-              <View style={styles.overviewRow}>
+              <View className="py-1">
                 <Text
                   variant="bodySmall"
-                  style={{ color: theme.colors.onSurfaceVariant }}
+                  className="text-gray-500"
                 >
                   Next Transaction Date
                 </Text>
-                <Text variant="bodyMedium" style={{ marginTop: 4 }}>
+                <Text variant="bodyMedium" className="mt-1">
                   {plan === "FREE"
                     ? "—"
                     : hasPendingCancellation
@@ -236,34 +231,27 @@ const BillingScreen = () => {
                 </Text>
               </View>
 
-              <Divider style={{ marginVertical: 12 }} />
-
+              <Divider className="my-3" />
+ 
               {/* Cancel Subscription */}
-              <View style={styles.overviewRow}>
+              <View className="py-1">
                 <Text
                   variant="bodySmall"
-                  style={{ color: theme.colors.onSurfaceVariant }}
+                  className="text-gray-500"
                 >
                   Cancel Subscription
                 </Text>
                 {plan === "FREE" ? (
                   <Text
                     variant="bodyMedium"
-                    style={{
-                      color: theme.colors.onSurfaceVariant,
-                      marginTop: 4,
-                    }}
+                    className="mt-1 text-gray-500"
                   >
                     No active subscription
                   </Text>
                 ) : hasPendingCancellation ? (
                   <Text
                     variant="bodyMedium"
-                    style={{
-                      color: "#f97316",
-                      fontWeight: "600",
-                      marginTop: 4,
-                    }}
+                    className="mt-1 text-orange-500 font-semibold"
                   >
                     Cancels on{" "}
                     {subscriptionExpiry
@@ -276,8 +264,7 @@ const BillingScreen = () => {
                     onPress={handleCancelSubscription}
                     disabled={isCancelling}
                     loading={isCancelling}
-                    buttonColor={theme.colors.error}
-                    style={{ alignSelf: "flex-start", marginTop: 4 }}
+                    className="self-start mt-1 bg-red-600"
                     compact
                   >
                     {isCancelling ? "Cancelling..." : "Cancel Subscription"}
@@ -288,11 +275,11 @@ const BillingScreen = () => {
           </Card>
 
           {/* Billing History */}
-          <Card style={styles.card}>
+          <Card className="mb-4">
             <Card.Content>
               <Text
                 variant="titleMedium"
-                style={{ fontWeight: "bold", marginBottom: 12 }}
+                className="font-bold mb-3"
               >
                 Billing History
               </Text>
@@ -301,22 +288,20 @@ const BillingScreen = () => {
                 placeholder="Search transactions..."
                 onChangeText={setSearchQuery}
                 value={searchQuery}
-                style={{ marginBottom: 12, elevation: 0 }}
+                className="mb-3"
+                style={{ elevation: 0 }}
               />
 
               {filteredPayments.length === 0 ? (
-                <View style={styles.emptyState}>
+                <View className="items-center justify-center py-8">
                   <Icon
                     type="credit-card-off-outline"
                     size={40}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-400"
                   />
                   <Text
                     variant="bodyMedium"
-                    style={{
-                      color: theme.colors.onSurfaceVariant,
-                      marginTop: 8,
-                    }}
+                    className="mt-2 text-gray-500"
                   >
                     No transactions found
                   </Text>
@@ -325,7 +310,7 @@ const BillingScreen = () => {
                 <>
                   <ScrollView horizontal showsHorizontalScrollIndicator>
                     <DataTable style={{ width: 800 }}>
-                      <DataTable.Header style={{ backgroundColor: theme.colors.surfaceVariant }}>
+                      <DataTable.Header className="bg-gray-100 dark:bg-gray-800">
                         <DataTable.Title style={{ width: 200, paddingLeft: 8 }}>Payment ID</DataTable.Title>
                         <DataTable.Title style={{ width: 100 }}>Plan</DataTable.Title>
                         <DataTable.Title style={{ width: 120 }}>Amount</DataTable.Title>
@@ -334,15 +319,15 @@ const BillingScreen = () => {
                       </DataTable.Header>
 
                       {paginatedPayments.map((payment) => (
-                        <DataTable.Row key={payment.payment_id} style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.outlineVariant }}>
+                        <DataTable.Row key={payment.payment_id} className="border-b border-gray-100 dark:border-gray-800">
                           <DataTable.Cell style={{ width: 200, paddingLeft: 8 }}>
-                            <Text variant="bodySmall" style={{ fontWeight: '500' }}>
+                            <Text variant="bodySmall" className="font-medium">
                               {payment.razorpay_payment_id || "—"}
                             </Text>
                           </DataTable.Cell>
                           <DataTable.Cell style={{ width: 100 }}>{payment.plan_type}</DataTable.Cell>
                           <DataTable.Cell style={{ width: 120 }}>
-                            <Text style={{ fontWeight: '600' }}>
+                            <Text className="font-semibold">
                               {payment.currency} {payment.amount}
                             </Text>
                           </DataTable.Cell>
@@ -357,23 +342,24 @@ const BillingScreen = () => {
                             <Chip
                               mode="flat"
                               compact
-                              style={{
-                                backgroundColor:
-                                  payment.status === "SUCCESS"
-                                    ? "#dcfce7"
-                                    : "#fee2e2",
-                                height: 24,
-                              }}
+                              className={`h-6 ${
+                                payment.status === "SUCCESS"
+                                  ? "bg-green-100 dark:bg-green-900"
+                                  : "bg-red-100 dark:bg-red-900"
+                              }`}
                               textStyle={{
                                 fontSize: 10,
                                 fontWeight: "bold",
-                                color:
-                                  payment.status === "SUCCESS"
-                                    ? "#166534"
-                                    : "#991b1b",
+                                color: "inherit"
                               }}
                             >
-                              {payment.status === "SUCCESS" ? "Success" : "Failed"}
+                              <Text className={
+                                payment.status === "SUCCESS"
+                                  ? "text-green-700 dark:text-green-300"
+                                  : "text-red-700 dark:text-red-300"
+                              }>
+                                {payment.status === "SUCCESS" ? "Success" : "Failed"}
+                              </Text>
                             </Chip>
                           </DataTable.Cell>
                         </DataTable.Row>
@@ -400,21 +386,5 @@ const BillingScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  card: { marginBottom: 16 },
-  overviewRow: { paddingVertical: 4 },
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 32,
-  },
-});
 
 export default BillingScreen;

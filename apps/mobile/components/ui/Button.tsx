@@ -19,17 +19,17 @@ export const Button = ({
   let textClass = "font-semibold text-center text-base ";
 
   if (mode === 'contained') {
-    baseClass += "bg-[#2b7860] ";
+    baseClass += "bg-green-100 ";
     textClass += "text-white ";
   } else if (mode === 'outlined') {
-    baseClass += "border border-[#2b7860] bg-transparent ";
-    textClass += "text-[#2b7860] ";
+    baseClass += "border border-green-100 bg-transparent ";
+    textClass += "text-green-100 ";
   } else if (mode === 'elevated') {
-    baseClass += "bg-[#2b7860] shadow-md ";
+    baseClass += "bg-green-100 shadow-md ";
     textClass += "text-white ";
   } else {
     baseClass += "bg-transparent px-2 py-2 ";
-    textClass += "text-[#2b7860] ";
+    textClass += "text-green-100 ";
   }
 
   if (disabled || loading) baseClass += "opacity-60 ";
@@ -84,9 +84,9 @@ export const SegmentedButtons = ({ value, onValueChange, buttons, className = ''
         <TouchableOpacity
           key={btn.value}
           onPress={() => onValueChange(btn.value)}
-          className={`flex-1 py-2 px-3 justify-center items-center ${isSelected ? 'bg-[#d8fdf2] dark:bg-[#2b7860]' : 'bg-white dark:bg-[#1e1e1e]'} ${idx > 0 ? 'border-l border-gray-300 dark:border-gray-700' : ''}`}
+          className={`flex-1 py-2 px-3 justify-center items-center ${isSelected ? 'bg-green-300 dark:bg-green-100' : 'bg-white dark:bg-gray-800'} ${idx > 0 ? 'border-l border-gray-300 dark:border-gray-700' : ''}`}
         >
-          <RNText className={`text-xs font-semibold ${isSelected ? 'text-[#2b7860] dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+          <RNText className={`text-xs font-semibold ${isSelected ? 'text-green-100 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
             {btn.label}
           </RNText>
         </TouchableOpacity>
@@ -110,11 +110,11 @@ export const Chip = ({ children, onPress, icon, selected, disabled, className = 
     <TouchableOpacity 
       onPress={onPress} 
       disabled={disabled} 
-      className={`flex-row items-center px-3 py-1.5 rounded-full border ${selected ? 'bg-[#d8fdf2] border-[#2b7860]' : 'bg-white dark:bg-[#1e1e1e] border-gray-300'} ${disabled ? 'opacity-50' : ''} ${className}`}
+      className={`flex-row items-center px-3 py-1.5 rounded-full border ${selected ? 'bg-green-300 border-green-100' : 'bg-white dark:bg-gray-800 border-gray-300'} ${disabled ? 'opacity-50' : ''} ${className}`}
       style={style}
     >
       {renderIcon()}
-      <RNText className={`text-xs font-medium ${selected ? 'text-[#2b7860]' : 'text-gray-700 dark:text-gray-300'}`}>{children}</RNText>
+      <RNText className={`text-xs font-medium ${selected ? 'text-green-100' : 'text-gray-700 dark:text-gray-300'}`}>{children}</RNText>
     </TouchableOpacity>
   );
 };

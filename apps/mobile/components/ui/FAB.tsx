@@ -14,7 +14,7 @@ export const FAB = ({ icon, label, onPress, style, className = '', color, small 
   return (
     <TouchableOpacity 
       onPress={onPress} 
-      className={`absolute right-6 bottom-6 rounded-full bg-[#2b7860] items-center justify-center shadow-lg flex-row ${label ? 'px-5 py-3' : small ? 'w-10 h-10' : 'w-14 h-14'} ${className}`}
+      className={`absolute right-6 bottom-6 rounded-full bg-green-100 items-center justify-center shadow-lg flex-row ${label ? 'px-5 py-3' : small ? 'w-10 h-10' : 'w-14 h-14'} ${className}`}
       style={style}
     >
       {renderIcon()}

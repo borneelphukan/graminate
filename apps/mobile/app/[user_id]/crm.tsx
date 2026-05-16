@@ -30,9 +30,6 @@ import {
   Text,
 } from "@/components/ui";
 
-// No need for a custom 'api' instance here anymore, we'll use axiosInstance
-
-// --- Type Definitions (No Changes) ---
 type Contact = {
   contact_id: number;
   first_name: string;

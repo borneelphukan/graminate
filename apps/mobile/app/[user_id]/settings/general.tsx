@@ -14,7 +14,6 @@ import {
   Menu,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 type TimeFormatOption = "12-hour" | "24-hour";
@@ -26,13 +25,12 @@ const PaperFormDropdown = ({
   selectedValue,
   onSelect,
   disabled = false,
-  style,
+  className,
 }: any) => {
   const [visible, setVisible] = useState(false);
-  const theme = useTheme();
 
   return (
-    <View style={style}>
+    <View className={className}>
       <Menu
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -53,7 +51,7 @@ const PaperFormDropdown = ({
                       <Icon
                         type={"chevron-down" as any}
                         size={16}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400"
                       />
                     )}
                   />
@@ -80,7 +78,6 @@ const PaperFormDropdown = ({
 };
 
 const GeneralSettingsScreen = () => {
-  const theme = useTheme();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
 
 
@@ -174,7 +171,7 @@ const GeneralSettingsScreen = () => {
             <Icon
               type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           )}
           onPress={() => router.back()}
@@ -183,7 +180,7 @@ const GeneralSettingsScreen = () => {
           title="Profile Settings"
         />
       </Appbar.Header>
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -198,7 +195,7 @@ const GeneralSettingsScreen = () => {
             <Icon
               type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           )}
           onPress={() => router.back()}
@@ -208,10 +205,10 @@ const GeneralSettingsScreen = () => {
           subtitle="Update your personal details"
         />
       </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerClassName="p-4 gap-6">
         <Card>
           <Card.Title title="Profile Details" />
-          <Card.Content style={styles.cardContent}>
+          <Card.Content className="gap-4">
             <TextInput
               label="First Name"
               value={user.firstName}
@@ -238,13 +235,13 @@ const GeneralSettingsScreen = () => {
                     <Icon
                       type={"phone-outline" as any}
                       size={18}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-400"
                     />
                   )}
                 />
               }
             />
-            <View style={styles.row}>
+            <View className="flex-row gap-4">
               <PaperFormDropdown
                 label="Language"
                 items={LANGUAGES}
@@ -252,7 +249,7 @@ const GeneralSettingsScreen = () => {
                 onSelect={(val: any) =>
                   setUser((prev) => ({ ...prev, language: val }))
                 }
-                style={styles.halfWidth}
+                className="flex-1"
               />
               <PaperFormDropdown
                 label="Time Format"
@@ -261,7 +258,7 @@ const GeneralSettingsScreen = () => {
                 onSelect={(val: any) =>
                   setUser((prev) => ({ ...prev, timeFormat: val }))
                 }
-                style={styles.halfWidth}
+                className="flex-1"
               />
             </View>
           </Card.Content>
@@ -269,7 +266,7 @@ const GeneralSettingsScreen = () => {
 
         <Card>
           <Card.Title title="Address Details" />
-          <Card.Content style={styles.cardContent}>
+          <Card.Content className="gap-4">
             <TextInput
               label="Address Line 1"
               placeholder="Enter Address Line 1"
@@ -284,7 +281,7 @@ const GeneralSettingsScreen = () => {
                     <Icon
                       type={"map-marker-outline" as any}
                       size={18}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-400"
                     />
                   )}
                 />
@@ -299,7 +296,7 @@ const GeneralSettingsScreen = () => {
               }
               mode="outlined"
             />
-            <View style={styles.row}>
+            <View className="flex-row gap-4">
               <TextInput
                 label="City"
                 placeholder="Enter City"
@@ -307,7 +304,7 @@ const GeneralSettingsScreen = () => {
                 onChangeText={(val: string) =>
                   setUser((prev) => ({ ...prev, city: val }))
                 }
-                style={styles.halfWidth}
+                className="flex-1 bg-transparent"
                 mode="outlined"
                 left={
                   <TextInput.Icon
@@ -315,7 +312,7 @@ const GeneralSettingsScreen = () => {
                       <Icon
                         type={"city-variant-outline" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400"
                       />
                     )}
                   />
@@ -328,7 +325,7 @@ const GeneralSettingsScreen = () => {
                 onChangeText={(val: string) =>
                   setUser((prev) => ({ ...prev, state: val }))
                 }
-                style={styles.halfWidth}
+                className="flex-1 bg-transparent"
                 mode="outlined"
                 left={
                   <TextInput.Icon
@@ -336,7 +333,7 @@ const GeneralSettingsScreen = () => {
                       <Icon
                         type={"map-outline" as any}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400"
                       />
                     )}
                   />
@@ -357,7 +354,7 @@ const GeneralSettingsScreen = () => {
                     <Icon
                       type={"mailbox-outline" as any}
                       size={18}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-400"
                     />
                   )}
                 />
@@ -374,7 +371,7 @@ const GeneralSettingsScreen = () => {
                     <Icon
                       type={"earth" as any}
                       size={18}
-                      color={theme.colors.onSurfaceVariant}
+                      className="text-gray-400"
                     />
                   )}
                 />
@@ -383,7 +380,7 @@ const GeneralSettingsScreen = () => {
           </Card.Content>
         </Card>
 
-        <View style={styles.saveSection}>
+        <View className="items-start">
           <Button
             mode="contained"
             onPress={handleSaveProfileChanges}
@@ -393,10 +390,10 @@ const GeneralSettingsScreen = () => {
               <Icon
                 type={"content-save" as any}
                 size={18}
-                color={theme.colors.onPrimary}
+                className="text-white"
               />
             )}
-            style={styles.saveButton}
+            className="py-1"
           >
             Save Changes
           </Button>
@@ -415,21 +412,5 @@ const GeneralSettingsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: { padding: 16, gap: 24 },
-  cardContent: { gap: 16 },
-  avatarSection: { flexDirection: "row", alignItems: "center", gap: 16 },
-  avatarActions: { gap: 8, alignItems: "flex-start" },
-  row: { flexDirection: "row", gap: 16 },
-  halfWidth: { flex: 1 },
-  saveSection: { alignItems: "flex-start" },
-  saveButton: { paddingVertical: 4 },
-});
 
 export default GeneralSettingsScreen;

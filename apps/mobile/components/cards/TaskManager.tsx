@@ -10,7 +10,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 type Priority = "High" | "Medium" | "Low";
@@ -34,7 +33,6 @@ type Props = {
 const PRIORITY_OPTIONS: Priority[] = ["High", "Medium", "Low"];
 
 const TaskManager = ({ userId, projectType }: Props) => {
-  const theme = useTheme();
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [newTaskText, setNewTaskText] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState<Priority>("Medium");
@@ -164,18 +162,24 @@ const TaskManager = ({ userId, projectType }: Props) => {
     switch (priority) {
       case "High":
         return {
-          backgroundColor: theme.dark ? "#5c1919" : "#fecaca",
-          textColor: theme.dark ? "#ffb4ab" : "#991b1b",
+          backgroundColor: "#fecaca",
+          darkBg: "#5c1919",
+          textColor: "#991b1b",
+          darkText: "#ffb4ab",
         };
       case "Medium":
         return {
-          backgroundColor: theme.dark ? "#5e4803" : "#fef08a",
-          textColor: theme.dark ? "#ffde8a" : "#854d0e",
+          backgroundColor: "#fef08a",
+          darkBg: "#5e4803",
+          textColor: "#854d0e",
+          darkText: "#ffde8a",
         };
       case "Low":
         return {
-          backgroundColor: theme.dark ? "#003a21" : "#bbf7d0",
-          textColor: theme.dark ? "#89d89d" : "#166534",
+          backgroundColor: "#bbf7d0",
+          darkBg: "#003a21",
+          textColor: "#166534",
+          darkText: "#89d89d",
         };
     }
   };
@@ -183,7 +187,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator animating={true} />
         </View>
       );
@@ -191,34 +195,24 @@ const TaskManager = ({ userId, projectType }: Props) => {
 
     if (error) {
       return (
-        <View style={styles.centeredContainer}>
-          <Text style={{ color: theme.colors.error }}>{error}</Text>
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-red-600">{error}</Text>
         </View>
       );
     }
 
     if (taskList.length === 0) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <Icon
             type={"clipboard-text-outline" as any}
             size={48}
-            color={theme.colors.onSurfaceDisabled}
+            className="text-gray-400"
           />
-          <Text
-            style={[
-              styles.emptyText,
-              { color: theme.colors.onSurfaceDisabled },
-            ]}
-          >
+          <Text className="mt-3 text-gray-400">
             No tasks for {capitalizedProjectType}.
           </Text>
-          <Text
-            style={[
-              styles.emptySubText,
-              { color: theme.colors.onSurfaceDisabled },
-            ]}
-          >
+          <Text className="mt-1 text-xs text-gray-400">
             Add a task above to get started.
           </Text>
         </View>
@@ -226,26 +220,21 @@ const TaskManager = ({ userId, projectType }: Props) => {
     }
 
     return (
-      <ScrollView style={styles.taskList} showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {taskList.map((task) => {
           const isCompleted = task.status === "Completed";
           const priorityStyles = getPriorityButtonStyles(task.priority);
           return (
-            <View key={task.task_id} style={styles.taskItem}>
+            <View key={task.task_id} className="flex-row items-center py-0.5 rounded">
               <Checkbox.Android
                 status={isCompleted ? "checked" : "unchecked"}
                 onPress={() => toggleTaskCompletion(task.task_id)}
-                color={theme.colors.primary}
+                color="#2b7860"
               />
               <Text
-                style={[
-                  styles.taskText,
-                  { color: theme.colors.onSurface },
-                  isCompleted && {
-                    textDecorationLine: "line-through",
-                    color: theme.colors.onSurfaceDisabled,
-                  },
-                ]}
+                className={`flex-1 ml-3 mr-2 text-sm ${
+                  isCompleted ? "line-through text-gray-400" : "text-black dark:text-white"
+                }`}
                 numberOfLines={1}
               >
                 {task.task}
@@ -255,40 +244,23 @@ const TaskManager = ({ userId, projectType }: Props) => {
                 <Button
                   mode="contained"
                   onPress={() => deleteTask(task.task_id)}
-                  style={[
-                    styles.taskButton,
-                    {
-                      backgroundColor:
-                        getPriorityButtonStyles("High").backgroundColor,
-                    },
-                  ]}
-                  labelStyle={[
-                    styles.taskButtonLabel,
-                    { color: getPriorityButtonStyles("High").textColor },
-                  ]}
+                  className="ml-2 min-w-[70px] h-6 justify-center bg-red-100 dark:bg-red-900"
+                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: "#991b1b" }}
                   compact
                 >
                   Delete
                 </Button>
               ) : editingPriority === task.task_id ? (
-                <View style={styles.editingContainer}>
+                <View className="flex-row items-center gap-1">
                   {PRIORITY_OPTIONS.map((p) => {
-                    // FIX IS HERE: Renamed 'styles' to 'priorityBtnStyles' to avoid conflict
-                    const priorityBtnStyles = getPriorityButtonStyles(p);
+                    const pbStyles = getPriorityButtonStyles(p);
                     return (
                       <Button
                         key={p}
                         onPress={() => handlePriorityChange(task.task_id, p)}
-                        style={[
-                          styles.taskButton,
-                          {
-                            backgroundColor: priorityBtnStyles.backgroundColor,
-                          },
-                        ]}
-                        labelStyle={[
-                          styles.taskButtonLabel,
-                          { color: priorityBtnStyles.textColor },
-                        ]}
+                        className="ml-2 min-w-[70px] h-6 justify-center"
+                        style={{ backgroundColor: pbStyles.backgroundColor }}
+                        labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: pbStyles.textColor }}
                         compact
                       >
                         {p}
@@ -297,12 +269,12 @@ const TaskManager = ({ userId, projectType }: Props) => {
                   })}
                   <TouchableRipple
                     onPress={() => setEditingPriority(null)}
-                    style={styles.cancelButton}
+                    className="w-6 h-6 rounded justify-center items-center bg-gray-300 dark:bg-gray-700 ml-1"
                   >
                     <Icon
                       type={"close" as any}
                       size={12}
-                      color={theme.colors.onSurface}
+                      className="text-black dark:text-white"
                     />
                   </TouchableRipple>
                 </View>
@@ -310,14 +282,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
                 <Button
                   mode="contained"
                   onPress={() => setEditingPriority(task.task_id)}
-                  style={[
-                    styles.taskButton,
-                    { backgroundColor: priorityStyles.backgroundColor },
-                  ]}
-                  labelStyle={[
-                    styles.taskButtonLabel,
-                    { color: priorityStyles.textColor },
-                  ]}
+                  className="ml-2 min-w-[70px] h-6 justify-center"
+                  style={{ backgroundColor: priorityStyles.backgroundColor }}
+                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: priorityStyles.textColor }}
                   compact
                 >
                   {task.priority}
@@ -331,21 +298,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.surface,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 5,
-        },
-      ]}
-    >
-      <View style={styles.header}>
-        <Text variant="headlineSmall" style={{ color: theme.colors.onSurface }}>
+    <View className="h-[320px] rounded-lg p-6 shadow-md bg-white dark:bg-gray-900">
+      <View className="flex-row justify-between items-center mb-4">
+        <Text variant="headlineSmall">
           {capitalizedProjectType} Task List
         </Text>
         <TouchableRipple
@@ -354,35 +309,33 @@ const TaskManager = ({ userId, projectType }: Props) => {
             setPrioritySortAsc(newAsc);
             setTaskList((prev) => sortTasks(prev, newAsc));
           }}
-          style={styles.sortButton}
+          className="py-1 px-2 rounded bg-gray-200 dark:bg-gray-800"
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              style={[styles.sortButtonText, { color: theme.colors.onSurface }]}
-            >
+          <View className="flex-row items-center">
+            <Text className="text-xs font-medium mr-2">
               Priority
             </Text>
             <Icon
               type={(prioritySortAsc ? "chevron-up" : "chevron-down") as any}
               size={12}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           </View>
         </TouchableRipple>
       </View>
 
-      <View style={styles.formContainer}>
+      <View className="flex-row items-center mb-4 gap-2">
         <TextInput
           mode="outlined"
           placeholder={`Add new ${projectType.toLowerCase()} task`}
           value={newTaskText}
           onChangeText={setNewTaskText}
           onSubmitEditing={addNewTask}
-          style={styles.textInput}
+          className="flex-1 h-10"
         />
       </View>
 
-      <View style={styles.formContainer}>
+      <View className="flex-row items-center mb-4 gap-2">
         <Menu
           visible={priorityMenuVisible}
           onDismiss={() => setPriorityMenuVisible(false)}
@@ -391,7 +344,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
               mode="outlined"
               onPress={() => setPriorityMenuVisible(true)}
               disabled={!newTaskText.trim()}
-              style={styles.priorityButton}
+              className="justify-center h-10"
             >
               {newTaskPriority}
             </Button>
@@ -412,133 +365,26 @@ const TaskManager = ({ userId, projectType }: Props) => {
           mode="contained"
           onPress={addNewTask}
           disabled={!newTaskText.trim()}
-          style={styles.addButton}
+          className="justify-center h-10"
           icon={() => (
             <Icon
               type={"plus" as any}
               size={16}
-              color={
-                !newTaskText.trim()
-                  ? theme.colors.onSurfaceDisabled
-                  : theme.colors.onPrimary
-              }
+              className={!newTaskText.trim() ? "text-gray-400" : "text-white"}
             />
           )}
         >
           <Text
-            style={{
-              color: !newTaskText.trim()
-                ? theme.colors.onSurfaceDisabled
-                : theme.colors.onPrimary,
-            }}
+            className={!newTaskText.trim() ? "text-gray-400" : "text-white"}
           >
             Task
           </Text>
         </Button>
       </View>
 
-      <View style={styles.listContainer}>{renderContent()}</View>
+      <View className="flex-1 overflow-hidden">{renderContent()}</View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    height: 320,
-    borderRadius: 8,
-    padding: 24,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sortButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-    backgroundColor: "rgba(128, 128, 128, 0.2)",
-  },
-  sortButtonText: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginRight: 8,
-  },
-  formContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    gap: 8,
-  },
-  textInput: {
-    flex: 1,
-    height: 40,
-  },
-  priorityButton: {
-    justifyContent: "center",
-    height: 40,
-  },
-  addButton: {
-    justifyContent: "center",
-    height: 40,
-  },
-  listContainer: {
-    flex: 1,
-    overflow: "hidden",
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyText: {
-    marginTop: 12,
-  },
-  emptySubText: {
-    marginTop: 4,
-    fontSize: 12,
-  },
-  taskList: {
-    flex: 1,
-  },
-  taskItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  taskText: {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 8,
-    fontSize: 14,
-  },
-  taskButton: {
-    marginLeft: 8,
-    minWidth: 70,
-    height: 24,
-    justifyContent: "center",
-  },
-  taskButtonLabel: {
-    fontSize: 12,
-    marginVertical: 0,
-    marginHorizontal: 8,
-  },
-  editingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  cancelButton: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(128, 128, 128, 0.3)",
-    marginLeft: 4,
-  },
-});
 
 export default TaskManager;

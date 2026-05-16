@@ -24,7 +24,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 // Using axiosInstance for all API calls
@@ -72,7 +71,6 @@ const ContactDetails = () => {
     user_id: string;
     data: string;
   }>();
-  const theme = useTheme();
   const [contact, setContact] = useState<Contact | null>(null);
   const [formData, setFormData] = useState<Form>(initialFormState);
   const [initialFormData, setInitialFormData] =
@@ -207,20 +205,20 @@ Email: ${formData.email || "N/A"}
   if (!contact)
     return (
       <PlatformLayout>
-        <Appbar.Header>
+        <Appbar.Header className="bg-gray-900">
           <Appbar.Action
             icon={() => (
               <Icon
                 type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-light"
               />
             )}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Contact Details" />
+          <Appbar.Content title="Contact Details" titleStyle={{ color: "white" }} />
         </Appbar.Header>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -228,18 +226,18 @@ Email: ${formData.email || "N/A"}
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-gray-900">
         <Appbar.Action
           icon={() => (
             <Icon
               type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-light"
             />
           )}
           onPress={() => router.back()}
         />
-        <Appbar.Content title="Contact Details" />
+        <Appbar.Content title="Contact Details" titleStyle={{ color: "white" }} />
         <Menu
           visible={isMoreMenuVisible}
           onDismiss={() => setMoreMenuVisible(false)}
@@ -249,7 +247,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"dots-vertical" as any}
                   size={22}
-                  color={theme.colors.onSurface}
+                  className="text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -266,10 +264,10 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"delete" as any}
                 size={20}
-                color={theme.colors.error}
+                className="text-red-600"
               />
             )}
-            titleStyle={{ color: theme.colors.error }}
+            titleStyle={{ color: "#e53e3e" }}
           />
           <Menu.Item
             onPress={() => {
@@ -281,7 +279,7 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"share" as any}
                 size={20}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400"
               />
             )}
           />
@@ -289,28 +287,24 @@ Email: ${formData.email || "N/A"}
       </Appbar.Header>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 100 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.nameHeader}>
+          <View className="items-center pt-4 pb-2">
             <Text variant="headlineMedium">
               {`${formData.firstName} ${formData.lastName}`.trim()}
             </Text>
           </View>
-          <View style={styles.actionsRow}>
+          <View className="flex-row justify-around py-2">
             <Button
               icon={() => (
                 <Icon
                   type={"phone" as any}
                   size={18}
-                  color={
-                    formData.phoneNumber
-                      ? theme.colors.primary
-                      : theme.colors.onSurfaceDisabled
-                  }
+                  className={formData.phoneNumber ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={handleCall}
@@ -323,11 +317,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"email" as any}
                   size={18}
-                  color={
-                    formData.email
-                      ? theme.colors.primary
-                      : theme.colors.onSurfaceDisabled
-                  }
+                  className={formData.email ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={handleEmail}
@@ -336,9 +326,9 @@ Email: ${formData.email || "N/A"}
               Email
             </Button>
           </View>
-          <Card style={styles.card}>
+          <Card className="bg-light dark:bg-gray-800 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2">
             <Card.Title title="Personal Information" />
-            <Card.Content style={styles.cardContent}>
+            <Card.Content className="gap-4">
               <TextInput
                 mode="outlined"
                 label="First Name"
@@ -382,7 +372,7 @@ Email: ${formData.email || "N/A"}
                               <Icon
                                 type={"chevron-down" as any}
                                 size={16}
-                                color={theme.colors.onSurfaceVariant}
+                                className="text-gray-500"
                               />
                             )}
                           />
@@ -405,9 +395,9 @@ Email: ${formData.email || "N/A"}
               </Menu>
             </Card.Content>
           </Card>
-          <Card style={styles.card}>
+          <Card className="bg-light dark:bg-gray-800 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2">
             <Card.Title title="Address" />
-            <Card.Content style={styles.cardContent}>
+            <Card.Content className="gap-4">
               <TextInput
                 mode="outlined"
                 label="Address Line 1"
@@ -442,23 +432,23 @@ Email: ${formData.email || "N/A"}
             </Card.Content>
           </Card>
         </ScrollView>
-        <Appbar style={styles.footer}>
+        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="outlined"
             onPress={() => router.back()}
             icon={() => (
               <Icon
                 type={"close" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-green-200"
               />
             )}
           >
             Cancel
           </Button>
           <Button
-            style={styles.footerButton}
+            className="flex-1 mx-2"
             mode="contained"
             onPress={handleSave}
             disabled={!hasChanges || saving}
@@ -467,15 +457,11 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"content-save" as any}
                 size={18}
-                color={
-                  !hasChanges || saving
-                    ? theme.colors.onSurfaceDisabled
-                    : theme.colors.onPrimary
-                }
+                className={!hasChanges || saving ? "text-gray-300" : "text-white"}
               />
             )}
           >
-            Save Changes
+            Save
           </Button>
         </Appbar>
       </KeyboardAvoidingView>
@@ -483,41 +469,5 @@ Email: ${formData.email || "N/A"}
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 12, paddingBottom: 80 },
-  nameHeader: { alignItems: "center", paddingTop: 16, paddingBottom: 0 },
-  actionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 8,
-  },
-  card: {},
-  cardContent: { gap: 16 },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
-  },
-  footerButton: { flex: 1, marginHorizontal: 8 },
-  modalContainer: {
-    justifyContent: "flex-end",
-    margin: 0,
-  },
-  modalContent: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    paddingBottom: 16,
-  },
-  listIcon: { marginLeft: 16, alignSelf: "center" },
-});
 
 export default ContactDetails;

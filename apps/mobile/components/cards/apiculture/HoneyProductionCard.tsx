@@ -27,7 +27,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 const TIME_RANGE_OPTIONS = ["Weekly", "Bi-Weekly", "1 Month"] as const;
@@ -78,7 +77,7 @@ const PaperFormDropdown = ({
 }: any) => {
   const [visible, setVisible] = useState(false);
   return (
-    <View style={styles.inputContainer}>
+    <View className="flex-1">
       <Menu
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -116,7 +115,6 @@ const PaperFormDropdown = ({
 };
 
 const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
-  const theme = useTheme();
   const [activeView, setActiveView] = useState<"chart" | "form" | "table">(
     "chart"
   );
@@ -338,15 +336,12 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   }, [allHoneyRecords, currentIntervalDates, selectedTimeRange]);
 
   const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
+    backgroundColor: "transparent",
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
     decimalPlaces: 1,
-    color: (opacity = 1) =>
-      theme.dark
-        ? `rgba(251, 191, 36, ${opacity})`
-        : `rgba(234, 179, 8, ${opacity})`,
-    labelColor: (opacity = 1) => theme.colors.onSurface,
+    color: (opacity = 1) => `rgba(251, 191, 36, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
   };
 
   const handleRowClick = (recordToEdit: ProcessedHoneyRecord) => {
@@ -377,7 +372,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
     switch (activeView) {
       case "form":
         return (
-          <View style={styles.formContainer}>
+          <View className="gap-4 pt-4">
             <TouchableRipple onPress={() => openDatePicker("form")}>
               <TextInput
                 mode="outlined"
@@ -387,22 +382,22 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
                 right={<TextInput.Icon icon="calendar" />}
               />
             </TouchableRipple>
-            <View style={styles.row}>
+            <View className="flex-row gap-4">
               <TextInput
-                style={styles.halfWidth}
+                className="flex-1"
                 mode="outlined"
                 label="Honey Weight (kg)"
                 value={formData.honey_weight}
-                onChangeText={(val) => handleFormChange("honey_weight", val)}
+                onChangeText={(val: string) => handleFormChange("honey_weight", val)}
                 placeholder="e.g., 15.5"
                 keyboardType="numeric"
               />
               <TextInput
-                style={styles.halfWidth}
+                className="flex-1"
                 mode="outlined"
                 label="Frames Harvested"
                 value={formData.frames_harvested}
-                onChangeText={(val) =>
+                onChangeText={(val: string) =>
                   handleFormChange("frames_harvested", val)
                 }
                 placeholder="e.g., 8"
@@ -413,14 +408,14 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               mode="outlined"
               label="Honey Type"
               value={formData.honey_type}
-              onChangeText={(val) => handleFormChange("honey_type", val)}
+              onChangeText={(val: string) => handleFormChange("honey_type", val)}
               placeholder="e.g., Wildflower"
             />
             <TextInput
               mode="outlined"
               label="Notes (Optional)"
               value={formData.harvest_notes}
-              onChangeText={(val) => handleFormChange("harvest_notes", val)}
+              onChangeText={(val: string) => handleFormChange("harvest_notes", val)}
               placeholder="Add any relevant notes..."
               multiline
               numberOfLines={3}
@@ -434,7 +429,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               placeholder="Search harvests..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              style={styles.searchbar}
+              className="my-4"
             />
             <DataTable>
               <DataTable.Header>
@@ -459,7 +454,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               <DataTable.Pagination
                 page={currentPage}
                 numberOfPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
+                onPageChange={(page: React.SetStateAction<number>) => setCurrentPage(page)}
                 label={`${currentPage + 1} of ${totalPages}`}
               />
             </DataTable>
@@ -468,10 +463,10 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
       default:
         return (
           <View>
-            <View style={styles.row}>
+            <View className="flex-row gap-4">
               <TouchableRipple
                 onPress={() => openDatePicker("start")}
-                style={styles.halfWidth}
+                className="flex-1"
               >
                 <TextInput
                   mode="outlined"
@@ -483,7 +478,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               </TouchableRipple>
               <TouchableRipple
                 onPress={() => openDatePicker("end")}
-                style={styles.halfWidth}
+                className="flex-1"
               >
                 <TextInput
                   mode="outlined"
@@ -504,7 +499,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
                 }
               />
             )}
-            <View style={styles.chartWrapper}>
+            <View className="h-70 justify-center items-center mt-4">
               {isLoading ? (
                 <ActivityIndicator size="large" />
               ) : chartData ? (
@@ -533,13 +528,13 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
       <Card.Content>
         <SegmentedButtons
           value={activeView}
-          onValueChange={(value) => setActiveView(value as any)}
+          onValueChange={(value: any) => setActiveView(value as any)}
           buttons={[
             { value: "chart", label: "Chart" },
             { value: "table", label: "Logs" },
             { value: "form", label: editingRecord ? "Edit" : "Log" },
           ]}
-          style={styles.segmentedButtons}
+          className="mb-4"
         />
         {renderContent()}
       </Card.Content>
@@ -564,26 +559,21 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
         >
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.colors.surface },
-            ]}
-          >
+          <View className="m-5 rounded-2xl bg-white dark:bg-gray-800">
             <Calendar
               onDayPress={handleDayPress}
               markedDates={markedDates}
               theme={{
-                backgroundColor: theme.colors.surface,
-                calendarBackground: theme.colors.surface,
-                textSectionTitleColor: theme.colors.onSurfaceVariant,
-                selectedDayBackgroundColor: theme.colors.primary,
-                selectedDayTextColor: theme.colors.onPrimary,
-                todayTextColor: theme.colors.primary,
-                dayTextColor: theme.colors.onSurface,
-                textDisabledColor: theme.colors.onSurfaceDisabled,
-                arrowColor: theme.colors.primary,
-                monthTextColor: theme.colors.onSurface,
+                backgroundColor: "transparent",
+                calendarBackground: "transparent",
+                textSectionTitleColor: "#9ca3af",
+                selectedDayBackgroundColor: "#2b7860",
+                selectedDayTextColor: "#ffffff",
+                todayTextColor: "#2b7860",
+                dayTextColor: "#374151",
+                textDisabledColor: "#d1d5db",
+                arrowColor: "#2b7860",
+                monthTextColor: "#111827",
               }}
             />
           </View>
@@ -592,21 +582,5 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  formContainer: { gap: 16, paddingTop: 16 },
-  row: { flexDirection: "row", gap: 16 },
-  halfWidth: { flex: 1 },
-  searchbar: { marginVertical: 16 },
-  chartWrapper: {
-    height: 280,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 16,
-  },
-  segmentedButtons: { marginBottom: 16 },
-  modalContent: { margin: 20, borderRadius: 16 },
-  inputContainer: { flex: 1 },
-});
 
 export default HoneyProductionCard;

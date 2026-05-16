@@ -1,4 +1,3 @@
-export { useTheme } from '@/constants/theme';
 export * from './Text';
 export * from './Button';
 export * from './FAB';
@@ -19,3 +18,4 @@ export * from './ProgressBar';
 export * from './DataTable';
 export * from './Icon';
 export * from './TouchableRipple';
+export * from './Calendar';

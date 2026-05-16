@@ -10,7 +10,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, ScrollView, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import {
   ActivityIndicator,
@@ -18,7 +18,6 @@ import {
   Button,
   Card,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type ItemRecord = {
@@ -76,7 +75,6 @@ const WarehouseDetailScreen = () => {
     id: string;
     warehouseName?: string;
   }>();
-  const theme = useTheme();
 
   const [inventory, setInventory] = useState<ItemRecord[]>([]);
   const [warehouseDetails, setWarehouseDetails] =
@@ -214,12 +212,11 @@ const WarehouseDetailScreen = () => {
   );
 
   const chartConfig = {
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
-    color: (opacity = 1) =>
-      `rgba(${theme.dark ? "255, 255, 255" : "0, 0, 0"}, ${opacity})`,
-    labelColor: (opacity = 1) =>
-      `rgba(${theme.dark ? "255, 255, 255" : "0, 0, 0"}, ${opacity})`,
+    backgroundColor: "transparent",
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
+    color: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
+    labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
     barPercentage: 0.8,
   };
 
@@ -247,20 +244,20 @@ const WarehouseDetailScreen = () => {
   if (loading) {
     return (
       <PlatformLayout>
-        <Appbar.Header style={{ backgroundColor: theme.colors.surface }}>
+        <Appbar.Header className="bg-white dark:bg-gray-800">
           <Appbar.Action
             icon={() => (
               <Icon
                 type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-black dark:text-white"
               />
             )}
             onPress={() => router.back()}
           />
           <Appbar.Content title="Loading..." />
         </Appbar.Header>
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -269,41 +266,41 @@ const WarehouseDetailScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header style={{ backgroundColor: theme.colors.surface }}>
+      <Appbar.Header className="bg-white dark:bg-gray-800">
         <Appbar.Action
           icon={() => (
             <Icon
               type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-black dark:text-white"
             />
           )}
           onPress={() => router.back()}
         />
         <Appbar.Content
           title={warehouseName}
-          titleStyle={[styles.appbarTitle, { fontWeight: "bold" }]}
+          titleStyle={{ fontWeight: "bold" }}
           subtitle={`${inventory.length} Item(s)`}
         />
       </Appbar.Header>
 
       <ScrollView
-        style={{ backgroundColor: theme.colors.background }}
+        className="bg-white dark:bg-gray-900"
         contentContainerStyle={{ paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
       >
         {/* Header Actions */}
-        <View style={styles.headerActions}>
+        <View className="flex-row gap-3 p-4">
           <Button
             mode="outlined"
             onPress={() => setIsWarehouseFormOpen(true)}
-            style={styles.actionButton}
+            className="flex-1 rounded-xl"
             contentStyle={{ height: 44 }}
             icon={() => (
               <Icon
                 type={"pencil" as any}
                 size={18}
-                color={theme.colors.primary}
+                className="text-emerald-600"
               />
             )}
           >
@@ -315,11 +312,11 @@ const WarehouseDetailScreen = () => {
               <Icon
                 type={"plus" as any}
                 size={18}
-                color={theme.colors.onPrimary}
+                className="text-white"
               />
             )}
             onPress={() => setIsInventoryFormOpen(true)}
-            style={styles.actionButton}
+            className="flex-1 rounded-xl"
             contentStyle={{ height: 44 }}
           >
             Add Item
@@ -330,70 +327,70 @@ const WarehouseDetailScreen = () => {
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false} 
-          style={styles.statsScroll}
-          contentContainerStyle={styles.statsGrid}
+          className="mb-4"
+          contentContainerClassName="flex-row gap-3 px-4"
         >
-          <View style={styles.statBox}>
-            <Text variant="labelSmall" style={styles.statLabel}>TOTAL ITEMS</Text>
-            <Text variant="titleLarge" style={styles.statValue}>{inventory.length}</Text>
-            <Text variant="bodySmall" style={styles.statSub}>In storage</Text>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">TOTAL ITEMS</Text>
+            <Text variant="titleLarge" className="font-bold mb-1">{inventory.length}</Text>
+            <Text variant="bodySmall" className="opacity-50 text-[10px]">In storage</Text>
           </View>
-          <View style={styles.statBox}>
-            <Text variant="labelSmall" style={styles.statLabel}>ASSET VALUE</Text>
-            <Text variant="titleLarge" style={styles.statValue}>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">ASSET VALUE</Text>
+            <Text variant="titleLarge" className="font-bold mb-1">
               ₹{(totalAssetValue / 1000).toFixed(1)}k
             </Text>
-            <Text variant="bodySmall" style={styles.statSub}>Estimated total</Text>
+            <Text variant="bodySmall" className="opacity-50 text-[10px]">Estimated total</Text>
           </View>
-          <View style={styles.statBox}>
-            <Text variant="labelSmall" style={styles.statLabel}>LOW STOCK</Text>
-            <Text variant="titleLarge" style={[styles.statValue, lowStockItems.length > 0 && { color: theme.colors.error }]}>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">LOW STOCK</Text>
+            <Text variant="titleLarge" className={`font-bold mb-1 ${lowStockItems.length > 0 ? "text-red-600" : ""}`}>
               {lowStockItems.length}
             </Text>
-            <Text variant="bodySmall" style={styles.statSub}>Need attention</Text>
+            <Text variant="bodySmall" className="opacity-50 text-[10px]">Need attention</Text>
           </View>
-          <View style={styles.statBox}>
-            <Text variant="labelSmall" style={styles.statLabel}>CAPACITY</Text>
-            <Text variant="titleLarge" style={styles.statValue}>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">CAPACITY</Text>
+            <Text variant="titleLarge" className="font-bold mb-1">
               {warehouseDetails?.storage_capacity || "N/A"}
             </Text>
-            <Text variant="bodySmall" style={styles.statSub}>sq. ft. area</Text>
+            <Text variant="bodySmall" className="opacity-50 text-[10px]">sq. ft. area</Text>
           </View>
         </ScrollView>
 
         {/* Facility Info Card */}
         {warehouseDetails && (
-          <Card style={styles.infoCard} elevation={1}>
+          <Card className="mx-4 mb-6 rounded-2xl bg-white dark:bg-gray-800" elevation={1}>
             <Card.Content>
-              <View style={styles.infoRow}>
-                <View style={styles.infoIconBox}>
-                  <Icon type="warehouse" size={20} color={theme.colors.primary} />
+              <View className="flex-row items-center mb-4 gap-3">
+                <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                  <Icon type="warehouse" size={20} className="text-emerald-600" />
                 </View>
-                <View style={styles.infoTextContainer}>
-                  <Text variant="labelSmall" style={styles.infoLabel}>TYPE</Text>
-                  <Text variant="bodyLarge" style={styles.infoValue}>{warehouseDetails.type}</Text>
+                <View className="flex-1">
+                  <Text variant="labelSmall" className="opacity-50 tracking-wider">TYPE</Text>
+                  <Text variant="bodyLarge" className="font-semibold">{warehouseDetails.type}</Text>
                 </View>
               </View>
 
               {warehouseDetails.storage_capacity && (
-                <View style={styles.infoRow}>
-                  <View style={styles.infoIconBox}>
-                    <Icon type="package-variant-closed" size={20} color={theme.colors.primary} />
+                <View className="flex-row items-center mb-4 gap-3">
+                  <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                    <Icon type="package-variant-closed" size={20} className="text-emerald-600" />
                   </View>
-                  <View style={styles.infoTextContainer}>
-                    <Text variant="labelSmall" style={styles.infoLabel}>STORAGE AREA</Text>
-                    <Text variant="bodyLarge" style={styles.infoValue}>{warehouseDetails.storage_capacity} sq. ft.</Text>
+                  <View className="flex-1">
+                    <Text variant="labelSmall" className="opacity-50 tracking-wider">STORAGE AREA</Text>
+                    <Text variant="bodyLarge" className="font-semibold">{warehouseDetails.storage_capacity} sq. ft.</Text>
                   </View>
                 </View>
               )}
 
-              <View style={styles.infoRow}>
-                <View style={styles.infoIconBox}>
-                  <Icon type="map-marker" size={20} color={theme.colors.primary} />
+              <View className="flex-row items-center mb-4 gap-3">
+                <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                  <Icon type="map-marker" size={20} className="text-emerald-600" />
                 </View>
-                <View style={styles.infoTextContainer}>
-                  <Text variant="labelSmall" style={styles.infoLabel}>ADDRESS</Text>
-                  <Text variant="bodyMedium" style={styles.infoValue}>
+                <View className="flex-1">
+                  <Text variant="labelSmall" className="opacity-50 tracking-wider">ADDRESS</Text>
+                  <Text variant="bodyMedium" className="font-semibold">
                     {[warehouseDetails.address_line_1, warehouseDetails.city, warehouseDetails.state]
                       .filter(Boolean)
                       .join(", ")}
@@ -402,17 +399,17 @@ const WarehouseDetailScreen = () => {
               </View>
 
               {(warehouseDetails.contact_person || warehouseDetails.phone) && (
-                <View style={styles.contactSection}>
-                  <View style={styles.infoRow}>
-                    <Icon type="account" size={16} color={theme.colors.outline} />
-                    <Text variant="bodySmall" style={styles.contactText}>
+                <View className="mt-2 pt-4 border-t border-gray-50 dark:border-gray-800">
+                  <View className="flex-row items-center mb-4 gap-3">
+                    <Icon type="account" size={16} className="text-gray-400" />
+                    <Text variant="bodySmall" className="opacity-70">
                       {warehouseDetails.contact_person || "No manager assigned"}
                     </Text>
                   </View>
                   {warehouseDetails.phone && (
-                    <View style={styles.infoRow}>
-                      <Icon type="phone" size={16} color={theme.colors.outline} />
-                      <Text variant="bodySmall" style={styles.contactText}>{warehouseDetails.phone}</Text>
+                    <View className="flex-row items-center mb-4 gap-3">
+                      <Icon type="phone" size={16} className="text-gray-400" />
+                      <Text variant="bodySmall" className="opacity-70">{warehouseDetails.phone}</Text>
                     </View>
                   )}
                 </View>
@@ -423,8 +420,8 @@ const WarehouseDetailScreen = () => {
 
         {/* Analytics Section */}
         {inventory.length > 0 && (
-          <View style={styles.chartSection}>
-            <Text variant="titleMedium" style={styles.sectionTitle}>Stock Distribution</Text>
+          <View className="px-4 mb-6">
+            <Text variant="titleMedium" className="font-bold mb-4">Stock Distribution</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <BarChart
                 data={barChartData}
@@ -437,7 +434,9 @@ const WarehouseDetailScreen = () => {
                 withCustomBarColorFromData
                 flatColor
                 showBarTops={false}
-                style={styles.chart}
+                style={{
+                  borderRadius: 16,
+                }}
               />
             </ScrollView>
           </View>
@@ -445,56 +444,54 @@ const WarehouseDetailScreen = () => {
 
         {/* Low Stock Alerts */}
         {lowStockItems.length > 0 && (
-          <View style={styles.alertSection}>
-            <View style={styles.alertHeader}>
-              <Icon type="alert" size={18} color={theme.colors.error} />
-              <Text variant="titleSmall" style={[styles.alertTitle, { color: theme.colors.error }]}>
+          <View className="mx-4 mb-6 p-4 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
+            <View className="flex-row items-center gap-2 mb-3">
+              <Icon type="alert" size={18} className="text-red-600" />
+              <Text variant="titleSmall" className="font-bold uppercase tracking-wider text-red-600">
                 Critical Stock Alerts
               </Text>
             </View>
             {lowStockItems.map((item) => (
-              <View key={item.inventory_id} style={styles.alertItem}>
-                <Text style={styles.alertItemText}>{item.item_name}</Text>
-                <Text style={[styles.alertQty, { color: theme.colors.error }]}>
+              <View key={item.inventory_id} className="flex-row justify-between items-center py-2 border-t border-gray-100 dark:border-gray-800">
+                <Text className="text-sm font-medium text-black dark:text-white">{item.item_name}</Text>
+                <Text className="text-xs font-bold text-red-600">
                   {item.quantity} / {item.minimum_limit}
                 </Text>
               </View>
             ))}
           </View>
-        )}
-
-        {/* Inventory List */}
-        <View style={styles.inventoryContainer}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>Detailed Inventory</Text>
+        )}        {/* Inventory List */}
+        <View className="px-4">
+          <Text variant="titleMedium" className="font-bold mb-4">Detailed Inventory</Text>
           {inventory.length > 0 ? (
             inventory.map((item) => {
               const isLowStock =
                 item.minimum_limit != null &&
                 item.quantity < item.minimum_limit;
               return (
-                <Card key={item.inventory_id} style={styles.inventoryCard} mode="contained">
+                <Card key={item.inventory_id} className="mb-3 rounded-2xl bg-white dark:bg-gray-800" mode="contained">
                   <Card.Content>
-                    <View style={styles.itemHeader}>
+                    <View className="flex-row justify-between items-start mb-4">
                       <View>
-                        <Text variant="titleMedium" style={styles.itemName}>{item.item_name}</Text>
-                        <Text variant="bodySmall" style={styles.itemGroup}>{item.item_group}</Text>
+                        <Text variant="titleMedium" className="font-bold">{item.item_name}</Text>
+                        <Text variant="bodySmall" className="opacity-50">{item.item_group}</Text>
                       </View>
-                      <View style={styles.priceBadge}>
-                        <Text style={styles.priceLabel}>₹</Text>
-                        <Text style={styles.priceValue}>{(Number(item.price_per_unit) || 0).toFixed(0)}</Text>
+                      <View className="flex-row items-baseline bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-lg">
+                        <Text className="text-[10px] opacity-60 mr-0.5">₹</Text>
+                        <Text className="text-sm font-bold text-black dark:text-white">{(Number(item.price_per_unit) || 0).toFixed(0)}</Text>
                       </View>
                     </View>
-
-                    <View style={styles.itemFooter}>
-                      <View style={styles.qtyContainer}>
-                        <Icon type="package-variant" size={14} color={theme.colors.outline} />
-                        <Text variant="bodyMedium" style={styles.qtyText}>
+ 
+                    <View className="flex-row justify-between items-center">
+                      <View className="flex-row items-center gap-1.5">
+                        <Icon type="package-variant" size={14} className="text-gray-400" />
+                        <Text variant="bodyMedium" className="font-medium text-black dark:text-white">
                           {item.quantity} {item.units}
                         </Text>
                       </View>
                       {isLowStock && (
-                        <View style={[styles.lowStockBadge, { backgroundColor: theme.colors.errorContainer }]}>
-                          <Text style={[styles.lowStockText, { color: theme.colors.error }]}>LOW</Text>
+                        <View className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30">
+                          <Text className="text-[10px] font-bold text-red-600">LOW</Text>
                         </View>
                       )}
                     </View>
@@ -503,9 +500,9 @@ const WarehouseDetailScreen = () => {
               );
             })
           ) : (
-            <View style={styles.emptyContainer}>
-              <Icon type="package-variant-closed" size={48} color={theme.colors.outlineVariant} />
-              <Text variant="bodyMedium" style={styles.emptyText}>No items found in this facility.</Text>
+            <View className="items-center py-10 gap-3">
+              <Icon type="package-variant-closed" size={48} className="text-gray-200" />
+              <Text variant="bodyMedium" className="opacity-40">No items found in this facility.</Text>
             </View>
           )}
         </View>
@@ -529,205 +526,5 @@ const WarehouseDetailScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  appbarTitle: { fontSize: 18 },
-  headerActions: {
-    flexDirection: "row",
-    gap: 12,
-    padding: 16,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 12,
-  },
-  statsScroll: {
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: "row",
-    gap: 12,
-    paddingHorizontal: 16,
-  },
-  statBox: {
-    width: statBoxWidth,
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-  },
-  statLabel: {
-    opacity: 0.6,
-    marginBottom: 8,
-    fontWeight: "600",
-    letterSpacing: 0.5,
-  },
-  statValue: {
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  statSub: {
-    opacity: 0.5,
-    fontSize: 10,
-  },
-  infoCard: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-    borderRadius: 16,
-    backgroundColor: "white",
-  },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    gap: 12,
-  },
-  infoIconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "rgba(0,0,0,0.04)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  infoTextContainer: {
-    flex: 1,
-  },
-  infoLabel: {
-    opacity: 0.5,
-    letterSpacing: 1,
-  },
-  infoValue: {
-    fontWeight: "600",
-  },
-  contactSection: {
-    marginTop: 8,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.05)",
-  },
-  contactText: {
-    opacity: 0.7,
-  },
-  chartSection: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  chart: {
-    borderRadius: 16,
-  },
-  alertSection: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: "rgba(239, 68, 68, 0.05)",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.1)",
-  },
-  alertHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 12,
-  },
-  alertTitle: {
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  alertItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderColor: "rgba(0,0,0,0.05)",
-  },
-  alertItemText: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  alertQty: {
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  inventoryContainer: {
-    paddingHorizontal: 16,
-  },
-  inventoryCard: {
-    marginBottom: 12,
-    borderRadius: 16,
-  },
-  itemHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  itemName: {
-    fontWeight: "bold",
-  },
-  itemGroup: {
-    opacity: 0.5,
-  },
-  priceBadge: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    backgroundColor: "rgba(0,0,0,0.05)",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  priceLabel: {
-    fontSize: 10,
-    opacity: 0.6,
-    marginRight: 2,
-  },
-  priceValue: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  itemFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  qtyContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  qtyText: {
-    fontWeight: "500",
-  },
-  lowStockBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  lowStockText: {
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  emptyContainer: {
-    alignItems: "center",
-    paddingVertical: 40,
-    gap: 12,
-  },
-  emptyText: {
-    opacity: 0.4,
-  },
-});
 
 export default WarehouseDetailScreen;

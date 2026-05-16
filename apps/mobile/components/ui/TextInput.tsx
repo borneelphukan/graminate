@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text as RNText, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '@/constants/theme';
 
 export const TextInput = ({ 
   label, 
@@ -22,7 +21,6 @@ export const TextInput = ({
   onBlur,
   ...rest 
 }: any) => {
-  const { colors } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -39,23 +37,23 @@ export const TextInput = ({
   const isPasswordField = secureTextEntry;
   const actualSecureTextEntry = isPasswordField && !isPasswordVisible;
 
-  const labelColor = error ? colors.error : colors.onSurfaceVariant;
-  const borderColor = error 
-    ? colors.error 
+  // Determine colors based on state
+  const labelClass = error ? "text-red-500" : "text-dark dark:text-light";
+  const borderClass = error 
+    ? "border-red-500" 
     : isFocused 
-      ? colors.primary 
-      : colors.outline;
-  const bgColor = editable ? colors.background : colors.surfaceDisabled;
-  const textColor = colors.onSurface;
-  const placeholderColor = colors.onSurfaceVariant;
+      ? "border-emerald-600" 
+      : "border-gray-300 dark:border-gray-700";
+  const bgClass = editable ? "bg-white dark:bg-gray-800" : "bg-gray-100 dark:bg-gray-900";
+  const textClass = "text-black dark:text-white";
+  const placeholderColor = "#9ca3af"; // gray-400
 
   return (
     <View className={`my-1 w-full ${className}`} style={style}>
       {label && (
         <View className="flex-row items-center mb-1.5">
           <RNText 
-            className="font-medium text-sm" 
-            style={{ color: labelColor }}
+            className={`font-medium text-sm ${labelClass}`}
           >
             {label}
           </RNText>
@@ -65,10 +63,8 @@ export const TextInput = ({
         </View>
       )}
       <View 
-        className="flex-row items-center w-full px-3 py-2 rounded-lg border"
+        className={`flex-row items-center w-full px-3 py-2 rounded-lg border ${bgClass} ${borderClass}`}
         style={{ 
-          backgroundColor: bgColor, 
-          borderColor: borderColor,
           borderWidth: isFocused || error ? 1.5 : 1,
           opacity: editable ? 1 : 0.7
         }}
@@ -82,8 +78,8 @@ export const TextInput = ({
           editable={editable}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className="flex-1 text-sm"
-          style={{ color: textColor, paddingVertical: 0 }}
+          className={`flex-1 text-sm ${textClass}`}
+          style={{ paddingVertical: 0 }}
           placeholderTextColor={placeholderColor}
           {...rest}
         />
@@ -96,7 +92,7 @@ export const TextInput = ({
             <MaterialCommunityIcons 
               name={isPasswordVisible ? "eye-off" : "eye"} 
               size={20} 
-              color={colors.onSurfaceVariant} 
+              color="#9ca3af" 
             />
           </TouchableOpacity>
         )}
@@ -105,12 +101,12 @@ export const TextInput = ({
       {(hint || (typeof error === 'string' && error)) && (
         <View className="flex-col gap-1 pt-1 px-1">
           {hint && (
-            <RNText className="text-xs font-normal" style={{ color: colors.secondary }}>
+            <RNText className="text-xs font-normal text-green-200">
               {hint}
             </RNText>
           )}
           {typeof error === 'string' && error && (
-            <RNText className="text-xs text-red-500">
+            <RNText className="text-xs text-red-200">
               {error}
             </RNText>
           )}
@@ -121,10 +117,9 @@ export const TextInput = ({
 };
 
 TextInput.Icon = ({ icon, onPress, color }: any) => {
-  const { colors } = useTheme();
   const renderIcon = () => {
     if (!icon) return null;
-    const iconColor = color || colors.onSurfaceVariant;
+    const iconColor = color || "#9ca3af";
     if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={20} color={iconColor} />;
     if (typeof icon === 'function') return icon({ color: iconColor, size: 20 });
     return icon;
@@ -137,28 +132,24 @@ TextInput.Icon = ({ icon, onPress, color }: any) => {
 };
 
 export const Searchbar = ({ value, onChangeText, placeholder, style, className = '', ...rest }: any) => {
-  const { colors } = useTheme();
   return (
     <View 
-      className={`flex-row items-center border rounded-full px-4 py-2 my-2 ${className}`} 
-      style={[{ 
-        backgroundColor: colors.surface, 
-        borderColor: colors.outlineVariant 
-      }, style]}
+      className={`flex-row items-center border rounded-full px-4 py-2 my-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${className}`} 
+      style={style}
     >
       <MaterialCommunityIcons 
         name="magnify" 
         size={20} 
-        color={colors.onSurfaceVariant} 
+        color="#9ca3af" 
         style={{ marginRight: 8 }} 
       />
       <RNTextInput
         value={value}
         placeholder={placeholder}
         onChangeText={onChangeText}
-        className="flex-1 text-sm"
-        style={{ color: colors.onSurface }}
-        placeholderTextColor={colors.onSurfaceVariant}
+        className="flex-1 text-sm text-black dark:text-white"
+        style={{ color: undefined }}
+        placeholderTextColor="#9ca3af"
         {...rest}
       />
     </View>

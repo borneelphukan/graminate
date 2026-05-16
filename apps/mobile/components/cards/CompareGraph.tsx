@@ -19,7 +19,6 @@ import {
   Menu,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 
 export type DailyFinancialEntry = {
@@ -83,7 +82,7 @@ const PaperMenuDropdown = ({ label, items, selectedValue, onSelect }: any) => {
           mode="outlined"
           onPress={() => setVisible(true)}
           icon="chevron-down"
-          contentStyle={styles.dropdownButton}
+          className="flex-row-reverse justify-between"
         >
           {`${label}: ${selectedValue}`}
         </Button>
@@ -107,7 +106,6 @@ const CompareGraph = ({
   initialFullHistoricalData,
   isLoadingData,
 }: CompareGraphProps) => {
-  const theme = useTheme();
   const [selectedMetric1, setSelectedMetric1] =
     useState<FinancialMetric>("Revenue");
   const [selectedMetric2, setSelectedMetric2] =
@@ -214,14 +212,12 @@ const CompareGraph = ({
   ]);
 
   const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
+    backgroundColor: "transparent",
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
     decimalPlaces: 0,
-    color: (opacity = 1) =>
-      `rgba(${theme.dark ? "255, 255, 255" : "0, 0, 0"}, ${opacity})`,
-    labelColor: (opacity = 1) =>
-      `rgba(${theme.dark ? "255, 255, 255" : "0, 0, 0"}, ${opacity})`,
+    color: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
+    labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
     formatYLabel: (y: string) =>
       new Intl.NumberFormat("en-IN", {
         notation: "compact",
@@ -231,7 +227,7 @@ const CompareGraph = ({
 
   if (isLoadingData) {
     return (
-      <Card style={styles.loadingContainer}>
+      <Card className="h-96 items-center justify-center p-4">
         <ActivityIndicator size="large" />
       </Card>
     );
@@ -251,18 +247,18 @@ const CompareGraph = ({
 
   return (
     <Card>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text variant="titleLarge" style={styles.centeredText}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <Text variant="titleLarge" className="text-center">
           {selectedMetric1} vs {selectedMetric2}
         </Text>
         <Text
           variant="bodyMedium"
-          style={[styles.centeredText, styles.subtitle]}
+          className="text-center mb-4"
         >
           Compare two financial metrics over time.
         </Text>
 
-        <View style={styles.controlsContainer}>
+        <View className="gap-3 mb-6">
           <PaperMenuDropdown
             label="Metric 1"
             items={FINANCIAL_METRICS.filter((m) => m !== selectedMetric2)}
@@ -282,7 +278,7 @@ const CompareGraph = ({
             value={startDate ? format(startDate, "YYYY-MM-DD") : ""}
             onChangeText={handleDateChange(setStartDate)}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           <TextInput
             mode="outlined"
@@ -292,7 +288,7 @@ const CompareGraph = ({
             onChangeText={handleDateChange(setEndDate)}
             disabled={!startDate}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           {!isCustomDateRangeActive && (
             <PaperMenuDropdown
@@ -304,7 +300,7 @@ const CompareGraph = ({
           )}
         </View>
 
-        <View style={styles.chartSection}>
+        <View className="items-center gap-2">
           {chartData.labels.length > 0 ? (
             <>
               <BarChart
@@ -315,19 +311,19 @@ const CompareGraph = ({
                 yAxisSuffix=""
                 fromZero
                 chartConfig={chartConfig}
-                style={styles.chart}
+                style={{
+                  marginVertical: 16,
+                  borderRadius: 16,
+                }}
               />
               <Text
                 variant="labelMedium"
-                style={[
-                  styles.centeredText,
-                  { color: theme.colors.onSurfaceVariant },
-                ]}
+                className="text-center text-gray-500"
               >
                 Timeline
               </Text>
               {totalPages > 1 && (
-                <View style={styles.paginationContainer}>
+                <View className="flex-row justify-center items-center gap-2 mt-2">
                   <Button
                     icon="chevron-left"
                     mode="text"
@@ -343,7 +339,7 @@ const CompareGraph = ({
                       setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
                     }
                     disabled={currentPage >= totalPages - 1}
-                    contentStyle={styles.nextButton}
+                    className="flex-row-reverse"
                   >
                     Next
                   </Button>
@@ -351,16 +347,8 @@ const CompareGraph = ({
               )}
             </>
           ) : (
-            <View
-              style={[
-                styles.noDataContainer,
-                {
-                  borderColor: theme.colors.outline,
-                  backgroundColor: theme.colors.surfaceVariant,
-                },
-              ]}
-            >
-              <Text style={{ color: theme.colors.onSurfaceVariant }}>
+            <View className="h-64 w-full items-center justify-center p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg mt-4 bg-gray-50 dark:bg-gray-900">
+              <Text className="text-gray-500">
                 No data available for this period.
               </Text>
             </View>
@@ -370,44 +358,5 @@ const CompareGraph = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    height: 384,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-  },
-  container: { padding: 16 },
-  centeredText: { textAlign: "center" },
-  subtitle: { marginBottom: 16 },
-  controlsContainer: { gap: 12, marginBottom: 24 },
-  dropdownButton: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-  },
-  input: { backgroundColor: "transparent" },
-  chartSection: { alignItems: "center", gap: 8 },
-  chart: { marginVertical: 16, borderRadius: 16 },
-  paginationContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 8,
-  },
-  nextButton: { flexDirection: "row-reverse" },
-  noDataContainer: {
-    height: 256,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-});
 
 export default CompareGraph;

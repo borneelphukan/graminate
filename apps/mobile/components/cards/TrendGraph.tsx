@@ -20,7 +20,6 @@ import {
   Menu,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 
 export type DailyFinancialEntry = {
@@ -91,7 +90,7 @@ const PaperMenuDropdown = ({ label, items, selectedValue, onSelect }: any) => {
           mode="outlined"
           onPress={() => setVisible(true)}
           icon="chevron-down"
-          contentStyle={styles.dropdownButton}
+          className="flex-row-reverse justify-between"
         >
           {`${label}: ${selectedValue}`}
         </Button>
@@ -116,7 +115,6 @@ const TrendGraph = ({
   initialSubTypes,
   isLoadingData,
 }: TrendGraphProps) => {
-  const theme = useTheme();
   const [selectedMetric, setSelectedMetric] =
     useState<FinancialMetric>("Revenue");
   const [selectedTimeRange, setSelectedTimeRange] =
@@ -220,22 +218,18 @@ const TrendGraph = ({
   ]);
 
   const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
+    backgroundColor: "transparent",
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
     decimalPlaces: 0,
-    color: (opacity = 1) =>
-      theme.dark
-        ? `rgba(165, 243, 252, ${opacity})`
-        : `rgba(0, 128, 128, ${opacity})`,
-    labelColor: (opacity = 1) =>
-      `rgba(${theme.dark ? "243, 244, 246" : "0, 0, 0"}, ${opacity})`,
+    color: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
+    labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`, // gray-400
     propsForLabels: { fontSize: 10, fontWeight: "bold" },
   };
 
   if (isLoadingData) {
     return (
-      <Card style={styles.loadingContainer}>
+      <Card className="h-96 items-center justify-center p-4">
         <ActivityIndicator size="large" />
       </Card>
     );
@@ -253,18 +247,18 @@ const TrendGraph = ({
 
   return (
     <Card>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text variant="titleLarge" style={styles.centeredText}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <Text variant="titleLarge" className="text-center">
           Financial Trends
         </Text>
         <Text
           variant="bodyMedium"
-          style={[styles.centeredText, styles.subtitle]}
+          className="text-center mb-4"
         >
           Select a metric and time range to analyze.
         </Text>
 
-        <View style={styles.controlsContainer}>
+        <View className="gap-3 mb-6">
           <PaperMenuDropdown
             label="Metric"
             items={FINANCIAL_METRICS}
@@ -278,7 +272,7 @@ const TrendGraph = ({
             value={startDate ? format(startDate, "YYYY-MM-DD") : ""}
             onChangeText={handleDateChange(setStartDate)}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           <TextInput
             mode="outlined"
@@ -288,7 +282,7 @@ const TrendGraph = ({
             onChangeText={handleDateChange(setEndDate)}
             disabled={!startDate}
             right={<TextInput.Icon icon="calendar" />}
-            style={styles.input}
+            className="bg-transparent"
           />
           {!isCustomDateRangeActive && (
             <PaperMenuDropdown
@@ -300,8 +294,8 @@ const TrendGraph = ({
           )}
         </View>
 
-        <View style={styles.chartSection}>
-          <Text variant="titleMedium" style={styles.centeredText}>
+        <View className="items-center gap-2">
+          <Text variant="titleMedium" className="text-center">
             {selectedMetric} Trend
           </Text>
           {lineChartData.labels.length > 0 ? (
@@ -313,19 +307,19 @@ const TrendGraph = ({
                 yAxisLabel="₹"
                 chartConfig={chartConfig}
                 bezier
-                style={styles.chart}
+                style={{
+                  marginVertical: 16,
+                  borderRadius: 16,
+                }}
               />
               <Text
                 variant="labelMedium"
-                style={[
-                  styles.centeredText,
-                  { color: theme.colors.onSurfaceVariant },
-                ]}
+                className="text-center text-gray-500"
               >
                 Timeline
               </Text>
               {totalPages > 1 && (
-                <View style={styles.paginationContainer}>
+                <View className="flex-row justify-center items-center gap-2 mt-2">
                   <Button
                     icon="chevron-left"
                     mode="text"
@@ -341,7 +335,7 @@ const TrendGraph = ({
                       setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
                     }
                     disabled={currentPage >= totalPages - 1}
-                    contentStyle={styles.nextButton}
+                    className="flex-row-reverse"
                   >
                     Next
                   </Button>
@@ -349,16 +343,8 @@ const TrendGraph = ({
               )}
             </>
           ) : (
-            <View
-              style={[
-                styles.noDataContainer,
-                {
-                  borderColor: theme.colors.outline,
-                  backgroundColor: theme.colors.surfaceVariant,
-                },
-              ]}
-            >
-              <Text style={{ color: theme.colors.onSurfaceVariant }}>
+            <View className="h-64 w-full items-center justify-center p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg mt-4 bg-gray-50 dark:bg-gray-900">
+              <Text className="text-gray-500">
                 No data available for this period.
               </Text>
             </View>
@@ -368,44 +354,5 @@ const TrendGraph = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    height: 384,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-  },
-  container: { padding: 16 },
-  centeredText: { textAlign: "center" },
-  subtitle: { marginBottom: 16 },
-  controlsContainer: { gap: 12, marginBottom: 24 },
-  dropdownButton: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-  },
-  input: { backgroundColor: "transparent" },
-  chartSection: { alignItems: "center", gap: 8 },
-  chart: { marginVertical: 16, borderRadius: 16 },
-  paginationContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 8,
-  },
-  nextButton: { flexDirection: "row-reverse" },
-  noDataContainer: {
-    height: 256,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderRadius: 8,
-    marginTop: 16,
-  },
-});
 
 export default TrendGraph;

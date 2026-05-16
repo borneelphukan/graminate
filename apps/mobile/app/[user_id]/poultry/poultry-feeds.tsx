@@ -4,7 +4,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { format, parseISO } from "date-fns";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, FlatList, StyleSheet, View } from "react-native";
+import { Alert, FlatList, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -12,7 +12,6 @@ import {
   Icon,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type FeedRecord = {
@@ -45,7 +44,6 @@ const PoultryFeedsScreen = () => {
     user_id: string;
     flock_id: string;
   }>();
-  const theme = useTheme();
 
   const [feedRecords, setFeedRecords] = useState<FeedRecord[]>([]);
   const [flockData, setFlockData] = useState<FlockData | null>(null);
@@ -151,26 +149,26 @@ const PoultryFeedsScreen = () => {
     : "Feed Records";
 
   const renderItem = ({ item }: { item: FeedRecord }) => (
-    <Card onPress={() => handleEditRecord(item)} style={styles.card}>
+    <Card onPress={() => handleEditRecord(item)} className="mb-3">
       <Card.Content>
-        <View style={styles.cardHeader}>
-          <Text variant="titleMedium" style={styles.cardTitle}>
+        <View className="flex-row justify-between items-start mb-2">
+          <Text variant="titleMedium" className="flex-1 font-bold">
             {item.feed_given}
           </Text>
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-500"
           >
             Logged: {format(parseISO(item.created_at), "MMM d, yyyy")}
           </Text>
         </View>
-        <View style={styles.infoRow}>
+        <View className="flex-row items-center mt-1">
           <Icon
             source="weight-kilogram"
             size={16}
-            color={theme.colors.onSurfaceVariant}
+            className="text-gray-500"
           />
-          <Text variant="bodyMedium" style={styles.infoText}>
+          <Text variant="bodyMedium" className="ml-2">
             {item.amount_given.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -178,13 +176,13 @@ const PoultryFeedsScreen = () => {
             {item.units}
           </Text>
         </View>
-        <View style={styles.infoRow}>
+        <View className="flex-row items-center mt-1">
           <Icon
             source="calendar-month"
             size={16}
-            color={theme.colors.onSurfaceVariant}
+            className="text-gray-500"
           />
-          <Text variant="bodyMedium" style={styles.infoText}>
+          <Text variant="bodyMedium" className="ml-2">
             {format(parseISO(item.feed_date), "PP")}
           </Text>
         </View>
@@ -194,8 +192,9 @@ const PoultryFeedsScreen = () => {
 
   return (
     <PlatformLayout>
-      <Appbar.Header>
+      <Appbar.Header className="bg-gray-900">
         <Appbar.BackAction
+          color="white"
           onPress={() => {
             if (user_id && flock_id)
               router.push(`/${user_id}/poultry/${flock_id}`);
@@ -204,25 +203,28 @@ const PoultryFeedsScreen = () => {
         />
         <Appbar.Content
           title={pageTitle}
+          titleStyle={{ color: "white" }}
           subtitle={
             loading ? "Loading..." : `${filteredRecords.length} Record(s)`
           }
+          subtitleStyle={{ color: "rgba(255,255,255,0.7)" }}
         />
         <Appbar.Action
           icon="plus-circle"
+          color="white"
           onPress={handleAddRecord}
           disabled={loadingFeedItems}
         />
       </Appbar.Header>
-      <View style={[styles.flex, { backgroundColor: theme.colors.background }]}>
+      <View className="flex-1 bg-gray-50 dark:bg-gray-950">
         <Searchbar
           placeholder="Search by feed name, date, units..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
+          className="m-4 mt-2"
         />
         {loading ? (
-          <View style={styles.centeredContainer}>
+          <View className="flex-1 justify-center items-center p-4">
             <ActivityIndicator size="large" />
           </View>
         ) : (
@@ -230,10 +232,10 @@ const PoultryFeedsScreen = () => {
             data={filteredRecords}
             renderItem={renderItem}
             keyExtractor={(item) => item.feed_id.toString()}
-            contentContainerStyle={styles.listContent}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
             ListEmptyComponent={
-              <View style={styles.centeredContainer}>
-                <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+              <View className="flex-1 justify-center items-center p-4">
+                <Text className="text-gray-400">
                   No feed records found for this flock.
                 </Text>
               </View>
@@ -267,27 +269,5 @@ const PoultryFeedsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  searchbar: { margin: 16, marginTop: 8 },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  listContent: { paddingHorizontal: 16, paddingBottom: 16 },
-  card: { marginBottom: 12 },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 8,
-  },
-  cardTitle: { flex: 1, fontWeight: "bold" },
-  infoRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  infoText: { marginLeft: 8 },
-});
 
 export default PoultryFeedsScreen;

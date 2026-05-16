@@ -1,5 +1,20 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Alert, StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { 
+  Alert, 
+  StyleSheet, 
+  View, 
+  FlatList, 
+  ActivityIndicator, 
+  Animated, 
+  Dimensions, 
+  Platform, 
+  Pressable, 
+  ScrollView 
+} from "react-native";
+import { 
+  PanGestureHandler, 
+  State 
+} from "react-native-gesture-handler";
 import {
   HelperText,
   Menu,
@@ -14,11 +29,14 @@ import {
   Button,
   Text,
   IconButton,
+  Appbar,
+  Calendar,
 } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Icon } from "@/components/ui/Icon";
-import { FormModal } from "../modals/FormModal";
-import { Calendar, DateData } from "react-native-calendars";
+import { DateData } from "react-native-calendars";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 type FieldType =
   | "text"
@@ -259,8 +277,60 @@ export const BottomDrawer = ({
   const [tagInput, setTagInput] = useState("");
 
   const { darkMode } = useUserPreferences();
-
   const isSubmitting = isSubmittingProp || isSubmittingInternal;
+
+  // Animation Refs
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isVisible) {
+      // Slide in
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // Slide out
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: SCREEN_HEIGHT,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isVisible, slideAnim, fadeAnim]);
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: SCREEN_HEIGHT,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -453,7 +523,7 @@ export const BottomDrawer = ({
                                   <Icon
                                     type={subField.icon as any}
                                     size={18}
-                                    className="text-gray-400 dark:text-gray-500"
+                                    className="text-dark dark:text-light"
                                   />
                                 )}
                               />
@@ -719,19 +789,118 @@ export const BottomDrawer = ({
 
   return (
     <>
-      <FormModal
-        isVisible={isVisible}
-        onClose={onClose}
-        title={title}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-        submitButtonText={submitButtonText}
-      >
-        <View className="gap-1">
-          {renderedFields}
-          {children}
-        </View>
-      </FormModal>
+      <Portal>
+        <Modal
+          visible={isVisible}
+          onDismiss={handleClose}
+          containerClassName="justify-end bg-transparent"
+          className="w-full p-0 rounded-b-none"
+        >
+          <Animated.View 
+            style={[
+              {
+                ...StyleSheet.absoluteFillObject,
+                backgroundColor: "rgba(0,0,0,0.6)",
+              }, 
+              { opacity: fadeAnim }
+            ]}
+          >
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              onPress={handleClose}
+            />
+          </Animated.View>
+          
+          <PanGestureHandler
+            onGestureEvent={Animated.event(
+              [{ nativeEvent: { translationY: slideAnim } }],
+              { useNativeDriver: true }
+            )}
+            onHandlerStateChange={(event) => {
+              if (event.nativeEvent.state === State.END) {
+                if (event.nativeEvent.translationY > 100) {
+                  handleClose();
+                } else {
+                  Animated.spring(slideAnim, {
+                    toValue: 0,
+                    useNativeDriver: true,
+                    tension: 65,
+                    friction: 11
+                  }).start();
+                }
+              }
+            }}
+          >
+            <Animated.View
+              style={{
+                width: "100%",
+                transform: [
+                  { 
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, SCREEN_HEIGHT],
+                      outputRange: [0, SCREEN_HEIGHT],
+                      extrapolate: 'clamp'
+                    }) 
+                  }
+                ],
+              }}
+            >
+              <Surface
+                className="rounded-t-[24px] overflow-hidden bg-white dark:bg-dark-surface border-t border-gray-400 dark:border-gray-600"
+                style={{ maxHeight: SCREEN_HEIGHT * 0.85 }}
+                elevation={0}
+              >
+                <View className="items-center py-3">
+                  <View className="w-10 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+                </View>
+
+                <Appbar.Header 
+                  elevated={false} 
+                  className="h-12 px-2 bg-white dark:bg-dark-surface border-b border-gray-400 dark:border-gray-800"
+                >
+                  <Appbar.Content 
+                    title={title} 
+                    titleStyle={{ fontSize: 20, fontWeight: "700" }} 
+                  />
+                  
+                </Appbar.Header>
+
+                <ScrollView
+                  className="bg-transparent"
+                  contentContainerClassName="p-6 pb-10"
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  <View className="gap-1">
+                    {renderedFields}
+                    {children}
+                  </View>
+                </ScrollView>
+
+                <View className={`p-6 bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-gray-800 ${Platform.OS === 'ios' ? 'pb-10' : 'pb-6'}`}>
+                  <Button
+                    mode="contained"
+                    onPress={handleSubmit}
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
+                    className="py-1.5 rounded-xl elevation-none"
+                    labelStyle={{ fontSize: 16, fontWeight: "600", color: 'white' }}
+                    icon={() => (
+                      <Icon
+                        type={"check" as any}
+                        size={18}
+                        color={"white"}
+                      />
+                    )}
+                  >
+                    {submitButtonText}
+                  </Button>
+                </View>
+              </Surface>
+            </Animated.View>
+          </PanGestureHandler>
+        </Modal>
+      </Portal>
 
       <Portal>
         <Modal
@@ -751,18 +920,6 @@ export const BottomDrawer = ({
                   }
                 : {}
             }
-            theme={{
-              backgroundColor: darkMode ? "#030712" : "#ffffff",
-              calendarBackground: darkMode ? "#030712" : "#ffffff",
-              textSectionTitleColor: darkMode ? "#bbbbbc" : "#49494d",
-              selectedDayBackgroundColor: "#2b7860",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#2b7860",
-              dayTextColor: darkMode ? "#ededed" : "#171717",
-              textDisabledColor: darkMode ? "#49494d" : "#bbbbbc",
-              arrowColor: "#2b7860",
-              monthTextColor: darkMode ? "#ededed" : "#171717",
-            }}
           />
         </Modal>
       </Portal>
