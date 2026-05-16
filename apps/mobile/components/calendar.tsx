@@ -100,7 +100,7 @@ const CalendarHeader = ({
   return (
     <View className="flex-row justify-between items-center mb-5">
       <IconButton icon="chevron-left" onPress={previousMonth} className="text-black dark:text-white" />
-      <Text variant="headlineSmall" className="font-bold text-black dark:text-white">
+      <Text className="font-bold text-black dark:text-white">
         {`${monthName} ${calendarYear}`}
       </Text>
       <IconButton icon="chevron-right" onPress={nextMonth} className="text-black dark:text-white" />
@@ -196,8 +196,8 @@ const TaskListView = ({
       <View className="flex-row items-center p-2 h-[70px]">
         <IconButton icon="chevron-left" onPress={() => setShowTasks(false)} />
         <View className="flex-1 ml-2">
-          <Text variant="titleLarge" className="font-bold">{dateFormatted}</Text>
-          <Text variant="bodySmall" className="text-gray-500">
+          <Text className="font-bold">{dateFormatted}</Text>
+          <Text className="text-gray-500">
             {tasks.length} task(s) scheduled
           </Text>
         </View>
@@ -218,7 +218,7 @@ const TaskListView = ({
       ) : tasks.length === 0 ? (
         <View className="flex-1 justify-center items-center p-5 gap-4">
           <Icon type="calendar-blank" size={64} className="text-gray-300" />
-          <Text variant="bodyLarge" className="mt-4 text-gray-500">No tasks for this day.</Text>
+          <Text className="mt-4 text-gray-500">No tasks for this day.</Text>
           {!isPastDate && (
             <Button mode="contained" onPress={() => setShowAddTask(true)} className="mt-5">
               Add Your First Task
@@ -244,7 +244,7 @@ const TaskListView = ({
                   {item.name}
                 </Text>
                 <View className="flex-row items-center mt-1">
-                  <Text variant="bodySmall" className="text-dark dark:text-light mr-3">{item.time}</Text>
+                  <Text className="text-dark dark:text-light mr-3">{item.time}</Text>
                   <Badge
                     className={`ml-2 px-2 rounded-md ${
                       item.priority === "High"
@@ -347,7 +347,7 @@ const AddTaskView = ({
 
   return (
     <ScrollView className="flex-1" contentContainerClassName="p-5">
-      <Text variant="headlineSmall" className="font-bold mb-6 text-center">New Task</Text>
+      <Text className="font-bold mb-6 text-center">New Task</Text>
       
       <View className="gap-4">
         <TextInput
@@ -397,7 +397,7 @@ const AddTaskView = ({
           className="bg-transparent"
         />
 
-        <Text variant="labelLarge" className="mt-2 font-semibold">Priority</Text>
+        <Text className="mt-2 font-semibold">Priority</Text>
         <SegmentedButtons
           value={priority}
           onValueChange={(v: any) => setPriority(v as any)}

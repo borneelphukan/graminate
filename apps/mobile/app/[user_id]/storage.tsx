@@ -69,7 +69,7 @@ const WarehouseCard = ({
               size={16}
               className="text-gray-400 dark:text-gray-500"
             />
-            <Text variant="bodyMedium" className="ml-2 shrink">
+            <Text className="ml-2 shrink">
               {addressString}
             </Text>
           </View>
@@ -82,7 +82,7 @@ const WarehouseCard = ({
                 size={16}
                 className="text-gray-400 dark:text-gray-500"
               />
-              <Text variant="bodyMedium" className="ml-2 shrink">
+              <Text className="ml-2 shrink">
                 {item.contact_person}
               </Text>
             </View>
@@ -94,7 +94,7 @@ const WarehouseCard = ({
                 size={16}
                 className="text-gray-400 dark:text-gray-500"
               />
-              <Text variant="bodyMedium" className="ml-2 shrink">
+              <Text className="ml-2 shrink">
                 {item.phone}
               </Text>
             </View>
@@ -106,7 +106,7 @@ const WarehouseCard = ({
                 size={16}
                 className="text-gray-400 dark:text-gray-500"
               />
-              <Text variant="bodyMedium" className="ml-2 shrink">
+              <Text className="ml-2 shrink">
                 {String(item.storage_capacity)}
               </Text>
             </View>

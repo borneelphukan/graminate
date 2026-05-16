@@ -300,7 +300,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
   return (
     <View className="h-[320px] rounded-lg p-6 shadow-md bg-white dark:bg-gray-900">
       <View className="flex-row justify-between items-center mb-4">
-        <Text variant="headlineSmall">
+        <Text>
           {capitalizedProjectType} Task List
         </Text>
         <TouchableRipple

@@ -384,7 +384,7 @@ const AddServiceScreen = () => {
           <Card>
             <Card.Title title="Confirm Password" />
             <Card.Content>
-              <Text variant="bodyMedium" className="mb-4">
+              <Text className="mb-4">
                 Enter your password to remove the selected service(s) and all
                 related data.
               </Text>

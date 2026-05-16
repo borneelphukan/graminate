@@ -6,16 +6,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  StyleSheet,
   View,
 } from "react-native";
-import {
-  Button,
-  Icon,
-  IconButton,
-  Text,
-  TextInput,
-} from "@/components/ui";
+import { Button, Icon, IconButton, Text, TextInput } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { StatusBar } from "expo-status-bar";
 
@@ -52,19 +45,19 @@ const ForgotPasswordScreen = () => {
   };
 
   const renderFormView = () => (
-    <View style={styles.container}>
+    <View className="flex-1 p-6">
       <IconButton
         icon="chevron-left"
         size={28}
         onPress={() => router.back()}
-        style={styles.backButton}
+        className="self-start -ml-2"
       />
 
-      <View style={styles.formContent}>
-        <Text variant="headlineLarge" style={styles.title}>
+      <View className="mt-8 flex-1">
+        <Text className="font-bold mb-2 text-2xl text-dark dark:text-light">
           Find your profile
         </Text>
-        <Text variant="bodyLarge" style={styles.subtitle}>
+        <Text className="mb-8 text-lg text-gray-500 dark:text-gray-400">
           Enter your email address.
         </Text>
 
@@ -76,7 +69,6 @@ const ForgotPasswordScreen = () => {
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
-          style={styles.input}
         />
       </View>
 
@@ -85,8 +77,8 @@ const ForgotPasswordScreen = () => {
         onPress={handleContinue}
         loading={loading}
         disabled={loading}
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
+        className="mt-4"
+        labelStyle={{ fontSize: 16, fontWeight: "bold" }}
       >
         Continue
       </Button>
@@ -94,20 +86,24 @@ const ForgotPasswordScreen = () => {
   );
 
   const renderSuccessView = () => (
-    <View style={styles.successContainer}>
-      <Icon source="check-circle" size={80} className="text-green-100 dark:text-green-200" />
-      <Text variant="headlineMedium" style={styles.successTitle}>
+    <View className="flex-1 items-center justify-center p-8 gap-6">
+      <Icon
+        source="check-circle"
+        size={80}
+        className="text-green-100 dark:text-green-200"
+      />
+      <Text className="font-bold text-center text-dark dark:text-light text-2xl">
         Check Your Email
       </Text>
-      <Text variant="bodyLarge" style={styles.successSubtitle}>
+      <Text className="text-center mb-4 text-gray-500 dark:text-gray-400 text-lg">
         A reset link has been sent to your email. Please check your inbox to
         reset your password on the web.
       </Text>
       <Button
         mode="contained"
         onPress={() => router.back()}
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
+        className="mt-4 w-full"
+        labelStyle={{ fontSize: 16, fontWeight: "bold" }}
       >
         Back to Login
       </Button>
@@ -115,70 +111,16 @@ const ForgotPasswordScreen = () => {
   );
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white dark:bg-dark"
-    >
+    <SafeAreaView className="flex-1 bg-white dark:bg-dark">
       <StatusBar style={darkMode ? "light" : "dark"} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
+        className="flex-1"
       >
         {isLinkSent ? renderSuccessView() : renderFormView()}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-  formContent: {
-    marginTop: 32,
-    flex: 1,
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    marginLeft: -8, // Offset for visual alignment
-  },
-  title: {
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    marginBottom: 32,
-  },
-  input: {
-    width: "100%",
-  },
-  button: {
-    paddingVertical: 8,
-    marginTop: 16,
-    borderRadius: 50, // Fully rounded
-  },
-  buttonLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  successContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 32,
-    gap: 24,
-  },
-  successTitle: {
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  successSubtitle: {
-    textAlign: "center",
-    marginBottom: 16,
-  },
-});
 
 export default ForgotPasswordScreen;

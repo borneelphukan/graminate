@@ -465,7 +465,7 @@ Total Amount: ₹${total.toFixed(2)}
               />
             }
           />
-          <Text variant="titleMedium" className="mt-4 mb-2">
+          <Text className="mt-4 mb-2">
             Items
           </Text>
           {formData.items.map((item, index) => (
@@ -630,13 +630,13 @@ Total Amount: ₹${total.toFixed(2)}
           <Card className="mt-6 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <Card.Content>
               <View className="flex-row justify-between py-1">
-                <Text variant="bodyLarge">Subtotal</Text>
-                <Text variant="bodyLarge">₹{subtotal.toFixed(2)}</Text>
+                <Text>Subtotal</Text>
+                <Text>₹{subtotal.toFixed(2)}</Text>
               </View>
               <Divider className="my-2" />
               <View className="flex-row justify-between py-1">
-                <Text variant="titleMedium">Total</Text>
-                <Text variant="titleMedium">₹{total.toFixed(2)}</Text>
+                <Text>Total</Text>
+                <Text>₹{total.toFixed(2)}</Text>
               </View>
             </Card.Content>
           </Card>

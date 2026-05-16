@@ -175,7 +175,7 @@ const EggModal = ({
               {errors.date_collected}
             </HelperText>
 
-            <Text variant="titleMedium" className="mt-4 mb-2 text-dark dark:text-light">
+            <Text className="mt-4 mb-2 text-dark dark:text-light">
               Egg Counts
             </Text>
 

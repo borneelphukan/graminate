@@ -5,20 +5,27 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, View, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axiosInstance from "@/lib/axiosInstance";
 import {
   ActivityIndicator,
   Appbar,
   Card,
   Divider,
   List,
+  Avatar,
+  Text,
+  Button,
 } from "@/components/ui";
 
 type SettingsItem = {
   label: string;
-  type: "navigate";
+  type: "navigate" | "action";
   routeName?: string;
+  action?: () => void;
   icon: string | React.ComponentType<{ size: number; color: string }>;
+  iconColor: string;
 };
 type SettingsSection = { label: string; items: SettingsItem[] };
 
@@ -28,6 +35,7 @@ const SettingsScreen = () => {
   const {
     userType,
     subTypes,
+    plan,
     isSubTypesLoading: isLoading,
     fetchUserSubTypes,
   } = useUserPreferences();
@@ -38,6 +46,42 @@ const SettingsScreen = () => {
     }
   }, [user_id, fetchUserSubTypes]);
 
+  const handleLogout = useCallback(() => {
+    Alert.alert(
+      "Log Out",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Log Out", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const loginId = await AsyncStorage.getItem("loginId");
+              if (loginId) {
+                await axiosInstance.post("/user/logout", { loginId });
+              }
+            } catch (error) {
+              console.error("Logout API failed:", error);
+            } finally {
+              await AsyncStorage.multiRemove([
+                "accessToken",
+                "user",
+                "loginId",
+                "chatMessages",
+                "language",
+                "timeFormat",
+                "temperatureScale",
+                "darkMode",
+              ]);
+              router.replace("/login");
+            }
+          }
+        }
+      ]
+    );
+  }, [router]);
+
   const settingsMenu = useMemo((): SettingsSection[] => {
     const preferenceItems: SettingsItem[] = [
       {
@@ -45,6 +89,7 @@ const SettingsScreen = () => {
         type: "navigate",
         routeName: `/${user_id}/settings/general`,
         icon: "cog",
+        iconColor: "#4B5563",
       },
     ];
     if (!isLoading) {
@@ -54,6 +99,7 @@ const SettingsScreen = () => {
           type: "navigate",
           routeName: `/${user_id}/settings/weather`,
           icon: "weather-partly-cloudy",
+          iconColor: "#3B82F6",
         });
         if (subTypes.includes("Poultry"))
           preferenceItems.push({
@@ -61,6 +107,7 @@ const SettingsScreen = () => {
             type: "navigate",
             routeName: `/${user_id}/settings/poultry`,
             icon: "egg",
+            iconColor: "#F59E0B",
           });
         if (subTypes.includes("Cattle Rearing"))
           preferenceItems.push({
@@ -68,6 +115,7 @@ const SettingsScreen = () => {
             type: "navigate",
             routeName: `/${user_id}/settings/cattle-rearing`,
             icon: CattleIcon,
+            iconColor: "#8B4513",
           });
         if (subTypes.includes("Apiculture"))
           preferenceItems.push({
@@ -75,6 +123,7 @@ const SettingsScreen = () => {
             type: "navigate",
             routeName: `/${user_id}/settings/apiculture`,
             icon: BeeIcon,
+            iconColor: "#EAB308",
           });
         if (subTypes.includes("Floriculture"))
           preferenceItems.push({
@@ -82,6 +131,7 @@ const SettingsScreen = () => {
             type: "navigate",
             routeName: `/${user_id}/settings/floriculture`,
             icon: "flower",
+            iconColor: "#EC4899",
           });
       }
     }
@@ -90,31 +140,51 @@ const SettingsScreen = () => {
       type: "navigate",
       routeName: `/${user_id}/settings/notifications`,
       icon: "bell",
+      iconColor: "#8B5CF6",
     });
+
     return [
-      { label: "Your Preferences", items: preferenceItems },
+      { label: "Preferences", items: preferenceItems },
       {
-        label: "Account",
+        label: "Account & Billing",
         items: [
           {
-            label: "Billing",
+            label: "Billing & Subscription",
             type: "navigate",
             routeName: `/${user_id}/settings/billing`,
             icon: "credit-card-outline",
+            iconColor: "#10B981",
           },
           {
             label: "Account Settings",
             type: "navigate",
             routeName: `/${user_id}/settings/account`,
             icon: "account-cog",
+            iconColor: "#6366F1",
+          },
+        ],
+      },
+      {
+        label: "Support",
+        items: [
+          {
+            label: "Help Center",
+            type: "navigate",
+            routeName: `/${user_id}/settings/help`,
+            icon: "help-circle-outline",
+            iconColor: "#6B7280",
+          },
+          {
+            label: "About Graminate",
+            type: "navigate",
+            routeName: `/${user_id}/settings/about`,
+            icon: "information-outline",
+            iconColor: "#6B7280",
           },
         ],
       },
     ];
   }, [user_id, userType, subTypes, isLoading]);
-
-  // Colors from Navbar to match theme
-
 
   const memoizedBackIcon = useCallback(
     () => (
@@ -129,81 +199,131 @@ const SettingsScreen = () => {
 
   return (
     <PlatformLayout>
-      <SafeAreaView
-        className="flex-1 bg-white dark:bg-gray-900"
-      >
-        <Appbar.Header>
+      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark">
+        <Appbar.Header className="bg-transparent border-none">
           <Appbar.Action
             icon={memoizedBackIcon}
             onPress={() => router.back()}
           />
           <Appbar.Content
             title="Settings"
+            titleStyle={{ fontWeight: '800', fontSize: 24 }}
           />
         </Appbar.Header>
-        <View className="flex-1">
+
+        <ScrollView 
+          className="flex-1"
+          contentContainerClassName="p-4 pb-12"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Profile Section */}
+          <Card className="mb-6 border-none shadow-md bg-white dark:bg-dark-surface p-5">
+            <View className="flex-row items-center">
+              <Avatar.Text 
+                label={userType?.[0] || "U"} 
+                size={60} 
+                className="bg-green-100 dark:bg-green-900"
+                labelStyle={{ fontWeight: 'bold', fontSize: 24, color: '#2b7860' }}
+              />
+              <View className="ml-4 flex-1">
+                <Text className="font-bold">
+                  {userType || "User"}
+                </Text>
+                <View className="flex-row items-center mt-1">
+                  <View className="px-2 py-0.5 rounded-full bg-green-50 dark:bg-green-900/30">
+                    <Text className="text-[10px] font-bold text-green-700 dark:text-green-300 uppercase tracking-tighter">
+                      {plan || "Free Plan"}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Button 
+                mode="text" 
+                onPress={() => router.push(`/${user_id}/settings/account` as any)}
+                className="min-w-0"
+              >
+                Edit
+              </Button>
+            </View>
+          </Card>
+
           {isLoading ? (
-            <View className="flex-1 justify-center items-center">
+            <View className="py-20 justify-center items-center">
               <ActivityIndicator size="large" />
             </View>
           ) : (
-            <ScrollView contentContainerClassName="p-4 gap-6">
+            <View className="gap-6">
               {settingsMenu.map((section) => (
-                <Card key={section.label} className="p-0 overflow-hidden">
-                  <List.Subheader style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
+                <View key={section.label}>
+                  <Text className="text-xs font-bold uppercase tracking-[2px] text-gray-400 dark:text-gray-500 ml-1 mb-3">
                     {section.label}
-                  </List.Subheader>
-                  {section.items.map((item, idx) => (
-                    <React.Fragment key={item.label}>
-                      {idx > 0 && <Divider className="my-0" />}
-                      <List.Item
-                        title={item.label}
-                        onPress={() =>
-                          item.routeName && router.push(item.routeName as any)
-                        }
-                      left={(props: any) => {
-                        let iconElement;
-                        if (typeof item.icon === "function") {
-                          const CustomIcon = item.icon;
-                          iconElement = (
-                            <CustomIcon size={22} color={props.color} />
-                          );
-                        } else {
-                          iconElement = (
+                  </Text>
+                  <Card className="p-0 overflow-hidden border-none shadow-sm bg-white dark:bg-dark-surface">
+                    {section.items.map((item, idx) => (
+                      <React.Fragment key={item.label}>
+                        {idx > 0 && <Divider className="mx-4 opacity-30" />}
+                        <List.Item
+                          title={item.label}
+                          onPress={() => {
+                            if (item.type === "navigate" && item.routeName) {
+                              router.push(item.routeName as any);
+                            } else if (item.type === "action" && item.action) {
+                              item.action();
+                            }
+                          }}
+                          titleStyle={{ fontSize: 16, fontWeight: '500' }}
+                          left={() => (
+                            <View 
+                              style={{ backgroundColor: `${item.iconColor}15` }}
+                              className="w-10 h-10 rounded-xl items-center justify-center mr-2"
+                            >
+                              {typeof item.icon === "function" ? (
+                                <item.icon size={20} color={item.iconColor} />
+                              ) : (
+                                <Icon
+                                  type={item.icon as any}
+                                  size={20}
+                                  color={item.iconColor}
+                                />
+                              )}
+                            </View>
+                          )}
+                          right={() => (
                             <Icon
-                              type={(item.icon) as any}
-                              size={22}
-                              color={props.color}
-                            />
-                          );
-                        }
-                        return (
-                          <List.Icon {...props} icon={() => iconElement} />
-                        );
-                      }}
-                      right={(props: any) => (
-                        <List.Icon
-                          {...props}
-                          icon={() => (
-                            <Icon
-                              type={"chevron-right" as any}
-                              size={16}
-                              color={props.color}
+                              type="chevron-right"
+                              size={18}
+                              className="text-gray-300 dark:text-gray-600"
                             />
                           )}
                         />
-                      )}
-                    />
-                    </React.Fragment>
-                  ))}
-                </Card>
+                      </React.Fragment>
+                    ))}
+                  </Card>
+                </View>
               ))}
-            </ScrollView>
+
+              <Button
+                mode="outlined"
+                onPress={handleLogout}
+                className="mt-4 border-red-200 dark:border-red-900/30 rounded-2xl"
+                textColor="#ef4444"
+                icon={() => <Icon type="logout" size={18} color="#ef4444" />}
+              >
+                Sign Out
+              </Button>
+
+              <View className="items-center mt-6">
+                <Text className="text-gray-400 dark:text-gray-600 text-xs">
+                  Graminate v1.2.0
+                </Text>
+              </View>
+            </View>
           )}
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </PlatformLayout>
   );
 };
 
 export default SettingsScreen;
+

@@ -35,7 +35,7 @@ export const Button = ({
   if (disabled || loading) baseClass += "opacity-60 ";
 
   const renderIcon = () => {
-    const iconColor = mode === 'contained' ? 'white' : '#2b7860';
+    const iconColor = rest.textColor || (mode === 'contained' ? 'white' : '#2b7860');
     const iconSize = 18;
     if (loading) return <RNActivityIndicator size="small" color={iconColor} className="mr-2" />;
     if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={iconSize} color={iconColor} style={{ marginRight: 8 }} />;
@@ -52,7 +52,12 @@ export const Button = ({
       {...rest}
     >
       {renderIcon()}
-      <RNText className={`${textClass}`} style={labelStyle}>{children}</RNText>
+      <RNText 
+        className={`${textClass}`} 
+        style={[labelStyle, rest.textColor ? { color: rest.textColor } : {}]}
+      >
+        {children}
+      </RNText>
     </TouchableOpacity>
   );
 };

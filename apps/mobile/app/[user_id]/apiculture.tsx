@@ -339,10 +339,10 @@ const ApicultureScreen = () => {
                 <Card.Title title={item.apiary_name} titleVariant="titleLarge" />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
-                    <Text variant="bodyMedium">Hives: {item.number_of_hives}</Text>
-                    <Text variant="bodyMedium">Area: {item.area != null ? `${item.area}m²` : "N/A"}</Text>
+                    <Text>Hives: {item.number_of_hives}</Text>
+                    <Text>Area: {item.area != null ? `${item.area}m²` : "N/A"}</Text>
                   </View>
-                  <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
+                  <Text className="text-gray-400 dark:text-gray-500">
                     Species: {item.bee_species || "N/A"}
                   </Text>
                 </Card.Content>
@@ -355,14 +355,14 @@ const ApicultureScreen = () => {
 
         <View className="mt-8 pt-8 border-t border-[rgba(128,128,128,0.2)]">
           <View className="px-4 mb-4">
-            <Text variant="headlineSmall" className="font-bold">
+            <Text className="font-bold">
               Your Apiculture Tasks
             </Text>
-            <Text variant="bodyMedium" className="text-gray-500 mt-1">
+            <Text className="text-gray-500 mt-1">
               All your apiculture tasks visualized
             </Text>
           </View>
-          <View className="bg-[rgba(128,128,128,0.05)] rounded-3xl py-4 mx-4">
+          <View className="bg-gray-800 rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard userId={numericUserId} projectTitle="Apiculture" />
             )}

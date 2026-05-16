@@ -4,12 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  ActivityIndicator,
-  Button,
-  Surface,
-  Text,
-} from "@/components/ui";
+import { ActivityIndicator, Button, Surface, Text } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import ChatWindow from "./ChatWindow";
 import Navbar from "./Navbar";
@@ -104,7 +99,7 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
   if (!isAuthorized) {
     return (
       <Surface className="flex-1 justify-center items-center p-4 bg-white dark:bg-dark">
-        <Text variant="titleLarge" className="text-center mb-4">
+        <Text className="text-center mb-4">
           Unauthorized Access. Please log in.
         </Text>
         <Button
@@ -162,7 +157,7 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
 
         <Modal
           animationType="slide"
-          transparent={false}
+          transparent={true}
           visible={isChatOpen}
           onRequestClose={() => setIsChatOpen(false)}
         >

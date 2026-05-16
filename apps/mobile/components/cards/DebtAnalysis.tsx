@@ -203,10 +203,10 @@ const DebtAnalysis = ({
   return (
     <Card>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text variant="titleLarge" className="text-center">
+        <Text className="text-center">
           Loans & Debt Analysis
         </Text>
-        <Text variant="bodyMedium" className="text-center mb-4 text-gray-500">
+        <Text className="text-center mb-4 text-gray-500">
           Outstanding Liabilities & Repayment Trends
         </Text>
 
@@ -269,7 +269,7 @@ const DebtAnalysis = ({
                     borderRadius: 16,
                   }}
                 />
-                <Text variant="labelMedium" className="text-center text-gray-500">
+                <Text className="text-center text-gray-500">
                   Timeline
                 </Text>
               </>

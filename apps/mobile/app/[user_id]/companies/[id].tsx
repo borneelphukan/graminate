@@ -305,7 +305,7 @@ Email: ${formData.email || "N/A"}
           keyboardShouldPersistTaps="handled"
         >
           <View className="items-center py-4 gap-2">
-            <Text variant="headlineMedium" className="text-center">
+            <Text className="text-center">
               {formData.companyName}
             </Text>
             <Text

@@ -335,10 +335,10 @@ const FloricultureScreen = () => {
                 <Card.Title title={item.flower_name} titleVariant="titleLarge" />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
-                    <Text variant="bodyMedium">Type: {item.flower_type || "N/A"}</Text>
-                    <Text variant="bodyMedium">Area: {item.area || "N/A"} sq.ft</Text>
+                    <Text>Type: {item.flower_type || "N/A"}</Text>
+                    <Text>Area: {item.area || "N/A"} sq.ft</Text>
                   </View>
-                  <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
+                  <Text className="text-gray-400 dark:text-gray-500">
                     Method: {item.method || "N/A"} | Planted: {item.planting_date ? new Date(item.planting_date).toLocaleDateString() : "N/A"}
                   </Text>
                 </Card.Content>
@@ -351,10 +351,10 @@ const FloricultureScreen = () => {
 
         <View className="mt-8 pt-8 border-t border-gray-500/20">
           <View className="px-4 mb-4">
-            <Text variant="headlineSmall" className="font-bold">
+            <Text className="font-bold">
               Your Floriculture Tasks
             </Text>
-            <Text variant="bodyMedium" className="text-gray-500 mt-1">
+            <Text className="text-gray-500 mt-1">
               All your floriculture tasks visualized
             </Text>
           </View>

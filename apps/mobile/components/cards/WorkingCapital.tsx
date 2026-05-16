@@ -216,11 +216,10 @@ const WorkingCapital = ({
   return (
     <Card>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text variant="titleLarge" className="text-center">
+        <Text className="text-center">
           Working Capital Analysis
         </Text>
         <Text
-          variant="bodyMedium"
           className="text-center mb-4"
         >
           Net Working Capital (Current Assets - Current Liabilities)

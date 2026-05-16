@@ -310,7 +310,7 @@ const WarehouseDetailScreen = () => {
             mode="contained"
             icon={() => (
               <Icon
-                type={"plus" as any}
+                type="plus"
                 size={18}
                 className="text-white"
               />
@@ -330,31 +330,31 @@ const WarehouseDetailScreen = () => {
           className="mb-4"
           contentContainerClassName="flex-row gap-3 px-4"
         >
-          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">TOTAL ITEMS</Text>
-            <Text variant="titleLarge" className="font-bold mb-1">{inventory.length}</Text>
-            <Text variant="bodySmall" className="opacity-50 text-[10px]">In storage</Text>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-400 dark:border-gray-700">
+            <Text className="mb-2 font-semibold tracking-wider">TOTAL ITEMS</Text>
+            <Text className="font-bold mb-1">{inventory.length}</Text>
+            <Text className="text-xs">In storage</Text>
           </View>
-          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">ASSET VALUE</Text>
-            <Text variant="titleLarge" className="font-bold mb-1">
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-400 dark:border-gray-700">
+            <Text className="mb-2 font-semibold tracking-wider">ASSET VALUE</Text>
+            <Text className="font-bold mb-1">
               ₹{(totalAssetValue / 1000).toFixed(1)}k
             </Text>
-            <Text variant="bodySmall" className="opacity-50 text-[10px]">Estimated total</Text>
+            <Text className="text-xs">Estimated total</Text>
           </View>
-          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">LOW STOCK</Text>
-            <Text variant="titleLarge" className={`font-bold mb-1 ${lowStockItems.length > 0 ? "text-red-600" : ""}`}>
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-400 dark:border-gray-700">
+            <Text className="mb-2 font-semibold tracking-wider">LOW STOCK</Text>
+            <Text className={`font-bold mb-1 ${lowStockItems.length > 0 ? "text-red-600" : ""}`}>
               {lowStockItems.length}
             </Text>
-            <Text variant="bodySmall" className="opacity-50 text-[10px]">Need attention</Text>
+            <Text className="text-xs">Need attention</Text>
           </View>
-          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <Text variant="labelSmall" className="opacity-60 mb-2 font-semibold tracking-wider">CAPACITY</Text>
-            <Text variant="titleLarge" className="font-bold mb-1">
+          <View className="w-40 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-400 dark:border-gray-700">
+            <Text className="mb-2 font-semibold tracking-wider">CAPACITY</Text>
+            <Text className="font-bold mb-1">
               {warehouseDetails?.storage_capacity || "N/A"}
             </Text>
-            <Text variant="bodySmall" className="opacity-50 text-[10px]">sq. ft. area</Text>
+            <Text className="text-xs">sq. ft. area</Text>
           </View>
         </ScrollView>
 
@@ -363,34 +363,34 @@ const WarehouseDetailScreen = () => {
           <Card className="mx-4 mb-6 rounded-2xl bg-white dark:bg-gray-800" elevation={1}>
             <Card.Content>
               <View className="flex-row items-center mb-4 gap-3">
-                <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                <View className="w-9 h-9 rounded-xl bg-gray-400 dark:bg-gray-700 justify-center items-center">
                   <Icon type="warehouse" size={20} className="text-emerald-600" />
                 </View>
                 <View className="flex-1">
-                  <Text variant="labelSmall" className="opacity-50 tracking-wider">TYPE</Text>
-                  <Text variant="bodyLarge" className="font-semibold">{warehouseDetails.type}</Text>
+                  <Text className="uppercase">Type</Text>
+                  <Text className="font-semibold">{warehouseDetails.type}</Text>
                 </View>
               </View>
 
               {warehouseDetails.storage_capacity && (
                 <View className="flex-row items-center mb-4 gap-3">
-                  <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                  <View className="w-9 h-9 rounded-xl bg-gray-400 dark:bg-gray-700 justify-center items-center">
                     <Icon type="package-variant-closed" size={20} className="text-emerald-600" />
                   </View>
                   <View className="flex-1">
-                    <Text variant="labelSmall" className="opacity-50 tracking-wider">STORAGE AREA</Text>
-                    <Text variant="bodyLarge" className="font-semibold">{warehouseDetails.storage_capacity} sq. ft.</Text>
+                    <Text className="uppercase">Storage Area</Text>
+                    <Text className="font-semibold">{warehouseDetails.storage_capacity} sq. ft.</Text>
                   </View>
                 </View>
               )}
 
               <View className="flex-row items-center mb-4 gap-3">
-                <View className="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-700 justify-center items-center">
+                <View className="w-9 h-9 rounded-xl bg-gray-400 dark:bg-gray-700 justify-center items-center">
                   <Icon type="map-marker" size={20} className="text-emerald-600" />
                 </View>
                 <View className="flex-1">
-                  <Text variant="labelSmall" className="opacity-50 tracking-wider">ADDRESS</Text>
-                  <Text variant="bodyMedium" className="font-semibold">
+                  <Text className="uppercase">Address</Text>
+                  <Text className="font-semibold">
                     {[warehouseDetails.address_line_1, warehouseDetails.city, warehouseDetails.state]
                       .filter(Boolean)
                       .join(", ")}
@@ -402,14 +402,14 @@ const WarehouseDetailScreen = () => {
                 <View className="mt-2 pt-4 border-t border-gray-50 dark:border-gray-800">
                   <View className="flex-row items-center mb-4 gap-3">
                     <Icon type="account" size={16} className="text-gray-400" />
-                    <Text variant="bodySmall" className="opacity-70">
+                    <Text className="opacity-70">
                       {warehouseDetails.contact_person || "No manager assigned"}
                     </Text>
                   </View>
                   {warehouseDetails.phone && (
                     <View className="flex-row items-center mb-4 gap-3">
                       <Icon type="phone" size={16} className="text-gray-400" />
-                      <Text variant="bodySmall" className="opacity-70">{warehouseDetails.phone}</Text>
+                      <Text className="opacity-70">{warehouseDetails.phone}</Text>
                     </View>
                   )}
                 </View>
@@ -421,7 +421,7 @@ const WarehouseDetailScreen = () => {
         {/* Analytics Section */}
         {inventory.length > 0 && (
           <View className="px-4 mb-6">
-            <Text variant="titleMedium" className="font-bold mb-4">Stock Distribution</Text>
+            <Text className="font-bold mb-4">Stock Distribution</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <BarChart
                 data={barChartData}
@@ -447,7 +447,7 @@ const WarehouseDetailScreen = () => {
           <View className="mx-4 mb-6 p-4 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-100 dark:border-red-900/20">
             <View className="flex-row items-center gap-2 mb-3">
               <Icon type="alert" size={18} className="text-red-600" />
-              <Text variant="titleSmall" className="font-bold uppercase tracking-wider text-red-600">
+              <Text className="font-bold uppercase tracking-wider text-red-600">
                 Critical Stock Alerts
               </Text>
             </View>
@@ -462,7 +462,7 @@ const WarehouseDetailScreen = () => {
           </View>
         )}        {/* Inventory List */}
         <View className="px-4">
-          <Text variant="titleMedium" className="font-bold mb-4">Detailed Inventory</Text>
+          <Text className="font-bold mb-4">Detailed Inventory</Text>
           {inventory.length > 0 ? (
             inventory.map((item) => {
               const isLowStock =
@@ -473,8 +473,8 @@ const WarehouseDetailScreen = () => {
                   <Card.Content>
                     <View className="flex-row justify-between items-start mb-4">
                       <View>
-                        <Text variant="titleMedium" className="font-bold">{item.item_name}</Text>
-                        <Text variant="bodySmall" className="opacity-50">{item.item_group}</Text>
+                        <Text className="font-bold">{item.item_name}</Text>
+                        <Text className="opacity-50">{item.item_group}</Text>
                       </View>
                       <View className="flex-row items-baseline bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-lg">
                         <Text className="text-[10px] opacity-60 mr-0.5">₹</Text>
@@ -485,7 +485,7 @@ const WarehouseDetailScreen = () => {
                     <View className="flex-row justify-between items-center">
                       <View className="flex-row items-center gap-1.5">
                         <Icon type="package-variant" size={14} className="text-gray-400" />
-                        <Text variant="bodyMedium" className="font-medium text-black dark:text-white">
+                        <Text className="font-medium text-black dark:text-white">
                           {item.quantity} {item.units}
                         </Text>
                       </View>
@@ -502,7 +502,7 @@ const WarehouseDetailScreen = () => {
           ) : (
             <View className="items-center py-10 gap-3">
               <Icon type="package-variant-closed" size={48} className="text-gray-200" />
-              <Text variant="bodyMedium" className="opacity-40">No items found in this facility.</Text>
+              <Text className="opacity-40">No items found in this facility.</Text>
             </View>
           )}
         </View>

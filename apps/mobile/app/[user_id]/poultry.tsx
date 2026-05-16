@@ -419,11 +419,10 @@ const PoultryScreen = () => {
                 <Card.Title title={item.flock_name} titleVariant="titleLarge" />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
-                    <Text variant="bodyMedium">Type: {item.flock_type}</Text>
-                    <Text variant="bodyMedium">Qty: {item.quantity}</Text>
+                    <Text>Type: {item.flock_type}</Text>
+                    <Text>Qty: {item.quantity}</Text>
                   </View>
                   <Text
-                    variant="bodyMedium"
                     className="text-gray-400 dark:text-gray-500"
                   >
                     Breed: {item.breed || "N/A"}
@@ -439,10 +438,10 @@ const PoultryScreen = () => {
         </View>
         <View className="mt-8 pt-8 border-t border-gray-500/20">
           <View className="px-4 mb-4">
-            <Text variant="headlineSmall" className="font-bold">
+            <Text className="font-bold">
               Your Poultry Tasks
             </Text>
-            <Text variant="bodyMedium" className="text-gray-500 mt-1">
+            <Text className="text-gray-500 mt-1">
               All your poultry tasks visualized
             </Text>
           </View>

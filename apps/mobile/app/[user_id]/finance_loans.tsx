@@ -52,7 +52,7 @@ const LoanCard = ({ item }: { item: LoanRecord }) => {
         title={item.loan_name}
         subtitle={item.lender}
         right={() => (
-          <Text variant="titleMedium" className="text-green-100 dark:text-green-200 mr-4">
+          <Text className="text-green-100 dark:text-green-200 mr-4">
             {formatCurrency(item.amount)}
           </Text>
         )}

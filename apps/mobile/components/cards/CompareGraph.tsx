@@ -248,11 +248,10 @@ const CompareGraph = ({
   return (
     <Card>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text variant="titleLarge" className="text-center">
+        <Text className="text-center">
           {selectedMetric1} vs {selectedMetric2}
         </Text>
         <Text
-          variant="bodyMedium"
           className="text-center mb-4"
         >
           Compare two financial metrics over time.

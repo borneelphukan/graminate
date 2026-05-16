@@ -10,6 +10,7 @@ import {
   Avatar,
   Badge,
   TouchableRipple,
+  Text,
 } from "@/components/ui";
 import NotificationBar from "./NotificationBar";
 
@@ -116,66 +117,59 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
 
 
 
-   const memoizedBarsIcon = useCallback(
-    () => <Icon type={"menu"} size={22} className="text-light" />,
-    []
-  );
 
-  const memoizedSparklesIcon = useCallback(
-    () => <Sparkles size={28} className="text-light" />,
-    []
-  );
-
-  const memoizedBellIcon = useCallback(
-    () => <Icon type={"bell"} size={22} className="text-light" />,
-    []
-  );
 
   return (
     <>
       <Appbar.Header
-        className="bg-gray-900"
+        className="bg-white dark:bg-dark-surface border-b border-gray-100 dark:border-gray-800 h-16"
+        elevated={0}
       >
         <Appbar.Action
-          icon={memoizedBarsIcon}
+          icon={() => <Icon type="menu" size={24} className="text-gray-700 dark:text-gray-300" />}
           onPress={toggleSidebar}
         />
-        <View className="flex-1" />
+        
+        <View className="flex-1 items-center">
+        </View>
+
         <Appbar.Action
-          icon={memoizedSparklesIcon}
+          icon={() => <Sparkles size={26} className="text-amber-500" />}
           onPress={toggleChat}
         />
+        
         <View>
           <Appbar.Action
-            icon={memoizedBellIcon}
+            icon={() => <Icon type="bell" size={22} className="text-gray-700 dark:text-gray-300" />}
             onPress={() => setNotificationBarOpen(true)}
           />
-          <Badge
-            visible={notifications.length > 0}
-            className="absolute top-1.5 right-1.5 bg-red-600"
-            size={16}
-          >
-            {notifications.length}
-          </Badge>
+          {notifications.length > 0 && (
+            <View className="absolute top-3 right-3 w-4 h-4 bg-red-500 rounded-full items-center justify-center border-2 border-white dark:border-dark-surface">
+              <Text className="text-[8px] font-bold text-white">
+                {notifications.length}
+              </Text>
+            </View>
+          )}
         </View>
+
         <TouchableRipple
           onPress={navigateToSettings}
-          className="mr-2 ml-1 rounded-full"
+          className="mr-3 ml-1 rounded-full p-0.5 border border-gray-100 dark:border-gray-800"
           borderless
         >
           {user.name ? (
             <Avatar.Text
-              size={32}
+              size={34}
               label={getInitials(user.name)}
-              className="bg-green-100"
-              labelStyle={{ color: "white" }}
+              className="bg-green-50 dark:bg-green-900"
+              labelStyle={{ color: "#2b7860", fontWeight: 'bold', fontSize: 14 }}
             />
           ) : (
             <Avatar.Icon
-              size={32}
+              size={34}
               icon="account"
-              className="bg-green-100"
-              color="white"
+              className="bg-gray-100 dark:bg-gray-800"
+              color="#6B7280"
             />
           )}
         </TouchableRipple>

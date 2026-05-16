@@ -28,12 +28,8 @@ const MetricItem = ({ icon, value, label }: MetricItemProps) => {
     <Card className="flex-1">
       <Card.Content className="min-h-[128px] items-center justify-center p-4 gap-2">
         <Icon source={icon} size={28} className="text-green-100" />
-        <Text variant="headlineSmall" className="font-bold">
-          {value}
-        </Text>
-        <Text variant="bodyMedium" className="text-center">
-          {label}
-        </Text>
+        <Text className="font-bold">{value}</Text>
+        <Text className="text-center">{label}</Text>
       </Card.Content>
     </Card>
   );

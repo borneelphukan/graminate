@@ -41,26 +41,23 @@ const BudgetCard = ({
       <Card.Content className="flex-1 p-6">
         <View className="flex-row items-center mb-2 gap-2">
           <Icon
-            type={(icon) as any}
+            type={icon}
             size={24}
-            className={`${textColorClassName} opacity-80`}
+            className={`${textColorClassName}`}
           />
           <Text
-            variant="labelMedium"
-            className="uppercase text-black dark:text-white"
+            className="uppercase text-dark dark:text-light"
           >
             {title}
           </Text>
         </View>
         <Text
-          variant="headlineSmall"
           className={`mt-1 font-bold ${textColorClassName}`}
         >
           {formatCurrency(value)}
         </Text>
         <Text
-          variant="bodySmall"
-          className="mt-auto pt-2 opacity-90 text-gray-500"
+          className="mt-auto pt-2 text-dark dark:text-light"
         >
           {formattedDate}
         </Text>

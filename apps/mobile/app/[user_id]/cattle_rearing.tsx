@@ -3,17 +3,10 @@ import BudgetCard from "@/components/cards/BudgetCard";
 import ProjectTaskBoard from "@/components/tasks/ProjectTaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
-import {
-  CATTLE_FIELDS,
-  CattleFormData,
-} from "@/constants/formConfigs";
+import { CATTLE_FIELDS, CattleFormData } from "@/constants/formConfigs";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  endOfMonth,
-  isWithinInterval,
-  startOfMonth
-} from "date-fns";
+import { endOfMonth, isWithinInterval, startOfMonth } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -56,16 +49,18 @@ const CattleRearingScreen = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-
-
   const [cattleRecords, setCattleRecords] = useState<CattleApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingCattle, setLoadingCattle] = useState(true);
-  const [fullHistoricalData, setFullHistoricalData] = useState<DailyFinancialEntry[]>([]);
+  const [fullHistoricalData, setFullHistoricalData] = useState<
+    DailyFinancialEntry[]
+  >([]);
   const [isLoadingFinancials, setIsLoadingFinancials] = useState(true);
   const [showFinancials, setShowFinancials] = useState(true);
-  const [editingCattle, setEditingCattle] = useState<CattleApiData | null>(null);
+  const [editingCattle, setEditingCattle] = useState<CattleApiData | null>(
+    null,
+  );
 
   const memoizedBackIcon = useCallback(
     () => (
@@ -75,7 +70,7 @@ const CattleRearingScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const memoizedAddIcon = useCallback(
@@ -86,7 +81,7 @@ const CattleRearingScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -101,10 +96,10 @@ const CattleRearingScreen = () => {
         axiosInstance.get(`/expenses/user/${user_id}`),
       ]);
       const cattleSales = (salesRes.data.sales || []).filter(
-        (s: any) => s.occupation === TARGET_CATTLE_SUB_TYPE
+        (s: any) => s.occupation === TARGET_CATTLE_SUB_TYPE,
       );
       const cattleExpensesList = (expensesRes.data.expenses || []).filter(
-        (e: any) => e.occupation === TARGET_CATTLE_SUB_TYPE
+        (e: any) => e.occupation === TARGET_CATTLE_SUB_TYPE,
       );
 
       // Simple monthly aggregation just for the BudgetCards
@@ -114,10 +109,16 @@ const CattleRearingScreen = () => {
       let revenueTotal = 0;
       cattleSales.forEach((s: any) => {
         const saleDate = new Date(s.sales_date);
-        if (isWithinInterval(saleDate, { start: currentMonthStart, end: currentMonthEnd })) {
+        if (
+          isWithinInterval(saleDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
           const itemsCount = s.quantities_sold?.length || 0;
           for (let i = 0; i < itemsCount; i++) {
-            revenueTotal += (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
+            revenueTotal +=
+              (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
           }
         }
       });
@@ -126,8 +127,16 @@ const CattleRearingScreen = () => {
       let cogsTotal = 0;
       cattleExpensesList.forEach((e: any) => {
         const expenseDate = new Date(e.date_created);
-        if (isWithinInterval(expenseDate, { start: currentMonthStart, end: currentMonthEnd })) {
-          if (e.category === "Agricultural Feeds" || e.category === "Livestock") {
+        if (
+          isWithinInterval(expenseDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
+          if (
+            e.category === "Agricultural Feeds" ||
+            e.category === "Livestock"
+          ) {
             cogsTotal += e.expense || 0;
           } else {
             expensesTotal += e.expense || 0;
@@ -136,15 +145,19 @@ const CattleRearingScreen = () => {
       });
 
       // For BudgetCards display
-      setFullHistoricalData([{
-        date: today,
-        revenue: { total: revenueTotal, breakdown: [] },
-        cogs: { total: cogsTotal, breakdown: [] },
-        grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
-        expenses: { total: expensesTotal, breakdown: [] },
-        netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
-      } as any]);
-
+      setFullHistoricalData([
+        {
+          date: today,
+          revenue: { total: revenueTotal, breakdown: [] },
+          cogs: { total: cogsTotal, breakdown: [] },
+          grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
+          expenses: { total: expensesTotal, breakdown: [] },
+          netProfit: {
+            total: revenueTotal - cogsTotal - expensesTotal,
+            breakdown: [],
+          },
+        } as any,
+      ]);
     } catch {
       setFullHistoricalData([]);
     } finally {
@@ -159,7 +172,9 @@ const CattleRearingScreen = () => {
     }
     setLoadingCattle(true);
     try {
-      const response = await axiosInstance.get(`/cattle-rearing/user/${user_id}`);
+      const response = await axiosInstance.get(
+        `/cattle-rearing/user/${user_id}`,
+      );
       setCattleRecords(response.data.cattleRearings || []);
     } catch {
       setCattleRecords([]);
@@ -172,7 +187,7 @@ const CattleRearingScreen = () => {
     useCallback(() => {
       fetchCattle();
       fetchFinancialData();
-    }, [fetchCattle, fetchFinancialData])
+    }, [fetchCattle, fetchFinancialData]),
   );
 
   const handleAddOrUpdateCattle = async (formData: CattleFormData) => {
@@ -184,7 +199,10 @@ const CattleRearingScreen = () => {
         number_of_animals: Number(formData.number_of_animals),
       };
       if (editingCattle) {
-        await axiosInstance.put(`/cattle-rearing/update/${editingCattle.cattle_id}`, payload);
+        await axiosInstance.put(
+          `/cattle-rearing/update/${editingCattle.cattle_id}`,
+          payload,
+        );
       } else {
         await axiosInstance.post("/cattle-rearing/add", payload);
       }
@@ -198,9 +216,14 @@ const CattleRearingScreen = () => {
     const currentMonthStart = startOfMonth(today);
     const currentMonthEnd = endOfMonth(today);
     let totals = { revenue: 0, cogs: 0, expenses: 0 };
-    
+
     fullHistoricalData.forEach((entry) => {
-      if (isWithinInterval(entry.date, { start: currentMonthStart, end: currentMonthEnd })) {
+      if (
+        isWithinInterval(entry.date, {
+          start: currentMonthStart,
+          end: currentMonthEnd,
+        })
+      ) {
         totals.revenue += entry.revenue.total;
         totals.cogs += entry.cogs.total;
         totals.expenses += entry.expenses.total;
@@ -209,52 +232,52 @@ const CattleRearingScreen = () => {
 
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
- 
-     return [
-       {
-         title: "Cattle Revenue",
-         value: totals.revenue,
-         icon: "currency-inr",
-         className: "bg-green-100/10 dark:bg-green-900/20",
-         textColorClassName: "text-green-600 dark:text-green-400",
-       },
-       {
-         title: "Cattle COGS",
-         value: totals.cogs,
-         icon: "shopping-outline",
-         className: "bg-yellow-100/10 dark:bg-yellow-900/20",
-         textColorClassName: "text-yellow-600 dark:text-yellow-400",
-       },
-       {
-         title: "Gross Profit",
-         value: grossProfit,
-         icon: "chart-pie",
-         className: "bg-cyan-100/10 dark:bg-cyan-900/20",
-         textColorClassName: "text-cyan-600 dark:text-cyan-400",
-       },
-       {
-         title: "Expenses",
-         value: totals.expenses,
-         icon: "credit-card-outline",
-         className: "bg-red-100/10 dark:bg-red-900/20",
-         textColorClassName: "text-red-600 dark:text-red-400",
-       },
-       {
-         title: "Net Profit",
-         value: netProfit,
-         icon: "bank-outline",
-         className: "bg-blue-100/10 dark:bg-blue-900/20",
-         textColorClassName: "text-blue-600 dark:text-blue-400",
-       },
-     ];
-   }, [fullHistoricalData]);
+
+    return [
+      {
+        title: "Cattle Revenue",
+        value: totals.revenue,
+        icon: "currency-inr",
+        className: "bg-green-300 dark:bg-green-100",
+        textColorClassName: "text-dark dark:text-light",
+      },
+      {
+        title: "Cattle COGS",
+        value: totals.cogs,
+        icon: "shopping-outline",
+        className: "bg-yellow-300 dark:bg-yellow-100",
+        textColorClassName: "text-dark dark:text-light",
+      },
+      {
+        title: "Gross Profit",
+        value: grossProfit,
+        icon: "chart-pie",
+        className: "bg-cyan-300 dark:bg-cyan-100",
+        textColorClassName: "text-dark dark:text-light",
+      },
+      {
+        title: "Expenses",
+        value: totals.expenses,
+        icon: "credit-card-outline",
+        className: "bg-red-300 dark:bg-red-100",
+        textColorClassName: "text-dark dark:text-light",
+      },
+      {
+        title: "Net Profit",
+        value: netProfit,
+        icon: "bank-outline",
+        className: "bg-blue-300 dark:bg-blue-100",
+        textColorClassName: "text-blue-600 dark:text-blue-400",
+      },
+    ];
+  }, [fullHistoricalData]);
 
   const filteredCattleRecords = useMemo(() => {
     if (!searchQuery) return cattleRecords;
     return cattleRecords.filter((item) =>
       Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
     );
   }, [cattleRecords, searchQuery]);
 
@@ -280,6 +303,7 @@ const CattleRearingScreen = () => {
       <ScrollView className="bg-white dark:bg-dark">
         <View className="items-end px-4 pt-2">
           <Button
+            mode="text"
             icon={() => (
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
@@ -293,8 +317,8 @@ const CattleRearingScreen = () => {
           </Button>
         </View>
 
-        {showFinancials && (
-          isLoadingFinancials ? (
+        {showFinancials &&
+          (isLoadingFinancials ? (
             <ActivityIndicator className="my-4" />
           ) : (
             <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
@@ -311,8 +335,7 @@ const CattleRearingScreen = () => {
                 </View>
               ))}
             </View>
-          )
-        )}
+          ))}
 
         <Searchbar
           placeholder="Search Herds..."
@@ -334,35 +357,50 @@ const CattleRearingScreen = () => {
                 }}
                 className="mb-3"
               >
-                <Card.Title title={item.cattle_name} titleVariant="titleLarge" />
+                <Card.Title
+                  title={item.cattle_name}
+                  titleVariant="titleLarge"
+                />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
-                    <Text variant="bodyMedium">Type: {item.cattle_type || "N/A"}</Text>
-                    <Text variant="bodyMedium">Count: {item.number_of_animals}</Text>
+                    <Text>
+                      Type: {item.cattle_type || "N/A"}
+                    </Text>
+                    <Text>
+                      Count: {item.number_of_animals}
+                    </Text>
                   </View>
-                  <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
+                  <Text
+                    variant="bodySmall"
+                    className="text-gray-400 dark:text-gray-500"
+                  >
                     Purpose: {item.purpose || "N/A"}
                   </Text>
                 </Card.Content>
               </Card>
             ))
           ) : (
-            <Text className="text-center mt-10 p-4">No records found. Tap &apos;+&apos; to add your first herd.</Text>
+            <Text className="text-center mt-10 p-4">
+              No records found. Tap &apos;+&apos; to add your first herd.
+            </Text>
           )}
         </View>
 
         <View className="mt-8 pt-8 border-t border-[rgba(128,128,128,0.2)]">
           <View className="px-4 mb-4">
-            <Text variant="headlineSmall" className="font-bold">
+            <Text className="font-bold">
               Your Cattle Rearing Tasks
             </Text>
-            <Text variant="bodyMedium" className="text-gray-500 mt-1">
+            <Text className="text-gray-500 mt-1">
               All your cattle rearing tasks visualized
             </Text>
           </View>
-          <View className="bg-[rgba(128,128,128,0.05)] rounded-3xl py-4 mx-4">
+          <View className="bg-gray-800 rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
-              <ProjectTaskBoard userId={numericUserId} projectTitle="Cattle Rearing" />
+              <ProjectTaskBoard
+                userId={numericUserId}
+                projectTitle="Cattle Rearing"
+              />
             )}
           </View>
         </View>
@@ -384,7 +422,9 @@ const CattleRearingScreen = () => {
             ? {
                 cattle_name: editingCattle.cattle_name || "",
                 cattle_type: editingCattle.cattle_type || "",
-                number_of_animals: String(editingCattle.number_of_animals || ""),
+                number_of_animals: String(
+                  editingCattle.number_of_animals || "",
+                ),
                 purpose: editingCattle.purpose || "",
               }
             : {}

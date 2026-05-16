@@ -220,10 +220,10 @@ const FirstLoginModal = ({
         onDismiss={onClose}
         className="p-5 m-5 rounded-2xl bg-white dark:bg-dark-surface"
       >
-        <Text variant="titleLarge" className="mb-2">
+        <Text className="mb-2 font-bold">
           Setup Your Account
         </Text>
-        <Text variant="bodyMedium" className="mb-4">
+        <Text className="mb-4">
           Please provide your business details to continue.
         </Text>
         <TextInput
@@ -639,16 +639,15 @@ const DashboardScreen = () => {
         <ScrollView contentContainerClassName="p-4">
           <View className="flex-row justify-between items-start mb-4">
             <View>
-              <Text variant="headlineSmall">
+              <Text className="text-2xl font-bold">
                 {isUserDataLoading
                   ? "Loading..."
                   : `Hello ${userData?.first_name || "User"},`}
               </Text>
             </View>
             <View className="items-end">
-              <Text variant="titleMedium">{formatDate(currentDateTime)}</Text>
+              <Text>{formatDate(currentDateTime)}</Text>
               <Text
-                variant="bodyMedium"
                 className="text-gray-400 dark:text-gray-500"
               >
                 {formatTime(currentDateTime)}

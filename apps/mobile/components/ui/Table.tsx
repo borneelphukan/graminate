@@ -94,7 +94,7 @@ const MobileTable = ({
             ))
           ) : (
             <View className="p-5 items-center">
-              <Text variant="bodyMedium">No data found</Text>
+              <Text>No data found</Text>
             </View>
           )}
 

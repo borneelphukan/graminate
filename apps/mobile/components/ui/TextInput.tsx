@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text as RNText, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  Text as RNText,
+  TouchableOpacity,
+  TextInput as RNTextInput,
+} from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
-export const TextInput = ({ 
-  label, 
-  value, 
-  onChangeText, 
-  error, 
+export const TextInput = ({
+  label,
+  value,
+  onChangeText,
+  error,
   required,
   hint,
   secureTextEntry,
   right,
   left,
-  className = '',
+  className = "",
   style,
   placeholder,
   editable = true,
-  mode = 'outlined',
+  mode = "outlined",
   onFocus,
   onBlur,
-  ...rest 
+  ...rest
 }: any) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -38,39 +44,38 @@ export const TextInput = ({
   const actualSecureTextEntry = isPasswordField && !isPasswordVisible;
 
   // Determine colors based on state
+  const { darkMode } = useUserPreferences();
   const labelClass = error ? "text-red-500" : "text-dark dark:text-light";
-  const borderClass = error 
-    ? "border-red-500" 
-    : isFocused 
-      ? "border-emerald-600" 
+  const borderClass = error
+    ? "border-red-500"
+    : isFocused
+      ? "border-emerald-600"
       : "border-gray-300 dark:border-gray-700";
-  const bgClass = editable ? "bg-white dark:bg-gray-800" : "bg-gray-100 dark:bg-gray-900";
+  const bgClass = editable
+    ? "bg-light dark:bg-gray-800"
+    : "bg-light dark:bg-gray-600";
   const textClass = "text-black dark:text-white";
-  const placeholderColor = "#9ca3af"; // gray-400
+  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
 
   return (
     <View className={`my-1 w-full ${className}`} style={style}>
       {label && (
         <View className="flex-row items-center mb-1.5">
-          <RNText 
-            className={`font-medium text-sm ${labelClass}`}
-          >
+          <RNText className={`font-medium text-sm ${labelClass}`}>
             {label}
           </RNText>
-          {required && (
-            <RNText className="text-red-500 ml-1 text-sm">*</RNText>
-          )}
+          {required && <RNText className="text-red-500 ml-1 text-sm">*</RNText>}
         </View>
       )}
-      <View 
+      <View
         className={`flex-row items-center w-full px-3 py-2 rounded-lg border ${bgClass} ${borderClass}`}
-        style={{ 
+        style={{
           borderWidth: isFocused || error ? 1.5 : 1,
-          opacity: editable ? 1 : 0.7
+          opacity: editable ? 1 : 0.7,
         }}
       >
         {left && <View className="mr-2">{left}</View>}
-        <RNTextInput 
+        <RNTextInput
           value={value}
           placeholder={placeholder}
           onChangeText={onChangeText}
@@ -84,31 +89,29 @@ export const TextInput = ({
           {...rest}
         />
         {isPasswordField && !right && (
-          <TouchableOpacity 
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)} 
+          <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
             className="ml-2"
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons 
-              name={isPasswordVisible ? "eye-off" : "eye"} 
-              size={20} 
-              color="#9ca3af" 
+            <MaterialCommunityIcons
+              name={isPasswordVisible ? "eye-off" : "eye"}
+              size={20}
+              color={placeholderColor}
             />
           </TouchableOpacity>
         )}
         {right && <View className="ml-2">{right}</View>}
       </View>
-      {(hint || (typeof error === 'string' && error)) && (
+      {(hint || (typeof error === "string" && error)) && (
         <View className="flex-col gap-1 pt-1 px-1">
           {hint && (
             <RNText className="text-xs font-normal text-green-200">
               {hint}
             </RNText>
           )}
-          {typeof error === 'string' && error && (
-            <RNText className="text-xs text-red-200">
-              {error}
-            </RNText>
+          {typeof error === "string" && error && (
+            <RNText className="text-xs text-red-200">{error}</RNText>
           )}
         </View>
       )}
@@ -117,31 +120,45 @@ export const TextInput = ({
 };
 
 TextInput.Icon = ({ icon, onPress, color }: any) => {
+  const { darkMode } = useUserPreferences();
+  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
   const renderIcon = () => {
     if (!icon) return null;
-    const iconColor = color || "#9ca3af";
-    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={20} color={iconColor} />;
-    if (typeof icon === 'function') return icon({ color: iconColor, size: 20 });
+    const iconColor = color || placeholderColor;
+    if (typeof icon === "string")
+      return (
+        <MaterialCommunityIcons
+          name={icon as any}
+          size={20}
+          color={iconColor}
+        />
+      );
+    if (typeof icon === "function") return icon({ color: iconColor, size: 20 });
     return icon;
   };
-  return (
-    <TouchableOpacity onPress={onPress}>
-      {renderIcon()}
-    </TouchableOpacity>
-  );
+  return <TouchableOpacity onPress={onPress}>{renderIcon()}</TouchableOpacity>;
 };
 
-export const Searchbar = ({ value, onChangeText, placeholder, style, className = '', ...rest }: any) => {
+export const Searchbar = ({
+  value,
+  onChangeText,
+  placeholder,
+  style,
+  className = "",
+  ...rest
+}: any) => {
+  const { darkMode } = useUserPreferences();
+  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
   return (
-    <View 
-      className={`flex-row items-center border rounded-full px-4 py-2 my-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${className}`} 
+    <View
+      className={`flex-row items-center border rounded-full px-4 py-2 my-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${className}`}
       style={style}
     >
-      <MaterialCommunityIcons 
-        name="magnify" 
-        size={20} 
-        color="#9ca3af" 
-        style={{ marginRight: 8 }} 
+      <MaterialCommunityIcons
+        name="magnify"
+        size={20}
+        color={placeholderColor}
+        style={{ marginRight: 8 }}
       />
       <RNTextInput
         value={value}
@@ -149,7 +166,7 @@ export const Searchbar = ({ value, onChangeText, placeholder, style, className =
         onChangeText={onChangeText}
         className="flex-1 text-sm text-black dark:text-white"
         style={{ color: undefined }}
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor={placeholderColor}
         {...rest}
       />
     </View>

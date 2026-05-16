@@ -152,11 +152,10 @@ const PoultryFeedsScreen = () => {
     <Card onPress={() => handleEditRecord(item)} className="mb-3">
       <Card.Content>
         <View className="flex-row justify-between items-start mb-2">
-          <Text variant="titleMedium" className="flex-1 font-bold">
+          <Text className="flex-1 font-bold">
             {item.feed_given}
           </Text>
           <Text
-            variant="labelSmall"
             className="text-gray-500"
           >
             Logged: {format(parseISO(item.created_at), "MMM d, yyyy")}
@@ -168,7 +167,7 @@ const PoultryFeedsScreen = () => {
             size={16}
             className="text-gray-500"
           />
-          <Text variant="bodyMedium" className="ml-2">
+          <Text className="ml-2">
             {item.amount_given.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -182,7 +181,7 @@ const PoultryFeedsScreen = () => {
             size={16}
             className="text-gray-500"
           />
-          <Text variant="bodyMedium" className="ml-2">
+          <Text className="ml-2">
             {format(parseISO(item.feed_date), "PP")}
           </Text>
         </View>

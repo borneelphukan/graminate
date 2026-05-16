@@ -163,9 +163,12 @@ const AuthScreen = () => {
     setLoading(true);
     try {
       const response = await api.post("/user/login", { email, password });
-      const { access_token, user } = response.data;
+      const { access_token, user, login_id } = response.data;
       await AsyncStorage.setItem("accessToken", access_token);
       await AsyncStorage.setItem("user", JSON.stringify(user));
+      if (login_id) {
+        await AsyncStorage.setItem("loginId", String(login_id));
+      }
       Alert.alert("Success", "Logged in successfully!");
       router.replace(`/${user.user_id}`);
     } catch (error: any) {
@@ -242,7 +245,7 @@ const AuthScreen = () => {
   const OrSeparator = () => (
     <View className="flex-row items-center my-4">
       <Divider className="flex-1" />
-      <Text variant="labelMedium" className="mx-4 text-gray-400">
+      <Text className="mx-4 text-gray-400">
         OR
       </Text>
       <Divider className="flex-1" />
@@ -359,7 +362,7 @@ const AuthScreen = () => {
         Sign In
       </Button>
       <View className="flex-row justify-center items-center mt-auto pb-2">
-        <Text variant="bodyMedium" className="text-dark dark:text-light">Don&apos;t have an account?</Text>
+        <Text className="text-dark dark:text-light">Don&apos;t have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Sign Up
         </Button>
@@ -433,7 +436,7 @@ const AuthScreen = () => {
         iconUri="https://img.icons8.com/color/48/000000/google-logo.png"
       />
       <View className="flex-row justify-center items-center mt-auto pb-2">
-        <Text variant="bodyMedium" className="text-dark dark:text-light">Already have an account?</Text>
+        <Text className="text-dark dark:text-light">Already have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Log In
         </Button>

@@ -125,7 +125,7 @@ const AccountSettingsScreen = () => {
           <Dialog visible={true} onDismiss={() => setActiveModal(null)}>
             <Dialog.Title>Are you sure?</Dialog.Title>
             <Dialog.Content>
-              <Text variant="bodyMedium">
+              <Text>
                 This action cannot be undone. This will permanently delete your
                 account and all associated data.
               </Text>
@@ -202,7 +202,7 @@ const AccountSettingsScreen = () => {
             />
             <Dialog.Title>{popupContent.title}</Dialog.Title>
             <Dialog.Content>
-              <Text variant="bodyMedium">{popupContent.message}</Text>
+              <Text>{popupContent.message}</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={closeModal}>OK</Button>
@@ -235,7 +235,7 @@ const AccountSettingsScreen = () => {
         <Card>
           <Card.Content className="gap-4">
             <View>
-              <Text variant="titleMedium">Delete Account</Text>
+              <Text className="">Delete Account</Text>
               <Text
                 variant="bodyMedium"
                 className="text-gray-500"

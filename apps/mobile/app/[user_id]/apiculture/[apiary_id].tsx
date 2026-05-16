@@ -249,7 +249,7 @@ const ApicultureDetailPage = () => {
           </Card>
 
           <View className="gap-4">
-            <Text variant="headlineSmall">Hives in this Bee Yard</Text>
+            <Text className="text-2xl font-bold">Hives in this Bee Yard</Text>
             <Searchbar
               placeholder="Search Hives..."
               value={hiveSearchQuery}

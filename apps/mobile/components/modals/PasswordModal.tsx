@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import {
   Card,
   Divider,
@@ -25,58 +25,33 @@ const PasswordModal = ({
   children,
   footerContent,
 }: PasswordModalProps) => {
-
   if (!isOpen) {
     return null;
   }
 
   return (
     <Portal>
-      <Modal
-        visible={isOpen}
-        onDismiss={onClose}
-        contentContainerStyle={styles.modalContent}
-      >
+      <Modal visible={isOpen} onDismiss={onClose} className="m-5">
         <Card>
           {title && (
             <>
-              <View style={styles.header}>
-                <Text variant="titleLarge">{title}</Text>
+              <View className="flex-row justify-between items-center pl-6 pr-3 py-2">
+                <Text>{title}</Text>
                 <IconButton icon="close" size={24} onPress={onClose} />
               </View>
               <Divider />
             </>
           )}
-          <Card.Content style={styles.content}>{children}</Card.Content>
+          <Card.Content className="pt-6 pb-4">{children}</Card.Content>
           {footerContent && (
-            <Card.Actions style={styles.actions}>{footerContent}</Card.Actions>
+            <Card.Actions className="p-4 justify-end">
+              {footerContent}
+            </Card.Actions>
           )}
         </Card>
       </Modal>
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContent: {
-    margin: 20,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingLeft: 24,
-    paddingRight: 12,
-    paddingVertical: 8,
-  },
-  content: {
-    paddingTop: 24,
-    paddingBottom: 16,
-  },
-  actions: {
-    padding: 16,
-    justifyContent: "flex-end",
-  },
-});
 
 export default PasswordModal;

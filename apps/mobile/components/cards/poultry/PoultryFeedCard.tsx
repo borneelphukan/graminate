@@ -79,12 +79,9 @@ const FeedStatItem = ({
     <Card className="flex-1 w-full">
       <Card.Content className="p-4 items-center gap-1">
         <Icon source={icon} size={24} className="text-green-100" />
-        <Text variant="bodyLarge" className="text-center">
-          {label}
-        </Text>
+        <Text className="text-center">{label}</Text>
         {typeof value === "string" ? (
           <Text
-            variant="headlineSmall"
             className="font-bold"
             style={valueStyle}
           >
@@ -247,11 +244,8 @@ const PoultryFeedCard = ({
             size={48}
             className="text-gray-300 dark:text-gray-600"
           />
-          <Text variant="titleMedium">No Poultry Feed in Stock</Text>
-          <Text
-            variant="bodyMedium"
-            className="text-gray-400 dark:text-gray-500"
-          >
+          <Text className="font-bold">No Poultry Feed in Stock</Text>
+          <Text className="text-gray-400 dark:text-gray-500">
             Mark items as &quot;Feed&quot; in your inventory.
           </Text>
         </View>
@@ -274,7 +268,6 @@ const PoultryFeedCard = ({
               <Card key={metric.itemName} className="mb-3">
                 <Card.Content>
                   <Text
-                    variant="titleMedium"
                     className="mb-3 font-bold"
                     numberOfLines={1}
                   >
@@ -287,10 +280,8 @@ const PoultryFeedCard = ({
                         size={20}
                         className="text-green-100"
                       />
-                      <Text variant="labelLarge">
-                        {metric.currentStockDisplay}
-                      </Text>
-                      <Text variant="bodySmall">In Stock</Text>
+                      <Text>{metric.currentStockDisplay}</Text>
+                      <Text>In Stock</Text>
                     </View>
                     <View className="flex-1 items-center gap-1 px-1">
                       <Icon
@@ -298,10 +289,10 @@ const PoultryFeedCard = ({
                         size={20}
                         className="text-green-100"
                       />
-                      <Text variant="labelLarge">
+                      <Text>
                         {metric.avgDailyConsumptionKg.toFixed(2)} kg/day
                       </Text>
-                      <Text variant="bodySmall">Avg. Daily Use</Text>
+                      <Text>Avg. Daily Use</Text>
                     </View>
                     <View className="flex-1 items-center gap-1 px-1">
                       <Icon
@@ -315,7 +306,7 @@ const PoultryFeedCard = ({
                       >
                         {durationDisplay}
                       </Text>
-                      <Text variant="bodySmall">Est. Duration</Text>
+                      <Text>Est. Duration</Text>
                       {isFinite(metric.estimatedDurationDays) && (
                         <ProgressBar
                           progress={progress}

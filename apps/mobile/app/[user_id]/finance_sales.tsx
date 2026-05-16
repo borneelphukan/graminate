@@ -55,7 +55,7 @@ const SaleCard = ({ item }: { item: SaleRecord }) => {
         title={item.sales_name || "Untitled Sale"}
         subtitle={item.occupation || "Uncategorized"}
         right={() => (
-          <Text variant="titleMedium" className="text-green-100 dark:text-green-200 mr-4">
+          <Text className="text-green-100 dark:text-green-200 mr-4">
             {formatCurrency(totalAmount)}
           </Text>
         )}
@@ -66,7 +66,7 @@ const SaleCard = ({ item }: { item: SaleRecord }) => {
             <Icon type="calendar" size={16} className="text-gray-400 dark:text-gray-500" />
             <Text className="text-[13px]">{formatDate(item.sales_date)}</Text>
           </View>
-          <Text variant="labelSmall" className="text-gray-400 dark:text-gray-500">
+          <Text className="text-gray-400 dark:text-gray-500">
             {item.items_sold.length} item{item.items_sold.length !== 1 ? "s" : ""}
           </Text>
         </View>

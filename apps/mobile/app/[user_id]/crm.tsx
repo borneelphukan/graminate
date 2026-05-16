@@ -181,10 +181,7 @@ const ContractCard = ({
         )}
       />
       <Card.Content>
-        <Text
-          variant="bodyMedium"
-          className="text-gray-400 dark:text-gray-500"
-        >
+        <Text className="text-gray-400 dark:text-gray-500">
           Partner: {item.partner}
         </Text>
         <View className="flex-row justify-between items-center mt-3">
@@ -235,12 +232,24 @@ const ReceiptCard = ({
   );
 };
 
-const ProjectGroupCard = ({ group, onPress }: { group: ProjectGroup; onPress: () => void }) => (
+const ProjectGroupCard = ({
+  group,
+  onPress,
+}: {
+  group: ProjectGroup;
+  onPress: () => void;
+}) => (
   <Card className="mb-3" onPress={onPress}>
     <Card.Title
       title={group.title}
       right={() => (
-        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 16 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginRight: 16,
+          }}
+        >
           <Text className="mr-4 text-sm">
             {group.count} task{group.count !== 1 ? "s" : ""}
           </Text>
@@ -277,7 +286,9 @@ const CRM = () => {
   const [isReceiptFormVisible, setReceiptFormVisible] = useState(false);
   const [userProjects, setUserProjects] = useState<string[]>([]);
   const [allSales, setAllSales] = useState<any[]>([]);
-  const [selectedProjectTitle, setSelectedProjectTitle] = useState<string | null>(null);
+  const [selectedProjectTitle, setSelectedProjectTitle] = useState<
+    string | null
+  >(null);
 
   const fetchAllSales = useCallback(async () => {
     if (!user_id) return;
@@ -342,7 +353,7 @@ const CRM = () => {
         addText: "Receipt",
       },
     }),
-    [user_id]
+    [user_id],
   );
 
   // --- Logic and Functions (No Changes) ---
@@ -376,7 +387,7 @@ const CRM = () => {
         { value: "bill_to", label: "Bill To" },
       ],
     }),
-    []
+    [],
   );
 
   const handleSelectView = useCallback(
@@ -411,7 +422,7 @@ const CRM = () => {
         setData(
           Array.isArray(response.data?.[config.dataKey])
             ? response.data[config.dataKey]
-            : []
+            : [],
         );
       } catch {
         setError("An error occurred.");
@@ -420,7 +431,7 @@ const CRM = () => {
         setLoading(false);
       }
     },
-    [user_id, VIEW_CONFIG]
+    [user_id, VIEW_CONFIG],
   );
 
   useEffect(() => {
@@ -541,7 +552,7 @@ const CRM = () => {
           ? allSales.find(
               (s) =>
                 (s.sales_name || `Sale #${s.sales_id}`) ===
-                formData.linked_sale_id
+                formData.linked_sale_id,
             )?.sales_id
           : null,
       };
@@ -559,8 +570,8 @@ const CRM = () => {
     if (!searchQuery) return data;
     return data.filter((item) =>
       Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+        String(value).toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
     );
   }, [data, searchQuery]);
 
@@ -599,11 +610,14 @@ const CRM = () => {
 
   const groupedTasksData = useMemo(() => {
     if (view !== "tasks") return [];
-    const groups = (filteredData as Task[]).reduce((acc, task) => {
-      if (!acc[task.project]) acc[task.project] = [];
-      acc[task.project].push(task);
-      return acc;
-    }, {} as { [key: string]: Task[] });
+    const groups = (filteredData as Task[]).reduce(
+      (acc, task) => {
+        if (!acc[task.project]) acc[task.project] = [];
+        acc[task.project].push(task);
+        return acc;
+      },
+      {} as { [key: string]: Task[] },
+    );
     const mappedGroups = Object.keys(groups).map((key) => ({
       title: key,
       count: groups[key].length,
@@ -672,7 +686,7 @@ const CRM = () => {
       const itemType = view.charAt(0).toUpperCase() + view.slice(1, -1);
       Alert.alert(
         "Limit Reached",
-        `Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`
+        `Free users are limited to 15 ${itemType}s. Please upgrade to Standard or Pro for unlimited access.`,
       );
       return;
     }
@@ -694,7 +708,7 @@ const CRM = () => {
               router.push(
                 `/${user_id}/contacts/${
                   contact.contact_id
-                }?data=${encodeURIComponent(JSON.stringify(contact))}`
+                }?data=${encodeURIComponent(JSON.stringify(contact))}`,
               )
             }
           />
@@ -708,7 +722,7 @@ const CRM = () => {
               router.push(
                 `/${user_id}/companies/${
                   company.company_id
-                }?data=${encodeURIComponent(JSON.stringify(company))}`
+                }?data=${encodeURIComponent(JSON.stringify(company))}`,
               )
             }
           />
@@ -722,7 +736,7 @@ const CRM = () => {
               router.push(
                 `/${user_id}/contracts/${
                   contract.deal_id
-                }?data=${encodeURIComponent(JSON.stringify(contract))}`
+                }?data=${encodeURIComponent(JSON.stringify(contract))}`,
               )
             }
           />
@@ -736,7 +750,7 @@ const CRM = () => {
               router.push(
                 `/${user_id}/receipts/${
                   receipt.invoice_id
-                }?data=${encodeURIComponent(JSON.stringify(receipt))}`
+                }?data=${encodeURIComponent(JSON.stringify(receipt))}`,
               )
             }
           />
@@ -779,20 +793,29 @@ const CRM = () => {
       if (selectedProjectTitle) {
         return (
           <View className="flex-1 bg-white dark:bg-dark">
-            <View style={{ paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Button 
-                mode="text" 
-                compact 
-                icon="chevron-left" 
+            <View
+              style={{
+                paddingHorizontal: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <Button
+                mode="text"
+                compact
+                icon="chevron-left"
                 onPress={() => setSelectedProjectTitle(null)}
               >
                 Back
               </Button>
-              <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>{selectedProjectTitle}</Text>
+              <Text className="font-bold">
+                {selectedProjectTitle}
+              </Text>
             </View>
-            <ProjectTaskBoard 
-              userId={Number(user_id)} 
-              projectTitle={selectedProjectTitle} 
+            <ProjectTaskBoard
+              userId={Number(user_id)}
+              projectTitle={selectedProjectTitle}
             />
           </View>
         );
@@ -802,7 +825,7 @@ const CRM = () => {
         return (
           <View className="flex-1 justify-center items-center p-4 gap-4">
             <Icon
-              type={(VIEW_CONFIG[view].icon) as any}
+              type={VIEW_CONFIG[view].icon as any}
               size={64}
               className="text-gray-300 dark:text-gray-700"
             />
@@ -818,8 +841,8 @@ const CRM = () => {
         <FlatList<ProjectGroup>
           data={groupedTasksData}
           renderItem={({ item }) => (
-            <ProjectGroupCard 
-              group={item} 
+            <ProjectGroupCard
+              group={item}
               onPress={() => setSelectedProjectTitle(item.title)}
             />
           )}
@@ -835,7 +858,7 @@ const CRM = () => {
       return (
         <View className="flex-1 justify-center items-center p-4 gap-4">
           <Icon
-            type={(VIEW_CONFIG[view].icon) as any}
+            type={VIEW_CONFIG[view].icon as any}
             size={64}
             className="text-gray-300 dark:text-gray-700"
           />
@@ -861,18 +884,14 @@ const CRM = () => {
 
   return (
     <PlatformLayout>
-      <SafeAreaView
-        className="flex-1 bg-white dark:bg-dark"
-      >
-        <View
-          className="p-4 gap-4 border-b border-gray-400 dark:border-gray-600"
-        >
-          <Text variant="headlineMedium" className="mb-2">
+      <SafeAreaView className="flex-1 bg-white dark:bg-dark">
+        <View className="p-4 gap-4 border-b border-gray-400 dark:border-gray-600">
+          <Text className="mb-2">
             {VIEW_CONFIG[view].title}
           </Text>
 
           <View className="flex-row justify-between items-center">
-            <Text variant="labelMedium">
+            <Text>
               {resultCount} Result{resultCount !== 1 ? "s" : ""}
             </Text>
             <Menu
@@ -880,10 +899,13 @@ const CRM = () => {
               onDismiss={() => setSortMenuVisible(false)}
               anchor={
                 <Button
+                  mode="text"
                   onPress={() => setSortMenuVisible(true)}
                   icon={({ size, color }: any) => (
                     <Icon
-                      type={(sortOrder === "desc" ? "chevron-down" : "chevron-up")}
+                      type={
+                        sortOrder === "desc" ? "chevron-down" : "chevron-up"
+                      }
                       size={size}
                       color={color}
                     />

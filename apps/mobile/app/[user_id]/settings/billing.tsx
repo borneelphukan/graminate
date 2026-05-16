@@ -220,7 +220,7 @@ const BillingScreen = () => {
                 >
                   Next Transaction Date
                 </Text>
-                <Text variant="bodyMedium" className="mt-1">
+                <Text className="mt-1">
                   {plan === "FREE"
                     ? "—"
                     : hasPendingCancellation
@@ -321,7 +321,7 @@ const BillingScreen = () => {
                       {paginatedPayments.map((payment) => (
                         <DataTable.Row key={payment.payment_id} className="border-b border-gray-100 dark:border-gray-800">
                           <DataTable.Cell style={{ width: 200, paddingLeft: 8 }}>
-                            <Text variant="bodySmall" className="font-medium">
+                            <Text className="font-medium">
                               {payment.razorpay_payment_id || "—"}
                             </Text>
                           </DataTable.Cell>
@@ -332,7 +332,7 @@ const BillingScreen = () => {
                             </Text>
                           </DataTable.Cell>
                           <DataTable.Cell style={{ width: 220 }}>
-                            <Text variant="bodySmall">
+                            <Text>
                               {payment.created_at
                                 ? format(new Date(payment.created_at), "MMM dd, yyyy HH:mm")
                                 : "—"}

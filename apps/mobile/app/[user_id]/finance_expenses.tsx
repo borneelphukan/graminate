@@ -51,7 +51,7 @@ const ExpenseCard = ({ item }: { item: ExpenseRecord }) => {
         title={item.title}
         subtitle={item.occupation || "General"}
         right={() => (
-          <Text variant="titleMedium" className="text-red-600 dark:text-red-400 mr-4">
+          <Text className="text-red-600 dark:text-red-400 mr-4">
             {formatCurrency(item.expense)}
           </Text>
         )}

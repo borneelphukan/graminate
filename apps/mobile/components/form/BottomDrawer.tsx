@@ -63,7 +63,7 @@ export type FormField = {
   numberOfLines?: number;
   keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
   disabled?: boolean;
-  subFields?: FormField[]; // For dynamic-list
+  subFields?: FormField[];
 };
 
 type BottomDrawerProps = {
@@ -451,9 +451,7 @@ export const BottomDrawer = ({
         : [{}];
       return (
         <View key={field.name} className="w-full">
-          <Text variant="titleMedium" className="mt-4 mb-2 font-bold">
-            {field.label}
-          </Text>
+          <Text className="mt-4 mb-2 font-bold">{field.label}</Text>
           {items.map((item: any, itemIndex: number) => (
             <Surface
               key={`${field.name}-${itemIndex}`}
@@ -461,7 +459,7 @@ export const BottomDrawer = ({
               elevation={1}
             >
               <View className="flex-row justify-between items-center mb-2">
-                <Text variant="labelLarge">
+                <Text>
                   {field.label} #{itemIndex + 1}
                 </Text>
                 {items.length > 1 && (
@@ -478,7 +476,7 @@ export const BottomDrawer = ({
               <View className="gap-2">
                 {field.subFields?.map((subField) => {
                   const subFieldName = subField.name;
-                  // We need a modified handleInputChange for subfields
+
                   const handleSubInputChange = (val: any) =>
                     handleDynamicListChange(
                       field.name,
@@ -487,13 +485,11 @@ export const BottomDrawer = ({
                       val
                     );
 
-                  // Create a temporary field object for rendering
                   const tempField: FormField = {
                     ...subField,
                     name: `${field.name}-${itemIndex}-${subFieldName}`,
                   };
 
-                  // Render the subfield with overridden props
                   return (
                     <View
                       key={tempField.name}
@@ -846,12 +842,12 @@ export const BottomDrawer = ({
               }}
             >
               <Surface
-                className="rounded-t-[24px] overflow-hidden bg-white dark:bg-dark-surface border-t border-gray-400 dark:border-gray-600"
+                className="rounded-t-3xl overflow-hidden bg-white border-t border-gray-400 dark:border-gray-600"
                 style={{ maxHeight: SCREEN_HEIGHT * 0.85 }}
                 elevation={0}
               >
                 <View className="items-center py-3">
-                  <View className="w-10 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700" />
+                  <View className="w-10 h-1.5 rounded-full bg-gray-400 dark:bg-gray-700" />
                 </View>
 
                 <Appbar.Header 
@@ -859,8 +855,7 @@ export const BottomDrawer = ({
                   className="h-12 px-2 bg-white dark:bg-dark-surface border-b border-gray-400 dark:border-gray-800"
                 >
                   <Appbar.Content 
-                    title={title} 
-                    titleStyle={{ fontSize: 20, fontWeight: "700" }} 
+                    title={title}
                   />
                   
                 </Appbar.Header>

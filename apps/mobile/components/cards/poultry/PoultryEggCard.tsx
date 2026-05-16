@@ -88,12 +88,12 @@ const MetricItem = ({
             className="h-8 w-[90px] rounded-lg bg-gray-200 dark:bg-gray-700"
           />
         ) : (
-          <Text variant="headlineSmall" className="font-bold">
+          <Text className="font-bold">
             {value}
           </Text>
         )}
-        <Text variant="bodyMedium" className="text-center">
-          {label} {isLatest && <Text variant="labelSmall">(Last Entry)</Text>}
+        <Text className="text-center">
+          {label} {isLatest && <Text>(Last Entry)</Text>}
         </Text>
       </Card.Content>
     </Card>
@@ -272,10 +272,10 @@ const PoultryEggCard = ({
       return (
         <View className="flex-1 justify-center items-center min-h-[300px] p-4 gap-3">
           <Icon source="alert-circle" className="text-red-500" size={48} />
-          <Text variant="titleMedium" className="text-red-500">
+          <Text className="text-red-500">
             Error loading egg data
           </Text>
-          <Text variant="bodyMedium" className="text-center">
+          <Text className="text-center">
             {error}
           </Text>
         </View>
@@ -341,11 +341,10 @@ const PoultryEggCard = ({
               className="text-gray-300 dark:text-gray-600"
               size={48}
             />
-            <Text variant="titleMedium" className="text-center">
+            <Text className="text-center">
               No egg collection data for this period.
             </Text>
             <Text
-              variant="bodyMedium"
               className="text-gray-400 dark:text-gray-500 text-center"
             >
               Try logging collections or changing filters.
@@ -406,7 +405,7 @@ const PoultryEggCard = ({
     <Card className="flex-1">
       <Card.Content>
         <View className="gap-4 mb-2">
-          <Text variant="titleLarge" className="text-center">
+          <Text className="text-center">
             Egg Collection & Grading
           </Text>
           <SegmentedButtons

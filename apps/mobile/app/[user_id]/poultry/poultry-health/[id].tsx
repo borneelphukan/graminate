@@ -138,7 +138,7 @@ const PoultryHealthDetailsScreen = () => {
           <Appbar.Content title="Error" />
         </Appbar.Header>
         <View className="flex-1 justify-center items-center p-4">
-          <Text variant="titleLarge" className="text-red-600">
+          <Text className="text-red-600">
             Record Not Found
           </Text>
           <Button onPress={() => router.back()} className="mt-4">

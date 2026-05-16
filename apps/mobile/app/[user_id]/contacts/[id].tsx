@@ -294,7 +294,7 @@ Email: ${formData.email || "N/A"}
           keyboardShouldPersistTaps="handled"
         >
           <View className="items-center pt-4 pb-2">
-            <Text variant="headlineMedium">
+            <Text className="text-2xl font-bold">
               {`${formData.firstName} ${formData.lastName}`.trim()}
             </Text>
           </View>

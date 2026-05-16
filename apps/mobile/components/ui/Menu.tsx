@@ -9,7 +9,7 @@ export const Menu = ({ visible, onDismiss, anchor, children }: any) => {
       {visible && (
         <RNModal visible={visible} transparent animationType="none" onRequestClose={onDismiss}>
           <Pressable className="flex-1" onPress={onDismiss}>
-            <View className="absolute top-24 right-4 min-w-[150px] bg-white dark:bg-[#252526] border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl py-1">
+            <View className="absolute top-24 right-4 min-w-[150px] bg-white dark:bg-dark border border-gray-400 dark:border-gray-700 rounded-lg py-1">
               {children}
             </View>
           </Pressable>

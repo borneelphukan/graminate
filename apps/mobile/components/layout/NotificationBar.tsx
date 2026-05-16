@@ -7,8 +7,8 @@ import {
   FlatList,
   Modal,
   SafeAreaView,
-  StyleSheet,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   View,
 } from "react-native";
 import {
@@ -30,7 +30,7 @@ type NotificationBarProps = {
 };
 
 const screenWidth = Dimensions.get("window").width;
-const barWidth = Math.min(screenWidth * 0.85, 350);
+const barWidth = Math.min(screenWidth * 0.85, 360);
 
 const NotificationBar = ({
   notifications,
@@ -45,10 +45,11 @@ const NotificationBar = ({
 
   useEffect(() => {
     if (isOpen) {
-      Animated.timing(slideAnim, {
+      Animated.spring(slideAnim, {
         toValue: 0,
-        duration: 250,
         useNativeDriver: true,
+        friction: 8,
+        tension: 40,
       }).start();
     }
   }, [isOpen, slideAnim]);
@@ -63,8 +64,6 @@ const NotificationBar = ({
     });
   };
 
-const styles = StyleSheet.create({});
-
   return (
     <Modal
       transparent={true}
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({});
       onRequestClose={handleClose}
     >
       <TouchableWithoutFeedback onPress={handleClose}>
-        <View className="flex-1 bg-black/50">
+        <View className="flex-1 bg-black/40">
           <Animated.View
             style={{
               position: "absolute",
@@ -85,56 +84,55 @@ const styles = StyleSheet.create({});
             }}
           >
             <TouchableWithoutFeedback>
-              <Surface className="flex-1 bg-white dark:bg-dark-surface elevation-lg">
+              <Surface className="flex-1 bg-white dark:bg-dark-surface elevation-none border-l border-gray-100 dark:border-gray-800">
                 <SafeAreaView className="flex-1">
-                  <View className="flex-row items-center justify-between px-4 py-2">
-                    <Text variant="titleLarge">Notifications</Text>
-                    <IconButton
-                      icon={() => (
-                        <Icon
-                          type={"close" as any}
-                          size={24}
-                          className="text-gray-400 dark:text-gray-500"
-                        />
-                      )}
+                  <View className="flex-row items-center justify-between px-6 py-5">
+                    <Text className="font-black tracking-tighter">
+                      Notifications
+                    </Text>
+                    <TouchableOpacity 
                       onPress={handleClose}
-                    />
-                  </View>
-
-                  <Divider />
-
-                  <View className="flex-row justify-end items-center px-2">
-                    <Button
-                      onPress={onClearAll}
-                      textColor="#ef4444"
-                      icon={() => (
-                        <Icon
-                          type={"delete" as any}
-                          size={18}
-                          className="text-red-500"
-                        />
-                      )}
+                      className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 items-center justify-center"
                     >
-                      Clear All
-                    </Button>
-                    <IconButton
-                      icon={() => (
-                        <Icon
-                          type={"cog" as any}
-                          size={20}
-                          className="text-gray-400 dark:text-gray-500"
-                        />
-                      )}
-                      onPress={onSettings}
-                    />
+                      <Icon type="close" size={18} className="text-gray-400" />
+                    </TouchableOpacity>
                   </View>
 
-                  <Divider />
+                  <View className="flex-row items-center justify-between px-6 py-2">
+                    <Text className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                      {notifications.length} Unread
+                    </Text>
+                    <View className="flex-row items-center gap-1">
+                      <Button
+                        onPress={onClearAll}
+                        compact
+                        mode="text"
+                        textColor="#ef4444"
+                        labelStyle={{ fontSize: 12, fontWeight: 'bold' }}
+                      >
+                        Clear All
+                      </Button>
+                      <TouchableOpacity 
+                        onPress={onSettings}
+                        className="w-8 h-8 items-center justify-center"
+                      >
+                        <Icon type="cog" size={18} className="text-gray-400" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <Divider className="mx-6 opacity-30" />
 
                   {notifications.length === 0 ? (
-                    <View className="flex-1 items-center justify-center p-4">
-                      <Text className="text-gray-400 dark:text-gray-600 text-center">
-                        You don’t have any notifications
+                    <View className="flex-1 items-center justify-center p-10">
+                      <View className="w-16 h-16 rounded-3xl bg-gray-50 dark:bg-gray-800 items-center justify-center mb-4">
+                        <Icon type="bell-off-outline" size={32} className="text-gray-300 dark:text-gray-700" />
+                      </View>
+                      <Text className="text-gray-500 dark:text-gray-400 text-center font-medium">
+                        All caught up!
+                      </Text>
+                      <Text className="text-gray-400 dark:text-gray-600 text-center text-xs mt-1">
+                        Your notifications will appear here
                       </Text>
                     </View>
                   ) : (
@@ -145,6 +143,7 @@ const styles = StyleSheet.create({});
                         <Notification {...item} onRemove={onRemove} darkMode={darkMode} />
                       )}
                       contentContainerClassName="p-4"
+                      showsVerticalScrollIndicator={false}
                     />
                   )}
                 </SafeAreaView>
@@ -158,3 +157,4 @@ const styles = StyleSheet.create({});
 };
 
 export default NotificationBar;
+
