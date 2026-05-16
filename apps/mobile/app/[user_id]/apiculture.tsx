@@ -6,11 +6,7 @@ import { APICULTURE_FIELDS, ApicultureFormData } from "@/constants/formConfigs";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  endOfMonth,
-  isWithinInterval,
-  startOfMonth,
-} from "date-fns";
+import { endOfMonth, isWithinInterval, startOfMonth } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -57,16 +53,20 @@ const ApicultureScreen = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-
-
-  const [apicultureRecords, setApicultureRecords] = useState<ExistingApiaryData[]>([]);
+  const [apicultureRecords, setApicultureRecords] = useState<
+    ExistingApiaryData[]
+  >([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingApiculture, setLoadingApiculture] = useState(true);
-  const [fullHistoricalData, setFullHistoricalData] = useState<DailyFinancialEntry[]>([]);
+  const [fullHistoricalData, setFullHistoricalData] = useState<
+    DailyFinancialEntry[]
+  >([]);
   const [isLoadingFinancials, setIsLoadingFinancials] = useState(true);
   const [showFinancials, setShowFinancials] = useState(true);
-  const [editingApiary, setEditingApiary] = useState<ExistingApiaryData | null>(null);
+  const [editingApiary, setEditingApiary] = useState<ExistingApiaryData | null>(
+    null,
+  );
 
   const memoizedBackIcon = useCallback(
     () => (
@@ -76,7 +76,7 @@ const ApicultureScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const memoizedAddIcon = useCallback(
@@ -87,7 +87,7 @@ const ApicultureScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -102,10 +102,10 @@ const ApicultureScreen = () => {
         axiosInstance.get(`/expenses/user/${user_id}`),
       ]);
       const apicultureSales = (salesRes.data.sales || []).filter(
-        (s: any) => s.occupation === TARGET_APICULTURE_SUB_TYPE
+        (s: any) => s.occupation === TARGET_APICULTURE_SUB_TYPE,
       );
       const apicultureExpensesList = (expensesRes.data.expenses || []).filter(
-        (e: any) => e.occupation === TARGET_APICULTURE_SUB_TYPE
+        (e: any) => e.occupation === TARGET_APICULTURE_SUB_TYPE,
       );
 
       const currentMonthStart = startOfMonth(today);
@@ -114,10 +114,16 @@ const ApicultureScreen = () => {
       let revenueTotal = 0;
       apicultureSales.forEach((s: any) => {
         const saleDate = new Date(s.sales_date);
-        if (isWithinInterval(saleDate, { start: currentMonthStart, end: currentMonthEnd })) {
+        if (
+          isWithinInterval(saleDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
           const itemsCount = s.quantities_sold?.length || 0;
           for (let i = 0; i < itemsCount; i++) {
-            revenueTotal += (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
+            revenueTotal +=
+              (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
           }
         }
       });
@@ -126,7 +132,12 @@ const ApicultureScreen = () => {
       let cogsTotal = 0;
       apicultureExpensesList.forEach((e: any) => {
         const expenseDate = new Date(e.date_created);
-        if (isWithinInterval(expenseDate, { start: currentMonthStart, end: currentMonthEnd })) {
+        if (
+          isWithinInterval(expenseDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
           const cogsCategories = ["Beehives", "Queen Bees", "Sugar Feed"];
           if (cogsCategories.includes(e.category)) {
             cogsTotal += e.expense || 0;
@@ -136,14 +147,19 @@ const ApicultureScreen = () => {
         }
       });
 
-      setFullHistoricalData([{
-        date: today,
-        revenue: { total: revenueTotal, breakdown: [] },
-        cogs: { total: cogsTotal, breakdown: [] },
-        grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
-        expenses: { total: expensesTotal, breakdown: [] },
-        netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
-      } as any]);
+      setFullHistoricalData([
+        {
+          date: today,
+          revenue: { total: revenueTotal, breakdown: [] },
+          cogs: { total: cogsTotal, breakdown: [] },
+          grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
+          expenses: { total: expensesTotal, breakdown: [] },
+          netProfit: {
+            total: revenueTotal - cogsTotal - expensesTotal,
+            breakdown: [],
+          },
+        } as any,
+      ]);
     } catch {
       setFullHistoricalData([]);
     } finally {
@@ -171,7 +187,7 @@ const ApicultureScreen = () => {
     useCallback(() => {
       fetchApiculture();
       fetchFinancialData();
-    }, [fetchApiculture, fetchFinancialData])
+    }, [fetchApiculture, fetchFinancialData]),
   );
 
   const handleAddOrUpdateApiary = async (formData: ApicultureFormData) => {
@@ -184,7 +200,10 @@ const ApicultureScreen = () => {
         area: formData.area ? Number(formData.area) : null,
       };
       if (editingApiary && editingApiary.apiary_id) {
-        await axiosInstance.put(`/apiculture/update/${editingApiary.apiary_id}`, payload);
+        await axiosInstance.put(
+          `/apiculture/update/${editingApiary.apiary_id}`,
+          payload,
+        );
       } else {
         await axiosInstance.post("/apiculture/add", payload);
       }
@@ -198,9 +217,14 @@ const ApicultureScreen = () => {
     const currentMonthStart = startOfMonth(today);
     const currentMonthEnd = endOfMonth(today);
     let totals = { revenue: 0, cogs: 0, expenses: 0 };
-    
+
     fullHistoricalData.forEach((entry) => {
-      if (isWithinInterval(entry.date, { start: currentMonthStart, end: currentMonthEnd })) {
+      if (
+        isWithinInterval(entry.date, {
+          start: currentMonthStart,
+          end: currentMonthEnd,
+        })
+      ) {
         totals.revenue += entry.revenue.total;
         totals.cogs += entry.cogs.total;
         totals.expenses += entry.expenses.total;
@@ -209,52 +233,52 @@ const ApicultureScreen = () => {
 
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
- 
-     return [
-       {
-         title: "Apiary Revenue",
-         value: totals.revenue,
-         icon: "currency-inr",
-         className: "bg-green-100/10 dark:bg-green-900/20",
-         textColorClassName: "text-green-600 dark:text-green-400",
-       },
-       {
-         title: "Apiary COGS",
-         value: totals.cogs,
-         icon: "shopping-outline",
-         className: "bg-yellow-100/10 dark:bg-yellow-900/20",
-         textColorClassName: "text-yellow-600 dark:text-yellow-400",
-       },
-       {
-         title: "Gross Profit",
-         value: grossProfit,
-         icon: "chart-pie",
-         className: "bg-cyan-100/10 dark:bg-cyan-900/20",
-         textColorClassName: "text-cyan-600 dark:text-cyan-400",
-       },
-       {
-         title: "Expenses",
-         value: totals.expenses,
-         icon: "credit-card-outline",
-         className: "bg-red-100/10 dark:bg-red-900/20",
-         textColorClassName: "text-red-600 dark:text-red-400",
-       },
-       {
-         title: "Net Profit",
-         value: netProfit,
-         icon: "bank-outline",
-         className: "bg-blue-100/10 dark:bg-blue-900/20",
-         textColorClassName: "text-blue-600 dark:text-blue-400",
-       },
-     ];
-   }, [fullHistoricalData]);
+
+    return [
+      {
+        title: "Apiary Revenue",
+        value: totals.revenue,
+        icon: "currency-inr",
+        className: "bg-green-100/10 dark:bg-green-900/20",
+        textColorClassName: "text-green-600 dark:text-green-400",
+      },
+      {
+        title: "Apiary COGS",
+        value: totals.cogs,
+        icon: "shopping-outline",
+        className: "bg-yellow-100/10 dark:bg-yellow-900/20",
+        textColorClassName: "text-yellow-600 dark:text-yellow-400",
+      },
+      {
+        title: "Gross Profit",
+        value: grossProfit,
+        icon: "chart-pie",
+        className: "bg-cyan-100/10 dark:bg-cyan-900/20",
+        textColorClassName: "text-cyan-600 dark:text-cyan-400",
+      },
+      {
+        title: "Expenses",
+        value: totals.expenses,
+        icon: "credit-card-outline",
+        className: "bg-red-100/10 dark:bg-red-900/20",
+        textColorClassName: "text-red-600 dark:text-red-400",
+      },
+      {
+        title: "Net Profit",
+        value: netProfit,
+        icon: "bank-outline",
+        className: "bg-blue-100/10 dark:bg-blue-900/20",
+        textColorClassName: "text-blue-600 dark:text-blue-400",
+      },
+    ];
+  }, [fullHistoricalData]);
 
   const filteredApicultureRecords = useMemo(() => {
     if (!searchQuery) return apicultureRecords;
     return apicultureRecords.filter((item) =>
       Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
     );
   }, [apicultureRecords, searchQuery]);
 
@@ -282,6 +306,7 @@ const ApicultureScreen = () => {
       <ScrollView className="bg-white dark:bg-dark">
         <View className="items-end px-4 pt-2">
           <Button
+            mode="text"
             icon={() => (
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
@@ -295,8 +320,8 @@ const ApicultureScreen = () => {
           </Button>
         </View>
 
-        {showFinancials && (
-          isLoadingFinancials ? (
+        {showFinancials &&
+          (isLoadingFinancials ? (
             <ActivityIndicator className="my-4" />
           ) : (
             <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
@@ -313,8 +338,7 @@ const ApicultureScreen = () => {
                 </View>
               ))}
             </View>
-          )
-        )}
+          ))}
 
         <Searchbar
           placeholder="Search Bee Yards..."
@@ -336,11 +360,16 @@ const ApicultureScreen = () => {
                 }}
                 className="mb-3"
               >
-                <Card.Title title={item.apiary_name} titleVariant="titleLarge" />
+                <Card.Title
+                  title={item.apiary_name}
+                  titleVariant="titleLarge"
+                />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
                     <Text>Hives: {item.number_of_hives}</Text>
-                    <Text>Area: {item.area != null ? `${item.area}m²` : "N/A"}</Text>
+                    <Text>
+                      Area: {item.area != null ? `${item.area}m²` : "N/A"}
+                    </Text>
                   </View>
                   <Text className="text-gray-400 dark:text-gray-500">
                     Species: {item.bee_species || "N/A"}
@@ -349,22 +378,25 @@ const ApicultureScreen = () => {
               </Card>
             ))
           ) : (
-            <Text className="text-center mt-10 p-4">No bee yards found. Tap &apos;+&apos; to add your first yard.</Text>
+            <Text className="text-center mt-10 p-4">
+              No bee yards found. Tap &apos;+&apos; to add your first yard.
+            </Text>
           )}
         </View>
 
         <View className="mt-8 pt-8 border-t border-[rgba(128,128,128,0.2)]">
           <View className="px-4 mb-4">
-            <Text className="font-bold">
-              Your Apiculture Tasks
-            </Text>
+            <Text className="font-bold">Your Apiculture Tasks</Text>
             <Text className="text-gray-500 mt-1">
               All your apiculture tasks visualized
             </Text>
           </View>
           <View className="bg-gray-800 rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
-              <ProjectTaskBoard userId={numericUserId} projectTitle="Apiculture" />
+              <ProjectTaskBoard
+                userId={numericUserId}
+                projectTitle="Apiculture"
+              />
             )}
           </View>
         </View>
@@ -384,15 +416,20 @@ const ApicultureScreen = () => {
         }}
         title={editingApiary ? "Edit Bee Yard" : "Add New Bee Yard"}
         fields={APICULTURE_FIELDS}
-        initialValues={editingApiary ? {
-          apiary_name: editingApiary.apiary_name || "",
-          number_of_hives: String(editingApiary.number_of_hives || ""),
-          bee_species: editingApiary.bee_species || "",
-          hive_type: editingApiary.hive_type || "",
-          queen_source: editingApiary.queen_source || "",
-          area: editingApiary.area != null ? String(editingApiary.area) : "",
-          notes: editingApiary.notes || "",
-        } : undefined}
+        initialValues={
+          editingApiary
+            ? {
+                apiary_name: editingApiary.apiary_name || "",
+                number_of_hives: String(editingApiary.number_of_hives || ""),
+                bee_species: editingApiary.bee_species || "",
+                hive_type: editingApiary.hive_type || "",
+                queen_source: editingApiary.queen_source || "",
+                area:
+                  editingApiary.area != null ? String(editingApiary.area) : "",
+                notes: editingApiary.notes || "",
+              }
+            : undefined
+        }
         onSubmit={handleAddOrUpdateApiary}
         submitButtonText={editingApiary ? "Update Bee Yard" : "Save Bee Yard"}
       />

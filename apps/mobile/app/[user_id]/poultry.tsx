@@ -97,7 +97,7 @@ const generateDailyFinancialData = (
   count: number,
   baseSubTypes: string[],
   actualSalesData?: Map<string, MetricBreakdown>,
-  actualProcessedExpenses?: Map<string, ProcessedExpensesForDay>
+  actualProcessedExpenses?: Map<string, ProcessedExpensesForDay>,
 ): DailyFinancialEntry[] => {
   const data: DailyFinancialEntry[] = [];
   let loopDate = subDaysDateFns(today, count - 1);
@@ -131,7 +131,7 @@ const generateDailyFinancialData = (
             ?.value || 0) -
           (dailyEntry.cogs!.breakdown.find((b) => b.name === occName)?.value ||
             0),
-      })
+      }),
     );
     dailyEntry.grossProfit = {
       total: grossProfitTotal,
@@ -155,8 +155,6 @@ const PoultryScreen = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
-
-
   const [flockRecords, setFlockRecords] = useState<FlockApiData[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -175,7 +173,7 @@ const PoultryScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const memoizedAddIcon = useCallback(
@@ -186,20 +184,20 @@ const PoultryScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const processSalesData = useCallback(
     (sales: SaleRecord[]): Map<string, MetricBreakdown> => {
       return new Map();
     },
-    []
+    [],
   );
   const processExpensesData = useCallback(
     (expenses: ExpenseRecord[]): Map<string, ProcessedExpensesForDay> => {
       return new Map();
     },
-    []
+    [],
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -212,14 +210,14 @@ const PoultryScreen = () => {
       const [salesResponse, expensesResponse] = await Promise.all([
         axiosInstance.get<{ sales: SaleRecord[] }>(`/sales/user/${user_id}`),
         axiosInstance.get<{ expenses: ExpenseRecord[] }>(
-          `/expenses/user/${user_id}`
+          `/expenses/user/${user_id}`,
         ),
       ]);
       const poultrySales = (salesResponse.data.sales || []).filter(
-        (s) => s.occupation === TARGET_POULTRY_SUB_TYPE
+        (s) => s.occupation === TARGET_POULTRY_SUB_TYPE,
       );
       const poultryExpenses = (expensesResponse.data.expenses || []).filter(
-        (e) => e.occupation === TARGET_POULTRY_SUB_TYPE
+        (e) => e.occupation === TARGET_POULTRY_SUB_TYPE,
       );
       const processedSales = processSalesData(poultrySales);
       const processedExpenses = processExpensesData(poultryExpenses);
@@ -227,7 +225,7 @@ const PoultryScreen = () => {
         TOTAL_DAYS_FOR_HISTORICAL_DATA,
         [TARGET_POULTRY_SUB_TYPE],
         processedSales,
-        processedExpenses
+        processedExpenses,
       );
       setFullHistoricalData(generatedData);
     } catch {
@@ -258,7 +256,7 @@ const PoultryScreen = () => {
     useCallback(() => {
       fetchFlocks();
       fetchFinancialData();
-    }, [fetchFlocks, fetchFinancialData])
+    }, [fetchFlocks, fetchFinancialData]),
   );
 
   const handleAddFlock = async (formData: FlockFormData) => {
@@ -271,8 +269,7 @@ const PoultryScreen = () => {
       };
       await axiosInstance.post("/flock", payload);
       await fetchFlocks();
-    } catch {
-    }
+    } catch {}
   };
 
   const handleRowClick = (item: FlockApiData) =>
@@ -296,7 +293,7 @@ const PoultryScreen = () => {
     });
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
-    
+
     return [
       {
         title: "Poultry Revenue",
@@ -340,18 +337,15 @@ const PoultryScreen = () => {
     if (!searchQuery) return flockRecords;
     return flockRecords.filter((item) =>
       Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
     );
   }, [flockRecords, searchQuery]);
 
   return (
     <PlatformLayout>
       <Appbar.Header>
-        <Appbar.Action
-          icon={memoizedBackIcon}
-          onPress={() => router.back()}
-        />
+        <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
           title="Poultry Flocks"
           titleStyle={{ fontWeight: "bold" }}
@@ -369,6 +363,7 @@ const PoultryScreen = () => {
       <ScrollView className="bg-white dark:bg-dark">
         <View className="items-end px-4 pt-2">
           <Button
+            mode="text"
             icon={() => (
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
@@ -422,9 +417,7 @@ const PoultryScreen = () => {
                     <Text>Type: {item.flock_type}</Text>
                     <Text>Qty: {item.quantity}</Text>
                   </View>
-                  <Text
-                    className="text-gray-400 dark:text-gray-500"
-                  >
+                  <Text className="text-gray-400 dark:text-gray-500">
                     Breed: {item.breed || "N/A"}
                   </Text>
                 </Card.Content>
@@ -438,10 +431,8 @@ const PoultryScreen = () => {
         </View>
         <View className="mt-8 pt-8 border-t border-gray-500/20">
           <View className="px-4 mb-4">
-            <Text className="font-bold">
-              Your Poultry Tasks
-            </Text>
-            <Text className="text-gray-500 mt-1">
+            <Text className="font-bold">Your Poultry Tasks</Text>
+            <Text className="text-dark dark:text-lightmt-1">
               All your poultry tasks visualized
             </Text>
           </View>

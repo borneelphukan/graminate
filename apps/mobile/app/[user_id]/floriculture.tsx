@@ -9,11 +9,7 @@ import {
 } from "@/constants/formConfigs";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
-import {
-  endOfMonth,
-  isWithinInterval,
-  startOfMonth,
-} from "date-fns";
+import { endOfMonth, isWithinInterval, startOfMonth } from "date-fns";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -63,10 +59,13 @@ const FloricultureScreen = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [fullHistoricalData, setFullHistoricalData] = useState<DailyFinancialEntry[]>([]);
+  const [fullHistoricalData, setFullHistoricalData] = useState<
+    DailyFinancialEntry[]
+  >([]);
   const [isLoadingFinancials, setIsLoadingFinancials] = useState(true);
   const [showFinancials, setShowFinancials] = useState(true);
-  const [editingRecord, setEditingRecord] = useState<FloricultureApiData | null>(null);
+  const [editingRecord, setEditingRecord] =
+    useState<FloricultureApiData | null>(null);
 
   const memoizedBackIcon = useCallback(
     () => (
@@ -76,7 +75,7 @@ const FloricultureScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const memoizedAddIcon = useCallback(
@@ -87,7 +86,7 @@ const FloricultureScreen = () => {
         className="text-dark dark:text-light"
       />
     ),
-    []
+    [],
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -102,10 +101,10 @@ const FloricultureScreen = () => {
         axiosInstance.get(`/expenses/user/${user_id}`),
       ]);
       const targetSales = (salesRes.data.sales || []).filter(
-        (s: any) => s.occupation === TARGET_FLORICULTURE_SUB_TYPE
+        (s: any) => s.occupation === TARGET_FLORICULTURE_SUB_TYPE,
       );
       const targetExpensesList = (expensesRes.data.expenses || []).filter(
-        (e: any) => e.occupation === TARGET_FLORICULTURE_SUB_TYPE
+        (e: any) => e.occupation === TARGET_FLORICULTURE_SUB_TYPE,
       );
 
       const currentMonthStart = startOfMonth(today);
@@ -114,10 +113,16 @@ const FloricultureScreen = () => {
       let revenueTotal = 0;
       targetSales.forEach((s: any) => {
         const saleDate = new Date(s.sales_date);
-        if (isWithinInterval(saleDate, { start: currentMonthStart, end: currentMonthEnd })) {
+        if (
+          isWithinInterval(saleDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
           const itemsCount = s.quantities_sold?.length || 0;
           for (let i = 0; i < itemsCount; i++) {
-            revenueTotal += (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
+            revenueTotal +=
+              (s.quantities_sold[i] || 0) * (s.prices_per_unit?.[i] || 0);
           }
         }
       });
@@ -126,9 +131,18 @@ const FloricultureScreen = () => {
       let cogsTotal = 0;
       targetExpensesList.forEach((e: any) => {
         const expenseDate = new Date(e.date_created);
-        if (isWithinInterval(expenseDate, { start: currentMonthStart, end: currentMonthEnd })) {
+        if (
+          isWithinInterval(expenseDate, {
+            start: currentMonthStart,
+            end: currentMonthEnd,
+          })
+        ) {
           // Floriculture COGS categories (aligned with web config)
-          if (e.category === "Farm Utilities" || e.category === "Agricultural Feeds" || e.category === "Consulting") {
+          if (
+            e.category === "Farm Utilities" ||
+            e.category === "Agricultural Feeds" ||
+            e.category === "Consulting"
+          ) {
             cogsTotal += e.expense || 0;
           } else {
             expensesTotal += e.expense || 0;
@@ -136,15 +150,19 @@ const FloricultureScreen = () => {
         }
       });
 
-      setFullHistoricalData([{
-        date: today,
-        revenue: { total: revenueTotal, breakdown: [] },
-        cogs: { total: cogsTotal, breakdown: [] },
-        grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
-        expenses: { total: expensesTotal, breakdown: [] },
-        netProfit: { total: revenueTotal - cogsTotal - expensesTotal, breakdown: [] },
-      } as any]);
-
+      setFullHistoricalData([
+        {
+          date: today,
+          revenue: { total: revenueTotal, breakdown: [] },
+          cogs: { total: cogsTotal, breakdown: [] },
+          grossProfit: { total: revenueTotal - cogsTotal, breakdown: [] },
+          expenses: { total: expensesTotal, breakdown: [] },
+          netProfit: {
+            total: revenueTotal - cogsTotal - expensesTotal,
+            breakdown: [],
+          },
+        } as any,
+      ]);
     } catch {
       setFullHistoricalData([]);
     } finally {
@@ -172,7 +190,7 @@ const FloricultureScreen = () => {
     useCallback(() => {
       fetchRecords();
       fetchFinancialData();
-    }, [fetchRecords, fetchFinancialData])
+    }, [fetchRecords, fetchFinancialData]),
   );
 
   const handleAddOrUpdate = async (formData: FloricultureFormData) => {
@@ -184,7 +202,10 @@ const FloricultureScreen = () => {
         area: formData.area ? Number(formData.area) : null,
       };
       if (editingRecord) {
-        await axiosInstance.put(`/floriculture/update/${editingRecord.flower_id}`, payload);
+        await axiosInstance.put(
+          `/floriculture/update/${editingRecord.flower_id}`,
+          payload,
+        );
       } else {
         await axiosInstance.post("/floriculture/add", payload);
       }
@@ -198,9 +219,14 @@ const FloricultureScreen = () => {
     const currentMonthStart = startOfMonth(today);
     const currentMonthEnd = endOfMonth(today);
     let totals = { revenue: 0, cogs: 0, expenses: 0 };
-    
+
     fullHistoricalData.forEach((entry) => {
-      if (isWithinInterval(entry.date, { start: currentMonthStart, end: currentMonthEnd })) {
+      if (
+        isWithinInterval(entry.date, {
+          start: currentMonthStart,
+          end: currentMonthEnd,
+        })
+      ) {
         totals.revenue += entry.revenue.total;
         totals.cogs += entry.cogs.total;
         totals.expenses += entry.expenses.total;
@@ -209,52 +235,52 @@ const FloricultureScreen = () => {
 
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
- 
-     return [
-       {
-         title: "Flower Revenue",
-         value: totals.revenue,
-         icon: "currency-inr",
-         className: "bg-green-100/10 dark:bg-green-900/20",
-         textColorClassName: "text-green-600 dark:text-green-400",
-       },
-       {
-         title: "Flower COGS",
-         value: totals.cogs,
-         icon: "shopping-outline",
-         className: "bg-yellow-100/10 dark:bg-yellow-900/20",
-         textColorClassName: "text-yellow-600 dark:text-yellow-400",
-       },
-       {
-         title: "Gross Profit",
-         value: grossProfit,
-         icon: "chart-pie",
-         className: "bg-cyan-100/10 dark:bg-cyan-900/20",
-         textColorClassName: "text-cyan-600 dark:text-cyan-400",
-       },
-       {
-         title: "Expenses",
-         value: totals.expenses,
-         icon: "credit-card-outline",
-         className: "bg-red-400 dark:bg-red-900/20",
-         textColorClassName: "text-red-600 dark:text-red-400",
-       },
-       {
-         title: "Net Profit",
-         value: netProfit,
-         icon: "bank-outline",
-         className: "bg-blue-100/10 dark:bg-blue-900/20",
-         textColorClassName: "text-blue-600 dark:text-blue-400",
-       },
-     ];
-   }, [fullHistoricalData, today]);
+
+    return [
+      {
+        title: "Flower Revenue",
+        value: totals.revenue,
+        icon: "currency-inr",
+        className: "bg-green-100/10 dark:bg-green-900/20",
+        textColorClassName: "text-green-600 dark:text-green-400",
+      },
+      {
+        title: "Flower COGS",
+        value: totals.cogs,
+        icon: "shopping-outline",
+        className: "bg-yellow-100/10 dark:bg-yellow-900/20",
+        textColorClassName: "text-yellow-600 dark:text-yellow-400",
+      },
+      {
+        title: "Gross Profit",
+        value: grossProfit,
+        icon: "chart-pie",
+        className: "bg-cyan-100/10 dark:bg-cyan-900/20",
+        textColorClassName: "text-cyan-600 dark:text-cyan-400",
+      },
+      {
+        title: "Expenses",
+        value: totals.expenses,
+        icon: "credit-card-outline",
+        className: "bg-red-400 dark:bg-red-900/20",
+        textColorClassName: "text-red-600 dark:text-red-400",
+      },
+      {
+        title: "Net Profit",
+        value: netProfit,
+        icon: "bank-outline",
+        className: "bg-blue-100/10 dark:bg-blue-900/20",
+        textColorClassName: "text-blue-600 dark:text-blue-400",
+      },
+    ];
+  }, [fullHistoricalData, today]);
 
   const filteredRecords = useMemo(() => {
     if (!searchQuery) return records;
     return records.filter((item) =>
       Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.toLowerCase())
-      )
+        String(val).toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
     );
   }, [records, searchQuery]);
 
@@ -264,7 +290,9 @@ const FloricultureScreen = () => {
         <Appbar.Action icon={memoizedBackIcon} onPress={() => router.back()} />
         <Appbar.Content
           title="Floriculture"
-          subtitle={loading ? "Loading..." : `${filteredRecords.length} Crop(s)`}
+          subtitle={
+            loading ? "Loading..." : `${filteredRecords.length} Crop(s)`
+          }
         />
         <Appbar.Action
           icon={memoizedAddIcon}
@@ -278,11 +306,12 @@ const FloricultureScreen = () => {
       <ScrollView className="bg-white dark:bg-dark">
         <View className="items-end px-4 pt-2">
           <Button
+            mode="text"
             icon={() => (
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
                 size={16}
-                color={"text-light"}
+                className="text-green-100 dark:text-green-200"
               />
             )}
             onPress={() => setShowFinancials(!showFinancials)}
@@ -291,8 +320,8 @@ const FloricultureScreen = () => {
           </Button>
         </View>
 
-        {showFinancials && (
-          isLoadingFinancials ? (
+        {showFinancials &&
+          (isLoadingFinancials ? (
             <ActivityIndicator className="my-4" />
           ) : (
             <View className="flex-row flex-wrap justify-between px-4 pb-4 gap-3">
@@ -309,8 +338,7 @@ const FloricultureScreen = () => {
                 </View>
               ))}
             </View>
-          )
-        )}
+          ))}
 
         <Searchbar
           placeholder="Search Crops..."
@@ -332,35 +360,44 @@ const FloricultureScreen = () => {
                 }}
                 className="mb-3"
               >
-                <Card.Title title={item.flower_name} titleVariant="titleLarge" />
+                <Card.Title
+                  title={item.flower_name}
+                  titleVariant="titleLarge"
+                />
                 <Card.Content>
                   <View className="flex-row justify-between mb-1">
                     <Text>Type: {item.flower_type || "N/A"}</Text>
                     <Text>Area: {item.area || "N/A"} sq.ft</Text>
                   </View>
                   <Text className="text-gray-400 dark:text-gray-500">
-                    Method: {item.method || "N/A"} | Planted: {item.planting_date ? new Date(item.planting_date).toLocaleDateString() : "N/A"}
+                    Method: {item.method || "N/A"} | Planted:{" "}
+                    {item.planting_date
+                      ? new Date(item.planting_date).toLocaleDateString()
+                      : "N/A"}
                   </Text>
                 </Card.Content>
               </Card>
             ))
           ) : (
-            <Text className="text-center mt-10 p-4">No records found. Tap &apos;+&apos; to add your first crop.</Text>
+            <Text className="text-center mt-10 p-4">
+              No records found. Tap &apos;+&apos; to add your first crop.
+            </Text>
           )}
         </View>
 
         <View className="mt-8 pt-8 border-t border-gray-500/20">
           <View className="px-4 mb-4">
-            <Text className="font-bold">
-              Your Floriculture Tasks
-            </Text>
+            <Text className="font-bold">Your Floriculture Tasks</Text>
             <Text className="text-gray-500 mt-1">
               All your floriculture tasks visualized
             </Text>
           </View>
           <View className="bg-gray-500/5 rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
-              <ProjectTaskBoard userId={numericUserId} projectTitle="Floriculture" />
+              <ProjectTaskBoard
+                userId={numericUserId}
+                projectTitle="Floriculture"
+              />
             )}
           </View>
         </View>
@@ -384,7 +421,9 @@ const FloricultureScreen = () => {
                 flower_type: editingRecord.flower_type || "",
                 method: editingRecord.method || "",
                 area: String(editingRecord.area || ""),
-                planting_date: editingRecord.planting_date ? editingRecord.planting_date.split('T')[0] : "",
+                planting_date: editingRecord.planting_date
+                  ? editingRecord.planting_date.split("T")[0]
+                  : "",
               }
             : {}
         }

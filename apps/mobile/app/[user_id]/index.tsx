@@ -648,7 +648,7 @@ const DashboardScreen = () => {
             <View className="items-end">
               <Text>{formatDate(currentDateTime)}</Text>
               <Text
-                className="text-gray-400 dark:text-gray-500"
+                className="text-dark dark:text-light"
               >
                 {formatTime(currentDateTime)}
               </Text>

@@ -423,8 +423,8 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
                 {column.title}
               </Text>
               <View className="flex-row items-center">
-                <View className="bg-gray-200 dark:bg-gray-700 rounded-xl px-2 py-0.5">
-                  <Text className="text-[10px] font-bold text-dark dark:text-light">
+                <View className="bg-gray-400 dark:bg-gray-700 rounded-xl px-2 py-0.5">
+                  <Text className="text-xs font-bold text-dark dark:text-light">
                     {columnTasks.length}
                   </Text>
                 </View>
@@ -453,7 +453,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
       })}
 
       <TouchableOpacity
-        className="w-[300px] bg-gray-50 dark:bg-dark-surface/50 border-dashed border border-gray-300 dark:border-gray-700 rounded-xl justify-center items-center h-[100px]"
+        className="w-[300px] bg-gray-50 dark:bg-dark-surface/50 rounded-xl justify-center items-center h-[100px]"
         onPress={() => setIsAddColumnDrawerVisible(true)}
       >
         <View className="items-center justify-center">
@@ -521,7 +521,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
           placeholder="Search"
           onChangeText={setSearchQuery}
           value={searchQuery}
-          className="h-10 elevation-none bg-gray-100 dark:bg-gray-800 rounded-lg"
+          className="h-10 elevation-none bg-gray-400 dark:bg-gray-800"
           inputStyle={{ minHeight: 0 }}
         />
         <View className="flex-row justify-between items-center gap-2">
@@ -650,10 +650,5 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
     </View>
   );
 };
-
-const { width: windowWidth } = Dimensions.get("window");
-const isTablet = windowWidth >= 768;
-
-const styles = StyleSheet.create({});
 
 export default ProjectTaskBoard;

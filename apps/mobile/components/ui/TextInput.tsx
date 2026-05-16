@@ -5,8 +5,7 @@ import {
   TouchableOpacity,
   TextInput as RNTextInput,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useUserPreferences } from "@/contexts/UserPreferencesContext";
+import { Icon } from "./Icon";
 
 export const TextInput = ({
   label,
@@ -44,7 +43,6 @@ export const TextInput = ({
   const actualSecureTextEntry = isPasswordField && !isPasswordVisible;
 
   // Determine colors based on state
-  const { darkMode } = useUserPreferences();
   const labelClass = error ? "text-red-500" : "text-dark dark:text-light";
   const borderClass = error
     ? "border-red-500"
@@ -55,7 +53,6 @@ export const TextInput = ({
     ? "bg-light dark:bg-gray-800"
     : "bg-light dark:bg-gray-600";
   const textClass = "text-black dark:text-white";
-  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
 
   return (
     <View className={`my-1 w-full ${className}`} style={style}>
@@ -83,9 +80,8 @@ export const TextInput = ({
           editable={editable}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className={`flex-1 text-sm ${textClass}`}
+          className={`flex-1 text-sm placeholder:text-gray-200 dark:placeholder:text-gray-300 ${textClass}`}
           style={{ paddingVertical: 0 }}
-          placeholderTextColor={placeholderColor}
           {...rest}
         />
         {isPasswordField && !right && (
@@ -94,10 +90,10 @@ export const TextInput = ({
             className="ml-2"
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons
-              name={isPasswordVisible ? "eye-off" : "eye"}
+            <Icon
+              type={isPasswordVisible ? "eye-off" : "eye"}
               size={20}
-              color={placeholderColor}
+              className="text-gray-200 dark:text-gray-300"
             />
           </TouchableOpacity>
         )}
@@ -119,21 +115,21 @@ export const TextInput = ({
   );
 };
 
-TextInput.Icon = ({ icon, onPress, color }: any) => {
-  const { darkMode } = useUserPreferences();
-  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
+TextInput.Icon = ({ icon, onPress, color, className = "" }: any) => {
   const renderIcon = () => {
     if (!icon) return null;
-    const iconColor = color || placeholderColor;
     if (typeof icon === "string")
       return (
-        <MaterialCommunityIcons
-          name={icon as any}
+        <Icon
+          type={icon}
           size={20}
-          color={iconColor}
+          color={color}
+          className={
+            !color ? `text-gray-200 dark:text-gray-300 ${className}` : className
+          }
         />
       );
-    if (typeof icon === "function") return icon({ color: iconColor, size: 20 });
+    if (typeof icon === "function") return icon({ color, className, size: 20 });
     return icon;
   };
   return <TouchableOpacity onPress={onPress}>{renderIcon()}</TouchableOpacity>;
@@ -147,26 +143,22 @@ export const Searchbar = ({
   className = "",
   ...rest
 }: any) => {
-  const { darkMode } = useUserPreferences();
-  const placeholderColor = darkMode ? "#bbbbbc" : "#49494d";
   return (
     <View
       className={`flex-row items-center border rounded-full px-4 py-2 my-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 ${className}`}
       style={style}
     >
-      <MaterialCommunityIcons
-        name="magnify"
+      <Icon
+        type="magnify"
         size={20}
-        color={placeholderColor}
-        style={{ marginRight: 8 }}
+        className="text-gray-200 dark:text-gray-300 mr-2"
       />
       <RNTextInput
         value={value}
         placeholder={placeholder}
         onChangeText={onChangeText}
-        className="flex-1 text-sm text-black dark:text-white"
+        className="flex-1 text-sm text-black dark:text-white placeholder:text-gray-200 dark:placeholder:text-gray-300"
         style={{ color: undefined }}
-        placeholderTextColor={placeholderColor}
         {...rest}
       />
     </View>

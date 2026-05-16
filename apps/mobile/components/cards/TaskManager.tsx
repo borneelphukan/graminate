@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import axiosInstance from "@/lib/axiosInstance";
 import React, { useCallback, useEffect, useState } from "react";
-import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { Keyboard, ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -272,7 +272,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
                     className="w-6 h-6 rounded justify-center items-center bg-gray-300 dark:bg-gray-700 ml-1"
                   >
                     <Icon
-                      type={"close" as any}
+                      type="close"
                       size={12}
                       className="text-black dark:text-white"
                     />
@@ -309,7 +309,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
             setPrioritySortAsc(newAsc);
             setTaskList((prev) => sortTasks(prev, newAsc));
           }}
-          className="py-1 px-2 rounded bg-gray-200 dark:bg-gray-800"
+          className="py-1 px-2 rounded bg-gray-400 dark:bg-gray-800"
         >
           <View className="flex-row items-center">
             <Text className="text-xs font-medium mr-2">
@@ -368,7 +368,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
           className="justify-center h-10"
           icon={() => (
             <Icon
-              type={"plus" as any}
+              type="plus"
               size={16}
               className={!newTaskText.trim() ? "text-gray-400" : "text-white"}
             />

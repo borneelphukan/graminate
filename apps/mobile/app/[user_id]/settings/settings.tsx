@@ -4,7 +4,7 @@ import CattleIcon from "@/assets/icon/CattleIcon";
 import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SafeAreaView, ScrollView, View, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "@/lib/axiosInstance";
@@ -40,46 +40,74 @@ const SettingsScreen = () => {
     fetchUserSubTypes,
   } = useUserPreferences();
 
+  const [user, setUser] = useState<{ name: string; business: string }>({
+    name: "",
+    business: "",
+  });
+
+  const getInitials = (name: string) => {
+    if (!name) return "";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  };
+
   useEffect(() => {
+    async function fetchUserDetails() {
+      if (!user_id) return;
+      try {
+        const response = await axiosInstance.get(`/user/${user_id}`);
+        const data = response.data?.data?.user;
+        if (data) {
+          setUser({
+            name: `${data.first_name} ${data.last_name}`,
+            business: data.business_name || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user details in settings:", error);
+      }
+    }
+
     if (user_id) {
       fetchUserSubTypes(user_id);
+      fetchUserDetails();
     }
   }, [user_id, fetchUserSubTypes]);
 
   const handleLogout = useCallback(() => {
-    Alert.alert(
-      "Log Out",
-      "Are you sure you want to log out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Log Out", 
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const loginId = await AsyncStorage.getItem("loginId");
-              if (loginId) {
-                await axiosInstance.post("/user/logout", { loginId });
-              }
-            } catch (error) {
-              console.error("Logout API failed:", error);
-            } finally {
-              await AsyncStorage.multiRemove([
-                "accessToken",
-                "user",
-                "loginId",
-                "chatMessages",
-                "language",
-                "timeFormat",
-                "temperatureScale",
-                "darkMode",
-              ]);
-              router.replace("/login");
+    Alert.alert("Log Out", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log Out",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const loginId = await AsyncStorage.getItem("loginId");
+            if (loginId) {
+              await axiosInstance.post("/user/logout", { loginId });
             }
+          } catch (error) {
+            console.error("Logout API failed:", error);
+          } finally {
+            await AsyncStorage.multiRemove([
+              "accessToken",
+              "user",
+              "loginId",
+              "chatMessages",
+              "language",
+              "timeFormat",
+              "temperatureScale",
+              "darkMode",
+            ]);
+            router.replace("/login");
           }
-        }
-      ]
-    );
+        },
+      },
+    ]);
   }, [router]);
 
   const settingsMenu = useMemo((): SettingsSection[] => {
@@ -194,7 +222,7 @@ const SettingsScreen = () => {
         className="text-black dark:text-white"
       />
     ),
-    []
+    [],
   );
 
   return (
@@ -207,11 +235,11 @@ const SettingsScreen = () => {
           />
           <Appbar.Content
             title="Settings"
-            titleStyle={{ fontWeight: '800', fontSize: 24 }}
+            titleStyle={{ fontWeight: "800", fontSize: 24 }}
           />
         </Appbar.Header>
 
-        <ScrollView 
+        <ScrollView
           className="flex-1"
           contentContainerClassName="p-4 pb-12"
           showsVerticalScrollIndicator={false}
@@ -219,17 +247,27 @@ const SettingsScreen = () => {
           {/* Profile Section */}
           <Card className="mb-6 border-none shadow-md bg-white dark:bg-dark-surface p-5">
             <View className="flex-row items-center">
-              <Avatar.Text 
-                label={userType?.[0] || "U"} 
-                size={60} 
+              <Avatar.Text
+                label={getInitials(user.name) || userType?.[0] || "U"}
+                size={60}
                 className="bg-green-100 dark:bg-green-900"
-                labelStyle={{ fontWeight: 'bold', fontSize: 24, color: '#2b7860' }}
+                labelStyle={{
+                  fontWeight: "bold",
+                  fontSize: 24,
+                  color: "#2b7860",
+                }}
               />
               <View className="ml-4 flex-1">
-                <Text className="font-bold">
+                {user.name ? (
+                  <Text className="text-lg font-extrabold text-black dark:text-white leading-tight mb-0.5">
+                    {user.name}
+                  </Text>
+                ) : null}
+                <Text className="text-sm font-semibold text-gray-500 dark:text-gray-400">
                   {userType || "User"}
+                  {user.business ? ` | ${user.business}` : ""}
                 </Text>
-                <View className="flex-row items-center mt-1">
+                <View className="flex-row items-center mt-2">
                   <View className="px-2 py-0.5 rounded-full bg-green-50 dark:bg-green-900/30">
                     <Text className="text-[10px] font-bold text-green-700 dark:text-green-300 uppercase tracking-tighter">
                       {plan || "Free Plan"}
@@ -237,9 +275,11 @@ const SettingsScreen = () => {
                   </View>
                 </View>
               </View>
-              <Button 
-                mode="text" 
-                onPress={() => router.push(`/${user_id}/settings/account` as any)}
+              <Button
+                mode="text"
+                onPress={() =>
+                  router.push(`/${user_id}/settings/account` as any)
+                }
                 className="min-w-0"
               >
                 Edit
@@ -271,9 +311,9 @@ const SettingsScreen = () => {
                               item.action();
                             }
                           }}
-                          titleStyle={{ fontSize: 16, fontWeight: '500' }}
+                          titleStyle={{ fontSize: 16, fontWeight: "500" }}
                           left={() => (
-                            <View 
+                            <View
                               style={{ backgroundColor: `${item.iconColor}15` }}
                               className="w-10 h-10 rounded-xl items-center justify-center mr-2"
                             >
@@ -326,4 +366,3 @@ const SettingsScreen = () => {
 };
 
 export default SettingsScreen;
-
