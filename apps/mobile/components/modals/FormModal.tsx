@@ -9,6 +9,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { PanGestureHandler, PanGestureHandlerGestureEvent, State } from "react-native-gesture-handler";
 import {
   Appbar,
   Button,
@@ -111,35 +112,67 @@ export const FormModal = ({
           />
         </Animated.View>
         
-        <Animated.View
-          style={[
-            styles.animatedContent,
-            {
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
+        <PanGestureHandler
+          onGestureEvent={Animated.event(
+            [{ nativeEvent: { translationY: slideAnim } }],
+            { useNativeDriver: true }
+          )}
+          onHandlerStateChange={(event) => {
+            if (event.nativeEvent.state === State.END) {
+              if (event.nativeEvent.translationY > 100) {
+                handleClose();
+              } else {
+                Animated.spring(slideAnim, {
+                  toValue: 0,
+                  useNativeDriver: true,
+                  tension: 65,
+                  friction: 11
+                }).start();
+              }
+            }
+          }}
         >
-          <Surface
+          <Animated.View
             style={[
-              styles.contentSurface,
-              { 
-                backgroundColor: theme.dark ? "#111827" : "#ffffff",
-                borderColor: theme.dark ? "#1f2937" : "#e5e7eb"
+              styles.animatedContent,
+              {
+                transform: [
+                  { 
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, SCREEN_HEIGHT],
+                      outputRange: [0, SCREEN_HEIGHT],
+                      extrapolate: 'clamp'
+                    }) 
+                  }
+                ],
               },
             ]}
-            elevation={0}
           >
-            <Appbar.Header 
-              elevated={false} 
+            <Surface
               style={[
-                styles.header, 
+                styles.contentSurface,
                 { 
                   backgroundColor: theme.dark ? "#111827" : "#ffffff",
-                  borderBottomWidth: 1,
-                  borderBottomColor: theme.dark ? "#1f2937" : "#e5e7eb"
-                }
+                  borderColor: theme.dark ? "#1f2937" : "#e5e7eb"
+                },
               ]}
+              elevation={0}
             >
+              <View style={styles.handleContainer}>
+                <View style={[styles.handle, { backgroundColor: theme.dark ? "#374151" : "#e5e7eb" }]} />
+              </View>
+
+              <Appbar.Header 
+                elevated={false} 
+                style={[
+                  styles.header, 
+                  { 
+                    backgroundColor: theme.dark ? "#111827" : "#ffffff",
+                    borderBottomWidth: 1,
+                    borderBottomColor: theme.dark ? "#1f2937" : "#e5e7eb"
+                  }
+                ]}
+              >
               <Appbar.Content 
                 title={title} 
                 titleStyle={[styles.title, { color: theme.colors.onSurface }]} 
@@ -189,6 +222,7 @@ export const FormModal = ({
             </View>
           </Surface>
         </Animated.View>
+        </PanGestureHandler>
       </Modal>
     </Portal>
   );
@@ -243,5 +277,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: 'white',
+  },
+  handleContainer: {
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: 'transparent',
+  },
+  handle: {
+    width: 40,
+    height: 5,
+    borderRadius: 3,
   },
 });

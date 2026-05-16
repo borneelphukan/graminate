@@ -20,7 +20,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 import Toast from "react-native-toast-message";
 
@@ -55,7 +54,6 @@ const AgricultureIcons: Record<
 };
 
 const AddServiceScreen = () => {
-  const theme = useTheme();
   const route = useRoute();
   const { user_id } = route.params as { user_id: string };
 
@@ -304,53 +302,47 @@ const AddServiceScreen = () => {
     isLocked: boolean = false
   ) => {
     const IconComponent = AgricultureIcons[subType];
-    const iconColor = isLocked
-      ? theme.colors.onSurfaceVariant
+    const iconColorClassName = isLocked
+      ? "text-gray-200 dark:text-gray-300"
       : isSelected
-      ? theme.colors.primary
-      : theme.colors.onSurfaceVariant;
+      ? "text-green-100 dark:text-green-200"
+      : "text-gray-200 dark:text-gray-300";
     const iconSize = 30;
 
     return (
       <View key={subType} className="w-1/2 p-2">
         <TouchableRipple
           onPress={isLocked ? undefined : onPress}
-          className="flex-1"
-          style={{ borderRadius: theme.roundness }}
+          className="flex-1 rounded-xl"
         >
           <Card
-            className="flex-1"
-            style={[
-              isLocked && { backgroundColor: theme.colors.surfaceVariant },
-              isSelected && { backgroundColor: theme.colors.primaryContainer },
-            ]}
+            className={`flex-1 ${
+              isLocked ? "bg-gray-400 dark:bg-gray-800" : 
+              isSelected ? "bg-green-300 dark:bg-green-100" : ""
+            }`}
           >
             <Card.Content className="items-center justify-center px-4 py-6 gap-3">
               {isLocked && (
-                <View className="absolute top-2 right-2 px-1.5 py-0.5 rounded z-10" style={{ backgroundColor: theme.colors.primary }}>
+                <View className="absolute top-2 right-2 px-1.5 py-0.5 rounded z-10 bg-green-100 dark:bg-green-200">
                   <Text className="text-white text-[10px] font-bold">Unlock Pro</Text>
                 </View>
               )}
-              {/* Conditionally render FontAwesomeIcon or a custom component */}
               {typeof IconComponent === "function" ? (
-                <IconComponent size={iconSize} color={iconColor} />
+                <IconComponent size={iconSize} className={iconColorClassName} />
               ) : (
                 <Icon
                   type={(IconComponent) as any}
                   size={iconSize as any}
-                  color={iconColor as any}
+                  className={iconColorClassName}
                 />
               )}
               <Text
                 variant="labelLarge"
-                className="text-center"
-                style={{
-                  color: isLocked
-                    ? theme.colors.onSurfaceVariant
-                    : isSelected
-                    ? theme.colors.primary
-                    : theme.colors.onSurface,
-                }}
+                className={`text-center ${
+                  isLocked ? "text-gray-200 dark:text-gray-300" :
+                  isSelected ? "text-green-100 dark:text-green-200" :
+                  "text-dark dark:text-light"
+                }`}
               >
                 {subType}
               </Text>
@@ -367,8 +359,7 @@ const AddServiceScreen = () => {
   if (isLoading) {
     return (
       <View
-        className="flex-1 justify-center items-center"
-        style={{ backgroundColor: theme.colors.background }}
+        className="flex-1 justify-center items-center bg-white dark:bg-dark"
       >
         <ActivityIndicator size="large" />
       </View>
@@ -388,11 +379,7 @@ const AddServiceScreen = () => {
         <Modal
           visible={isModalOpen}
           onDismiss={() => setIsModalOpen(false)}
-          className="m-5"
-          contentContainerStyle={{
-            backgroundColor: theme.colors.elevation.level3,
-            borderRadius: theme.roundness,
-          }}
+          className="m-5 p-4 rounded-xl bg-white dark:bg-gray-900"
         >
           <Card>
             <Card.Title title="Confirm Password" />
@@ -415,7 +402,7 @@ const AddServiceScreen = () => {
                       <Icon
                         type={(isPasswordVisible ? "visibility_off" : "visibility") as any}
                         size={20 as any}
-                        color={theme.colors.onSurfaceVariant as any}
+                        className="text-gray-200 dark:text-gray-300"
                       />
                     )}
                     onPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -423,7 +410,7 @@ const AddServiceScreen = () => {
                 }
               />
               {modalError && (
-                <Text style={{ color: theme.colors.error, marginTop: 4 }}>
+                <Text className="text-red-500 mt-1">
                   {modalError}
                 </Text>
               )}
@@ -435,12 +422,12 @@ const AddServiceScreen = () => {
               >
                 Cancel
               </Button>
-              <Button
+               <Button
                 mode="contained"
                 onPress={handleConfirmRemoval}
                 loading={isVerifyingPassword}
                 disabled={isVerifyingPassword || !password}
-                buttonColor={theme.colors.error}
+                className="bg-red-500"
               >
                 Remove Service
               </Button>
@@ -449,8 +436,8 @@ const AddServiceScreen = () => {
         </Modal>
       </Portal>
 
-      <ScrollView
-        style={{ backgroundColor: theme.colors.background }}
+       <ScrollView
+        className="bg-white dark:bg-dark"
         contentContainerClassName="p-4"
       >
         {servicesToShow.length > 0 ? (
@@ -481,7 +468,7 @@ const AddServiceScreen = () => {
               onPress={handleAddSubmit}
               disabled={isSubmitting || selectedSubTypes.size === 0 || isProLocked}
               loading={isSubmitting}
-              className="self-end"
+              className="self-end bg-green-600"
             >
               {isProLocked ? "Upgrade for more" : "Add Selected Services"}
             </Button>
@@ -517,13 +504,12 @@ const AddServiceScreen = () => {
                 </View>
               </Card.Content>
             </Card>
-            <Button
+             <Button
               mode="contained"
               onPress={handleOpenConfirmationModal}
               disabled={isRemoving || servicesToRemove.size === 0}
               loading={isRemoving}
-              className="self-end"
-              buttonColor={theme.colors.error}
+              className="self-end bg-red-500"
             >
               Remove Selected Services
             </Button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { Text, Card, useTheme, ActivityIndicator, Modal, Portal, Divider, Button } from "@/components/ui";
+import { View, TouchableOpacity, ScrollView } from "react-native";
+import { Text, Card, ActivityIndicator, Modal, Portal, Divider, Button } from "@/components/ui";
 import { Icon } from "../ui/Icon";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -35,7 +35,6 @@ interface WarehouseWidgetProps {
 }
 
 const WarehouseWidget = ({ userId, serviceName }: WarehouseWidgetProps) => {
-  const theme = useTheme();
   const router = useRouter();
   const [warehouses, setWarehouses] = useState<WarehouseRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,54 +91,52 @@ const WarehouseWidget = ({ userId, serviceName }: WarehouseWidgetProps) => {
     fetchData();
   }, [userId, serviceName]);
 
-  if (loading) return <ActivityIndicator style={{ margin: 20 }} />;
+  if (loading) return <ActivityIndicator className="m-5" />;
   if (warehouses.length === 0) return null;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.titleContainer}>
-          <View style={[styles.iconContainer, { backgroundColor: theme.colors.primaryContainer }]}>
-            <Icon type={"warehouse" as any} size={24} color={theme.colors.primary} />
+    <View className="my-3">
+      <View className="flex-row justify-between items-center mb-3 px-1">
+        <View className="flex-row items-center gap-3">
+          <View className="p-2 rounded-xl bg-green-300 dark:bg-green-100">
+            <Icon type="warehouse" size={24} />
           </View>
           <View>
-            <Text variant="titleMedium" style={styles.title}>Associated Storage</Text>
-            <Text variant="bodySmall" style={styles.subtitle}>Warehouse for {serviceName}</Text>
+            <Text variant="titleMedium" className="font-bold">Associated Storage</Text>
+            <Text variant="bodySmall" className="opacity-60 text-dark dark:text-light">Warehouse for {serviceName}</Text>
           </View>
         </View>
         <TouchableOpacity onPress={() => router.push(`/${userId}/storage` as any)}>
-          <Text variant="labelLarge" style={{ color: theme.colors.primary }}>View All</Text>
+          <Text variant="labelLarge" className="text-green-100 dark:text-green-200">View All</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView 
-        style={[
-          styles.listContainer, 
-          warehouses.length > 2 && { maxHeight: 280 }
-        ]}
+        className="w-full"
+        style={warehouses.length > 2 ? { maxHeight: 280 } : undefined}
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
       >
         {warehouses.map((warehouse) => (
           <Card 
             key={warehouse.warehouse_id} 
-            style={styles.card}
+            className="mb-3"
             onPress={() => router.push(`/${userId}/warehouse/${warehouse.warehouse_id}` as any)}
           >
             <Card.Content>
-              <View style={styles.cardHeader}>
-                <View style={{ flex: 1 }}>
-                  <Text variant="titleSmall" style={styles.warehouseName}>{warehouse.name}</Text>
-                  <View style={styles.locationContainer}>
-                    <Icon type={"map-marker" as any} size={14} color={theme.colors.onSurfaceVariant} />
-                    <Text variant="bodySmall" style={styles.locationText}>
+              <View className="flex-row justify-between items-start">
+                <View className="flex-1">
+                  <Text variant="titleSmall" className="font-semibold mb-1">{warehouse.name}</Text>
+                  <View className="flex-row items-center gap-1">
+                    <Icon type={"map-marker"} size={14} className="text-dark dark:text-light" />
+                    <Text variant="bodySmall" className="opacity-70 text-dark dark:text-light">
                       {warehouse.city}, {warehouse.state}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.badgeContainer}>
-                  <View style={[styles.badge, { backgroundColor: theme.colors.secondaryContainer }]}>
-                    <Text variant="labelSmall" style={{ color: theme.colors.onSecondaryContainer }}>
+                <View className="items-end">
+                  <View className="px-2 py-0.5 rounded-lg bg-green-200">
+                    <Text variant="labelSmall" className="text-light">
                       {warehouse.type.split(' ')[0]}
                     </Text>
                   </View>
@@ -148,53 +145,56 @@ const WarehouseWidget = ({ userId, serviceName }: WarehouseWidgetProps) => {
 
               {warehouse.items && warehouse.items.length > 0 ? (
                 <TouchableOpacity 
-                  style={styles.inventoryContainer}
+                  className="mt-3 pt-3 border-t border-gray-400 dark:border-gray-700"
                   onPress={(e) => {
                     e.stopPropagation();
                     showModal(warehouse);
                   }}
                 >
-                  <View style={styles.inventoryHeader}>
-                    <Icon type={"inventory" as any} size={12} color={theme.colors.primary} />
-                    <Text variant="labelSmall" style={styles.inventoryTitle}>
+                  <View className="flex-row items-center gap-1 mb-2">
+                    <Icon type={"inventory"} size={12} className="text-dark dark:text-light" />
+                    <Text variant="labelSmall" className="font-bold opacity-60 text-dark dark:text-light">
                       STOCK ({warehouse.items.length})
                     </Text>
-                    <Icon type={"chevron-right" as any} size={12} color={theme.colors.primary} style={{ marginLeft: 'auto' }} />
+                    <Icon type={"chevron-right"} size={12} className="text-dark dark:text-light ml-auto" />
                   </View>
-                  <View style={styles.inventoryGrid}>
+                  <View className="flex-row flex-wrap gap-2">
                     {warehouse.items.slice(0, 2).map((item) => (
-                      <View key={item.inventory_id} style={[styles.inventoryItem, { backgroundColor: theme.colors.surfaceVariant }]}>
-                        <Text variant="labelSmall" numberOfLines={1} style={styles.itemName}>
+                      <View 
+                        key={item.inventory_id} 
+                        className="flex-row justify-between items-center px-2 py-1 rounded-md flex-1 min-w-[45%] bg-gray-400 dark:bg-gray-800"
+                      >
+                        <Text variant="labelSmall" numberOfLines={1} className="flex-1 mr-1 opacity-80">
                           {item.item_name}
                         </Text>
-                        <Text variant="labelSmall" style={styles.itemQty}>
+                        <Text variant="labelSmall" className="font-bold">
                           {item.quantity} {item.units.split(' ')[0]}
                         </Text>
                       </View>
                     ))}
                     {warehouse.items.length > 2 && (
-                      <Text variant="labelSmall" style={styles.moreItems}>
+                      <Text variant="labelSmall" className="w-full text-center mt-1 opacity-60 italic">
                         + {warehouse.items.length - 2} more items
                       </Text>
                     )}
                   </View>
                 </TouchableOpacity>
               ) : (
-                <View style={styles.emptyInventory}>
-                  <Text variant="labelSmall" style={styles.emptyText}>No items mapped</Text>
+                <View className="mt-3 pt-3 border-t border-gray-400 dark:border-gray-700 items-center">
+                  <Text variant="labelSmall" className="opacity-40 text-dark dark:text-light">No items mapped</Text>
                 </View>
               )}
 
-              <View style={styles.footer}>
-                <View style={styles.footerItem}>
-                  <Icon type={"account" as any} size={16} color={theme.colors.onSurfaceVariant} />
-                  <Text variant="bodySmall" style={styles.footerText}>
+              <View className="mt-3 pt-3 border-t border-gray-400 dark:border-gray-700 flex-row justify-between">
+                <View className="flex-row items-center gap-1.5">
+                  <Icon type={"account"} size={16} className="text-dark dark:text-light" />
+                  <Text variant="bodySmall" className="text-dark dark:text-light">
                     {warehouse.contact_person || 'N/A'}
                   </Text>
                 </View>
-                <View style={styles.footerItem}>
-                  <Icon type={"phone" as any} size={16} color={theme.colors.onSurfaceVariant} />
-                  <Text variant="bodySmall" style={styles.footerText}>
+                <View className="flex-row items-center gap-1.5">
+                  <Icon type={"phone"} size={16} className="text-dark dark:text-light" />
+                  <Text variant="bodySmall" className="opacity-70 text-dark dark:text-light">
                     {warehouse.phone || 'N/A'}
                   </Text>
                 </View>
@@ -208,44 +208,44 @@ const WarehouseWidget = ({ userId, serviceName }: WarehouseWidgetProps) => {
         <Modal
           visible={modalVisible}
           onDismiss={hideModal}
-          contentContainerStyle={[styles.modalContent, { backgroundColor: theme.colors.elevation.level3 }]}
+          className="m-5 p-5 rounded-2xl bg-gray-500 dark:bg-gray-700"
         >
           {selectedWarehouse && (
             <View>
-              <View style={styles.modalHeader}>
+              <View className="flex-row justify-between items-start mb-4">
                 <View>
-                  <Text variant="titleLarge" style={styles.modalTitle}>{selectedWarehouse.name}</Text>
-                  <Text variant="bodySmall" style={styles.modalSubtitle}>Stock Inventory</Text>
+                  <Text variant="titleLarge" className="font-bold">{selectedWarehouse.name}</Text>
+                  <Text variant="bodySmall" className="opacity-60">Stock Inventory</Text>
                 </View>
-                <TouchableOpacity onPress={hideModal} style={styles.modalCloseButton}>
-                  <Icon type="close" size={24} color={theme.colors.onSurfaceVariant} />
+                <TouchableOpacity onPress={hideModal} className="p-1">
+                  <Icon type="close" size={24} className="text-gray-200 dark:text-gray-300" />
                 </TouchableOpacity>
               </View>
               
-              <Divider style={styles.modalDivider} />
+              <Divider className="my-3" />
 
-              <ScrollView style={styles.modalItemsList}>
+              <ScrollView className="my-2">
                 {selectedWarehouse.items?.map((item) => (
-                  <View key={item.inventory_id} style={styles.modalItemRow}>
-                    <View style={styles.modalItemInfo}>
-                      <Text variant="bodyLarge" style={styles.modalItemName}>{item.item_name}</Text>
-                      <Text variant="bodySmall" style={styles.modalItemCategory}>{serviceName} Item</Text>
+                  <View key={item.inventory_id} className="flex-row justify-between items-center py-3 border-b border-gray-50 dark:border-gray-900">
+                    <View className="flex-1">
+                      <Text variant="bodyLarge" className="font-medium">{item.item_name}</Text>
+                      <Text variant="bodySmall" className="opacity-50">{serviceName} Item</Text>
                     </View>
-                    <View style={styles.modalItemBadge}>
-                      <Text variant="titleMedium" style={[styles.modalItemQty, { color: theme.colors.primary }]}>
+                    <View className="items-end bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl">
+                      <Text variant="titleMedium" className="font-bold text-green-100 dark:text-green-200">
                         {item.quantity}
                       </Text>
-                      <Text variant="labelSmall" style={styles.modalItemUnit}>{item.units}</Text>
+                      <Text variant="labelSmall" className="opacity-60 text-sm text-dark dark:text-light">{item.units}</Text>
                     </View>
                   </View>
                 ))}
               </ScrollView>
 
-              <Divider style={styles.modalDivider} />
+              <Divider className="my-3" />
 
               <Button 
                 mode="contained" 
-                style={styles.viewMoreButton}
+                className="mt-2 rounded-xl"
                 onPress={() => {
                   hideModal();
                   router.push(`/${userId}/warehouse/${selectedWarehouse.warehouse_id}` as any);
@@ -260,201 +260,5 @@ const WarehouseWidget = ({ userId, serviceName }: WarehouseWidgetProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 12,
-  },
-  listContainer: {
-    width: "100%",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-    paddingHorizontal: 4,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  iconContainer: {
-    padding: 8,
-    borderRadius: 12,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  subtitle: {
-    opacity: 0.6,
-  },
-  card: {
-    marginBottom: 12,
-    elevation: 1,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  warehouseName: {
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  locationText: {
-    opacity: 0.7,
-  },
-  badgeContainer: {
-    alignItems: "flex-end",
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  footer: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(0,0,0,0.1)",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  footerItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  footerText: {
-    opacity: 0.7,
-  },
-  inventoryContainer: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(0,0,0,0.1)",
-  },
-  inventoryHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    marginBottom: 8,
-  },
-  inventoryTitle: {
-    fontWeight: "bold",
-    opacity: 0.6,
-  },
-  inventoryGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  inventoryItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    flex: 1,
-    minWidth: "45%",
-  },
-  itemName: {
-    flex: 1,
-    marginRight: 4,
-    opacity: 0.8,
-  },
-  itemQty: {
-    fontWeight: "bold",
-  },
-  moreItems: {
-    width: "100%",
-    textAlign: "center",
-    marginTop: 4,
-    opacity: 0.6,
-    fontStyle: "italic",
-  },
-  emptyInventory: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(0,0,0,0.1)",
-    alignItems: "center",
-  },
-  emptyText: {
-    opacity: 0.4,
-    fontStyle: "italic",
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    borderRadius: 16,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontWeight: 'bold',
-  },
-  modalSubtitle: {
-    opacity: 0.6,
-  },
-  modalCloseButton: {
-    padding: 4,
-  },
-  modalDivider: {
-    marginVertical: 12,
-  },
-  modalItemsList: {
-    marginVertical: 8,
-  },
-  modalItemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
-  },
-  modalItemInfo: {
-    flex: 1,
-  },
-  modalItemName: {
-    fontWeight: '500',
-  },
-  modalItemCategory: {
-    opacity: 0.5,
-  },
-  modalItemBadge: {
-    alignItems: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.03)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  modalItemQty: {
-    fontWeight: 'bold',
-    lineHeight: 20,
-  },
-  modalItemUnit: {
-    opacity: 0.6,
-    fontSize: 10,
-  },
-  viewMoreButton: {
-    marginTop: 8,
-    borderRadius: 12,
-  },
-});
 
 export default WarehouseWidget;

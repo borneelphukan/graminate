@@ -456,7 +456,7 @@ const PoultryScreen = () => {
           </View>
         </View>
 
-        <View className="gap-4 mt-4">
+        <View className="px-4 gap-4 mt-4 pb-8">
           {user_id && (
             <WarehouseWidget userId={user_id} serviceName="Poultry" />
           )}

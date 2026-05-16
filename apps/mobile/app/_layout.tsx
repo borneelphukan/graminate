@@ -25,6 +25,8 @@ export const unstable_settings = {
   initialRouteName: "index",
 };
 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 function ThemedApp() {
   const { darkMode, isPreferencesLoading } = useUserPreferences();
   const [splashAnimationFinished, setSplashAnimationFinished] = React.useState(false);
@@ -54,29 +56,31 @@ function ThemedApp() {
       };
 
   return (
-    <ThemeProvider value={navigationTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="forgot_password" />
-        <Stack.Screen name="[user_id]" />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-      </Stack>
-      <StatusBar style={darkMode ? "light" : "dark"} />
-      {!splashAnimationFinished && (
-        <AnimatedSplashScreen
-          isAppReady={!isPreferencesLoading}
-          onAnimationComplete={() => setSplashAnimationFinished(true)}
-        />
-      )}
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={navigationTheme}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="login" />
+          <Stack.Screen name="forgot_password" />
+          <Stack.Screen name="[user_id]" />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: "modal", title: "Modal" }}
+          />
+        </Stack>
+        <StatusBar style={darkMode ? "light" : "dark"} />
+        {!splashAnimationFinished && (
+          <AnimatedSplashScreen
+            isAppReady={!isPreferencesLoading}
+            onAnimationComplete={() => setSplashAnimationFinished(true)}
+          />
+        )}
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 
