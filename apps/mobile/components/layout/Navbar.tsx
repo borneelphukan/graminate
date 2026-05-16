@@ -10,7 +10,6 @@ import {
   Avatar,
   Badge,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 import NotificationBar from "./NotificationBar";
 
@@ -39,7 +38,6 @@ type NavbarProps = {
 const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
 
   const [user, setUser] = useState<User>({ name: "", email: "" });
   const [isNotificationBarOpen, setNotificationBarOpen] = useState(false);
@@ -140,17 +138,13 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   return (
     <>
       <Appbar.Header
-        style={{
-          backgroundColor: navbarBg,
-          borderBottomWidth: 1,
-          borderBottomColor: navbarBorder,
-        }}
+        className="bg-gray-800 border-b border-gray-700"
       >
         <Appbar.Action
           icon={memoizedBarsIcon}
           onPress={toggleSidebar}
         />
-        <View style={styles.spacer} />
+        <View className="flex-1" />
         <Appbar.Action
           icon={memoizedSparklesIcon}
           onPress={toggleChat}
@@ -162,7 +156,7 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
           />
           <Badge
             visible={notifications.length > 0}
-            style={[styles.badge, { backgroundColor: badgeColor }]}
+            className="absolute top-1.5 right-1.5 bg-red-600"
             size={16}
           >
             {notifications.length}
@@ -170,21 +164,21 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
         </View>
         <TouchableRipple
           onPress={navigateToSettings}
-          style={styles.avatarTouchable}
+          className="mr-2 ml-1 rounded-full"
           borderless
         >
           {user.name ? (
             <Avatar.Text
               size={32}
               label={getInitials(user.name)}
-              style={{ backgroundColor: theme.colors.primary }}
+              className="bg-green-100"
               labelStyle={{ color: "white" }}
             />
           ) : (
             <Avatar.Icon
               size={32}
               icon="account"
-              style={{ backgroundColor: theme.colors.primary }}
+              className="bg-green-100"
               color="white"
             />
           )}
@@ -210,20 +204,6 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  spacer: {
-    flex: 1,
-  },
-  badge: {
-    position: "absolute",
-    top: 6,
-    right: 6,
-  },
-  avatarTouchable: {
-    marginRight: 8,
-    marginLeft: 4,
-    borderRadius: 16,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default Navbar;

@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
   Easing,
 } from "react-native-reanimated";
-import { useTheme } from "@/constants/theme";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import * as SplashScreen from "expo-splash-screen";
 
 const { width } = Dimensions.get("window");
@@ -23,7 +23,7 @@ export function AnimatedSplashScreen({
   isAppReady,
   onAnimationComplete,
 }: AnimatedSplashScreenProps) {
-  const theme = useTheme();
+  const { darkMode } = useUserPreferences();
   
   const scale = useSharedValue(0.5);
   const opacity = useSharedValue(0);
@@ -101,8 +101,12 @@ export function AnimatedSplashScreen({
       pointerEvents="none"
       style={[
         StyleSheet.absoluteFill,
-        styles.container,
-        { backgroundColor: theme.colors.background },
+        { 
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 999999,
+          backgroundColor: darkMode ? "#0a0a0a" : "#ffffff" 
+        },
         animatedContainerStyle,
       ]}
     >
@@ -116,11 +120,6 @@ export function AnimatedSplashScreen({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 999999,
-  },
   image: {
     width: width * 0.45,
     height: width * 0.45,

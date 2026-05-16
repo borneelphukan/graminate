@@ -16,7 +16,6 @@ import {
   FAB,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -45,7 +44,6 @@ const WarehouseCard = ({
   item: WarehouseRecord;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   const addressString = [
     item.address_line_1,
     item.address_line_2,
@@ -69,7 +67,7 @@ const WarehouseCard = ({
             <Icon
               type={"map-marker" as any}
               size={16}
-              color={theme.colors.onSurfaceVariant}
+              className="text-gray-400 dark:text-gray-500"
             />
             <Text variant="bodyMedium" className="ml-2 shrink">
               {addressString}
@@ -82,7 +80,7 @@ const WarehouseCard = ({
               <Icon
                 type={"account" as any}
                 size={16}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400 dark:text-gray-500"
               />
               <Text variant="bodyMedium" className="ml-2 shrink">
                 {item.contact_person}
@@ -94,7 +92,7 @@ const WarehouseCard = ({
               <Icon
                 type={"phone" as any}
                 size={16}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400 dark:text-gray-500"
               />
               <Text variant="bodyMedium" className="ml-2 shrink">
                 {item.phone}
@@ -106,7 +104,7 @@ const WarehouseCard = ({
               <Icon
                 type={"package-variant-closed" as any}
                 size={16}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400 dark:text-gray-500"
               />
               <Text variant="bodyMedium" className="ml-2 shrink">
                 {String(item.storage_capacity)}
@@ -122,7 +120,6 @@ const WarehouseCard = ({
 const StoragePage = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const router = useRouter();
-  const theme = useTheme();
   const [warehouses, setWarehouses] = useState<WarehouseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -257,7 +254,7 @@ const StoragePage = () => {
     if (!user_id)
       return (
         <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
-          <Text style={{ color: theme.colors.error }}>User ID not found.</Text>
+          <Text className="text-red-600 dark:text-red-400">User ID not found.</Text>
         </View>
       );
     if (loading && warehouses.length === 0)
@@ -269,7 +266,7 @@ const StoragePage = () => {
     if (error)
       return (
         <View className="flex-1 justify-center items-center p-4 gap-4 text-center">
-          <Text style={{ color: theme.colors.error }}>{error}</Text>
+          <Text className="text-red-600 dark:text-red-400">{error}</Text>
           <Button onPress={fetchWarehouses}>Retry</Button>
         </View>
       );
@@ -279,9 +276,9 @@ const StoragePage = () => {
           <Icon
             type={"warehouse" as any}
             size={64}
-            color={theme.colors.onSurfaceDisabled}
+            className="text-gray-300 dark:text-gray-700"
           />
-          <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+          <Text className="text-gray-400 dark:text-gray-600">
             {searchQuery
               ? `No warehouses found for "${searchQuery}"`
               : "No warehouses found. Tap &apos;+&apos; to add one."}
@@ -306,8 +303,7 @@ const StoragePage = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        className="flex-1"
-        style={{ backgroundColor: theme.colors.background }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <Appbar.Header>
           <Appbar.Action
@@ -315,7 +311,7 @@ const StoragePage = () => {
               <Icon
                 type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-dark dark:text-light"
               />
             )}
             onPress={() => router.back()}
@@ -339,10 +335,10 @@ const StoragePage = () => {
             <Icon
               type={"plus" as any}
               size={22}
-              color={theme.colors.onPrimaryContainer}
+              color="white"
             />
           )}
-          className="absolute right-4 bottom-4"
+          className="absolute right-4 bottom-4 bg-green-100"
           onPress={() => setIsFormVisible(true)}
         />
         <BottomDrawer

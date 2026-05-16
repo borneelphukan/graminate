@@ -16,7 +16,6 @@ import {
   ProgressBar,
   Text,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 type ItemRecord = {
@@ -75,19 +74,19 @@ const FeedStatItem = ({
   value,
   valueStyle,
 }: FeedStatItemProps) => {
-  const theme = useTheme();
   if (value === null || value === undefined) return null;
   return (
-    <Card style={styles.statItemCard}>
-      <Card.Content style={styles.statItemContent}>
-        <Icon source={icon} size={24} color={theme.colors.primary} />
-        <Text variant="bodyLarge" style={styles.statItemLabel}>
+    <Card className="flex-1 w-full">
+      <Card.Content className="p-4 items-center gap-1">
+        <Icon source={icon} size={24} className="text-green-100" />
+        <Text variant="bodyLarge" className="text-center">
           {label}
         </Text>
         {typeof value === "string" ? (
           <Text
             variant="headlineSmall"
-            style={[styles.statItemValue, valueStyle]}
+            className="font-bold"
+            style={valueStyle}
           >
             {value}
           </Text>
@@ -109,7 +108,6 @@ const PoultryFeedCard = ({
   flockId,
   onManageFeedClick,
 }: Props) => {
-  const theme = useTheme();
   const [allFeedConsumptionRecords, setAllFeedConsumptionRecords] = useState<
     PoultryFeedRecordForGraph[]
   >([]);
@@ -222,37 +220,37 @@ const PoultryFeedCard = ({
   const feedingStatusValue = `${timesFedToday} / ${targetFeedingsPerDay}`;
   const isFeedingComplete = timesFedToday >= targetFeedingsPerDay;
   const feedingStatusColor = isFeedingComplete
-    ? theme.colors.primary
+    ? "#16a34a"
     : timesFedToday > 0
     ? "#F59E0B"
-    : theme.colors.error;
+    : "#ef4444";
 
   const getFeedLevelColor = (days: number) => {
-    if (days < 3) return theme.colors.error;
+    if (days < 3) return "#ef4444";
     if (days < 7) return "#F59E0B";
-    return theme.colors.primary;
+    return "#16a34a";
   };
 
   const renderMetricsView = () => {
     if (loadingStockItems || loadingPerItemMetrics) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="min-h-[200px] justify-center items-center p-4">
           <ActivityIndicator size="large" />
         </View>
       );
     }
     if (stockFeedItems.length === 0) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="min-h-[200px] justify-center items-center p-4 gap-3 text-center">
           <Icon
             source="package-variant-closed"
             size={48}
-            color={theme.colors.onSurfaceDisabled}
+            className="text-gray-300 dark:text-gray-600"
           />
           <Text variant="titleMedium">No Poultry Feed in Stock</Text>
           <Text
             variant="bodyMedium"
-            style={{ color: theme.colors.onSurfaceDisabled }}
+            className="text-gray-400 dark:text-gray-500"
           >
             Mark items as &quot;Feed&quot; in your inventory.
           </Text>
@@ -260,8 +258,8 @@ const PoultryFeedCard = ({
       );
     }
     return (
-      <View style={styles.metricsViewContainer}>
-        <ScrollView style={styles.metricsScrollView}>
+      <View className="mt-3">
+        <ScrollView className="max-h-[280px] mb-2">
           {perFeedItemMetrics.map((metric) => {
             const durationColor = getFeedLevelColor(
               metric.estimatedDurationDays
@@ -273,43 +271,43 @@ const PoultryFeedCard = ({
               ? Math.min(1, metric.estimatedDurationDays / 7)
               : 0;
             return (
-              <Card key={metric.itemName} style={styles.metricItemCard}>
+              <Card key={metric.itemName} className="mb-3">
                 <Card.Content>
                   <Text
                     variant="titleMedium"
-                    style={styles.metricItemTitle}
+                    className="mb-3 font-bold"
                     numberOfLines={1}
                   >
                     {metric.itemName}
                   </Text>
-                  <View style={styles.metricDetailsGrid}>
-                    <View style={styles.metricDetailItem}>
+                  <View className="flex-row justify-around">
+                    <View className="flex-1 items-center gap-1 px-1">
                       <Icon
                         source="cube-outline"
                         size={20}
-                        color={theme.colors.primary}
+                        className="text-green-100"
                       />
                       <Text variant="labelLarge">
                         {metric.currentStockDisplay}
                       </Text>
                       <Text variant="bodySmall">In Stock</Text>
                     </View>
-                    <View style={styles.metricDetailItem}>
+                    <View className="flex-1 items-center gap-1 px-1">
                       <Icon
                         source="chart-line"
                         size={20}
-                        color={theme.colors.primary}
+                        className="text-green-100"
                       />
                       <Text variant="labelLarge">
                         {metric.avgDailyConsumptionKg.toFixed(2)} kg/day
                       </Text>
                       <Text variant="bodySmall">Avg. Daily Use</Text>
                     </View>
-                    <View style={styles.metricDetailItem}>
+                    <View className="flex-1 items-center gap-1 px-1">
                       <Icon
                         source="warehouse"
                         size={20}
-                        color={theme.colors.primary}
+                        className="text-green-100"
                       />
                       <Text
                         variant="labelLarge"
@@ -322,7 +320,7 @@ const PoultryFeedCard = ({
                         <ProgressBar
                           progress={progress}
                           color={durationColor}
-                          style={styles.progressBar}
+                          className="w-full mt-1 h-1.5 rounded-full"
                         />
                       )}
                     </View>
@@ -332,7 +330,7 @@ const PoultryFeedCard = ({
             );
           })}
         </ScrollView>
-        <View style={styles.summaryStatsContainer}>
+        <View className="flex-row justify-between gap-3 pt-3">
           <FeedStatItem
             icon="silverware-fork-knife"
             value={
@@ -344,7 +342,7 @@ const PoultryFeedCard = ({
           <TouchableRipple
             onPress={!loadingStockItems ? onManageFeedClick : undefined}
             disabled={!userId || !flockId || loadingStockItems}
-            style={styles.touchableStatItem}
+            className="flex-1 rounded-xl overflow-hidden"
           >
             <FeedStatItem
               icon="clipboard-list-outline"
@@ -365,38 +363,6 @@ const PoultryFeedCard = ({
   );
 };
 
-const styles = StyleSheet.create({
-  centeredContainer: {
-    minHeight: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
-    padding: 16,
-    textAlign: "center",
-  },
-  metricsViewContainer: { marginTop: 12 },
-  metricsScrollView: { maxHeight: 280, marginBottom: 8 },
-  metricItemCard: { marginBottom: 12 },
-  metricItemTitle: { marginBottom: 12, fontWeight: "bold" },
-  metricDetailsGrid: { flexDirection: "row", justifyContent: "space-around" },
-  metricDetailItem: {
-    flex: 1,
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-  },
-  progressBar: { width: "100%", marginTop: 4, height: 6, borderRadius: 3 },
-  summaryStatsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-    paddingTop: 12,
-  },
-  touchableStatItem: { flex: 1, borderRadius: 12 },
-  statItemCard: { flex: 1, width: "100%" },
-  statItemContent: { padding: 16, alignItems: "center", gap: 4 },
-  statItemLabel: { textAlign: "center" },
-  statItemValue: { fontWeight: "bold" },
-});
+const styles = StyleSheet.create({});
 
 export default PoultryFeedCard;

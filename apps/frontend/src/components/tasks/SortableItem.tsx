@@ -29,15 +29,17 @@ const SortableItem = ({
     },
   });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    touchAction: "manipulation",
-  };
-
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+      className={`${isDragging ? "opacity-50" : "opacity-100"} touch-manipulation`}
+      {...attributes}
+      {...listeners}
+    >
       {children}
     </div>
   );

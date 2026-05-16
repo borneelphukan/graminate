@@ -9,7 +9,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View, ViewProps } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -19,7 +19,6 @@ import {
   Menu,
   SegmentedButtons,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type HiveView = "status" | "inspection";
@@ -33,7 +32,6 @@ const HiveDetailsPage = () => {
     hive_id: string;
   }>();
   const numericHiveId = hive_id ? parseInt(hive_id, 10) : 0;
-  const theme = useTheme();
 
   const [hiveData, setHiveData] = useState<HiveData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -222,7 +220,7 @@ const HiveDetailsPage = () => {
   if (loading) {
     return (
       <PlatformLayout>
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center bg-white dark:bg-dark">
           <ActivityIndicator size="large" />
         </View>
       </PlatformLayout>
@@ -235,9 +233,9 @@ const HiveDetailsPage = () => {
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"chevron_left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-dark dark:text-light"
             />
           )}
           onPress={() => router.back()}
@@ -250,9 +248,9 @@ const HiveDetailsPage = () => {
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"more_vert" as any}
+                  type={"more-vertical" as any}
                   size={22}
-                  color={theme.colors.onSurface}
+                  className="text-dark dark:text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -269,7 +267,7 @@ const HiveDetailsPage = () => {
               <Icon
                 type={"edit" as any}
                 size={20}
-                color={theme.colors.onSurfaceVariant}
+                className="text-gray-400 dark:text-gray-500"
               />
             )}
           />
@@ -283,15 +281,15 @@ const HiveDetailsPage = () => {
               <Icon
                 type={"delete" as any}
                 size={20}
-                color={theme.colors.error}
+                className="text-red-600 dark:text-red-400"
               />
             )}
-            titleStyle={{ color: theme.colors.error }}
+            titleStyle={{ color: "#ef4444" }}
           />
         </Menu>
       </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Card style={styles.card}>
+      <ScrollView className="bg-white dark:bg-dark" contentContainerClassName="p-4 gap-6">
+        <Card className="rounded-xl overflow-hidden">
           <Card.Title title="Hive Information" />
           <Card.Content>
             {detailItems.map((item) => {
@@ -301,15 +299,15 @@ const HiveDetailsPage = () => {
                   key={item.label}
                   title={item.label}
                   description={item.value}
-                  left={(props) => (
-                    <View {...props} style={styles.iconContainer}>
+                  left={(props: React.JSX.IntrinsicAttributes & React.JSX.IntrinsicClassAttributes<View> & Readonly<ViewProps>) => (
+                    <View {...props} className="justify-center items-center w-6 ml-3 mr-4">
                       {typeof ItemIcon === "function" ? (
-                        <ItemIcon size={24} color={theme.colors.onSurfaceVariant} />
+                        <ItemIcon size={24} className="text-gray-400 dark:text-gray-500" />
                       ) : (
                         <Icon
                           type={(ItemIcon) as any}
                           size={24}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       )}
                     </View>
@@ -321,7 +319,7 @@ const HiveDetailsPage = () => {
           </Card.Content>
         </Card>
 
-        <Card style={styles.card}>
+        <Card className="rounded-xl overflow-hidden">
           <Card.Title
             title="Hive Inspection"
             right={() =>
@@ -331,17 +329,17 @@ const HiveDetailsPage = () => {
                 </Button>
               )
             }
-            rightStyle={styles.cardTitleRight}
+            rightStyle={{ marginRight: 8 }}
           />
           <Card.Content>
             <SegmentedButtons
               value={activeView}
-              onValueChange={(value) => setActiveView(value as HiveView)}
+              onValueChange={(value: string) => setActiveView(value as HiveView)}
               buttons={[
                 { value: "status", label: "Status" },
                 { value: "inspection", label: "Logs" },
               ]}
-              style={styles.segmentedButtons}
+              className="mb-4"
             />
             {activeView === "status" && (
               <View>
@@ -352,18 +350,18 @@ const HiveDetailsPage = () => {
                       key={item.label}
                       title={item.label}
                       description={item.value}
-                      left={(props) => (
-                        <View {...props} style={styles.iconContainer}>
+                      left={(props: React.JSX.IntrinsicAttributes & React.JSX.IntrinsicClassAttributes<View> & Readonly<ViewProps>) => (
+                        <View {...props} className="justify-center items-center w-6 ml-3 mr-4">
                           {typeof ItemIcon === "function" ? (
                             <ItemIcon
                               size={24}
-                              color={theme.colors.onSurfaceVariant}
+                              className="text-gray-400 dark:text-gray-500"
                             />
                           ) : (
                             <Icon
                               type={(ItemIcon) as any}
                               size={24}
-                              color={theme.colors.onSurfaceVariant}
+                              className="text-gray-400 dark:text-gray-500"
                             />
                           )}
                         </View>
@@ -376,13 +374,13 @@ const HiveDetailsPage = () => {
             )}
             {activeView === "inspection" &&
               (loadingInspections ? (
-                <ActivityIndicator style={styles.loader} />
+                <ActivityIndicator className="my-6" />
               ) : inspections.length > 0 ? (
                 inspections.map((item) => (
                   <Card
                     key={item.inspection_id}
                     mode="outlined"
-                    style={styles.inspectionCard}
+                    className="mt-3 rounded-xl"
                     onPress={() => handleEditInspection(item)}
                   >
                     <Card.Title
@@ -402,7 +400,7 @@ const HiveDetailsPage = () => {
                   </Card>
                 ))
               ) : (
-                <Text style={styles.emptyText}>No inspection logs found.</Text>
+                <Text className="text-center py-8">No inspection logs found.</Text>
               ))}
           </Card.Content>
         </Card>
@@ -418,7 +416,7 @@ const HiveDetailsPage = () => {
           onClose={() => setShowHiveForm(false)}
           onSubmit={handleHiveFormSuccess}
           title="Edit Hive Details"
-          initialValues={hiveData}
+          initialValues={hiveData || undefined}
           fields={HIVE_FIELDS}
         />
       )}
@@ -439,22 +437,6 @@ const HiveDetailsPage = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { padding: 16, gap: 24 },
-  card: {},
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 24,
-    marginLeft: 14,
-    marginRight: 18,
-  },
-  cardTitleRight: { marginRight: 8 },
-  segmentedButtons: { marginBottom: 16 },
-  loader: { marginVertical: 24 },
-  inspectionCard: { marginTop: 12 },
-  emptyText: { textAlign: "center", padding: 32 },
-});
+const styles = StyleSheet.create({});
 
 export default HiveDetailsPage;

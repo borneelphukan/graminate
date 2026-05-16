@@ -34,7 +34,6 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -211,7 +210,6 @@ const FirstLoginModal = ({
   onSubmit: (businessName: string, businessType: string) => void;
   userId: string;
 }) => {
-  const theme = useTheme();
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState("");
 
@@ -220,8 +218,7 @@ const FirstLoginModal = ({
       <Modal
         visible={isOpen}
         onDismiss={onClose}
-        className="p-5 m-5 rounded-2xl"
-        contentContainerStyle={{ backgroundColor: theme.colors.surface }}
+        className="p-5 m-5 rounded-2xl bg-white dark:bg-dark-surface"
       >
         <Text variant="titleLarge" className="mb-2">
           Setup Your Account
@@ -258,7 +255,6 @@ const FirstLoginModal = ({
 const DashboardScreen = () => {
   const navigation = useNavigation();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
   const { fetchUserSubTypes } = useUserPreferences();
 
   const [userData, setUserData] = useState<User | null>(null);
@@ -638,8 +634,7 @@ const DashboardScreen = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        className="flex-1"
-        style={{ backgroundColor: theme.colors.background }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <ScrollView contentContainerClassName="p-4">
           <View className="flex-row justify-between items-start mb-4">
@@ -654,7 +649,7 @@ const DashboardScreen = () => {
               <Text variant="titleMedium">{formatDate(currentDateTime)}</Text>
               <Text
                 variant="bodyMedium"
-                style={{ color: theme.colors.onSurfaceVariant }}
+                className="text-gray-400 dark:text-gray-500"
               >
                 {formatTime(currentDateTime)}
               </Text>
@@ -737,12 +732,12 @@ const DashboardScreen = () => {
           onSubmit={async () => handleSaveWidgets(tempSelectedWidgets)}
           submitButtonText="Save Changes"
         >
-          <View style={{ gap: 16 }}>
+        <View className="gap-4">
             {Object.entries(categorizedWidgets).map(
               ([category, widgetsInCategory]) => (
                 <Card
                   key={category}
-                  style={{ backgroundColor: "transparent" }}
+                  className="bg-transparent"
                 >
                   <Card.Title
                     title={category}
@@ -750,7 +745,7 @@ const DashboardScreen = () => {
                       const IconComp = categoryIcons[category];
                       return typeof IconComp === "function" ? (
                         <IconComp
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                           width={22}
                           height={22}
                         />
@@ -758,7 +753,7 @@ const DashboardScreen = () => {
                         <Icon
                           type={IconComp as any}
                           size={22}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       );
                     }}
@@ -782,15 +777,10 @@ const DashboardScreen = () => {
                                 ? "checked"
                                 : "unchecked"
                             }
-                            color={theme.colors.primary}
+                            className="text-green-100"
                           />
                           <Text
-                            style={{
-                              marginLeft: 12,
-                              fontSize: 16,
-                              flex: 1,
-                              color: theme.colors.onSurface,
-                            }}
+                            className="ml-3 text-base flex-1 text-dark dark:text-light"
                           >
                             {widget.name}
                           </Text>

@@ -28,7 +28,6 @@ import {
   FAB,
   Menu,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 // No need for a custom 'api' instance here anymore, we'll use axiosInstance
@@ -104,7 +103,6 @@ const ContactCard = ({
   item: Contact;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   return (
     <Card onPress={onPress} className="mb-3">
       <Card.Title
@@ -121,7 +119,7 @@ const ContactCard = ({
           )}
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-400 dark:text-gray-500"
           >
             {formatDate(item.created_at)}
           </Text>
@@ -138,7 +136,6 @@ const CompanyCard = ({
   item: Company;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   return (
     <Card onPress={onPress} className="mb-3">
       <Card.Title
@@ -155,7 +152,7 @@ const CompanyCard = ({
           )}
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-400 dark:text-gray-500"
           >
             {formatDate(item.created_at)}
           </Text>
@@ -172,7 +169,6 @@ const ContractCard = ({
   item: Contract;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   return (
     <Card onPress={onPress} className="mb-3">
       <Card.Title
@@ -181,7 +177,7 @@ const ContractCard = ({
         right={() => (
           <Text
             variant="titleMedium"
-            style={{ color: theme.colors.primary, marginRight: 16 }}
+            className="text-green-100 dark:text-green-200 mr-4"
           >
             {formatCurrency(item.amount)}
           </Text>
@@ -190,7 +186,7 @@ const ContractCard = ({
       <Card.Content>
         <Text
           variant="bodyMedium"
-          style={{ color: theme.colors.onSurfaceVariant }}
+          className="text-gray-400 dark:text-gray-500"
         >
           Partner: {item.partner}
         </Text>
@@ -198,7 +194,7 @@ const ContractCard = ({
           <Chip>{item.stage}</Chip>
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-400 dark:text-gray-500"
           >
             End Date: {item.end_date ? formatDate(item.end_date) : "N/A"}
           </Text>
@@ -215,7 +211,6 @@ const ReceiptCard = ({
   item: Receipt;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   return (
     <Card onPress={onPress} className="mb-3">
       <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
@@ -225,15 +220,15 @@ const ReceiptCard = ({
             <Icon
               type={"calendar-month" as any}
               size={16}
-              color={theme.colors.error}
+              className="text-red-600 dark:text-red-400"
             />
-            <Text className="ml-2" style={{ color: theme.colors.error }}>
+            <Text className="ml-2 text-red-600 dark:text-red-400">
               Due: {formatDate(item.due_date)}
             </Text>
           </View>
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-400 dark:text-gray-500"
           >
             Issued: {formatDate(item.receipt_date || item.created_at)}
           </Text>
@@ -272,7 +267,6 @@ const CRM = () => {
     refresh?: string;
     view?: ViewType;
   }>();
-  const theme = useTheme();
   const { plan } = useUserPreferences();
   const [view, setView] = useState<ViewType>(viewFromParams || "contacts");
   const [data, setData] = useState<DataItem[]>([]);
@@ -779,7 +773,7 @@ const CRM = () => {
     if (error)
       return (
         <View className="flex-1 justify-center items-center p-4 gap-4">
-          <Text style={{ color: theme.colors.error }}>{error}</Text>
+          <Text className="text-red-600 dark:text-red-400">{error}</Text>
           <Button onPress={() => fetchData(view)}>Try Again</Button>
         </View>
       );
@@ -787,7 +781,7 @@ const CRM = () => {
     if (view === "tasks") {
       if (selectedProjectTitle) {
         return (
-          <View style={{ flex: 1 }}>
+          <View className="flex-1 bg-white dark:bg-dark">
             <View style={{ paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Button 
                 mode="text" 
@@ -813,9 +807,9 @@ const CRM = () => {
             <Icon
               type={(VIEW_CONFIG[view].icon) as any}
               size={64}
-              color={theme.colors.onSurfaceDisabled}
+              className="text-gray-300 dark:text-gray-700"
             />
-            <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+            <Text className="text-gray-400 dark:text-gray-600">
               {searchQuery
                 ? `No projects found for "${searchQuery}"`
                 : `No projects found.`}
@@ -846,9 +840,9 @@ const CRM = () => {
           <Icon
             type={(VIEW_CONFIG[view].icon) as any}
             size={64}
-            color={theme.colors.onSurfaceDisabled}
+            className="text-gray-300 dark:text-gray-700"
           />
-          <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+          <Text className="text-gray-400 dark:text-gray-600">
             {searchQuery
               ? `No ${view} found for "${searchQuery}"`
               : `No ${view} found. Add one to get started.`}
@@ -868,18 +862,15 @@ const CRM = () => {
     );
   };
 
-  // --- Main Return JSX (Updated with FontAwesome) ---
   return (
     <PlatformLayout>
       <SafeAreaView
-        className="flex-1"
-        style={{ backgroundColor: theme.colors.background }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <View
-          className="p-4 gap-4 border-b"
-          style={{ borderBottomColor: theme.colors.outlineVariant }}
+          className="p-4 gap-4 border-b border-gray-400 dark:border-gray-600"
         >
-          <Text variant="headlineMedium" style={{ marginBottom: 8 }}>
+          <Text variant="headlineMedium" className="mb-2">
             {VIEW_CONFIG[view].title}
           </Text>
 
@@ -895,7 +886,7 @@ const CRM = () => {
                   onPress={() => setSortMenuVisible(true)}
                   icon={({ size, color }: any) => (
                     <Icon
-                      type={(sortOrder === "desc" ? "arrow-down" : "arrow-up") as any}
+                      type={(sortOrder === "desc" ? "chevron-down" : "chevron-up")}
                       size={size}
                       color={color}
                     />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from "react-native";
-import { Text, Searchbar, Button, Menu, useTheme, Card, SegmentedButtons, ActivityIndicator, Divider, FAB, IconButton } from "@/components/ui";
+import { Text, Searchbar, Button, Menu, Card, SegmentedButtons, ActivityIndicator, Divider, FAB, IconButton } from "@/components/ui";
 import axiosInstance from "@/lib/axiosInstance";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 
@@ -33,7 +33,6 @@ const INITIAL_COLUMNS: Column[] = [
 ];
 
 const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
-  const theme = useTheme();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [columns, setColumns] = useState<Column[]>(INITIAL_COLUMNS);
   const [loading, setLoading] = useState(true);
@@ -257,19 +256,19 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   };
 
   const renderTaskCard = (task: Task) => (
-    <Card key={task.task_id} style={styles.taskCard} onPress={() => openTaskDetails(task)}>
+    <Card key={task.task_id} className="mb-2 elevation-sm bg-white dark:bg-dark-surface rounded-lg overflow-hidden" onPress={() => openTaskDetails(task)}>
       <Card.Content>
-        <Text variant="titleMedium" numberOfLines={2} style={styles.taskTitle}>
+        <Text variant="titleMedium" numberOfLines={2} className="font-semibold mb-2 text-dark dark:text-light">
           {task.task}
         </Text>
-        <View style={styles.cardFooter}>
-          <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor(task.priority) + "20" }]}>
-            <Text style={[styles.priorityText, { color: getPriorityColor(task.priority) }]}>
+        <View className="flex-row justify-between items-center">
+          <View className="px-1.5 py-0.5 rounded" style={{ backgroundColor: getPriorityColor(task.priority) + "20" }}>
+            <Text className="text-[10px] font-bold" style={{ color: getPriorityColor(task.priority) }}>
               {task.priority}
             </Text>
           </View>
           {task.deadline && (
-            <Text variant="bodySmall" style={styles.deadlineText}>
+            <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
               {formatDate(task.deadline)}
             </Text>
           )}
@@ -279,7 +278,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 
   const BoardView = () => (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.boardContainer}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="px-4 gap-4">
       {columns.map((column) => {
         const columnTasks = filteredTasks.filter(t => 
           t.status?.toLowerCase() === column.title.toLowerCase() ||
@@ -287,28 +286,28 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
         );
 
         return (
-          <View key={column.id} style={styles.column}>
-            <View style={styles.columnHeader}>
-              <Text variant="titleSmall" style={styles.columnTitle} numberOfLines={1}>
+          <View key={column.id} className="w-[300px] bg-gray-50 dark:bg-dark-surface/50 rounded-xl p-3 max-h-[500px]">
+            <View className="flex-row justify-between items-center mb-3">
+              <Text variant="titleSmall" className="font-bold text-gray-400 dark:text-gray-500" numberOfLines={1}>
                 {column.title}
               </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={styles.countBadge}>
-                  <Text style={styles.countText}>{columnTasks.length}</Text>
+              <View className="flex-row items-center">
+                <View className="bg-gray-200 dark:bg-gray-700 rounded-xl px-2 py-0.5">
+                  <Text className="text-[10px] font-bold text-dark dark:text-light">{columnTasks.length}</Text>
                 </View>
                 <IconButton 
-                  icon="delete-outline" 
-                  size={18} 
-                  onPress={() => handleDeleteColumn(column.id)}
-                  style={{ margin: 0 }}
+                   icon="delete-outline" 
+                   size={18} 
+                   onPress={() => handleDeleteColumn(column.id)}
+                   className="m-0"
                 />
               </View>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.columnScroll}>
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
               {columnTasks.map(renderTaskCard)}
               {columnTasks.length === 0 && (
-                <View style={styles.emptyColumn}>
-                  <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceDisabled }}>
+                <View className="items-center p-5">
+                  <Text variant="bodySmall" className="text-gray-400 dark:text-gray-600">
                     No tasks
                   </Text>
                 </View>
@@ -319,12 +318,12 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
       })}
       
       <TouchableOpacity 
-        style={[styles.column, styles.addColumnBtn]} 
+        className="w-[300px] bg-gray-50 dark:bg-dark-surface/50 border-dashed border border-gray-300 dark:border-gray-700 rounded-xl justify-center items-center h-[100px]"
         onPress={() => setIsAddColumnDrawerVisible(true)}
       >
-        <View style={styles.addColumnContent}>
+        <View className="items-center justify-center">
           <IconButton icon="plus" size={24} />
-          <Text variant="titleSmall" style={{ color: theme.colors.onSurfaceVariant }}>
+          <Text variant="titleSmall" className="text-gray-400 dark:text-gray-500">
             Add Column
           </Text>
         </View>
@@ -333,24 +332,24 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 
   const ListView = () => (
-    <View style={styles.listContainer}>
+    <View className="px-4 bg-transparent">
       {filteredTasks.map((task, index) => (
         <View key={task.task_id}>
-          <TouchableOpacity style={styles.listItem} onPress={() => openTaskDetails(task)}>
-            <View style={styles.listMain}>
-              <Text variant="bodyLarge" style={styles.taskTitle}>{task.task}</Text>
-              <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceDisabled }}>
+          <TouchableOpacity className="flex-row items-center py-3" onPress={() => openTaskDetails(task)}>
+            <View className="flex-1">
+              <Text variant="bodyLarge" className="font-semibold text-dark dark:text-light">{task.task}</Text>
+              <Text variant="bodySmall" className="text-gray-400 dark:text-gray-600">
                 {task.status}
               </Text>
             </View>
-            <View style={styles.listSide}>
-              <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor(task.priority) + "20" }]}>
-                <Text style={[styles.priorityText, { color: getPriorityColor(task.priority) }]}>
+            <View className="items-end gap-1">
+              <View className="px-1.5 py-0.5 rounded" style={{ backgroundColor: getPriorityColor(task.priority) + "20" }}>
+                <Text className="text-[10px] font-bold" style={{ color: getPriorityColor(task.priority) }}>
                   {task.priority}
                 </Text>
               </View>
               {task.deadline && (
-                <Text variant="bodySmall" style={styles.deadlineText}>
+                <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
                   {formatDate(task.deadline)}
                 </Text>
               )}
@@ -360,8 +359,8 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
         </View>
       ))}
       {filteredTasks.length === 0 && (
-        <View style={styles.centered}>
-          <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled }}>
+        <View className="flex-1 justify-center items-center p-10">
+          <Text variant="bodyMedium" className="text-gray-400 dark:text-gray-600">
             No tasks found matching your filters.
           </Text>
         </View>
@@ -370,16 +369,16 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View className="flex-1 mt-4 pb-20">
+      <View className="px-4 gap-3 mb-4">
         <Searchbar
           placeholder="Search"
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={styles.searchbar}
-          inputStyle={styles.searchbarInput}
+          className="h-10 elevation-none bg-gray-100 dark:bg-gray-800 rounded-lg"
+          inputStyle={{ minHeight: 0 }}
         />
-        <View style={styles.actions}>
+        <View className="flex-row justify-between items-center gap-2">
           <Menu
             visible={priorityMenuVisible}
             onDismiss={() => setPriorityMenuVisible(false)}
@@ -387,9 +386,9 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
               <Button
                 mode="outlined"
                 onPress={() => setPriorityMenuVisible(true)}
-                style={styles.priorityBtn}
-                contentStyle={styles.priorityBtnContent}
-                labelStyle={styles.priorityBtnLabel}
+                className="h-8 rounded-lg"
+                contentStyle={{ height: 32 }}
+                labelStyle={{ fontSize: 12, marginVertical: 0 }}
               >
                 {selectedPriority}
               </Button>
@@ -409,19 +408,19 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
 
           <SegmentedButtons
             value={isListView ? "list" : "board"}
-            onValueChange={(val) => setIsListView(val === "list")}
+            onValueChange={(val: string) => setIsListView(val === "list")}
             buttons={[
               { value: "list", icon: "view-list", label: "List" },
               { value: "board", icon: "view-grid", label: "Board" },
             ]}
-            style={styles.segmentedButtons}
+            className="flex-1"
             density="small"
           />
         </View>
       </View>
 
       {loading ? (
-        <View style={styles.centered}>
+        <View className="flex-1 justify-center items-center p-10">
           <ActivityIndicator animating={true} size="large" />
         </View>
       ) : (
@@ -431,7 +430,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
       <FAB
         icon="plus"
         onPress={() => setIsAddDrawerVisible(true)}
-        style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+        className="absolute m-4 right-0 bottom-0 bg-green-100"
         color="white"
       />
 
@@ -477,8 +476,8 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
               ]
             );
           }}
-          textColor={theme.colors.error}
-          style={styles.deleteBtn}
+          className="mt-4 border border-red-500/20"
+          textColor="#ef4444"
           icon="delete"
         >
           Delete Task
@@ -499,155 +498,6 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
 const { width: windowWidth } = Dimensions.get("window");
 const isTablet = windowWidth >= 768;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 16,
-    paddingBottom: 80, // Space for FAB
-  },
-  header: {
-    paddingHorizontal: 16,
-    gap: 12,
-    marginBottom: 16,
-  },
-  searchbar: {
-    height: 40,
-    elevation: 0,
-    backgroundColor: "rgba(128, 128, 128, 0.1)",
-    borderRadius: 8,
-  },
-  searchbarInput: {
-    minHeight: 0,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: 8,
-  },
-  priorityBtn: {
-    height: 32,
-    borderRadius: 8,
-  },
-  priorityBtnContent: {
-    height: 32,
-  },
-  priorityBtnLabel: {
-    fontSize: 12,
-    marginVertical: 0,
-  },
-  segmentedButtons: {
-    flex: 1,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 40,
-  },
-  boardContainer: {
-    paddingHorizontal: 16,
-    gap: 16,
-  },
-  column: {
-    width: isTablet ? (windowWidth - 48) / 2 : windowWidth - 32,
-    backgroundColor: "rgba(128, 128, 128, 0.05)",
-    borderRadius: 12,
-    padding: 12,
-    maxHeight: 500,
-  },
-  columnHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  columnTitle: {
-    fontWeight: "bold",
-    color: "#6b7280",
-  },
-  countBadge: {
-    backgroundColor: "rgba(128, 128, 128, 0.2)",
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  countText: {
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  columnScroll: {
-    flex: 1,
-  },
-  taskCard: {
-    marginBottom: 8,
-    elevation: 1,
-  },
-  taskTitle: {
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  priorityBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  priorityText: {
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  deadlineText: {
-    color: "#6b7280",
-  },
-  emptyColumn: {
-    alignItems: "center",
-    padding: 20,
-  },
-  listContainer: {
-    paddingHorizontal: 16,
-    backgroundColor: "transparent",
-  },
-  listItem: {
-    flexDirection: "row",
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-  listMain: {
-    flex: 1,
-  },
-  listSide: {
-    alignItems: "flex-end",
-    gap: 4,
-  },
-  deleteBtn: {
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255, 0, 0, 0.2)",
-  },
-  addColumnBtn: {
-    backgroundColor: "rgba(128, 128, 128, 0.1)",
-    borderStyle: "dashed",
-    borderWidth: 1,
-    borderColor: "rgba(128, 128, 128, 0.3)",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 100, // Shorter than columns
-  },
-  addColumnContent: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const styles = StyleSheet.create({});
 
 export default ProjectTaskBoard;

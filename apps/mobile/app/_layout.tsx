@@ -14,7 +14,6 @@ import {
   UserPreferencesProvider,
   useUserPreferences,
 } from "@/contexts/UserPreferencesContext";
-import { AppDarkTheme, AppLightTheme } from "@/constants/theme";
 import * as SplashScreen from "expo-splash-screen";
 import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
 
@@ -36,22 +35,22 @@ function ThemedApp() {
         ...DarkTheme,
         colors: {
           ...DarkTheme.colors,
-          primary: AppDarkTheme.colors.primary,
-          background: AppDarkTheme.colors.background,
-          card: AppDarkTheme.colors.surface,
-          text: AppDarkTheme.colors.onSurface,
-          border: AppDarkTheme.colors.outline,
+          primary: "#04ad79",
+          background: "#0a0a0a",
+          card: "#030712",
+          text: "#ededed",
+          border: "#1f2937",
         },
       }
     : {
         ...DefaultTheme,
         colors: {
           ...DefaultTheme.colors,
-          primary: AppLightTheme.colors.primary,
-          background: AppLightTheme.colors.background,
-          card: AppLightTheme.colors.surface,
-          text: AppLightTheme.colors.onSurface,
-          border: AppLightTheme.colors.outline,
+          primary: "#2b7860",
+          background: "#ffffff",
+          card: "#f8f9fa",
+          text: "#171717",
+          border: "#e8e8e9",
         },
       };
 

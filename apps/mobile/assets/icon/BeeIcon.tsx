@@ -1,13 +1,14 @@
 import React from "react";
 import Svg, { Path, SvgProps } from "react-native-svg";
+import { cssInterop } from "nativewind";
 
 type BeeIconProps = SvgProps & {
   size?: number;
   color?: string;
 };
 
-const BeeIcon = ({ size = 24, color = "black", ...props }: BeeIconProps) => (
-  <Svg width={size} height={size} viewBox="0 0 297 297" fill={color} {...props}>
+const BeeIcon = ({ size = 24, color = "black", style, ...props }: BeeIconProps & { className?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 297 297" fill={color} style={style} {...props}>
     <Path
       d="M262.223,87.121c-21.74-21.739-48.581-34.722-71.809-34.735c-0.373-4.733-1.523-9.251-3.337-13.418
       c0.21-0.178,0.419-0.359,0.617-0.558l16.139-16.139c3.82-3.82,3.82-10.013,0-13.833c-3.821-3.819-10.012-3.819-13.833,0
@@ -34,5 +35,14 @@ const BeeIcon = ({ size = 24, color = "black", ...props }: BeeIconProps) => (
     />
   </Svg>
 );
+
+cssInterop(BeeIcon, {
+  className: {
+    target: "style",
+    nativeStyleToProp: {
+      color: true,
+    },
+  },
+});
 
 export default BeeIcon;

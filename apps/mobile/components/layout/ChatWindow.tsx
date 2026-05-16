@@ -20,7 +20,6 @@ import {
   Surface,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
@@ -42,7 +41,6 @@ const suggestions = [
 
 const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
   const { plan, isSubTypesLoading } = useUserPreferences();
-  const theme = useTheme();
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -116,172 +114,110 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
     setMessages([]);
   };
 
-  const markdownStyle = (sender: "user" | "bot") =>
-    StyleSheet.create({
-      body: {
-        color:
-          sender === "user" ? theme.colors.onPrimary : theme.colors.onSurface,
-        fontSize: 16,
-      },
-      table: {
-        borderWidth: 1,
-        borderColor: "rgba(0,0,0,0.1)",
-        borderRadius: 12,
-        backgroundColor: theme.colors.surface,
-        marginVertical: 10,
-        overflow: "hidden",
-      },
-      thead: {
-        backgroundColor: theme.colors.elevation.level1,
-      },
-      th: {
-        padding: 12,
-        fontWeight: "bold",
-        fontSize: 12,
-        color: theme.colors.onSurface,
-        borderBottomWidth: 1,
-        borderBottomColor: "rgba(0,0,0,0.1)",
-        minWidth: 100,
-      },
-      tr: {
-        borderBottomWidth: 1,
-        borderBottomColor: "rgba(0,0,0,0.05)",
-      },
-      td: {
-        padding: 12,
-        fontSize: 14,
-        color: theme.colors.onSurface,
-        minWidth: 100,
-      },
-    });
-
-  const markdownRules = {
-    table: (node: any, children: any, parent: any, styles: any) => (
-      <ScrollView horizontal key={node.key} showsHorizontalScrollIndicator={false}>
-        <View style={styles.table}>{children}</View>
+  const markdownRules = (sender: "user" | "bot") => ({
+    body: (node: any, children: any) => <View key={node.key}>{children}</View>,
+    paragraph: (node: any, children: any) => (
+      <Text
+        key={node.key}
+        className={`${sender === "user" ? "text-white" : "text-gray-900 dark:text-gray-100"} text-base mb-1`}
+      >
+        {children}
+      </Text>
+    ),
+    table: (node: any, children: any) => (
+      <ScrollView
+        horizontal
+        key={node.key}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View className="border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-dark-surface my-2 overflow-hidden">
+          {children}
+        </View>
       </ScrollView>
     ),
-  };
-
-  const styles = StyleSheet.create({
-    flex: { flex: 1 },
-    chatContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    header: {
-      backgroundColor: theme.colors.elevation.level2,
-    },
-    headerTitle: { fontWeight: "bold" },
-    contentArea: {
-      flex: 1,
-    },
-    scrollView: { flex: 1, paddingHorizontal: 16 },
-    scrollContent: { paddingBottom: 16, paddingTop: 8 },
-    suggestionContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 24,
-      paddingBottom: 100,
-    },
-    suggestionTitle: {
-      marginTop: 16,
-      marginBottom: 24,
-      textAlign: "center",
-    },
-    suggestionCard: {
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      borderRadius: 20,
-      marginBottom: 12,
-      width: "100%",
-      backgroundColor: theme.colors.elevation.level3,
-    },
-    suggestionText: {
-      color: theme.colors.onSurface,
-    },
-    messageRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      marginVertical: 8,
-      maxWidth: "90%",
-    },
-    userRow: { alignSelf: "flex-end" },
-    botRow: { alignSelf: "flex-start" },
-    avatarContainer: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      alignItems: "center",
-      justifyContent: "center",
-      marginHorizontal: 8,
-      backgroundColor: theme.colors.surfaceVariant,
-    },
-    messageBubble: { padding: 12, borderRadius: 16, flexShrink: 1 },
-    inputContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      padding: 8,
-      paddingTop: 12,
-      backgroundColor: theme.colors.elevation.level2,
-    },
-    textInput: { flex: 1 },
-    textInputOutline: { borderRadius: 24 },
-    sendButton: { marginLeft: 8 },
-    lockedContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 24,
-      backgroundColor: theme.colors.background,
-    },
-    lockedTitle: {
-      marginTop: 20,
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    lockedSubtitle: {
-      marginTop: 12,
-      textAlign: "center",
-      opacity: 0.7,
-      lineHeight: 22,
-    },
-    upgradeButton: {
-      marginTop: 32,
-      paddingHorizontal: 16,
-    },
-    loaderContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: theme.colors.background,
-    },
+    thead: (node: any, children: any) => (
+      <View
+        key={node.key}
+        className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+      >
+        {children}
+      </View>
+    ),
+    th: (node: any, children: any) => (
+      <View
+        key={node.key}
+        className="p-3 border-r border-gray-400 dark:border-gray-700 min-w-[100px]"
+      >
+        {children}
+      </View>
+    ),
+    tr: (node: any, children: any) => (
+      <View
+        key={node.key}
+        className="flex-row border-b border-gray-400 dark:border-gray-700"
+      >
+        {children}
+      </View>
+    ),
+    td: (node: any, children: any) => (
+      <View
+        key={node.key}
+        className="p-3 border-r border-gray-400 dark:border-gray-700 min-w-[100px]"
+      >
+        {children}
+      </View>
+    ),
+    text: (node: any, children: any) => (
+      <Text
+        key={node.key}
+        className={
+          sender === "user" ? "text-white" : "text-gray-900 dark:text-gray-100"
+        }
+      >
+        {children}
+      </Text>
+    ),
+    strong: (node: any, children: any) => (
+      <Text key={node.key} className="font-bold">
+        {children}
+      </Text>
+    ),
+    bullet_list: (node: any, children: any) => (
+      <View key={node.key} className="ml-4 mb-2">
+        {children}
+      </View>
+    ),
+    list_item: (node: any, children: any) => (
+      <View key={node.key} className="flex-row items-start mb-1">
+        <Text className={sender === "user" ? "text-white" : "text-gray-900 dark:text-gray-100"}>• </Text>
+        <View className="flex-1">{children}</View>
+      </View>
+    ),
   });
-
+  
   const memoizedCloseIcon = useCallback(
     () => (
       <Icon
-        type={"close" as any}
+        type={"close"}
         size={24}
-        color={theme.colors.onSurfaceVariant}
+        className="text-gray-400 dark:text-gray-500"
       />
     ),
-    [theme.colors.onSurfaceVariant]
+    []
   );
 
   if (isSubTypesLoading) {
     return (
-      <Surface style={styles.chatContainer}>
-        <Appbar.Header elevated style={styles.header}>
+      <Surface className="flex-1 bg-white dark:bg-dark">
+        <Appbar.Header elevated className="bg-gray-50 dark:bg-dark-surface">
           <Appbar.Content
             title="Graminate AI"
-            titleStyle={styles.headerTitle}
+            titleStyle={{ fontWeight: "bold" }}
           />
           <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
         </Appbar.Header>
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+        <View className="flex-1 justify-center items-center bg-white dark:bg-dark">
+          <ActivityIndicator size="large" className="text-green-100" />
         </View>
       </Surface>
     );
@@ -289,27 +225,27 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
 
   if (plan !== "PRO") {
     return (
-      <Surface style={styles.chatContainer}>
-        <Appbar.Header elevated style={styles.header}>
+      <Surface className="flex-1 bg-white dark:bg-dark">
+        <Appbar.Header elevated className="bg-gray-50 dark:bg-dark-surface">
           <Appbar.Content
             title="Graminate AI"
-            titleStyle={styles.headerTitle}
+            titleStyle={{ fontWeight: "bold" }}
           />
           <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
         </Appbar.Header>
-        <View style={styles.lockedContainer}>
-          <Sparkles size={64} color={theme.colors.primary} />
-          <Text variant="headlineSmall" style={styles.lockedTitle}>
+        <View className="flex-1 justify-center items-center p-6 bg-white dark:bg-dark">
+          <Sparkles size={64} className="text-green-100" />
+          <Text variant="headlineSmall" className="mt-5 font-bold text-center">
             Feature Locked
           </Text>
-          <Text variant="bodyLarge" style={styles.lockedSubtitle}>
+          <Text variant="bodyLarge" className="mt-3 text-center opacity-70 leading-5">
             Graminate AI is only available for Paid Users. Please upgrade your
             plan on the web dashboard to access this feature.
           </Text>
           <Button
             mode="contained"
             onPress={onClose}
-            style={styles.upgradeButton}
+            className="mt-8 px-4"
           >
             Got it
           </Button>
@@ -321,24 +257,24 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.flex}
+      className="flex-1"
     >
-      <Surface style={styles.chatContainer}>
-        <Appbar.Header elevated style={styles.header}>
+      <Surface className="flex-1 bg-white dark:bg-dark">
+        <Appbar.Header elevated className="bg-gray-50 dark:bg-dark-surface">
           <Appbar.Content
             title="Graminate AI"
-            titleStyle={styles.headerTitle}
+            titleStyle={{ fontWeight: "bold" }}
           />
           {messages.length > 0 && (
             <Button
               mode="text"
               onPress={handleClearChat}
-              textColor={theme.colors.error}
+              textColor="#ef4444"
               icon={() => (
                 <Icon
-                  type={"trash-can" as any}
+                  type={"trash-can"}
                   size={18}
-                  color={theme.colors.error}
+                  className="text-red-500"
                 />
               )}
             >
@@ -348,17 +284,17 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           <Appbar.Action icon={memoizedCloseIcon} onPress={onClose} />
         </Appbar.Header>
 
-        <View style={styles.contentArea}>
+        <View className="flex-1">
           {messages.length === 0 && !isLoading ? (
-            <View style={styles.suggestionContainer}>
-              <Sparkles size={48} color={theme.colors.onSurfaceVariant} />
-              <Text variant="headlineSmall" style={styles.suggestionTitle}>
+            <View className="flex-1 justify-center items-center p-6 pb-[100px]">
+              <Sparkles size={48} className="text-gray-400 dark:text-gray-500" />
+              <Text variant="headlineSmall" className="mt-4 mb-6 text-center">
                 How can I help today?
               </Text>
               {suggestions.map((s, i) => (
-                <Pressable key={i} onPress={() => handleSuggestionPress(s)}>
-                  <Surface style={styles.suggestionCard} elevation={1}>
-                    <Text style={styles.suggestionText}>{s}</Text>
+                <Pressable key={i} className="w-full" onPress={() => handleSuggestionPress(s)}>
+                  <Surface className="py-3 px-4 rounded-[20px] mb-3 w-full bg-gray-400 dark:bg-gray-600" elevation={1}>
+                    <Text className="text-dark dark:text-light">{s}</Text>
                   </Surface>
                 </Pressable>
               ))}
@@ -366,62 +302,50 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           ) : (
             <ScrollView
               ref={scrollViewRef}
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollContent}
+              className="flex-1 px-4"
+              contentContainerClassName="pb-4 pt-2"
             >
               {messages.map((msg, index) => (
                 <View
                   key={index}
-                  style={[
-                    styles.messageRow,
-                    msg.sender === "user" ? styles.userRow : styles.botRow,
-                  ]}
+                  className={`flex-row items-start my-2 max-w-[90%] ${msg.sender === "user" ? "self-end" : "self-start"}`}
                 >
                   {msg.sender === "bot" && (
-                    <View style={styles.avatarContainer}>
+                    <View className="w-8 h-8 rounded-full items-center justify-center mx-2 bg-gray-200 dark:bg-gray-700">
                       <Sparkles
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400 dark:text-gray-500"
                       />
                     </View>
                   )}
                   <Surface
-                    style={[
-                      styles.messageBubble,
-                      msg.sender === "user"
-                        ? { backgroundColor: theme.colors.primary }
-                        : { backgroundColor: theme.colors.elevation.level3 },
-                    ]}
+                    className={`p-3 rounded-2xl shrink ${msg.sender === "user" ? "bg-green-100" : "bg-gray-400 dark:bg-gray-600"}`}
                     elevation={1}
                   >
-                    <MarkdownDisplay 
-                      style={markdownStyle(msg.sender)}
-                      rules={markdownRules}
+                    <MarkdownDisplay
+                      rules={markdownRules(msg.sender)}
                     >
                       {msg.text}
                     </MarkdownDisplay>
                   </Surface>
                   {msg.sender === "user" && (
-                    <View style={styles.avatarContainer}>
+                    <View className="w-8 h-8 rounded-full items-center justify-center mx-2 bg-gray-200 dark:bg-gray-700">
                       <Icon
-                        type={"account" as any}
+                        type={"account"}
                         size={18}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400 dark:text-gray-500"
                       />
                     </View>
                   )}
                 </View>
               ))}
               {isLoading && (
-                <View style={[styles.messageRow, styles.botRow]}>
-                  <View style={styles.avatarContainer}>
-                    <Sparkles size={18} color={theme.colors.onSurfaceVariant} />
+                <View className="flex-row items-start my-2 max-w-[90%] self-start">
+                  <View className="w-8 h-8 rounded-full items-center justify-center mx-2 bg-gray-200 dark:bg-gray-700">
+                    <Sparkles size={18} className="text-gray-400 dark:text-gray-500" />
                   </View>
                   <Surface
-                    style={[
-                      styles.messageBubble,
-                      { backgroundColor: theme.colors.elevation.level3 },
-                    ]}
+                    className="p-3 rounded-2xl shrink bg-gray-400 dark:bg-gray-600"
                     elevation={1}
                   >
                     <ActivityIndicator />
@@ -432,9 +356,9 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
           )}
         </View>
 
-        <Surface style={styles.inputContainer} elevation={2}>
+        <Surface className="flex-row items-center p-2 pt-3 bg-gray-50 dark:bg-dark-surface" elevation={2}>
           <TextInput
-            style={styles.textInput}
+            className="flex-1"
             mode="outlined"
             placeholder="Ask Graminate AI..."
             value={input}
@@ -442,25 +366,21 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
             onSubmitEditing={() => handleSend()}
             editable={!isLoading}
             multiline
-            outlineStyle={styles.textInputOutline}
+            outlineStyle={{ borderRadius: 24 }}
           />
           <IconButton
             icon={() => (
               <Icon
-                type={"arrow-up-circle" as any}
+                type={"arrow-up-circle"}
                 size={38}
-                color={
-                  isLoading || input.trim() === ""
-                    ? theme.colors.onSurfaceDisabled
-                    : theme.colors.primary
-                }
+                className={isLoading || input.trim() === "" ? "text-gray-300 dark:text-gray-700" : "text-green-100"}
               />
             )}
             mode="contained"
             size={24}
             onPress={() => handleSend()}
             disabled={isLoading || input.trim() === ""}
-            style={styles.sendButton}
+            className="ml-2"
           />
         </Surface>
       </Surface>

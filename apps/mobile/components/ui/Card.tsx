@@ -12,7 +12,7 @@ export const Card = ({ children, style, className = '', onPress }: any) => {
   );
 };
 
-Card.Title = ({ title, subtitle, left, right, titleVariant, subtitleVariant }: any) => (
+Card.Title = ({ title, subtitle, left, right }: any) => (
   <View className="flex-row items-center justify-between mb-2">
     <View className="flex-row items-center flex-1">
       {left && <View className="mr-3">{left()}</View>}

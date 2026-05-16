@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   View,
 } from "react-native";
@@ -16,8 +15,9 @@ import {
   IconButton,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
+import { StatusBar } from "expo-status-bar";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -27,7 +27,7 @@ const api = axios.create({
 
 const ForgotPasswordScreen = () => {
   const router = useRouter();
-  const theme = useTheme();
+  const { darkMode } = useUserPreferences();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLinkSent, setIsLinkSent] = useState(false);
@@ -95,7 +95,7 @@ const ForgotPasswordScreen = () => {
 
   const renderSuccessView = () => (
     <View style={styles.successContainer}>
-      <Icon source="check-circle" size={80} color={theme.colors.primary} />
+      <Icon source="check-circle" size={80} className="text-green-100 dark:text-green-200" />
       <Text variant="headlineMedium" style={styles.successTitle}>
         Check Your Email
       </Text>
@@ -116,12 +116,9 @@ const ForgotPasswordScreen = () => {
 
   return (
     <SafeAreaView
-      style={[styles.flex, { backgroundColor: theme.colors.background }]}
+      className="flex-1 bg-white dark:bg-dark"
     >
-      <StatusBar
-        barStyle={theme.dark ? "light-content" : "dark-content"}
-        backgroundColor={theme.colors.background}
-      />
+      <StatusBar style={darkMode ? "light" : "dark"} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.flex}

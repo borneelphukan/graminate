@@ -17,7 +17,6 @@ import {
   IconButton,
   Surface,
   Text,
-  useTheme,
 } from "@/components/ui";
 import { Notification, NotificationProps } from "./Notification";
 
@@ -42,7 +41,6 @@ const NotificationBar = ({
   onSettings,
 }: NotificationBarProps) => {
   const { darkMode } = useUserPreferences();
-  const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(barWidth)).current;
 
   useEffect(() => {
@@ -65,52 +63,7 @@ const NotificationBar = ({
     });
   };
 
-  const styles = StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    container: {
-      position: "absolute",
-      top: 0,
-      right: 0,
-      height: "100%",
-      width: barWidth,
-    },
-    surface: {
-      flex: 1,
-      elevation: 8,
-    },
-    safeArea: {
-      flex: 1,
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-    },
-    actionsContainer: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      alignItems: "center",
-      paddingHorizontal: 8,
-    },
-    emptyContainer: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 16,
-    },
-    emptyText: {
-      color: theme.colors.onSurfaceDisabled,
-      textAlign: "center",
-    },
-    listContent: {
-      padding: 16,
-    },
-  });
+const styles = StyleSheet.create({});
 
   return (
     <Modal
@@ -120,24 +73,28 @@ const NotificationBar = ({
       onRequestClose={handleClose}
     >
       <TouchableWithoutFeedback onPress={handleClose}>
-        <View style={styles.overlay}>
+        <View className="flex-1 bg-black/50">
           <Animated.View
-            style={[
-              styles.container,
-              { transform: [{ translateX: slideAnim }] },
-            ]}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              height: "100%",
+              width: barWidth,
+              transform: [{ translateX: slideAnim }],
+            }}
           >
             <TouchableWithoutFeedback>
-              <Surface style={styles.surface}>
-                <SafeAreaView style={styles.safeArea}>
-                  <View style={styles.header}>
+              <Surface className="flex-1 bg-white dark:bg-dark-surface elevation-lg">
+                <SafeAreaView className="flex-1">
+                  <View className="flex-row items-center justify-between px-4 py-2">
                     <Text variant="titleLarge">Notifications</Text>
                     <IconButton
                       icon={() => (
                         <Icon
                           type={"close" as any}
                           size={24}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       )}
                       onPress={handleClose}
@@ -146,15 +103,15 @@ const NotificationBar = ({
 
                   <Divider />
 
-                  <View style={styles.actionsContainer}>
+                  <View className="flex-row justify-end items-center px-2">
                     <Button
                       onPress={onClearAll}
-                      textColor={theme.colors.error}
+                      textColor="#ef4444"
                       icon={() => (
                         <Icon
                           type={"delete" as any}
                           size={18}
-                          color={theme.colors.error}
+                          className="text-red-500"
                         />
                       )}
                     >
@@ -165,7 +122,7 @@ const NotificationBar = ({
                         <Icon
                           type={"cog" as any}
                           size={20}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       )}
                       onPress={onSettings}
@@ -175,8 +132,8 @@ const NotificationBar = ({
                   <Divider />
 
                   {notifications.length === 0 ? (
-                    <View style={styles.emptyContainer}>
-                      <Text style={styles.emptyText}>
+                    <View className="flex-1 items-center justify-center p-4">
+                      <Text className="text-gray-400 dark:text-gray-600 text-center">
                         You don’t have any notifications
                       </Text>
                     </View>
@@ -187,7 +144,7 @@ const NotificationBar = ({
                       renderItem={({ item }) => (
                         <Notification {...item} onRemove={onRemove} darkMode={darkMode} />
                       )}
-                      contentContainerStyle={styles.listContent}
+                      contentContainerClassName="p-4"
                     />
                   )}
                 </SafeAreaView>

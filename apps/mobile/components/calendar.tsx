@@ -233,7 +233,7 @@ const TaskListView = ({
           keyExtractor={(item) => item.task_id.toString()}
           contentContainerClassName="p-4"
           renderItem={({ item }) => (
-            <View className="flex-row items-center bg-[rgba(0,0,0,0.03)] p-3 rounded-xl mb-3">
+            <View className="flex-row items-center p-3 rounded-xl mb-3">
               <Checkbox
                 status={item.status === "Completed" ? "checked" : "unchecked"}
                 onPress={() => updateTaskStatus(item.task_id, item.status === "Completed" ? "To Do" : "Completed")}

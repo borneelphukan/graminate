@@ -9,7 +9,6 @@ import {
   Button,
   Surface,
   Text,
-  useTheme,
 } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import ChatWindow from "./ChatWindow";
@@ -35,7 +34,6 @@ type Props = {
 const PlatformLayout = ({ children, showNavbar = true }: Props) => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
   const { fetchUserSubTypes } = useUserPreferences();
 
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -97,7 +95,7 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
 
   if (isLoadingAuth) {
     return (
-      <Surface style={styles.centeredScreen}>
+      <Surface className="flex-1 justify-center items-center p-4 bg-white dark:bg-dark">
         <ActivityIndicator size="large" />
       </Surface>
     );
@@ -105,14 +103,14 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
 
   if (!isAuthorized) {
     return (
-      <Surface style={styles.centeredScreen}>
-        <Text variant="titleLarge" style={styles.authText}>
+      <Surface className="flex-1 justify-center items-center p-4 bg-white dark:bg-dark">
+        <Text variant="titleLarge" className="text-center mb-4">
           Unauthorized Access. Please log in.
         </Text>
         <Button
           mode="contained"
           onPress={() => router.replace("/login")}
-          style={styles.authButton}
+          className="px-4"
         >
           Go to Login
         </Button>
@@ -123,20 +121,20 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
   return (
     <SafeAreaView
       edges={["bottom", "left", "right"]}
-      style={[styles.flex, { backgroundColor: theme.colors.background }]}
+      className="flex-1 bg-white dark:bg-dark"
     >
-      <View style={styles.flex}>
+      <View className="flex-1">
         {showNavbar && (
           <Navbar
             toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             toggleChat={() => setIsChatOpen(true)}
           />
         )}
-        <View style={styles.flex}>{children}</View>
+        <View className="flex-1">{children}</View>
         {isSidebarRendered && (
           <>
             <Pressable
-              style={styles.overlay}
+              className="absolute top-0 left-0 right-0 bottom-0 z-[40]"
               onPress={() => setIsSidebarOpen(false)}
             >
               <Animated.View
@@ -144,14 +142,15 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
               />
             </Pressable>
             <Animated.View
-              style={[
-                styles.sidebar,
-                {
-                  width: SIDEBAR_WIDTH,
-                  backgroundColor: theme.colors.elevation.level2,
-                  transform: [{ translateX: sidebarAnim }],
-                },
-              ]}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                zIndex: 50,
+                width: SIDEBAR_WIDTH,
+                transform: [{ translateX: sidebarAnim }],
+              }}
             >
               <Sidebar
                 userId={user_id!}
@@ -175,40 +174,9 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  centeredScreen: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  authText: {
-    textAlign: "center",
-    marginBottom: 16,
-  },
-  authButton: {
-    paddingHorizontal: 16,
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 40,
-  },
   overlayBackground: {
     flex: 1,
     backgroundColor: "black",
-  },
-  sidebar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    zIndex: 50,
   },
 });
 

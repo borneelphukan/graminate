@@ -24,7 +24,6 @@ import {
   Card,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type SubTypeValue = { name: string; value: number };
@@ -55,7 +54,6 @@ const TARGET_CATTLE_SUB_TYPE = "Cattle Rearing";
 const CattleRearingScreen = () => {
   const router = useRouter();
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
-  const theme = useTheme();
   const numericUserId = user_id ? parseInt(user_id, 10) : 0;
 
 
@@ -74,10 +72,10 @@ const CattleRearingScreen = () => {
       <Icon
         type={"chevron-left" as any}
         size={22}
-        color={theme.colors.onSurface}
+        className="text-dark dark:text-light"
       />
     ),
-    [theme.colors.onSurface]
+    []
   );
 
   const memoizedAddIcon = useCallback(
@@ -85,10 +83,10 @@ const CattleRearingScreen = () => {
       <Icon
         type={"plus" as any}
         size={22}
-        color={theme.colors.onSurface}
+        className="text-dark dark:text-light"
       />
     ),
-    [theme.colors.onSurface]
+    []
   );
 
   const fetchFinancialData = useCallback(async () => {
@@ -211,46 +209,45 @@ const CattleRearingScreen = () => {
 
     const grossProfit = totals.revenue - totals.cogs;
     const netProfit = grossProfit - totals.expenses;
-    const isDark = theme.dark;
-
-    return [
-      {
-        title: "Cattle Revenue",
-        value: totals.revenue,
-        icon: "currency-inr",
-        bgColor: isDark ? "#14532d" : "#dcfce7",
-        iconValueColor: isDark ? "#86efac" : "#16a34a",
-      },
-      {
-        title: "Cattle COGS",
-        value: totals.cogs,
-        icon: "shopping-outline",
-        bgColor: isDark ? "#713f12" : "#fef3c7",
-        iconValueColor: isDark ? "#fcd34d" : "#b45309",
-      },
-      {
-        title: "Gross Profit",
-        value: grossProfit,
-        icon: "chart-pie",
-        bgColor: isDark ? "#164e63" : "#cffafe",
-        iconValueColor: isDark ? "#67e8f9" : "#0891b2",
-      },
-      {
-        title: "Expenses",
-        value: totals.expenses,
-        icon: "credit-card-outline",
-        bgColor: isDark ? "#7f1d1d" : "#fee2e2",
-        iconValueColor: isDark ? "#fca5a5" : "#b91c1c",
-      },
-      {
-        title: "Net Profit",
-        value: netProfit,
-        icon: "bank-outline",
-        bgColor: isDark ? "#1e3a8a" : "#dbeafe",
-        iconValueColor: isDark ? "#93c5fd" : "#2563eb",
-      },
-    ];
-  }, [fullHistoricalData, theme.dark]);
+ 
+     return [
+       {
+         title: "Cattle Revenue",
+         value: totals.revenue,
+         icon: "currency-inr",
+         className: "bg-green-100/10 dark:bg-green-900/20",
+         textColorClassName: "text-green-600 dark:text-green-400",
+       },
+       {
+         title: "Cattle COGS",
+         value: totals.cogs,
+         icon: "shopping-outline",
+         className: "bg-yellow-100/10 dark:bg-yellow-900/20",
+         textColorClassName: "text-yellow-600 dark:text-yellow-400",
+       },
+       {
+         title: "Gross Profit",
+         value: grossProfit,
+         icon: "chart-pie",
+         className: "bg-cyan-100/10 dark:bg-cyan-900/20",
+         textColorClassName: "text-cyan-600 dark:text-cyan-400",
+       },
+       {
+         title: "Expenses",
+         value: totals.expenses,
+         icon: "credit-card-outline",
+         className: "bg-red-100/10 dark:bg-red-900/20",
+         textColorClassName: "text-red-600 dark:text-red-400",
+       },
+       {
+         title: "Net Profit",
+         value: netProfit,
+         icon: "bank-outline",
+         className: "bg-blue-100/10 dark:bg-blue-900/20",
+         textColorClassName: "text-blue-600 dark:text-blue-400",
+       },
+     ];
+   }, [fullHistoricalData]);
 
   const filteredCattleRecords = useMemo(() => {
     if (!searchQuery) return cattleRecords;
@@ -280,14 +277,14 @@ const CattleRearingScreen = () => {
         />
       </Appbar.Header>
 
-      <ScrollView style={{ backgroundColor: theme.colors.background }}>
+      <ScrollView className="bg-white dark:bg-dark">
         <View className="items-end px-4 pt-2">
           <Button
             icon={() => (
               <Icon
                 type={(showFinancials ? "chevron-up" : "chevron-down") as any}
                 size={16}
-                color={theme.colors.primary}
+                className="text-green-100 dark:text-green-200"
               />
             )}
             onPress={() => setShowFinancials(!showFinancials)}
@@ -343,7 +340,7 @@ const CattleRearingScreen = () => {
                     <Text variant="bodyMedium">Type: {item.cattle_type || "N/A"}</Text>
                     <Text variant="bodyMedium">Count: {item.number_of_animals}</Text>
                   </View>
-                  <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+                  <Text variant="bodySmall" className="text-gray-400 dark:text-gray-500">
                     Purpose: {item.purpose || "N/A"}
                   </Text>
                 </Card.Content>

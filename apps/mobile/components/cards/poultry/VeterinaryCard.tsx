@@ -7,7 +7,6 @@ import {
   Text,
   IconSource,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 type VeterinaryCardProps = {
@@ -25,15 +24,14 @@ type MetricItemProps = {
 };
 
 const MetricItem = ({ icon, value, label }: MetricItemProps) => {
-  const theme = useTheme();
   return (
-    <Card style={styles.metricCard}>
-      <Card.Content style={styles.metricContent}>
-        <Icon source={icon} size={28} color={theme.colors.primary} />
-        <Text variant="headlineSmall" style={styles.metricValue}>
+    <Card className="flex-1">
+      <Card.Content className="min-h-[128px] items-center justify-center p-4 gap-2">
+        <Icon source={icon} size={28} className="text-green-100" />
+        <Text variant="headlineSmall" className="font-bold">
           {value}
         </Text>
-        <Text variant="bodyMedium" style={styles.metricLabel}>
+        <Text variant="bodyMedium" className="text-center">
           {label}
         </Text>
       </Card.Content>
@@ -67,12 +65,12 @@ const VeterinaryCard = ({
       <Card.Title title="Veterinary Status" titleVariant="titleLarge" />
       <Card.Content>
         {loading ? (
-          <View style={styles.loaderContainer}>
+          <View className="min-h-[160px] justify-center items-center">
             <ActivityIndicator size="large" />
           </View>
         ) : (
-          <View style={styles.metricsContainer}>
-            <View style={styles.metricsRow}>
+          <View className="gap-3">
+            <View className="flex-row justify-between gap-3">
               <MetricItem
                 icon="syringe"
                 value={vaccinatedDisplayValue}
@@ -87,7 +85,7 @@ const VeterinaryCard = ({
             <TouchableRipple
               onPress={!loading ? onManageClick : undefined}
               disabled={loading}
-              style={styles.fullWidthTouchable}
+              className="rounded-xl overflow-hidden"
             >
               <MetricItem
                 icon="notebook-edit-outline"
@@ -102,39 +100,6 @@ const VeterinaryCard = ({
   );
 };
 
-const styles = StyleSheet.create({
-  loaderContainer: {
-    minHeight: 160,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  metricsContainer: {
-    gap: 12,
-  },
-  metricsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  metricCard: {
-    flex: 1,
-  },
-  metricContent: {
-    minHeight: 128,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    gap: 8,
-  },
-  metricValue: {
-    fontWeight: "bold",
-  },
-  metricLabel: {
-    textAlign: "center",
-  },
-  fullWidthTouchable: {
-    borderRadius: 12,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default VeterinaryCard;

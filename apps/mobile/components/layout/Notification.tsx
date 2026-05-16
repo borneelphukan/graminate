@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Appbar, List, useTheme } from "@/components/ui";
+import { Appbar, List } from "@/components/ui";
 
 export type NotificationProps = {
   id: number;
@@ -16,38 +16,25 @@ export const Notification = ({
   description,
   onRemove,
 }: NotificationProps) => {
-  const theme = useTheme();
 
   return (
     <List.Item
       title={title}
       description={description}
-      titleStyle={styles.title}
+      titleStyle={{ fontWeight: "bold" }}
       descriptionNumberOfLines={3}
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.elevation.level1 },
-      ]}
-      right={(props) => (
+      className="mb-2 rounded-lg py-2 bg-gray-100 dark:bg-dark-surface"
+      right={(props: any) => (
         <Appbar.Action
           {...props}
           icon="close"
           size={20}
           onPress={() => onRemove?.(id)}
-          color={theme.colors.onSurfaceVariant}
+          className="text-gray-400 dark:text-gray-500"
         />
       )}
     />
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 8,
-    borderRadius: 8,
-    paddingVertical: 8,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-});
+const styles = StyleSheet.create({});

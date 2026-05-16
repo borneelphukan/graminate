@@ -13,7 +13,6 @@ import {
   FAB,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type Receipt = {
@@ -46,7 +45,6 @@ const ReceiptCard = ({
   item: Receipt;
   onPress: () => void;
 }) => {
-  const theme = useTheme();
   return (
     <Card onPress={onPress} className="mb-3 rounded-xl">
       <Card.Title title={item.title} subtitle={`Billed to: ${item.bill_to}`} />
@@ -56,15 +54,15 @@ const ReceiptCard = ({
             <Icon
               type={"calendar-month" as any}
               size={16}
-              color={theme.colors.error}
+              className="text-red-600 dark:text-red-400"
             />
-            <Text className="text-[13px]" style={{ color: theme.colors.error }}>
+            <Text className="text-[13px] text-red-600 dark:text-red-400">
               Due: {formatDate(item.due_date)}
             </Text>
           </View>
           <Text
             variant="labelSmall"
-            style={{ color: theme.colors.onSurfaceVariant }}
+            className="text-gray-400 dark:text-gray-500"
           >
             Issued: {formatDate(item.receipt_date || item.created_at)}
           </Text>
@@ -77,7 +75,6 @@ const ReceiptCard = ({
 const FinanceReceipts = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const router = useRouter();
-  const theme = useTheme();
   const [data, setData] = useState<Receipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -178,8 +175,7 @@ const FinanceReceipts = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        className="flex-1"
-        style={{ backgroundColor: theme.colors.background }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <Appbar.Header elevated>
           <Appbar.BackAction onPress={() => router.back()} />
@@ -219,7 +215,7 @@ const FinanceReceipts = () => {
               refreshing={loading}
               ListEmptyComponent={
                 <View className="flex-1 justify-center items-center p-5">
-                  <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+                  <Text className="text-gray-400 dark:text-gray-600">
                     No receipts found.
                   </Text>
                 </View>
@@ -231,8 +227,7 @@ const FinanceReceipts = () => {
         <FAB
           icon="plus"
           label="Add Receipt"
-          className="absolute right-4 bottom-4 rounded-full"
-          style={{ backgroundColor: theme.colors.primary }}
+          className="absolute right-4 bottom-4 rounded-full bg-green-100"
           color="white"
           onPress={() => setFormVisible(true)}
         />

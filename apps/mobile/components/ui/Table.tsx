@@ -5,7 +5,6 @@ import {
   Text,
   Searchbar,
   ActivityIndicator,
-  useTheme,
 } from "@/components/ui";
 
 type RowType = any[];
@@ -32,7 +31,6 @@ const MobileTable = ({
   setSearchQuery,
   itemsPerPage: initialItemsPerPage = 10,
 }: Props) => {
-  const theme = useTheme();
   const [page, setPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
 
@@ -54,20 +52,20 @@ const MobileTable = ({
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View className="p-5 items-center justify-center">
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+    <View className="rounded-lg elevation-sm my-2 overflow-hidden bg-white dark:bg-dark-surface">
       {setSearchQuery && (
         <Searchbar
           placeholder="Search..."
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={styles.searchBar}
+          className="m-2 bg-transparent"
         />
       )}
 
@@ -75,7 +73,7 @@ const MobileTable = ({
         <DataTable>
           <DataTable.Header>
             {data.columns.map((column, index) => (
-              <DataTable.Title key={index} style={styles.columnTitle}>
+              <DataTable.Title key={index} className="min-w-[100px]">
                 {column}
               </DataTable.Title>
             ))}
@@ -88,14 +86,14 @@ const MobileTable = ({
                 onPress={() => onRowClick?.(row)}
               >
                 {row.map((cell, cellIndex) => (
-                  <DataTable.Cell key={cellIndex} style={styles.cell}>
-                    {String(cell)}
+                  <DataTable.Cell key={cellIndex} className="min-w-[100px]">
+                    <Text className="text-dark dark:text-light">{String(cell)}</Text>
                   </DataTable.Cell>
                 ))}
               </DataTable.Row>
             ))
           ) : (
-            <View style={styles.emptyContainer}>
+            <View className="p-5 items-center">
               <Text variant="bodyMedium">No data found</Text>
             </View>
           )}
@@ -103,7 +101,7 @@ const MobileTable = ({
           <DataTable.Pagination
             page={page}
             numberOfPages={Math.ceil(filteredRows.length / itemsPerPage)}
-            onPageChange={(page) => setPage(page)}
+            onPageChange={(page: number) => setPage(page)}
             label={`${from + 1}-${to} of ${filteredRows.length}`}
             numberOfItemsPerPageList={[10, 25, 50]}
             numberOfItemsPerPage={itemsPerPage}
@@ -117,31 +115,6 @@ const MobileTable = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 8,
-    elevation: 2,
-    marginVertical: 8,
-    overflow: "hidden",
-  },
-  searchBar: {
-    margin: 8,
-  },
-  columnTitle: {
-    minWidth: 100,
-  },
-  cell: {
-    minWidth: 100,
-  },
-  centered: {
-    padding: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  emptyContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-});
+const styles = StyleSheet.create({});
 
 export { MobileTable as Table };

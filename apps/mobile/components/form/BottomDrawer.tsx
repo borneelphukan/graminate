@@ -5,7 +5,6 @@ import {
   Menu,
   TextInput,
   TouchableRipple,
-  useTheme,
   Modal,
   Portal,
   Surface,
@@ -16,6 +15,7 @@ import {
   Text,
   IconButton,
 } from "@/components/ui";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Icon } from "@/components/ui/Icon";
 import { FormModal } from "../modals/FormModal";
 import { Calendar, DateData } from "react-native-calendars";
@@ -78,10 +78,9 @@ const PaperFormDropdown = ({
   disabled?: boolean;
 }) => {
   const [visible, setVisible] = useState(false);
-  const theme = useTheme();
 
   return (
-    <View style={styles.inputContainer}>
+    <View className="mb-1">
       <Menu
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -104,7 +103,7 @@ const PaperFormDropdown = ({
                         <Icon
                           type={leftIcon as any}
                           size={18}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       )}
                     />
@@ -116,7 +115,7 @@ const PaperFormDropdown = ({
                       <Icon
                         type={"chevron-down" as any}
                         size={16}
-                        color={theme.colors.onSurfaceVariant}
+                        className="text-gray-400 dark:text-gray-500"
                       />
                     )}
                   />
@@ -166,7 +165,6 @@ const PaperFormAutocomplete = ({
 }) => {
   const [visible, setVisible] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const theme = useTheme();
 
   useEffect(() => {
     if (value) {
@@ -179,13 +177,13 @@ const PaperFormAutocomplete = ({
   }, [value, items]);
 
   return (
-    <View style={styles.autocompleteContainer}>
+    <View className="relative mb-1">
       <TextInput
         mode="outlined"
         label={label}
         value={value}
         placeholder={placeholder}
-        onChangeText={(text) => {
+        onChangeText={(text: string) => {
           onSelect(text);
           setVisible(true);
         }}
@@ -199,7 +197,7 @@ const PaperFormAutocomplete = ({
                 <Icon
                   type={leftIcon as any}
                   size={18}
-                  color={theme.colors.onSurfaceVariant}
+                  className="text-gray-400 dark:text-gray-500"
                 />
               )}
             />
@@ -215,10 +213,7 @@ const PaperFormAutocomplete = ({
       />
       {visible && suggestions.length > 0 && (
         <Surface
-          style={[
-            styles.suggestionsSurface,
-            { backgroundColor: theme.colors.elevation.level2 },
-          ]}
+          className="absolute top-[54px] left-0 right-0 z-[1000] rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-surface"
           elevation={3}
         >
           <FlatList
@@ -263,7 +258,7 @@ export const BottomDrawer = ({
   const [activeDateField, setActiveDateField] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
 
-  const theme = useTheme();
+  const { darkMode } = useUserPreferences();
 
   const isSubmitting = isSubmittingProp || isSubmittingInternal;
 
@@ -378,31 +373,31 @@ export const BottomDrawer = ({
   };
 
   const renderField = useCallback((field: FormField, index: number, isHalf: boolean) => {
-    const containerStyle = isHalf ? styles.halfWidth : styles.fullWidth;
+    const containerClass = isHalf ? "flex-1" : "w-full";
 
     if (field.type === "dynamic-list") {
       const items = Array.isArray(formData[field.name])
         ? formData[field.name]
         : [{}];
       return (
-        <View key={field.name} style={styles.fullWidth}>
-          <Text variant="titleMedium" style={styles.sectionTitle}>
+        <View key={field.name} className="w-full">
+          <Text variant="titleMedium" className="mt-4 mb-2 font-bold">
             {field.label}
           </Text>
           {items.map((item: any, itemIndex: number) => (
             <Surface
               key={`${field.name}-${itemIndex}`}
-              style={styles.dynamicListItem}
+              className="p-4 rounded-xl mb-4 bg-gray-50 dark:bg-dark-surface"
               elevation={1}
             >
-              <View style={styles.dynamicListHeader}>
+              <View className="flex-row justify-between items-center mb-2">
                 <Text variant="labelLarge">
                   {field.label} #{itemIndex + 1}
                 </Text>
                 {items.length > 1 && (
                   <IconButton
                     icon="close-circle"
-                    iconColor={theme.colors.error}
+                    iconColor="#ef4444"
                     size={20}
                     onPress={() =>
                       handleRemoveDynamicListItem(field.name, itemIndex)
@@ -410,7 +405,7 @@ export const BottomDrawer = ({
                   />
                 )}
               </View>
-              <View style={styles.dynamicListContent}>
+              <View className="gap-2">
                 {field.subFields?.map((subField) => {
                   const subFieldName = subField.name;
                   // We need a modified handleInputChange for subfields
@@ -432,7 +427,7 @@ export const BottomDrawer = ({
                   return (
                     <View
                       key={tempField.name}
-                      style={subField.halfWidth ? styles.halfWidth : styles.fullWidth}
+                      className={subField.halfWidth ? "flex-1" : "w-full"}
                     >
                       {subField.type === "dropdown" ? (
                         <PaperFormDropdown
@@ -458,7 +453,7 @@ export const BottomDrawer = ({
                                   <Icon
                                     type={subField.icon as any}
                                     size={18}
-                                    color={theme.colors.onSurfaceVariant}
+                                    className="text-gray-400 dark:text-gray-500"
                                   />
                                 )}
                               />
@@ -476,7 +471,7 @@ export const BottomDrawer = ({
             mode="text"
             onPress={() => handleAddDynamicListItem(field.name)}
             icon="plus"
-            style={styles.addButton}
+            className="self-start mt-2"
           >
             Add Another {field.label}
           </Button>
@@ -489,7 +484,7 @@ export const BottomDrawer = ({
         ? formData[field.name]
         : [];
       return (
-        <View key={field.name} style={containerStyle}>
+        <View key={field.name} className={containerClass}>
           <TextInput
             mode="outlined"
             label={field.label}
@@ -517,7 +512,7 @@ export const BottomDrawer = ({
               <Chip
                 key={tag}
                 onClose={() => handleRemoveTag(field.name, tag)}
-                style={{ backgroundColor: theme.colors.surfaceVariant }}
+                className="bg-gray-100 dark:bg-gray-800"
               >
                 {tag}
               </Chip>
@@ -529,7 +524,7 @@ export const BottomDrawer = ({
 
     if (field.type === "dropdown" || field.type === "autocomplete") {
       return (
-        <View key={field.name} style={containerStyle}>
+        <View key={field.name} className={containerClass}>
           {field.type === "dropdown" ? (
             <PaperFormDropdown
               label={field.label}
@@ -560,7 +555,7 @@ export const BottomDrawer = ({
       return (
         <View
           key={field.name}
-          style={[containerStyle, { marginBottom: 12, justifyContent: 'center' }]}
+          className={`${containerClass} mb-3 justify-center`}
         >
           <Checkbox.Item
             label={field.label}
@@ -575,7 +570,7 @@ export const BottomDrawer = ({
 
     if (field.type === "date") {
       return (
-        <View key={field.name} style={containerStyle}>
+        <View key={field.name} className={containerClass}>
           <TouchableRipple
             onPress={() => {
               setActiveDateField(field.name);
@@ -599,7 +594,7 @@ export const BottomDrawer = ({
                         <Icon
                           type={field.icon as any}
                           size={18}
-                          color={theme.colors.onSurfaceVariant}
+                          className="text-gray-400 dark:text-gray-500"
                         />
                       )}
                     />
@@ -617,13 +612,13 @@ export const BottomDrawer = ({
     }
 
     return (
-      <View key={field.name} style={containerStyle}>
+      <View key={field.name} className={containerClass}>
         <TextInput
           mode="outlined"
           label={field.label}
           placeholder={field.placeholder}
           value={String(formData[field.name] || "")}
-          onChangeText={(text) => handleInputChange(field.name, text)}
+          onChangeText={(text: string) => handleInputChange(field.name, text)}
           error={!!errors[field.name]}
           keyboardType={
             field.type === "number"
@@ -644,7 +639,7 @@ export const BottomDrawer = ({
                   <Icon
                     type={field.icon as any}
                     size={18}
-                    color={theme.colors.onSurfaceVariant}
+                    className="text-gray-400 dark:text-gray-500"
                   />
                 )}
               />
@@ -658,7 +653,6 @@ export const BottomDrawer = ({
     );
   }, [
     formData,
-    theme,
     handleRemoveDynamicListItem,
     handleDynamicListChange,
     handleAddDynamicListItem,
@@ -670,6 +664,7 @@ export const BottomDrawer = ({
     errors,
     setActiveDateField,
     setDatePickerVisible,
+    darkMode,
   ]);
 
   const renderedFields = useMemo(() => {
@@ -682,7 +677,7 @@ export const BottomDrawer = ({
         if (currentRow.length === 2) {
           const rowData = [...currentRow];
           rows.push(
-            <View key={`row-${index}`} style={styles.row}>
+          <View key={`row-${index}`} className="flex-row gap-4">
               {rowData.map((item) => renderField(item.field, item.index, true))}
             </View>
           );
@@ -691,9 +686,9 @@ export const BottomDrawer = ({
       } else {
         if (currentRow.length === 1) {
           rows.push(
-            <View key={`row-single-${index}`} style={styles.row}>
+            <View key={`row-single-${index}`} className="flex-row gap-4">
               {renderField(currentRow[0].field, currentRow[0].index, true)}
-              <View style={styles.halfWidth} />
+              <View className="flex-1" />
             </View>
           );
           currentRow = [];
@@ -704,15 +699,15 @@ export const BottomDrawer = ({
 
     if (currentRow.length === 1) {
       rows.push(
-        <View key="row-last" style={styles.row}>
+        <View key="row-last" className="flex-row gap-4">
           {renderField(currentRow[0].field, currentRow[0].index, true)}
-          <View style={styles.halfWidth} />
+          <View className="flex-1" />
         </View>
       );
     }
 
     return rows;
-  }, [fields, formData, errors, theme, tagInput, renderField]);
+  }, [fields, formData, errors, tagInput, renderField]);
 
   const handleDayPress = (day: DateData) => {
     if (activeDateField) {
@@ -732,7 +727,7 @@ export const BottomDrawer = ({
         isSubmitting={isSubmitting}
         submitButtonText={submitButtonText}
       >
-        <View style={styles.formContainer}>
+        <View className="gap-1">
           {renderedFields}
           {children}
         </View>
@@ -742,10 +737,7 @@ export const BottomDrawer = ({
         <Modal
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
-          contentContainerStyle={[
-            styles.dateModalContent,
-            { backgroundColor: theme.colors.surface },
-          ]}
+          contentContainerStyle={{ margin: 20, borderRadius: 16, backgroundColor: darkMode ? "#030712" : "#ffffff" }}
         >
           <Calendar
             onDayPress={handleDayPress}
@@ -760,16 +752,16 @@ export const BottomDrawer = ({
                 : {}
             }
             theme={{
-              backgroundColor: theme.colors.surface,
-              calendarBackground: theme.colors.surface,
-              textSectionTitleColor: theme.colors.onSurfaceVariant,
-              selectedDayBackgroundColor: theme.colors.primary,
-              selectedDayTextColor: theme.colors.onPrimary,
-              todayTextColor: theme.colors.primary,
-              dayTextColor: theme.colors.onSurface,
-              textDisabledColor: theme.colors.onSurfaceDisabled,
-              arrowColor: theme.colors.primary,
-              monthTextColor: theme.colors.onSurface,
+              backgroundColor: darkMode ? "#030712" : "#ffffff",
+              calendarBackground: darkMode ? "#030712" : "#ffffff",
+              textSectionTitleColor: darkMode ? "#bbbbbc" : "#49494d",
+              selectedDayBackgroundColor: "#2b7860",
+              selectedDayTextColor: "#ffffff",
+              todayTextColor: "#2b7860",
+              dayTextColor: darkMode ? "#ededed" : "#171717",
+              textDisabledColor: darkMode ? "#49494d" : "#bbbbbc",
+              arrowColor: "#2b7860",
+              monthTextColor: darkMode ? "#ededed" : "#171717",
             }}
           />
         </Modal>
@@ -777,43 +769,5 @@ export const BottomDrawer = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  formContainer: { gap: 4 },
-  inputContainer: { marginBottom: 4 },
-  autocompleteContainer: { position: "relative", marginBottom: 4 },
-  suggestionsSurface: {
-    position: "absolute",
-    top: 54,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    borderRadius: 4,
-    maxHeight: 200,
-  },
-  row: { flexDirection: "row", gap: 16 },
-  halfWidth: { flex: 1 },
-  fullWidth: { width: "100%" },
-  dateModalContent: { margin: 20, borderRadius: 16 },
-  addButton: { alignSelf: "flex-start", marginTop: 8 },
-  sectionTitle: { marginTop: 16, marginBottom: 8, fontWeight: "bold" },
-  dynamicListItem: {
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: "rgba(0,0,0,0.02)",
-  },
-  dynamicListHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  dynamicListContent: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-});
 
 export default BottomDrawer;

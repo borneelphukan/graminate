@@ -316,7 +316,7 @@ const AddServiceScreen = () => {
           className="flex-1 rounded-xl"
         >
           <Card
-            className={`flex-1 ${
+            className={`flex-1 bg-white ${
               isLocked ? "bg-gray-400 dark:bg-gray-800" : 
               isSelected ? "bg-green-300 dark:bg-green-100" : ""
             }`}
@@ -324,7 +324,7 @@ const AddServiceScreen = () => {
             <Card.Content className="items-center justify-center px-4 py-6 gap-3">
               {isLocked && (
                 <View className="absolute top-2 right-2 px-1.5 py-0.5 rounded z-10 bg-green-100 dark:bg-green-200">
-                  <Text className="text-white text-[10px] font-bold">Unlock Pro</Text>
+                  <Text className="text-white text-xs font-bold">Unlock Pro</Text>
                 </View>
               )}
               {typeof IconComponent === "function" ? (
@@ -338,7 +338,7 @@ const AddServiceScreen = () => {
               )}
               <Text
                 variant="labelLarge"
-                className={`text-center ${
+                className={`text-center  ${
                   isLocked ? "text-gray-200 dark:text-gray-300" :
                   isSelected ? "text-green-100 dark:text-green-200" :
                   "text-dark dark:text-light"

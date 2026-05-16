@@ -16,7 +16,6 @@ import {
   Modal,
   Portal,
   Surface,
-  useTheme,
 } from "@/components/ui";
 
 type FormModalProps = {
@@ -44,7 +43,6 @@ export const FormModal = ({
   onBackgroundPress,
   onScrollBeginDrag,
 }: FormModalProps) => {
-  const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -149,44 +147,30 @@ export const FormModal = ({
             ]}
           >
             <Surface
-              style={[
-                styles.contentSurface,
-                { 
-                  backgroundColor: theme.dark ? "#111827" : "#ffffff",
-                  borderColor: theme.dark ? "#1f2937" : "#e5e7eb"
-                },
-              ]}
+              className="rounded-t-[24px] overflow-hidden bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-gray-800"
               elevation={0}
             >
-              <View style={styles.handleContainer}>
-                <View style={[styles.handle, { backgroundColor: theme.dark ? "#374151" : "#e5e7eb" }]} />
+              <View className="items-center py-3 bg-transparent">
+                <View className="w-10 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700" />
               </View>
 
               <Appbar.Header 
                 elevated={false} 
-                style={[
-                  styles.header, 
-                  { 
-                    backgroundColor: theme.dark ? "#111827" : "#ffffff",
-                    borderBottomWidth: 1,
-                    borderBottomColor: theme.dark ? "#1f2937" : "#e5e7eb"
-                  }
-                ]}
+                className="h-16 px-2 bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-800"
               >
               <Appbar.Content 
                 title={title} 
-                titleStyle={[styles.title, { color: theme.colors.onSurface }]} 
+                titleStyle={{ fontSize: 20, fontWeight: "700" }} 
               />
               <Appbar.Action
                 icon="close"
                 onPress={handleClose}
-                color={theme.colors.onSurface}
               />
             </Appbar.Header>
 
             <ScrollView
-              style={styles.scrollView}
-              contentContainerStyle={styles.scrollContent}
+              className="bg-transparent"
+              contentContainerClassName="p-6 pb-10"
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
               onScrollBeginDrag={onScrollBeginDrag}
@@ -194,21 +178,14 @@ export const FormModal = ({
               {children}
             </ScrollView>
 
-            <View style={[
-              styles.footer, 
-              { 
-                borderTopWidth: 1,
-                borderTopColor: theme.dark ? "#1f2937" : "#e5e7eb",
-                backgroundColor: theme.dark ? "#111827" : "#ffffff",
-              }
-            ]}>
+            <View className={`p-6 bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-gray-800 ${Platform.OS === 'ios' ? 'pb-10' : 'pb-6'}`}>
               <Button
                 mode="contained"
                 onPress={onSubmit}
                 loading={isSubmitting}
                 disabled={isSubmitting}
-                style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
-                labelStyle={styles.submitButtonLabel}
+                className="py-1.5 rounded-xl elevation-none"
+                labelStyle={{ fontSize: 16, fontWeight: "600", color: 'white' }}
                 icon={() => (
                   <Icon
                     type={"check" as any}
@@ -229,63 +206,11 @@ export const FormModal = ({
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    justifyContent: "flex-end",
-  },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.6)",
   },
   animatedContent: {
     width: "100%",
-  },
-  contentSurface: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: SCREEN_HEIGHT * 0.85,
-    borderWidth: 1,
-    borderBottomWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    overflow: 'hidden',
-  },
-  header: {
-    height: 64,
-    paddingHorizontal: 8,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  scrollView: {
-    backgroundColor: 'transparent',
-  },
-  scrollContent: {
-    padding: 24,
-    paddingBottom: 40,
-  },
-  footer: {
-    padding: 24,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-  },
-  submitButton: {
-    paddingVertical: 6,
-    borderRadius: 12,
-    elevation: 0,
-  },
-  submitButtonLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: 'white',
-  },
-  handleContainer: {
-    alignItems: 'center',
-    paddingVertical: 12,
-    backgroundColor: 'transparent',
-  },
-  handle: {
-    width: 40,
-    height: 5,
-    borderRadius: 3,
   },
 });

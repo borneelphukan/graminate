@@ -14,7 +14,6 @@ import {
   FAB,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type ExpenseRecord = {
@@ -45,7 +44,6 @@ const formatCurrency = (amount: number) =>
   }).format(amount);
 
 const ExpenseCard = ({ item }: { item: ExpenseRecord }) => {
-  const theme = useTheme();
 
   return (
     <Card className="mb-3 rounded-xl">
@@ -53,7 +51,7 @@ const ExpenseCard = ({ item }: { item: ExpenseRecord }) => {
         title={item.title}
         subtitle={item.occupation || "General"}
         right={() => (
-          <Text variant="titleMedium" style={{ color: theme.colors.error, marginRight: 16 }}>
+          <Text variant="titleMedium" className="text-red-600 dark:text-red-400 mr-4">
             {formatCurrency(item.expense)}
           </Text>
         )}
@@ -61,7 +59,7 @@ const ExpenseCard = ({ item }: { item: ExpenseRecord }) => {
       <Card.Content>
         <View className="flex-row justify-between items-center mt-2">
           <View className="flex-row items-center gap-1">
-            <Icon type="calendar" size={16} color={theme.colors.onSurfaceVariant} />
+            <Icon type="calendar" size={16} className="text-gray-400 dark:text-gray-500" />
             <Text className="text-[13px]">{formatDate(item.date_created)}</Text>
           </View>
           <Chip compact className="h-6">{item.category}</Chip>
@@ -74,7 +72,6 @@ const ExpenseCard = ({ item }: { item: ExpenseRecord }) => {
 const FinanceExpenses = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const navigation = useNavigation();
-  const theme = useTheme();
   const [data, setData] = useState<ExpenseRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,7 +147,7 @@ const FinanceExpenses = () => {
 
   return (
     <PlatformLayout>
-      <SafeAreaView className="flex-1" style={{ backgroundColor: theme.colors.background }}>
+      <SafeAreaView className="flex-1 bg-white dark:bg-dark">
         <Appbar.Header elevated>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title="Expense Ledger" />
@@ -178,7 +175,7 @@ const FinanceExpenses = () => {
               refreshing={loading}
               ListEmptyComponent={
                 <View className="flex-1 justify-center items-center p-5">
-                  <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+                  <Text className="text-gray-400 dark:text-gray-600">
                     No expense records found.
                   </Text>
                 </View>
@@ -190,8 +187,7 @@ const FinanceExpenses = () => {
         <FAB
           icon="plus"
           label="Log Expense"
-          className="absolute right-4 bottom-4 rounded-full"
-          style={{ backgroundColor: theme.colors.primary }}
+          className="absolute right-4 bottom-4 rounded-full bg-green-100"
           color="white"
           onPress={() => setFormVisible(true)}
         />

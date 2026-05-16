@@ -1,16 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Animated,
+  ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   View,
 } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -24,10 +25,23 @@ import {
   Text,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
+import { StatusBar } from "expo-status-bar";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+const LANGUAGES = [
+  { welcome: "Welcome", subtitle: "Sign in to continue" },
+  { welcome: "स्वागत है", subtitle: "आगे बढ़ने के लिए साइन इन करें" },
+  { welcome: "স্বাগতম", subtitle: "অব্যাহত ৰাখিবলৈ লগইন কৰক" },
+];
+
+const AGRI_IMAGES = [
+  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1000", // Farm
+  "https://images.unsplash.com/photo-1595841696667-0f8d167192ea?auto=format&fit=crop&q=80&w=1000", // Tea Garden
+  "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1000", // Green field
+];
 
 const api = axios.create({
   baseURL: API_URL,
@@ -35,7 +49,7 @@ const api = axios.create({
 
 const AuthScreen = () => {
   const router = useRouter();
-  const theme = useTheme();
+  const { darkMode } = useUserPreferences();
 
   const [isLoginView, setIsLoginView] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -51,6 +65,62 @@ const AuthScreen = () => {
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+
+  const [langIndex, setLangIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [nextImageIndex, setNextImageIndex] = useState(1);
+  const fadeAnim = React.useRef(new Animated.Value(1)).current;
+  const textFadeAnim = React.useRef(new Animated.Value(1)).current;
+  const imageIndexRef = React.useRef(0);
+
+  useEffect(() => {
+    // Language Cycling
+    const langInterval = setInterval(() => {
+      Animated.timing(textFadeAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        setLangIndex((prev) => (prev + 1) % LANGUAGES.length);
+        Animated.timing(textFadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 4000);
+
+    let timeoutId: any;
+    
+    const runImageTransition = () => {
+      timeoutId = setTimeout(() => {
+        const current = imageIndexRef.current;
+        const next = (current + 1) % AGRI_IMAGES.length;
+        
+        setNextImageIndex(next);
+        
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 2500,
+          useNativeDriver: true,
+        }).start(() => {
+          imageIndexRef.current = next;
+          setImageIndex(next);
+          fadeAnim.setValue(1);
+          runImageTransition();
+        });
+      }, 5000);
+    };
+
+    runImageTransition();
+
+    AGRI_IMAGES.forEach(uri => Image.prefetch(uri));
+
+    return () => {
+      clearInterval(langInterval);
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   const clearErrors = () => {
     setEmailError("");
@@ -170,9 +240,9 @@ const AuthScreen = () => {
   );
 
   const OrSeparator = () => (
-    <View className="flex-row items-center my-6">
+    <View className="flex-row items-center my-4">
       <Divider className="flex-1" />
-      <Text variant="labelMedium" className="mx-4">
+      <Text variant="labelMedium" className="mx-4 text-gray-400">
         OR
       </Text>
       <Divider className="flex-1" />
@@ -180,35 +250,52 @@ const AuthScreen = () => {
   );
 
   const renderHeader = () => (
-    <View className="items-center justify-center py-8 px-4">
-      {!isLoginView && (
-        <IconButton
-          icon="chevron-left"
-          onPress={toggleView}
-          className="absolute top-4 left-4 z-10"
-          iconColor={theme.colors.onPrimary}
-          size={28}
-        />
-      )}
+    <View className="flex-1 overflow-hidden bg-black">
       <Image
-        source={require("@/assets/images/logo.png")}
-        className="w-16 h-16 mb-4"
-        resizeMode="contain"
+        source={{ uri: AGRI_IMAGES[nextImageIndex] }}
+        className="absolute inset-0 w-full h-full"
+        resizeMode="cover"
       />
-      <Text
-        variant="headlineLarge"
-        className="font-bold"
-        style={{ color: theme.colors.onPrimary }}
-      >
-        {isLoginView ? "Welcome" : "Create Account"}
-      </Text>
-      <Text
-        variant="bodyLarge"
-        className="mt-2"
-        style={{ color: theme.colors.onPrimaryContainer }}
-      >
-        {isLoginView ? "Sign in to continue" : "Let's get you started!"}
-      </Text>
+      <Animated.Image
+        source={{ uri: AGRI_IMAGES[imageIndex] }}
+        className="absolute inset-0 w-full h-full"
+        resizeMode="cover"
+        style={{ opacity: fadeAnim }}
+      />
+      
+      <View className="absolute inset-0 bg-black/40" />
+      
+      <View className="flex-1 items-center justify-center py-4 px-4">
+        <Animated.View 
+          className="items-center justify-center w-full"
+          style={{ opacity: textFadeAnim, transform: [{ translateY: textFadeAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [10, 0]
+          }) }] }}
+        >
+          {!isLoginView && (
+            <IconButton
+              icon="chevron-left"
+              onPress={toggleView}
+              className="absolute top-0 left-0 z-10"
+              iconColor="white"
+              size={24}
+            />
+          )}
+          <Text
+            variant="headlineSmall"
+            className="font-bold text-white text-center"
+          >
+            {isLoginView ? LANGUAGES[langIndex].welcome : "Create Account"}
+          </Text>
+          <Text
+            variant="bodyMedium"
+            className="mt-1 text-white/90 text-center"
+          >
+            {isLoginView ? LANGUAGES[langIndex].subtitle : "Let's get you started!"}
+          </Text>
+        </Animated.View>
+      </View>
     </View>
   );
 
@@ -266,13 +353,13 @@ const AuthScreen = () => {
         onPress={handleLogin}
         loading={loading}
         disabled={loading}
-        className="py-2 mt-2 rounded-full"
+        className="py-1 mt-2 rounded-full"
         labelStyle={{ fontSize: 16, fontWeight: "bold" }}
       >
         Sign In
       </Button>
       <View className="flex-row justify-center items-center mt-auto pb-2">
-        <Text variant="bodyMedium">Don&apos;t have an account?</Text>
+        <Text variant="bodyMedium" className="text-dark dark:text-light">Don&apos;t have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Sign Up
         </Button>
@@ -346,7 +433,7 @@ const AuthScreen = () => {
         iconUri="https://img.icons8.com/color/48/000000/google-logo.png"
       />
       <View className="flex-row justify-center items-center mt-auto pb-2">
-        <Text variant="bodyMedium">Already have an account?</Text>
+        <Text variant="bodyMedium" className="text-dark dark:text-light">Already have an account?</Text>
         <Button mode="text" onPress={toggleView}>
           Log In
         </Button>
@@ -357,12 +444,10 @@ const AuthScreen = () => {
   return (
     <>
       <SafeAreaView
-        className="flex-1"
-        style={{ backgroundColor: theme.colors.primary }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <StatusBar
-          barStyle="light-content"
-          backgroundColor={theme.colors.primary}
+          style="light"
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -370,8 +455,8 @@ const AuthScreen = () => {
         >
           {renderHeader()}
           <View
-            className="flex-1 rounded-t-[40px] p-8"
-            style={{ backgroundColor: theme.colors.background }}
+            className="rounded-t-[40px] p-6 bg-white dark:bg-dark"
+            style={{ flex: isLoginView ? 1 : 3 }}
           >
             {isLoginView ? renderLoginForm() : renderRegisterForm()}
           </View>
@@ -381,8 +466,7 @@ const AuthScreen = () => {
         <Modal
           visible={isDatePickerVisible}
           onDismiss={() => setDatePickerVisible(false)}
-          className="p-5 m-5 rounded-2xl"
-          contentContainerStyle={{ backgroundColor: theme.colors.surface }}
+          className="p-5 m-5 rounded-2xl bg-white dark:bg-gray-900"
         >
           <Calendar
             onDayPress={handleDayPress}
@@ -392,17 +476,17 @@ const AuthScreen = () => {
                 : {}
             }
             theme={{
-              backgroundColor: theme.colors.surface,
-              calendarBackground: theme.colors.surface,
-              textSectionTitleColor: theme.colors.onSurfaceVariant,
-              selectedDayBackgroundColor: theme.colors.primary,
-              selectedDayTextColor: theme.colors.onPrimary,
-              todayTextColor: theme.colors.primary,
-              dayTextColor: theme.colors.onSurface,
-              textDisabledColor: theme.colors.onSurfaceDisabled,
-              arrowColor: theme.colors.primary,
-              monthTextColor: theme.colors.onSurface,
-              indicatorColor: theme.colors.primary,
+              backgroundColor: "transparent",
+              calendarBackground: "transparent",
+              textSectionTitleColor: darkMode ? "#bbbbbc" : "#49494d",
+              selectedDayBackgroundColor: "#2b7860",
+              selectedDayTextColor: "#ffffff",
+              todayTextColor: "#2b7860",
+              dayTextColor: darkMode ? "#ededed" : "#171717",
+              textDisabledColor: "#bbbbbc",
+              arrowColor: "#2b7860",
+              monthTextColor: darkMode ? "#ededed" : "#171717",
+              indicatorColor: "#2b7860",
             }}
           />
         </Modal>

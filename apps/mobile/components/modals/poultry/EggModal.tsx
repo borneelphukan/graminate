@@ -10,7 +10,6 @@ import {
   Surface,
   Text,
   TextInput,
-  useTheme,
 } from "@/components/ui";
 
 type EggRecord = {
@@ -42,7 +41,6 @@ const EggModal = ({
   eggRecordToEdit,
   onRecordSaved,
 }: EggModalProps) => {
-  const theme = useTheme();
   const [dateCollected, setDateCollected] = useState("");
   const [smallEggs, setSmallEggs] = useState<string>("");
   const [mediumEggs, setMediumEggs] = useState<string>("");
@@ -158,14 +156,14 @@ const EggModal = ({
       <Modal
         visible={isVisible}
         onDismiss={onClose}
-        contentContainerStyle={styles.modalContainer}
+        className="justify-center items-center"
       >
-        <Surface style={styles.surface}>
-          <Appbar.Header elevated>
+        <Surface className="w-[90%] max-h-[90%] rounded-2xl overflow-hidden bg-white dark:bg-dark-surface">
+          <Appbar.Header elevated className="bg-transparent">
             <Appbar.Content title={formTitle} />
             <Appbar.Action icon="close" onPress={onClose} />
           </Appbar.Header>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView contentContainerClassName="p-4">
             <TextInput
               label="Date Collected"
               value={dateCollected}
@@ -177,7 +175,7 @@ const EggModal = ({
               {errors.date_collected}
             </HelperText>
 
-            <Text variant="titleMedium" style={styles.subHeader}>
+            <Text variant="titleMedium" className="mt-4 mb-2 text-dark dark:text-light">
               Egg Counts
             </Text>
 
@@ -247,10 +245,7 @@ const EggModal = ({
             </HelperText>
           </ScrollView>
           <View
-            style={[
-              styles.footer,
-              { borderTopColor: theme.colors.outlineVariant },
-            ]}
+            className="flex-row justify-end gap-2 p-4 border-t border-gray-200 dark:border-gray-800"
           >
             <Button onPress={onClose} disabled={isSubmitting}>
               Cancel
@@ -270,23 +265,6 @@ const EggModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: { justifyContent: "center", alignItems: "center" },
-  surface: {
-    width: "90%",
-    maxHeight: "90%",
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  scrollContent: { padding: 16 },
-  subHeader: { marginTop: 16, marginBottom: 8 },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 8,
-    padding: 16,
-    borderTopWidth: 1,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default EggModal;

@@ -23,7 +23,7 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import { ActivityIndicator, Appbar, useTheme } from "@/components/ui";
+import { ActivityIndicator, Appbar } from "@/components/ui";
 
 const TOTAL_DAYS_FOR_HISTORICAL_DATA = 180;
 const today = new Date();
@@ -179,7 +179,6 @@ const generateDailyFinancialData = (
 const FinanceDashboardScreen = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const navigation = useNavigation();
-  const theme = useTheme();
   const [subTypes, setSubTypes] = useState<string[]>([]);
   const [loans, setLoans] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -455,7 +454,7 @@ const FinanceDashboardScreen = () => {
         textColorClassName: "text-indigo-100 dark:text-indigo-300",
       },
     ];
-  }, [fullHistoricalData, theme.dark, user_id]);
+  }, [fullHistoricalData, user_id]);
 
   const renderContent = () => {
     if (isLoadingData) {
@@ -504,7 +503,7 @@ const FinanceDashboardScreen = () => {
   return (
     <PlatformLayout>
       <SafeAreaView
-        style={{ flex: 1, backgroundColor: theme.colors.background }}
+        className="flex-1 bg-white dark:bg-dark"
       >
         <Appbar.Header elevated>
           <Appbar.Action
@@ -512,7 +511,7 @@ const FinanceDashboardScreen = () => {
               <Icon
                 type={"chevron-left" as any}
                 size={22}
-                color={theme.colors.onSurface}
+                className="text-dark dark:text-light"
               />
             )}
             onPress={() => router.back()}

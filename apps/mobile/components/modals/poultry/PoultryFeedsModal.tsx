@@ -13,7 +13,6 @@ import {
   Portal,
   TextInput,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
 
 export const UNITS = [
@@ -86,7 +85,7 @@ const PaperFormDropdown = ({
 }: any) => {
   const [visible, setVisible] = useState(false);
   return (
-    <View style={styles.inputContainerFull}>
+    <View className="mb-3">
       <Menu
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -136,7 +135,6 @@ const PoultryFeedsModal = ({
   feedRecordToEdit,
   onRecordSaved,
 }: PoultryFeedsModalProps) => {
-  const theme = useTheme();
   const [feedDate, setFeedDate] = useState("");
   const [feedGiven, setFeedGiven] = useState("");
   const [amountGiven, setAmountGiven] = useState<number | string>("");
@@ -292,20 +290,20 @@ const PoultryFeedsModal = ({
       <Modal
         visible={isVisible}
         onDismiss={onClose}
-        contentContainerStyle={styles.modalContent}
+        className="m-5 max-h-[90%]"
       >
         <Card>
           <Card.Title
             title={formTitle}
             titleVariant="titleLarge"
-            right={(props) => (
+            right={(props: any) => (
               <IconButton {...props} icon="close" onPress={onClose} />
             )}
           />
           <Divider />
           <Card.Content>
             <ScrollView keyboardShouldPersistTaps="handled">
-              <View style={styles.formContainer}>
+              <View className="gap-1 py-4">
                 <TextInput
                   mode="outlined"
                   label="Feed Date"
@@ -319,7 +317,7 @@ const PoultryFeedsModal = ({
                 </HelperText>
 
                 {loadingInventory ? (
-                  <ActivityIndicator style={styles.loader} />
+                  <ActivityIndicator className="my-5" />
                 ) : (
                   <PaperFormDropdown
                     label="Feed Given"
@@ -331,8 +329,8 @@ const PoultryFeedsModal = ({
                   />
                 )}
 
-                <View style={styles.row}>
-                  <View style={styles.halfWidth}>
+                <View className="flex-row gap-4">
+                  <View className="flex-1">
                     <TextInput
                       mode="outlined"
                       label="Amount Given"
@@ -346,7 +344,7 @@ const PoultryFeedsModal = ({
                       {errors.amount_given}
                     </HelperText>
                   </View>
-                  <View style={styles.halfWidth}>
+                  <View className="flex-1">
                     <PaperFormDropdown
                       label="Unit"
                       items={UNITS}
@@ -361,18 +359,18 @@ const PoultryFeedsModal = ({
             </ScrollView>
           </Card.Content>
           <Divider />
-          <Card.Actions style={styles.actions}>
+          <Card.Actions className="justify-between p-4">
             {feedRecordToEdit && (
               <Button
                 onPress={handleDelete}
-                textColor={theme.colors.error}
+                textColor="#ef4444"
                 disabled={isSubmitting || isDeleting}
                 loading={isDeleting}
               >
                 Delete
               </Button>
             )}
-            <View style={styles.rightActions}>
+            <View className="flex-row gap-2">
               <Button onPress={onClose} disabled={isSubmitting || isDeleting}>
                 Cancel
               </Button>
@@ -392,15 +390,6 @@ const PoultryFeedsModal = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContent: { margin: 20, maxHeight: "90%" },
-  formContainer: { gap: 4, paddingVertical: 16 },
-  loader: { marginVertical: 20 },
-  inputContainerFull: { marginBottom: 12 },
-  row: { flexDirection: "row", gap: 16 },
-  halfWidth: { flex: 1 },
-  actions: { justifyContent: "space-between", padding: 16 },
-  rightActions: { flexDirection: "row", gap: 8 },
-});
+const styles = StyleSheet.create({});
 
 export default PoultryFeedsModal;

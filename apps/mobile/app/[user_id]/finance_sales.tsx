@@ -13,7 +13,6 @@ import {
   FAB,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type SaleRecord = {
@@ -45,7 +44,6 @@ const formatCurrency = (amount: number) =>
   }).format(amount);
 
 const SaleCard = ({ item }: { item: SaleRecord }) => {
-  const theme = useTheme();
   const totalAmount = item.quantities_sold.reduce(
     (sum, q, i) => sum + q * (item.prices_per_unit[i] || 0),
     0
@@ -57,7 +55,7 @@ const SaleCard = ({ item }: { item: SaleRecord }) => {
         title={item.sales_name || "Untitled Sale"}
         subtitle={item.occupation || "Uncategorized"}
         right={() => (
-          <Text variant="titleMedium" style={{ color: theme.colors.primary, marginRight: 16 }}>
+          <Text variant="titleMedium" className="text-green-100 dark:text-green-200 mr-4">
             {formatCurrency(totalAmount)}
           </Text>
         )}
@@ -65,10 +63,10 @@ const SaleCard = ({ item }: { item: SaleRecord }) => {
       <Card.Content>
         <View className="flex-row justify-between mt-2">
           <View className="flex-row items-center gap-1">
-            <Icon type="calendar" size={16} color={theme.colors.onSurfaceVariant} />
+            <Icon type="calendar" size={16} className="text-gray-400 dark:text-gray-500" />
             <Text className="text-[13px]">{formatDate(item.sales_date)}</Text>
           </View>
-          <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>
+          <Text variant="labelSmall" className="text-gray-400 dark:text-gray-500">
             {item.items_sold.length} item{item.items_sold.length !== 1 ? "s" : ""}
           </Text>
         </View>
@@ -80,7 +78,6 @@ const SaleCard = ({ item }: { item: SaleRecord }) => {
 const FinanceSales = () => {
   const { user_id } = useLocalSearchParams<{ user_id: string }>();
   const navigation = useNavigation();
-  const theme = useTheme();
   const [data, setData] = useState<SaleRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -165,7 +162,7 @@ const FinanceSales = () => {
 
   return (
     <PlatformLayout>
-      <SafeAreaView className="flex-1" style={{ backgroundColor: theme.colors.background }}>
+      <SafeAreaView className="flex-1 bg-white dark:bg-dark">
         <Appbar.Header elevated>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title="Sales Ledger" />
@@ -193,7 +190,7 @@ const FinanceSales = () => {
               refreshing={loading}
               ListEmptyComponent={
                 <View className="flex-1 justify-center items-center p-5">
-                  <Text style={{ color: theme.colors.onSurfaceDisabled }}>
+                  <Text className="text-gray-400 dark:text-gray-600">
                     No sales records found.
                   </Text>
                 </View>
@@ -205,8 +202,7 @@ const FinanceSales = () => {
         <FAB
           icon="plus"
           label="Log Sale"
-          className="absolute right-4 bottom-4 rounded-full"
-          style={{ backgroundColor: theme.colors.primary }}
+          className="absolute right-4 bottom-4 rounded-full bg-green-100"
           color="white"
           onPress={() => setFormVisible(true)}
         />

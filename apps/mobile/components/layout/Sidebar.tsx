@@ -19,7 +19,6 @@ import {
   Button,
   Divider,
   Switch,
-  useTheme,
 } from "@/components/ui";
 
 interface SidebarProps {
@@ -30,7 +29,6 @@ interface SidebarProps {
 const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const theme = useTheme();
   const params = useLocalSearchParams<{ user_id: string }>();
   const currentUserId = userId || params.user_id;
 
@@ -217,30 +215,24 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
     closeSidebar();
   };
 
-  // Colors from packages/ui/lib/main.css to match web sidebar
-  const sidebarBg = "#111827"; // gray-800
-  const sidebarActive = "#1f2937"; // gray-700
-  const sidebarText = "#bbbbbc"; // gray-300
-  const sidebarActiveText = "#ffffff"; // white
-
   return (
     <SafeAreaView
-      style={[styles.flex, { backgroundColor: sidebarBg }]}
+      className="flex-1 bg-gray-800"
     >
-      <View style={styles.header}>
+      <View className="flex-row justify-between items-center px-4 h-20">
         <Image
           source={require("@/assets/images/logo.png")}
-          style={styles.logo}
+          style={{ width: 40, height: 40 }}
           resizeMode="contain"
         />
-        <TouchableOpacity onPress={closeSidebar} style={styles.closeButton}>
-          <Icon type={"close"} size={24} color={sidebarText} />
+        <TouchableOpacity onPress={closeSidebar} className="p-2">
+          <Icon type={"close"} size={24} className="text-light" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView className="flex-1 px-2">
         {isSubTypesLoading ? (
-          <ActivityIndicator style={styles.loader} />
+          <ActivityIndicator className="mt-10" />
         ) : (
           <View>
             {sections.map((section) => {
@@ -253,68 +245,44 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
                 return (
                   <View key={section.section}>
                     <TouchableOpacity
-                      style={[
-                        styles.itemContainer,
-                        isActive && {
-                          backgroundColor: sidebarActive,
-                        },
-                      ]}
+                      className={`flex-row items-center py-3 px-4 rounded-lg mb-1 ${isActive ? "bg-gray-700" : ""}`}
                       onPress={() => handleSectionToggle(section.section)}
                     >
-                      <View style={styles.iconWrapper}>
+                      <View className="w-8 items-center justify-center mr-3">
                         {typeof section.icon === "function" ? (
                           <section.icon
-                            color={isActive ? sidebarActiveText : sidebarText}
-                            width={22}
-                            height={22}
+                            className="text-light"
+                            size={22}
                           />
                         ) : (
                           <Icon
                             type={(section.icon) as any}
                             size={20}
-                            color={isActive ? sidebarActiveText : sidebarText}
+                            className="text-light"
                           />
                         )}
                       </View>
                       <Text
-                        style={[
-                          styles.itemText,
-                          { color: isActive ? sidebarActiveText : sidebarText },
-                        ]}
+                        className={`text-base flex-1 text-light`}
                       >
                         {section.label}
                       </Text>
                       <Icon
                         type={isExpanded ? "chevron-down" : "chevron-right"}
                         size={14}
-                        color={isActive ? sidebarActiveText : sidebarText}
+                        className="text-light"
                       />
                     </TouchableOpacity>
                     {isExpanded && (
-                      <View style={styles.subItemContainer}>
+                      <View className="pl-8">
                         {section.subItems.map((sub) => (
                           <TouchableOpacity
                             key={sub.label}
-                            style={[
-                              styles.itemContainer,
-                              styles.subItem,
-                              pathname === sub.route && {
-                                backgroundColor: sidebarActive,
-                              },
-                            ]}
+                            className={`flex-row items-center py-2.5 px-4 rounded-lg mb-1 ${pathname === sub.route ? "bg-gray-700" : ""}`}
                             onPress={() => handleNavigation(sub.route)}
                           >
                             <Text
-                              style={[
-                                styles.itemText,
-                                styles.subItemText,
-                                {
-                                  color:
-                                    pathname === sub.route
-                                      ? "#c3dafe" // indigo-300 for active sub-item like web
-                                      : sidebarText,
-                                },
-                              ]}
+                              className={`text-sm ${pathname === sub.route ? "text-indigo-300" : "text-light"}`}
                             >
                               {sub.label}
                             </Text>
@@ -329,38 +297,29 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
               return (
                 <TouchableOpacity
                   key={section.section}
-                  style={[
-                    styles.itemContainer,
-                    isActive && {
-                      backgroundColor: sidebarActive,
-                    },
-                  ]}
+                  className={`flex-row items-center py-3 px-4 rounded-lg mb-1 ${isActive ? "bg-gray-700" : ""}`}
                   onPress={() => handleNavigation(section.route!)}
                 >
-                  <View style={styles.iconWrapper}>
+                  <View className="w-8 items-center justify-center mr-3">
                     {typeof section.icon === "function" ? (
                       <section.icon
-                        color={isActive ? sidebarActiveText : sidebarText}
-                        width={22}
-                        height={22}
+                        className="text-light"
+                        size={22}
                       />
                     ) : (
-                      <Icon
-                        type={(section.icon) as any}
-                        size={20}
-                        color={isActive ? sidebarActiveText : sidebarText}
-                      />
-                    )}
-                  </View>
-                  <Text
-                    style={[
-                      styles.itemText,
-                      { color: isActive ? sidebarActiveText : sidebarText },
-                    ]}
-                  >
-                    {section.label}
-                  </Text>
-                </TouchableOpacity>
+                          <Icon
+                            type={(section.icon) as any}
+                            size={20}
+                            className="text-light"
+                          />
+                        )}
+                      </View>
+                      <Text
+                        className={`text-base flex-1 text-light`}
+                      >
+                        {section.label}
+                      </Text>
+                    </TouchableOpacity>
               );
             })}
           </View>
@@ -368,17 +327,17 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
       </ScrollView>
 
       <View
-        style={[styles.footer, { borderTopColor: sidebarActive }]}
+        className="p-4 border-t border-gray-700"
       >
         <View
-          style={[styles.itemContainer, { justifyContent: "space-between" }]}
+          className="flex-row items-center justify-between py-3 px-4 rounded-lg mb-1"
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={styles.iconWrapper}>
-              <Icon type={"weather-night"} size={20} color={sidebarText} />
+          <View className="flex-row items-center">
+            <View className="w-8 items-center justify-center mr-3">
+              <Icon type="weather-night" size={20} className="text-white" />
             </View>
             <Text
-              style={[styles.itemText, { color: sidebarText, flex: 0 }]}
+              className="text-white text-base"
             >
               Dark Mode
             </Text>
@@ -386,22 +345,17 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
           <Switch value={darkMode} onValueChange={setDarkMode} />
         </View>
         <TouchableOpacity
-          style={styles.itemContainer}
+          className="flex-row items-center py-3 px-4 rounded-lg mb-1"
           onPress={navigateToSettings}
         >
-          <View style={styles.iconWrapper}>
-            <Icon type={"cog"} size={20} color={sidebarText} />
+          <View className="w-8 items-center justify-center mr-3">
+            <Icon type={"cog"} size={20} className="text-light" />
           </View>
-          <Text style={[styles.itemText, { color: sidebarText }]}>Settings</Text>
+          <Text className="text-light text-base">Settings</Text>
         </TouchableOpacity>
-        <Divider style={[styles.divider, { marginHorizontal: 0, marginBottom: 16, backgroundColor: sidebarActive }]} />
+        <Divider className="mb-4 bg-gray-600" />
         <Button
-          mode="contained-tonal"
           onPress={handleLogout}
-          style={styles.logoutButton}
-          icon={() => (
-            <Icon type={"logout"} size={18} color={theme.colors.primary} />
-          )}
         >
           Logout
         </Button>
@@ -410,40 +364,6 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    height: 80,
-  },
-  logo: { width: 36, height: 36 },
-  closeButton: { padding: 8 },
-  scrollView: { flex: 1, paddingHorizontal: 8 },
-  loader: { marginTop: 40 },
-  itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 4,
-  },
-  iconWrapper: {
-    width: 32,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  itemText: { fontSize: 16, flex: 1 },
-  subItemContainer: { paddingLeft: 30 },
-  subItem: { paddingVertical: 10 },
-  subItemText: { fontSize: 15 },
-  divider: { marginVertical: 8, marginHorizontal: 16 },
-  footer: { padding: 16, borderTopWidth: 1 },
-  logoutButton: { paddingVertical: 4 },
-});
+const styles = StyleSheet.create({});
 
 export default Sidebar;

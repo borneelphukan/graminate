@@ -23,8 +23,8 @@ import {
   Text,
   IconSource,
   TouchableRipple,
-  useTheme,
 } from "@/components/ui";
+import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
 // --- Type Definitions ---
 type LatestEggMetrics = {
@@ -79,24 +79,20 @@ const MetricItem = ({
   isLoading,
   isLatest,
 }: MetricItemProps) => {
-  const theme = useTheme();
   return (
-    <Card style={styles.metricCard}>
-      <Card.Content style={styles.metricContent}>
-        <Icon source={icon} color={theme.colors.primary} size={28} />
+    <Card className="w-full h-full">
+      <Card.Content className="items-center p-4 gap-2 flex-1 justify-center">
+        <Icon source={icon} className="text-green-100" size={28} />
         {isLoading ? (
           <View
-            style={[
-              styles.loaderPlaceholder,
-              { backgroundColor: theme.colors.surfaceDisabled },
-            ]}
+            className="h-8 w-[90px] rounded-lg bg-gray-200 dark:bg-gray-700"
           />
         ) : (
-          <Text variant="headlineSmall" style={styles.metricValue}>
+          <Text variant="headlineSmall" className="font-bold">
             {value}
           </Text>
         )}
-        <Text variant="bodyMedium" style={styles.metricLabel}>
+        <Text variant="bodyMedium" className="text-center">
           {label} {isLatest && <Text variant="labelSmall">(Last Entry)</Text>}
         </Text>
       </Card.Content>
@@ -151,7 +147,7 @@ const PoultryEggCard = ({
   onPeriodChange,
   earliestDataDate,
 }: Props) => {
-  const theme = useTheme();
+  const { darkMode } = useUserPreferences();
   const [activeView, setActiveView] = useState<ViewOption>("graphs");
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<PeriodOption>("Weekly");
@@ -234,16 +230,16 @@ const PoultryEggCard = ({
   const handleNext = () => setDateOffset((prev) => prev + 1);
 
   const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
+    backgroundColor: darkMode ? "#0a0a0a" : "#ffffff",
+    backgroundGradientFrom: darkMode ? "#0a0a0a" : "#ffffff",
+    backgroundGradientTo: darkMode ? "#0a0a0a" : "#ffffff",
     decimalPlaces: 0,
     color: (opacity = 1) =>
-      theme.dark
+      darkMode
         ? `rgba(209, 213, 219, ${opacity})`
         : `rgba(55, 65, 81, ${opacity})`,
     labelColor: (opacity = 1) =>
-      `rgba(${theme.dark ? "156, 163, 175" : "107, 114, 128"}, ${opacity})`,
+      `rgba(${darkMode ? "156, 163, 175" : "107, 114, 128"}, ${opacity})`,
     propsForDots: { r: "4", strokeWidth: "2" },
     style: { borderRadius: 16 },
   };
@@ -267,19 +263,19 @@ const PoultryEggCard = ({
   const renderContent = () => {
     if (loading && rawEggCollectionLineData.datasets.length === 0) {
       return (
-        <View style={styles.centeredContainer}>
+        <View className="flex-1 justify-center items-center min-h-[300px] p-4 gap-3">
           <ActivityIndicator size="large" />
         </View>
       );
     }
     if (error) {
       return (
-        <View style={styles.centeredContainer}>
-          <Icon source="alert-circle" color={theme.colors.error} size={48} />
-          <Text variant="titleMedium" style={{ color: theme.colors.error }}>
+        <View className="flex-1 justify-center items-center min-h-[300px] p-4 gap-3">
+          <Icon source="alert-circle" className="text-red-500" size={48} />
+          <Text variant="titleMedium" className="text-red-500">
             Error loading egg data
           </Text>
-          <Text variant="bodyMedium" style={styles.textCenter}>
+          <Text variant="bodyMedium" className="text-center">
             {error}
           </Text>
         </View>
@@ -288,36 +284,42 @@ const PoultryEggCard = ({
 
     if (activeView === "metrics") {
       return (
-        <View style={styles.metricsGrid}>
-          <MetricItem
-            icon="egg-outline"
-            value={getDominantEggSize(latestMetrics)}
-            label="Dominant Size(s)"
-            isLoading={loading && !latestMetrics}
-            isLatest={!!latestMetrics}
-          />
-          <MetricItem
-            icon="alert-triangle-outline"
-            value={
-              latestMetrics ? latestMetrics.brokenEggs.toLocaleString() : "N/A"
-            }
-            label="Broken Eggs"
-            isLoading={loading && !latestMetrics}
-            isLatest={!!latestMetrics}
-          />
-          <MetricItem
-            icon="basket-outline"
-            value={
-              latestMetrics ? latestMetrics.totalEggs.toLocaleString() : "N/A"
-            }
-            label="Eggs Collected"
-            isLoading={loading && !latestMetrics}
-            isLatest={!!latestMetrics}
-          />
+        <View className="flex-row flex-wrap justify-between mt-4 gap-y-4">
+          <View className="w-[48%] h-32">
+            <MetricItem
+              icon="egg-outline"
+              value={getDominantEggSize(latestMetrics)}
+              label="Dominant Size(s)"
+              isLoading={loading && !latestMetrics}
+              isLatest={!!latestMetrics}
+            />
+          </View>
+          <View className="w-[48%] h-32">
+            <MetricItem
+              icon="alert-triangle-outline"
+              value={
+                latestMetrics ? latestMetrics.brokenEggs.toLocaleString() : "N/A"
+              }
+              label="Broken Eggs"
+              isLoading={loading && !latestMetrics}
+              isLatest={!!latestMetrics}
+            />
+          </View>
+          <View className="w-[48%] h-32">
+            <MetricItem
+              icon="basket-outline"
+              value={
+                latestMetrics ? latestMetrics.totalEggs.toLocaleString() : "N/A"
+              }
+              label="Eggs Collected"
+              isLoading={loading && !latestMetrics}
+              isLatest={!!latestMetrics}
+            />
+          </View>
           <TouchableRipple
             onPress={!loading ? onManageClick : undefined}
             disabled={loading}
-            style={styles.metricTouchable}
+            className="w-[48%] h-32 rounded-xl overflow-hidden"
           >
             <MetricItem
               icon="plus-circle-outline"
@@ -333,21 +335,18 @@ const PoultryEggCard = ({
     if (activeView === "graphs") {
       if (rawEggCollectionLineData.labels?.length === 0 && !loading) {
         return (
-          <View style={styles.centeredContainer}>
+          <View className="flex-1 justify-center items-center min-h-[300px] p-4 gap-3">
             <Icon
               source="chart-line"
-              color={theme.colors.onSurfaceDisabled}
+              className="text-gray-300 dark:text-gray-600"
               size={48}
             />
-            <Text variant="titleMedium" style={styles.textCenter}>
+            <Text variant="titleMedium" className="text-center">
               No egg collection data for this period.
             </Text>
             <Text
               variant="bodyMedium"
-              style={{
-                color: theme.colors.onSurfaceDisabled,
-                textAlign: "center",
-              }}
+              className="text-gray-400 dark:text-gray-500 text-center"
             >
               Try logging collections or changing filters.
             </Text>
@@ -356,14 +355,9 @@ const PoultryEggCard = ({
       }
       return (
         <>
-          <View style={styles.chartContainer}>
+          <View className="mt-4 justify-center items-center min-h-[320px]">
             {loading && (
-              <View
-                style={[
-                  styles.chartLoader,
-                  { backgroundColor: theme.colors.backdrop },
-                ]}
-              >
+              <View className="absolute inset-0 justify-center items-center z-10 rounded-2xl bg-black/40">
                 <ActivityIndicator size="large" />
               </View>
             )}
@@ -373,14 +367,14 @@ const PoultryEggCard = ({
               height={320}
               chartConfig={chartConfig}
               bezier
-              style={styles.chart}
+              style={{ borderRadius: 16 }}
               withShadow={false}
               yAxisLabel=""
               yAxisSuffix=""
               fromZero
             />
           </View>
-          <View style={styles.dateControls}>
+          <View className="flex-row items-center justify-between mt-5">
             <Button
               icon="chevron-left"
               onPress={handlePrev}
@@ -397,7 +391,7 @@ const PoultryEggCard = ({
               icon="chevron-right"
               onPress={handleNext}
               disabled={navigationStates.isNextDisabled || loading}
-              contentStyle={styles.nextButtonContent}
+              contentStyle={{ flexDirection: "row-reverse" }}
             >
               Next
             </Button>
@@ -409,10 +403,10 @@ const PoultryEggCard = ({
   };
 
   return (
-    <Card style={styles.card}>
+    <Card className="flex-1">
       <Card.Content>
-        <View style={styles.header}>
-          <Text variant="titleLarge" style={styles.headerTitle}>
+        <View className="gap-4 mb-2">
+          <Text variant="titleLarge" className="text-center">
             Egg Collection & Grading
           </Text>
           <SegmentedButtons
@@ -427,63 +421,6 @@ const PoultryEggCard = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: { flex: 1 },
-  header: { gap: 16, marginBottom: 8 },
-  headerTitle: { textAlign: "center" },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 300,
-    padding: 16,
-    gap: 12,
-  },
-  textCenter: { textAlign: "center" },
-  metricsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 16,
-    rowGap: 16,
-  },
-  metricCard: { width: "100%", height: "100%" },
-  metricTouchable: { width: "48%", borderRadius: 12 },
-  metricContent: {
-    alignItems: "center",
-    padding: 16,
-    gap: 8,
-    flex: 1,
-    justifyContent: "center",
-  },
-  metricValue: { fontWeight: "bold" },
-  metricLabel: { textAlign: "center" },
-  loaderPlaceholder: { height: 32, width: 90, borderRadius: 8 },
-  chartContainer: {
-    marginTop: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 320,
-  },
-  chartLoader: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 10,
-    borderRadius: 16,
-  },
-  chart: { borderRadius: 16 },
-  dateControls: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  nextButtonContent: { flexDirection: "row-reverse" },
-});
+const styles = StyleSheet.create({});
 
 export default PoultryEggCard;

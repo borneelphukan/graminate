@@ -6,7 +6,7 @@ import axiosInstance from "@/lib/axiosInstance";
 
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View, ViewProps } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -16,7 +16,6 @@ import {
   List,
   Searchbar,
   Text,
-  useTheme,
 } from "@/components/ui";
 
 type ApicultureDetail = {
@@ -49,7 +48,6 @@ const ApicultureDetailPage = () => {
     user_id: string;
     apiary_id: string;
   }>();
-  const theme = useTheme();
 
   const [apiaryData, setApiaryData] = useState<ApicultureDetail | null>(null);
   const [hives, setHives] = useState<HiveData[]>([]);
@@ -186,9 +184,9 @@ const ApicultureDetailPage = () => {
         <Appbar.Action
           icon={() => (
             <Icon
-              type={"chevron_left" as any}
+              type={"chevron-left" as any}
               size={22}
-              color={theme.colors.onSurface}
+              className="text-dark dark:text-light"
             />
           )}
           onPress={() => router.push(`/${user_id}/apiculture`)}
@@ -196,23 +194,23 @@ const ApicultureDetailPage = () => {
         <Appbar.Content title={apiaryData?.apiary_name || "Bee Yard Details"} />
         <Button
           onPress={() => setShowHiveForm(true)}
-          textColor={theme.colors.primary}
+          className="text-green-100 dark:text-green-200"
           icon={() => (
             <Icon
               type={"plus" as any}
               size={18}
-              color={theme.colors.primary}
+              className="text-green-100 dark:text-green-200"
             />
           )}
         >
           New Hive
         </Button>
       </Appbar.Header>
-      <ScrollView style={{ backgroundColor: theme.colors.background }}>
-        <View style={styles.container}>
-          <Card style={styles.card}>
+      <ScrollView className="bg-white dark:bg-dark">
+        <View className="p-4 gap-6">
+          <Card className="rounded-xl overflow-hidden">
             {loadingApiary ? (
-              <ActivityIndicator style={styles.loader} />
+              <ActivityIndicator className="my-6" />
             ) : apiaryData ? (
               <>
                 <Card.Actions>
@@ -221,54 +219,54 @@ const ApicultureDetailPage = () => {
                   </Button>
                 </Card.Actions>
                 <Divider />
-                <Card.Content style={styles.detailsGrid}>
+                <Card.Content className="flex-row flex-wrap">
                   {detailItems.map((item) => (
                     <List.Item
                       key={item.label}
                       title={item.value}
                       description={item.label}
-                      left={(props) => (
-                        <View {...props} style={styles.iconContainer}>
+                      left={(props: React.JSX.IntrinsicAttributes & React.JSX.IntrinsicClassAttributes<View> & Readonly<ViewProps>) => (
+                        <View {...props} className="justify-center items-center w-6 ml-3 mr-4">
                           <Icon
                             type={(item.icon) as any}
                             size={24}
-                            color={theme.colors.onSurfaceVariant}
+                            className="text-gray-400 dark:text-gray-500"
                           />
                         </View>
                       )}
-                      style={styles.detailItem}
+                      className="w-1/2"
                     />
                   ))}
                 </Card.Content>
               </>
             ) : (
               <Card.Content>
-                <Text style={{ color: theme.colors.error }}>
+                <Text className="text-red-600 dark:text-red-400">
                   Bee Yard data could not be loaded.
                 </Text>
               </Card.Content>
             )}
           </Card>
 
-          <View style={styles.hivesSection}>
+          <View className="gap-4">
             <Text variant="headlineSmall">Hives in this Bee Yard</Text>
             <Searchbar
               placeholder="Search Hives..."
               value={hiveSearchQuery}
               onChangeText={setHiveSearchQuery}
-              style={styles.searchbar}
+              className="bg-transparent"
             />
             {loadingHives ? (
-              <ActivityIndicator style={styles.loader} />
+              <ActivityIndicator className="my-6" />
             ) : filteredHives.length > 0 ? (
               filteredHives.map((item) => (
                 <Card
                   key={item.hive_id}
                   onPress={() => handleHiveClick(item)}
-                  style={styles.hiveCard}
+                  className="mb-3 rounded-xl"
                 >
                   <Card.Title title={item.hive_name} />
-                  <Card.Content style={styles.hiveCardContent}>
+                  <Card.Content className="flex-row justify-between">
                     <Text>Type: {item.hive_type || "N/A"}</Text>
                     <Text>
                       Last Inspected:{" "}
@@ -282,7 +280,7 @@ const ApicultureDetailPage = () => {
                 </Card>
               ))
             ) : (
-              <Text style={styles.emptyText}>No hives found.</Text>
+              <Text className="text-center py-8">No hives found.</Text>
             )}
           </View>
         </View>
@@ -320,24 +318,6 @@ const ApicultureDetailPage = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { padding: 16, gap: 24 },
-  card: {},
-  loader: { marginVertical: 24 },
-  detailsGrid: { flexDirection: "row", flexWrap: "wrap" },
-  detailItem: { width: "50%" },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 24,
-    marginLeft: 14,
-    marginRight: 18,
-  },
-  hivesSection: { gap: 16 },
-  searchbar: {},
-  hiveCard: { marginBottom: 12 },
-  hiveCardContent: { flexDirection: "row", justifyContent: "space-between" },
-  emptyText: { textAlign: "center", padding: 32 },
-});
+const styles = StyleSheet.create({});
 
 export default ApicultureDetailPage;
