@@ -16,6 +16,7 @@ import {
 } from "@/contexts/UserPreferencesContext";
 import * as SplashScreen from "expo-splash-screen";
 import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -23,8 +24,6 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 export const unstable_settings = {
   initialRouteName: "index",
 };
-
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function ThemedApp() {
   const { darkMode, isPreferencesLoading } = useUserPreferences();

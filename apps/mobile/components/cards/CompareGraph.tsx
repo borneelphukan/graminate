@@ -10,7 +10,7 @@ import {
   subMonths,
 } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import {
   ActivityIndicator,

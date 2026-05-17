@@ -4,7 +4,7 @@ import { LANGUAGES, TIME_FORMAT } from "@/constants/options";
 import axiosInstance from "@/lib/axiosInstance";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,

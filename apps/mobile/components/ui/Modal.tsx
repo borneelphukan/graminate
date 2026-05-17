@@ -30,19 +30,22 @@ export const Dialog = ({ visible, onDismiss, children, style }: any) => (
   </Modal>
 );
 
-Dialog.Title = ({ children, style }: any) => (
+const DialogTitle = ({ children, style }: any) => (
   <RNText className="text-xl font-bold text-gray-900 dark:text-white mb-3" style={style}>{children}</RNText>
 );
+Dialog.Title = DialogTitle;
 
-Dialog.Content = ({ children, style }: any) => (
+const DialogContent = ({ children, style }: any) => (
   <View className="py-1" style={style}>{children}</View>
 );
+Dialog.Content = DialogContent;
 
-Dialog.Actions = ({ children, style }: any) => (
+const DialogActions = ({ children, style }: any) => (
   <View className="flex-row justify-end gap-2 mt-4" style={style}>{children}</View>
 );
+Dialog.Actions = DialogActions;
 
-Dialog.Icon = ({ icon, size = 36, color, style }: any) => {
+const DialogIcon = ({ icon, size = 36, color, style }: any) => {
   const renderIcon = () => {
     if (!icon) return null;
     if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={size} color={color || '#49494d'} />;
@@ -55,3 +58,4 @@ Dialog.Icon = ({ icon, size = 36, color, style }: any) => {
     </View>
   );
 };
+Dialog.Icon = DialogIcon;

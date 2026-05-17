@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import {
   ActivityIndicator,
-  Button,
   Switch,
   Text,
 } from "@/components/ui";

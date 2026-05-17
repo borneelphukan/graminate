@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   View,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   Alert,
 } from "react-native";
 import {

@@ -2,13 +2,12 @@ import { Icon } from "@/components/ui/Icon";
 import Sparkles from "@/assets/icon/Sparkles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "@/lib/axiosInstance";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   View,
   PanResponder,
   Animated,
@@ -589,7 +588,5 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default ChatWindow;

@@ -6,7 +6,6 @@ import {
   Alert,
   Image,
   Animated,
-  ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -120,7 +119,7 @@ const AuthScreen = () => {
       clearInterval(langInterval);
       clearTimeout(timeoutId);
     };
-  }, []);
+  }, [fadeAnim, textFadeAnim]);
 
   const clearErrors = () => {
     setEmailError("");

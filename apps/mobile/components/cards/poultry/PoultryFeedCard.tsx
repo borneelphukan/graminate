@@ -8,7 +8,7 @@ import {
   subDays,
 } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Card,
@@ -353,7 +353,5 @@ const PoultryFeedCard = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default PoultryFeedCard;

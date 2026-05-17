@@ -115,7 +115,7 @@ export const TextInput = ({
   );
 };
 
-TextInput.Icon = ({ icon, onPress, color, className = "" }: any) => {
+const TextInputIcon = ({ icon, onPress, color, className = "" }: any) => {
   const renderIcon = () => {
     if (!icon) return null;
     if (typeof icon === "string")
@@ -134,6 +134,7 @@ TextInput.Icon = ({ icon, onPress, color, className = "" }: any) => {
   };
   return <TouchableOpacity onPress={onPress}>{renderIcon()}</TouchableOpacity>;
 };
+TextInput.Icon = TextInputIcon;
 
 export const Searchbar = ({
   value,

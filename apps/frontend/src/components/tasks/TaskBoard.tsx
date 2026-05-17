@@ -250,7 +250,6 @@ const TaskBoard = ({ projectTitle, userId }: TaskBoardProps) => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectTitle, userId]);
 
   const handleCreateColumn = async () => {

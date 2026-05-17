@@ -12,7 +12,7 @@ export const Card = ({ children, style, className = '', onPress }: any) => {
   );
 };
 
-Card.Title = ({ title, subtitle, left, right }: any) => (
+const CardTitle = ({ title, subtitle, left, right }: any) => (
   <View className="flex-row items-center justify-between mb-2">
     <View className="flex-row items-center flex-1">
       {left && <View className="mr-3">{left()}</View>}
@@ -24,7 +24,13 @@ Card.Title = ({ title, subtitle, left, right }: any) => (
     {right && <View>{right()}</View>}
   </View>
 );
+Card.Title = CardTitle;
 
-Card.Content = ({ children, style, className = '' }: any) => <View className={`py-1 ${className}`} style={style}>{children}</View>;
-Card.Actions = ({ children, style, className = '' }: any) => <View className={`flex-row items-center justify-end pt-3 gap-2 ${className}`} style={style}>{children}</View>;
-Card.Cover = ({ source, style, className = '' }: any) => <View className="h-48 bg-gray-200 dark:bg-gray-800 w-full mb-2" style={style} />;
+const CardContent = ({ children, style, className = '' }: any) => <View className={`py-1 ${className}`} style={style}>{children}</View>;
+Card.Content = CardContent;
+
+const CardActions = ({ children, style, className = '' }: any) => <View className={`flex-row items-center justify-end pt-3 gap-2 ${className}`} style={style}>{children}</View>;
+Card.Actions = CardActions;
+
+const CardCover = ({ source, style, className = '' }: any) => <View className="h-48 bg-gray-200 dark:bg-gray-800 w-full mb-2" style={style} />;
+Card.Cover = CardCover;

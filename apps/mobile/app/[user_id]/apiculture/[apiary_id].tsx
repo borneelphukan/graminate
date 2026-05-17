@@ -6,7 +6,7 @@ import axiosInstance from "@/lib/axiosInstance";
 
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View, ViewProps } from "react-native";
+import { ScrollView, View, ViewProps } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -317,7 +317,5 @@ const ApicultureDetailPage = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default ApicultureDetailPage;

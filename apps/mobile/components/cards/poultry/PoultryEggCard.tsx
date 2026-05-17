@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import {
   ActivityIndicator,
@@ -419,7 +419,5 @@ const PoultryEggCard = ({
     </Card>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default PoultryEggCard;

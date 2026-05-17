@@ -4,7 +4,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   Appbar,
   Button,

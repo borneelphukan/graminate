@@ -339,67 +339,119 @@ export const BottomDrawer = ({
     }
   }, [isVisible, initialValues]);
 
-  const handleInputChange = (name: string, value: any) => {
+  const handleInputChange = useCallback((name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => {
+    setErrors((prev) => {
+      if (prev[name]) {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
-      });
-    }
-  };
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleAddTag = (fieldName: string, tag: string) => {
+  const handleAddTag = useCallback((fieldName: string, tag: string) => {
     if (!tag.trim()) return;
-    const currentTags = Array.isArray(formData[fieldName])
-      ? formData[fieldName]
-      : [];
-    if (!currentTags.includes(tag.trim())) {
-      handleInputChange(fieldName, [...currentTags, tag.trim()]);
-    }
+    setFormData((prev) => {
+      const currentTags = Array.isArray(prev[fieldName])
+        ? prev[fieldName]
+        : [];
+      if (!currentTags.includes(tag.trim())) {
+        return { ...prev, [fieldName]: [...currentTags, tag.trim()] };
+      }
+      return prev;
+    });
+    setErrors((prev) => {
+      if (prev[fieldName]) {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      }
+      return prev;
+    });
     setTagInput("");
-  };
+  }, []);
 
-  const handleRemoveTag = (fieldName: string, tagToRemove: string) => {
-    const currentTags = Array.isArray(formData[fieldName])
-      ? formData[fieldName]
-      : [];
-    handleInputChange(
-      fieldName,
-      currentTags.filter((t: string) => t !== tagToRemove)
-    );
-  };
+  const handleRemoveTag = useCallback((fieldName: string, tagToRemove: string) => {
+    setFormData((prev) => {
+      const currentTags = Array.isArray(prev[fieldName])
+        ? prev[fieldName]
+        : [];
+      return {
+        ...prev,
+        [fieldName]: currentTags.filter((t: string) => t !== tagToRemove),
+      };
+    });
+    setErrors((prev) => {
+      if (prev[fieldName]) {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleDynamicListChange = (
+  const handleDynamicListChange = useCallback((
     fieldName: string,
     index: number,
     subFieldName: string,
     value: any
   ) => {
-    const currentList = Array.isArray(formData[fieldName])
-      ? [...formData[fieldName]]
-      : [{}];
-    currentList[index] = { ...currentList[index], [subFieldName]: value };
-    handleInputChange(fieldName, currentList);
-  };
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev[fieldName])
+        ? [...prev[fieldName]]
+        : [{}];
+      currentList[index] = { ...currentList[index], [subFieldName]: value };
+      return { ...prev, [fieldName]: currentList };
+    });
+    setErrors((prev) => {
+      if (prev[fieldName]) {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleAddDynamicListItem = (fieldName: string) => {
-    const currentList = Array.isArray(formData[fieldName])
-      ? [...formData[fieldName]]
-      : [];
-    handleInputChange(fieldName, [...currentList, {}]);
-  };
+  const handleAddDynamicListItem = useCallback((fieldName: string) => {
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev[fieldName])
+        ? [...prev[fieldName]]
+        : [];
+      return { ...prev, [fieldName]: [...currentList, {}] };
+    });
+    setErrors((prev) => {
+      if (prev[fieldName]) {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
 
-  const handleRemoveDynamicListItem = (fieldName: string, index: number) => {
-    const currentList = Array.isArray(formData[fieldName])
-      ? [...formData[fieldName]]
-      : [];
-    handleInputChange(
-      fieldName,
-      currentList.filter((_, i) => i !== index)
-    );
-  };
+  const handleRemoveDynamicListItem = useCallback((fieldName: string, index: number) => {
+    setFormData((prev) => {
+      const currentList = Array.isArray(prev[fieldName])
+        ? [...prev[fieldName]]
+        : [];
+      return {
+        ...prev,
+        [fieldName]: currentList.filter((_, i) => i !== index),
+      };
+    });
+    setErrors((prev) => {
+      if (prev[fieldName]) {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      }
+      return prev;
+    });
+  }, []);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -730,7 +782,6 @@ export const BottomDrawer = ({
     errors,
     setActiveDateField,
     setDatePickerVisible,
-    darkMode,
   ]);
 
   const renderedFields = useMemo(() => {
@@ -773,7 +824,7 @@ export const BottomDrawer = ({
     }
 
     return rows;
-  }, [fields, formData, errors, tagInput, renderField]);
+  }, [fields, renderField]);
 
   const handleDayPress = (day: DateData) => {
     if (activeDateField) {

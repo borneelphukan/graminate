@@ -7,7 +7,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Alert,
   ScrollView,
-  StyleSheet,
   View,
 } from "react-native";
 import {

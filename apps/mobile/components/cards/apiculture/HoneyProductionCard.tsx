@@ -11,7 +11,7 @@ import {
   subDays as subDaysDateFns,
 } from "date-fns";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Dimensions, Modal, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, Modal, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { BarChart } from "react-native-chart-kit";
 import {

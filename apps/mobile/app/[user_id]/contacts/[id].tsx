@@ -12,7 +12,6 @@ import {
   Platform,
   ScrollView,
   Share,
-  StyleSheet,
   View,
 } from "react-native";
 import {

@@ -9,7 +9,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View, ViewProps } from "react-native";
+import { Alert, ScrollView, View, ViewProps } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -436,7 +436,5 @@ const HiveDetailsPage = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default HiveDetailsPage;

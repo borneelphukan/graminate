@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import {
   DataTable,
   Text,
@@ -114,7 +114,5 @@ const MobileTable = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export { MobileTable as Table };

@@ -1,6 +1,5 @@
-import React from "react";
 import { View } from "react-native";
-import { Appbar, List, Text } from "@/components/ui";
+import { Appbar, List } from "@/components/ui";
 
 export type NotificationProps = {
   id: number;

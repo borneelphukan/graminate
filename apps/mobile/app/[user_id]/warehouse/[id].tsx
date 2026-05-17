@@ -52,8 +52,6 @@ type WarehouseDetails = {
 };
 
 const screenWidth = Dimensions.get("window").width;
-const isTablet = screenWidth >= 768;
-const statBoxWidth = isTablet ? (screenWidth - 68) / 4 : (screenWidth - 44) / 2;
 
 const getBarColor = (quantity: number, max: number): string => {
   if (max === 0) return "#9ca3af";

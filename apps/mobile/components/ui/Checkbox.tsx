@@ -15,7 +15,7 @@ export const Checkbox: any = ({ status, onPress, disabled, color }: any) => {
   );
 };
 
-Checkbox.Item = ({ label, status, onPress, disabled }: any) => (
+const CheckboxItem = ({ label, status, onPress, disabled }: any) => (
   <TouchableOpacity onPress={onPress} disabled={disabled} className="flex-row items-center py-2 px-4">
     <View className="flex-1 mr-2">
       <RNText className={`text-sm ${disabled ? 'text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>{label}</RNText>
@@ -23,5 +23,6 @@ Checkbox.Item = ({ label, status, onPress, disabled }: any) => (
     <Checkbox status={status} disabled={disabled} />
   </TouchableOpacity>
 );
+Checkbox.Item = CheckboxItem;
 
 Checkbox.Android = Checkbox;

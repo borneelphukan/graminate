@@ -48,20 +48,10 @@ export function AnimatedSplashScreen({
         );
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (isAppReady && !animationStartedExit) {
-      // Enforce a minimum viewing time of 1200ms so it's not jarring if loading is instant
-      const timer = setTimeout(() => {
-        triggerExitAnimation();
-      }, 1200);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isAppReady, animationStartedExit]);
-
-  const triggerExitAnimation = () => {
+  const triggerExitAnimation = React.useCallback(() => {
     setAnimationStartedExit(true);
 
     // Blast scale and fade out container smoothly
@@ -83,7 +73,18 @@ export function AnimatedSplashScreen({
         runOnJS(onAnimationComplete)();
       }
     });
-  };
+  }, [onAnimationComplete, scale, opacity, containerOpacity]);
+
+  useEffect(() => {
+    if (isAppReady && !animationStartedExit) {
+      // Enforce a minimum viewing time of 1200ms so it's not jarring if loading is instant
+      const timer = setTimeout(() => {
+        triggerExitAnimation();
+      }, 1200);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAppReady, animationStartedExit, triggerExitAnimation]);
 
   const animatedImageStyle = useAnimatedStyle(() => ({
     transform: [

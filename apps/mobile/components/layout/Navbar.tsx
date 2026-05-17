@@ -4,11 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import {
   Appbar,
   Avatar,
-  Badge,
   TouchableRipple,
   Text,
 } from "@/components/ui";
@@ -193,7 +192,5 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default Navbar;

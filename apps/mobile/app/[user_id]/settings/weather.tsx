@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   Appbar,
   Button,
-  Checkbox,
   HelperText,
   Menu,
   TextInput,

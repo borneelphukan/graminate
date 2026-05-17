@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axiosInstance";
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import {
   Appbar,
   Button,
@@ -264,7 +264,5 @@ const EggModal = ({
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default EggModal;

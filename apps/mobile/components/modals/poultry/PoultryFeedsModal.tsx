@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axiosInstance";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -389,7 +389,5 @@ const PoultryFeedsModal = ({
     </Portal>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default PoultryFeedsModal;
