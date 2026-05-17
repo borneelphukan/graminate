@@ -18,9 +18,9 @@ export const Avatar = {
   Image: ({ source, size = 40, style }: any) => (
     <Image source={typeof source === 'string' ? { uri: source } : source} className="rounded-full" style={[{ width: size, height: size }, style]} />
   ),
-  Text: ({ label, size = 40, labelStyle, style }: any) => (
+  Text: ({ label, size = 40, labelStyle, style, labelClassName = "" }: any) => (
     <View className="justify-center items-center rounded-full" style={[{ width: size, height: size }, style]}>
-      <RNText className="text-dark dark:text-light text-base" style={labelStyle}>{label}</RNText>
+      <RNText className={`text-dark dark:text-light text-base ${labelClassName}`} style={labelStyle}>{label}</RNText>
     </View>
   )
 };

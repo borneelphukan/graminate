@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Modal, Pressable, StyleSheet, View } from "react-native";
+import { Animated, Modal, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, Button, Surface, Text } from "@/components/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -133,16 +133,13 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
               onPress={() => setIsSidebarOpen(false)}
             >
               <Animated.View
-                style={[styles.overlayBackground, { opacity: overlayOpacity }]}
+                className="flex-1 bg-black"
+                style={{ opacity: overlayOpacity }}
               />
             </Pressable>
             <Animated.View
+              className="absolute top-0 left-0 bottom-0 z-50"
               style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                bottom: 0,
-                zIndex: 50,
                 width: SIDEBAR_WIDTH,
                 transform: [{ translateX: sidebarAnim }],
               }}
@@ -167,12 +164,5 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  overlayBackground: {
-    flex: 1,
-    backgroundColor: "black",
-  },
-});
 
 export default PlatformLayout;

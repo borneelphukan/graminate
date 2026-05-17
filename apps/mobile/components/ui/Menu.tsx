@@ -19,10 +19,16 @@ export const Menu = ({ visible, onDismiss, anchor, children }: any) => {
   );
 };
 
-const MenuItem = ({ title, onPress, leadingIcon, titleStyle }: any) => (
+const MenuItem = ({ title, onPress, leadingIcon, titleStyle, titleClassName = "" }: any) => (
   <TouchableOpacity onPress={onPress} className="flex-row items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800">
-    {leadingIcon && <MaterialCommunityIcons name={leadingIcon as any} size={18} color="#6b7280" style={{ marginRight: 12 }} />}
-    <RNText className="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1" style={titleStyle}>{title}</RNText>
+    {leadingIcon && (
+      typeof leadingIcon === "function" ? (
+        <View style={{ marginRight: 12 }}>{leadingIcon()}</View>
+      ) : (
+        <MaterialCommunityIcons name={leadingIcon as any} size={18} color="#6b7280" style={{ marginRight: 12 }} />
+      )
+    )}
+    <RNText className={`text-sm font-medium text-gray-900 dark:text-gray-100 flex-1 ${titleClassName}`} style={titleStyle}>{title}</RNText>
   </TouchableOpacity>
 );
 Menu.Item = MenuItem;

@@ -158,28 +158,22 @@ const TaskManager = ({ userId, projectType }: Props) => {
     }
   };
 
-  const getPriorityButtonStyles = (priority: Priority) => {
+  const getPriorityClass = (priority: Priority) => {
     switch (priority) {
       case "High":
         return {
-          backgroundColor: "#fecaca",
-          darkBg: "#5c1919",
-          textColor: "#991b1b",
-          darkText: "#ffb4ab",
+          bg: "bg-red-300 dark:bg-red-900/30",
+          text: "text-red-100 dark:text-red-300",
         };
       case "Medium":
         return {
-          backgroundColor: "#fef08a",
-          darkBg: "#5e4803",
-          textColor: "#854d0e",
-          darkText: "#ffde8a",
+          bg: "bg-yellow-300 dark:bg-yellow-900/30",
+          text: "text-yellow-100 dark:text-yellow-300",
         };
       case "Low":
         return {
-          backgroundColor: "#bbf7d0",
-          darkBg: "#003a21",
-          textColor: "#166534",
-          darkText: "#89d89d",
+          bg: "bg-green-300 dark:bg-green-900/30",
+          text: "text-green-100 dark:text-green-300",
         };
     }
   };
@@ -223,13 +217,12 @@ const TaskManager = ({ userId, projectType }: Props) => {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {taskList.map((task) => {
           const isCompleted = task.status === "Completed";
-          const priorityStyles = getPriorityButtonStyles(task.priority);
+          const priorityClass = getPriorityClass(task.priority);
           return (
             <View key={task.task_id} className="flex-row items-center py-0.5 rounded">
               <Checkbox.Android
                 status={isCompleted ? "checked" : "unchecked"}
                 onPress={() => toggleTaskCompletion(task.task_id)}
-                color="#2b7860"
               />
               <Text
                 className={`flex-1 ml-3 mr-2 text-sm ${
@@ -244,8 +237,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
                 <Button
                   mode="contained"
                   onPress={() => deleteTask(task.task_id)}
-                  className="ml-2 min-w-[70px] h-6 justify-center bg-red-100 dark:bg-red-900"
-                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: "#991b1b" }}
+                  className="ml-2 min-w-[70px] h-6 justify-center bg-red-300 dark:bg-red-900/30"
+                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8 }}
+                  labelClassName="text-red-100 dark:text-red-300"
                   compact
                 >
                   Delete
@@ -253,14 +247,14 @@ const TaskManager = ({ userId, projectType }: Props) => {
               ) : editingPriority === task.task_id ? (
                 <View className="flex-row items-center gap-1">
                   {PRIORITY_OPTIONS.map((p) => {
-                    const pbStyles = getPriorityButtonStyles(p);
+                    const pbClass = getPriorityClass(p);
                     return (
                       <Button
                         key={p}
                         onPress={() => handlePriorityChange(task.task_id, p)}
-                        className="ml-2 min-w-[70px] h-6 justify-center"
-                        style={{ backgroundColor: pbStyles.backgroundColor }}
-                        labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: pbStyles.textColor }}
+                        className={`ml-2 min-w-[70px] h-6 justify-center ${pbClass.bg}`}
+                        labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8 }}
+                        labelClassName={pbClass.text}
                         compact
                       >
                         {p}
@@ -282,9 +276,9 @@ const TaskManager = ({ userId, projectType }: Props) => {
                 <Button
                   mode="contained"
                   onPress={() => setEditingPriority(task.task_id)}
-                  className="ml-2 min-w-[70px] h-6 justify-center"
-                  style={{ backgroundColor: priorityStyles.backgroundColor }}
-                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8, color: priorityStyles.textColor }}
+                  className={`ml-2 min-w-[70px] h-6 justify-center ${priorityClass.bg}`}
+                  labelStyle={{ fontSize: 12, marginVertical: 0, marginHorizontal: 8 }}
+                  labelClassName={priorityClass.text}
                   compact
                 >
                   {task.priority}
@@ -373,13 +367,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
               className={!newTaskText.trim() ? "text-gray-400" : "text-white"}
             />
           )}
-        >
-          <Text
-            className={!newTaskText.trim() ? "text-gray-400" : "text-white"}
-          >
-            Task
-          </Text>
-        </Button>
+        />
       </View>
 
       <View className="flex-1 overflow-hidden">{renderContent()}</View>

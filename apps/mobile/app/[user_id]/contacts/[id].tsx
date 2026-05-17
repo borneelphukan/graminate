@@ -17,6 +17,7 @@ import {
 import {
   ActivityIndicator,
   Appbar,
+  Avatar,
   Button,
   Card,
   Menu,
@@ -24,8 +25,6 @@ import {
   TextInput,
   TouchableRipple,
 } from "@/components/ui";
-
-// Using axiosInstance for all API calls
 
 type Contact = {
   contact_id: string;
@@ -114,6 +113,11 @@ const ContactDetails = () => {
       JSON.stringify(formData) !== JSON.stringify(initialFormData),
     [formData, initialFormData]
   );
+  const initials = useMemo(() => {
+    const f = formData.firstName ? formData.firstName.trim().charAt(0) : "";
+    const l = formData.lastName ? formData.lastName.trim().charAt(0) : "";
+    return `${f}${l}`.toUpperCase() || "?";
+  }, [formData.firstName, formData.lastName]);
 
   const handleSave = async () => {
     if (!contact) return;
@@ -204,18 +208,18 @@ Email: ${formData.email || "N/A"}
   if (!contact)
     return (
       <PlatformLayout>
-        <Appbar.Header className="bg-gray-900">
+        <Appbar.Header>
           <Appbar.Action
             icon={() => (
               <Icon
                 type={"chevron-left" as any}
                 size={22}
-                className="text-light"
+                className="text-dark dark:text-light"
               />
             )}
             onPress={() => router.back()}
           />
-          <Appbar.Content title="Contact Details" titleStyle={{ color: "white" }} />
+          <Appbar.Content title="Contact Details" />
         </Appbar.Header>
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
@@ -225,18 +229,18 @@ Email: ${formData.email || "N/A"}
 
   return (
     <PlatformLayout>
-      <Appbar.Header className="bg-gray-900">
+      <Appbar.Header>
         <Appbar.Action
           icon={() => (
             <Icon
               type={"chevron-left" as any}
               size={22}
-              className="text-light"
+              className="text-dark dark:text-light"
             />
           )}
           onPress={() => router.back()}
         />
-        <Appbar.Content title="Contact Details" titleStyle={{ color: "white" }} />
+        <Appbar.Content title="Contact Details" />
         <Menu
           visible={isMoreMenuVisible}
           onDismiss={() => setMoreMenuVisible(false)}
@@ -246,7 +250,7 @@ Email: ${formData.email || "N/A"}
                 <Icon
                   type={"dots-vertical" as any}
                   size={22}
-                  className="text-light"
+                  className="text-dark dark:text-light"
                 />
               )}
               onPress={() => setMoreMenuVisible(true)}
@@ -263,10 +267,10 @@ Email: ${formData.email || "N/A"}
               <Icon
                 type={"delete" as any}
                 size={20}
-                className="text-red-600"
+                className="text-red-200"
               />
             )}
-            titleStyle={{ color: "#e53e3e" }}
+            titleClassName="text-red-200"
           />
           <Menu.Item
             onPress={() => {
@@ -293,6 +297,12 @@ Email: ${formData.email || "N/A"}
           keyboardShouldPersistTaps="handled"
         >
           <View className="items-center pt-4 pb-2">
+            <Avatar.Text
+              label={initials}
+              size={80}
+              className="bg-green-300 dark:bg-green-100 mb-4"
+              labelClassName="text-green-100 dark:text-green-300 font-extrabold text-3xl"
+            />
             <Text className="text-2xl font-bold">
               {`${formData.firstName} ${formData.lastName}`.trim()}
             </Text>
@@ -429,7 +439,7 @@ Email: ${formData.email || "N/A"}
             </Card.Content>
           </Card>
         </ScrollView>
-        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+        <Appbar className="absolute bottom-0 left-0 right-0 flex-row justify-around p-2 bg-light dark:bg-dark border-t border-gray-200 dark:border-gray-800">
           <Button
             className="flex-1 mx-2"
             mode="outlined"

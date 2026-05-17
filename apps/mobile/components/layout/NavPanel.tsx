@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { Button, IconButton, Menu, Surface } from "@/components/ui";
 
 type NavButton = {
@@ -21,7 +21,7 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanelProps) => {
   const isMobileLayout = width < MOBILE_BREAKPOINT;
 
   const renderTabBar = () => (
-    <Surface style={styles.tabBarContainer} elevation={2}>
+    <Surface className="flex-row" elevation={2}>
       {buttons.map(({ name, view }) => {
         const isActive = activeView === view;
         return (
@@ -29,8 +29,7 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanelProps) => {
             key={view}
             onPress={() => onNavigate(view)}
             mode={isActive ? "contained-tonal" : "text"}
-            style={styles.tabButton}
-            labelStyle={styles.tabLabel}
+            className="flex-1 rounded-none py-2"
           >
             {name}
           </Button>
@@ -40,7 +39,7 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanelProps) => {
   );
 
   const renderMobileMenu = () => (
-    <View style={styles.mobileMenuContainer}>
+    <View className="w-full items-center p-2">
       <Menu
         visible={isMenuOpen}
         onDismiss={() => setIsMenuOpen(false)}
@@ -68,24 +67,5 @@ const NavPanel = ({ buttons, activeView, onNavigate }: NavPanelProps) => {
 
   return isMobileLayout ? renderMobileMenu() : renderTabBar();
 };
-
-const styles = StyleSheet.create({
-  tabBarContainer: {
-    flexDirection: "row",
-  },
-  tabButton: {
-    flex: 1,
-    borderRadius: 0,
-    paddingVertical: 8,
-  },
-  tabLabel: {
-    textAlign: "center",
-  },
-  mobileMenuContainer: {
-    width: "100%",
-    alignItems: "center",
-    padding: 8,
-  },
-});
 
 export default NavPanel;

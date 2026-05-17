@@ -6,7 +6,7 @@ import {
 import axiosInstance from "@/lib/axiosInstance";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
   Appbar,
@@ -156,13 +156,13 @@ const WeatherSettingsScreen = () => {
           subtitle="Customize preferences and location"
         />
       </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerClassName="p-4">
         {isLoading ? (
-          <View style={styles.centeredContainer}>
+          <View className="flex-1 justify-center items-center">
             <ActivityIndicator size="large" />
           </View>
         ) : (
-          <View style={styles.formContainer}>
+          <View className="gap-4 max-w-[500px]">
             <TextInput
               mode="outlined"
               label="Set Your Location"
@@ -180,7 +180,7 @@ const WeatherSettingsScreen = () => {
                 setWeatherSettings((prev) => ({ ...prev, scale: val }))
               }
             />
-            <View style={styles.saveSection}>
+            <View className="mt-4">
               <Button
                 mode="contained"
                 onPress={handleSaveChanges}
@@ -192,7 +192,7 @@ const WeatherSettingsScreen = () => {
               <HelperText
                 type="info"
                 visible={!!successMessage}
-                style={{ color: "green" }}
+                className="text-green-200"
               >
                 {successMessage}
               </HelperText>
@@ -206,16 +206,5 @@ const WeatherSettingsScreen = () => {
     </PlatformLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: { padding: 16 },
-  formContainer: { gap: 16, maxWidth: 500 },
-  saveSection: { marginTop: 16 },
-});
 
 export default WeatherSettingsScreen;

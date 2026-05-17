@@ -13,6 +13,7 @@ export const Button = ({
   labelStyle,
   className = '',
   contentStyle,
+  labelClassName = '',
   ...rest 
 }: any) => {
   const hasText = children !== undefined && children !== null && children !== '';
@@ -63,7 +64,7 @@ export const Button = ({
       {renderIcon()}
       {hasText && (
         <RNText 
-          className={`${textClass}`} 
+          className={`${textClass} ${labelClassName}`} 
           style={[labelStyle, rest.textColor ? { color: rest.textColor } : {}]}
         >
           {children}

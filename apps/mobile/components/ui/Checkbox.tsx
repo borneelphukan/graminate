@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text as RNText, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Icon } from './Icon';
 
-export const Checkbox: any = ({ status, onPress, disabled, color }: any) => {
+export const Checkbox: any = ({ status, onPress, disabled }: any) => {
   const checked = status === 'checked';
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled} className="p-1 justify-center items-center">
-      <MaterialCommunityIcons 
-        name={checked ? "checkbox-marked" : "checkbox-blank-outline"} 
+      <Icon 
+        type={checked ? "checkbox-marked" : "checkbox-blank-outline"} 
         size={24} 
-        color={disabled ? '#bbbbbc' : (checked ? (color || '#2b7860') : '#49494d')} 
+        className={disabled ? 'text-gray-300' : (checked ? 'text-green-100' : 'text-gray-200')} 
       />
     </TouchableOpacity>
   );
