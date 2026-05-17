@@ -5,7 +5,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { SafeAreaView, ScrollView, View, Alert } from "react-native";
+import { SafeAreaView, ScrollView, View, Alert, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axiosInstance from "@/lib/axiosInstance";
 import {
@@ -79,35 +79,44 @@ const SettingsScreen = () => {
   }, [user_id, fetchUserSubTypes]);
 
   const handleLogout = useCallback(() => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Log Out",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const loginId = await AsyncStorage.getItem("loginId");
-            if (loginId) {
-              await axiosInstance.post("/user/logout", { loginId });
-            }
-          } catch (error) {
-            console.error("Logout API failed:", error);
-          } finally {
-            await AsyncStorage.multiRemove([
-              "accessToken",
-              "user",
-              "loginId",
-              "chatMessages",
-              "language",
-              "timeFormat",
-              "temperatureScale",
-              "darkMode",
-            ]);
-            router.replace("/login");
-          }
+    const logoutAction = async () => {
+      try {
+        const loginId = await AsyncStorage.getItem("loginId");
+        if (loginId) {
+          await axiosInstance.post("/user/logout", { loginId });
+        }
+      } catch (error) {
+        console.error("Logout API failed:", error);
+      } finally {
+        await AsyncStorage.multiRemove([
+          "accessToken",
+          "user",
+          "loginId",
+          "chatMessages",
+          "language",
+          "timeFormat",
+          "temperatureScale",
+          "darkMode",
+        ]);
+        router.replace("/login");
+      }
+    };
+
+    if (Platform.OS === "web") {
+      const confirmLogout = window.confirm("Are you sure you want to log out?");
+      if (confirmLogout) {
+        logoutAction();
+      }
+    } else {
+      Alert.alert("Log Out", "Are you sure you want to log out?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Log Out",
+          style: "destructive",
+          onPress: logoutAction,
         },
-      },
-    ]);
+      ]);
+    }
   }, [router]);
 
   const settingsMenu = useMemo((): SettingsSection[] => {
@@ -311,7 +320,7 @@ const SettingsScreen = () => {
                               item.action();
                             }
                           }}
-                          titleStyle={{ fontSize: 16, fontWeight: "500" }}
+                          titleClassName="text-base font-medium"
                           left={() => (
                             <View
                               style={{ backgroundColor: `${item.iconColor}15` }}
@@ -354,7 +363,7 @@ const SettingsScreen = () => {
 
               <View className="items-center mt-6">
                 <Text className="text-gray-400 dark:text-gray-600 text-xs">
-                  Graminate v1.2.0
+                  Graminate v1.0.0
                 </Text>
               </View>
             </View>

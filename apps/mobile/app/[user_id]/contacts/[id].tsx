@@ -300,31 +300,29 @@ Email: ${formData.email || "N/A"}
           </View>
           <View className="flex-row justify-around py-2">
             <Button
+              mode="secondary"
               icon={() => (
                 <Icon
-                  type={"phone" as any}
+                  type="phone"
                   size={18}
                   className={formData.phoneNumber ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={handleCall}
               disabled={!formData.phoneNumber}
-            >
-              Call
-            </Button>
+            />
             <Button
+              mode="secondary"
               icon={() => (
                 <Icon
-                  type={"email" as any}
+                  type="email"
                   size={18}
                   className={formData.email ? "text-green-200" : "text-gray-300"}
                 />
               )}
               onPress={handleEmail}
               disabled={!formData.email}
-            >
-              Email
-            </Button>
+            />
           </View>
           <Card className="bg-light dark:bg-gray-800 border border-gray-400 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden my-2">
             <Card.Title title="Personal Information" />

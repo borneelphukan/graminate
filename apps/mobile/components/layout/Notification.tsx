@@ -20,8 +20,8 @@ export const Notification = ({
     <List.Item
       title={title}
       description={description}
-      titleStyle={{ fontWeight: "800", fontSize: 14, marginBottom: 2 }}
-      descriptionStyle={{ fontSize: 12, opacity: 0.8 }}
+      titleClassName="font-extrabold text-sm mb-0.5"
+      descriptionClassName="text-xs opacity-80"
       descriptionNumberOfLines={3}
       className="mb-3 rounded-2xl py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800"
       left={() => (

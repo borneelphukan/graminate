@@ -15,7 +15,13 @@ export const Button = ({
   contentStyle,
   ...rest 
 }: any) => {
-  let baseClass = "flex-row items-center justify-center px-4 py-3 rounded-full transition-all ";
+  const hasText = children !== undefined && children !== null && children !== '';
+  let baseClass = "flex-row items-center justify-center rounded-full transition-all ";
+  if (hasText) {
+    baseClass += "px-4 py-3 ";
+  } else {
+    baseClass += "p-3 aspect-square ";
+  }
   let textClass = "font-semibold text-center text-base ";
 
   if (mode === 'contained') {
@@ -24,6 +30,9 @@ export const Button = ({
   } else if (mode === 'outlined') {
     baseClass += "border border-green-100 bg-transparent ";
     textClass += "text-green-100 ";
+  } else if (mode === 'secondary') {
+    baseClass += "border border-green-200 bg-white dark:bg-dark-100 ";
+    textClass += "text-green-200 ";
   } else if (mode === 'elevated') {
     baseClass += "bg-green-100 shadow-md ";
     textClass += "text-white ";
@@ -35,11 +44,11 @@ export const Button = ({
   if (disabled || loading) baseClass += "opacity-60 ";
 
   const renderIcon = () => {
-    const iconColor = rest.textColor || (mode === 'contained' ? 'white' : '#2b7860');
+    const iconColor = rest.textColor || (mode === 'contained' ? 'white' : mode === 'secondary' ? '#04ad79' : '#2b7860');
     const iconSize = 18;
-    if (loading) return <RNActivityIndicator size="small" color={iconColor} className="mr-2" />;
-    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={iconSize} color={iconColor} style={{ marginRight: 8 }} />;
-    if (typeof icon === 'function') return <View className="mr-2">{icon({ color: iconColor, size: iconSize })}</View>;
+    if (loading) return <RNActivityIndicator size="small" color={iconColor} className={hasText ? "mr-2" : ""} />;
+    if (typeof icon === 'string') return <MaterialCommunityIcons name={icon as any} size={iconSize} color={iconColor} style={hasText ? { marginRight: 8 } : undefined} />;
+    if (typeof icon === 'function') return <View className={hasText ? "mr-2" : ""}>{icon({ color: iconColor, size: iconSize })}</View>;
     return null;
   };
 
@@ -52,12 +61,14 @@ export const Button = ({
       {...rest}
     >
       {renderIcon()}
-      <RNText 
-        className={`${textClass}`} 
-        style={[labelStyle, rest.textColor ? { color: rest.textColor } : {}]}
-      >
-        {children}
-      </RNText>
+      {hasText && (
+        <RNText 
+          className={`${textClass}`} 
+          style={[labelStyle, rest.textColor ? { color: rest.textColor } : {}]}
+        >
+          {children}
+        </RNText>
+      )}
     </TouchableOpacity>
   );
 };
