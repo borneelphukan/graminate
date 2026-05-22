@@ -43,7 +43,7 @@ type UserPreferencesContextType = {
 
 const UserPreferencesContext = createContext<
   UserPreferencesContextType | undefined
->(undefined);
+ >(undefined);
 
 export const UserPreferencesProvider = ({
   children,
@@ -59,6 +59,7 @@ export const UserPreferencesProvider = ({
   const [darkMode, setDarkModeState] = useState<boolean>(
     systemTheme === "dark"
   );
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isFirstLogin, setIsFirstLoginState] = useState(true);
   const [userType, setUserType] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
@@ -82,10 +83,31 @@ export const UserPreferencesProvider = ({
         )) as SupportedLanguage;
         const storedDarkMode = await AsyncStorage.getItem("darkMode");
 
+        const userString = await AsyncStorage.getItem("user");
+        if (userString) {
+          const user = JSON.parse(userString);
+          if (user?.user_id) {
+            const uid = String(user.user_id);
+            setCurrentUserId(uid);
+            
+            // Sync with backend on startup
+            try {
+              const response = await axiosInstance.get(`/user/${uid}`);
+              const fetchedUser = response.data?.data?.user ?? response.data?.user;
+              if (fetchedUser && fetchedUser.darkMode !== undefined) {
+                setDarkModeState(!!fetchedUser.darkMode);
+                await AsyncStorage.setItem("darkMode", String(fetchedUser.darkMode));
+              }
+            } catch (err) {
+              console.error("Failed to load dark mode from backend on mount:", err);
+            }
+          }
+        }
+
         if (storedTimeFormat) setTimeFormatState(storedTimeFormat);
         if (storedTempScale) setTemperatureScaleState(storedTempScale);
         if (storedLanguage) setLanguageState(storedLanguage);
-        if (storedDarkMode !== null)
+        if (storedDarkMode !== null && !userString)
           setDarkModeState(storedDarkMode === "true");
       } catch (e) {
         console.error("Failed to load preferences from storage", e);
@@ -111,10 +133,17 @@ export const UserPreferencesProvider = ({
     AsyncStorage.setItem("language", lang);
   }, []);
 
-  const setDarkMode = useCallback((enabled: boolean) => {
+  const setDarkMode = useCallback(async (enabled: boolean) => {
     setDarkModeState(enabled);
-    AsyncStorage.setItem("darkMode", String(enabled));
-  }, []);
+    await AsyncStorage.setItem("darkMode", String(enabled));
+    if (currentUserId) {
+      try {
+        await axiosInstance.put(`/user/${currentUserId}`, { darkMode: enabled });
+      } catch (error) {
+        console.error("Failed to sync dark mode change to backend:", error);
+      }
+    }
+  }, [currentUserId]);
 
   const setIsFirstLogin = useCallback((isFirst: boolean) => {
     setIsFirstLoginState(isFirst);
@@ -143,6 +172,8 @@ export const UserPreferencesProvider = ({
 
   const fetchUserSubTypes = useCallback(async (userId: string | number) => {
     setIsSubTypesLoading(true);
+    const uidStr = String(userId);
+    setCurrentUserId(uidStr);
     try {
       const response = await axiosInstance.get(`/user/${userId}`);
       const user = response.data?.data?.user ?? response.data?.user;
@@ -154,6 +185,11 @@ export const UserPreferencesProvider = ({
       setCountry(user.country || null);
       setSubTypesState(Array.isArray(user.sub_type) ? user.sub_type : []);
       setWidgetsState(Array.isArray(user.widgets) ? user.widgets : []);
+      
+      if (user.darkMode !== undefined) {
+        setDarkModeState(!!user.darkMode);
+        await AsyncStorage.setItem("darkMode", String(user.darkMode));
+      }
     } catch (err) {
       console.error("Error fetching user sub_types:", err);
       setIsFirstLoginState(true);

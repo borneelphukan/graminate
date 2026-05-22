@@ -548,7 +548,7 @@ const Calendar = ({ route, userId: propUserId }: any) => {
   };
 
   return (
-    <View className="border border-gray-400 dark:border-gray-800 rounded-xl overflow-hidden min-h-[450px] bg-white dark:bg-gray-900">
+    <View className="border border-gray-400 dark:border-gray-600 rounded-xl overflow-hidden min-h-[450px] bg-white dark:bg-gray-700">
       {showAddTask ? (
         <AddTaskView
           selectedDate={selectedDate}

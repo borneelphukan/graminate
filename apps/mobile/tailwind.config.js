@@ -6,6 +6,7 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -58,6 +59,7 @@ module.exports = {
           400: '#e0fcff',
         },
         light: '#f9fafb',
+        "dark-surface": '#1a1a1e',
         dark: {
           DEFAULT: '#111827',
           100: '#28282c',

@@ -248,12 +248,10 @@ const TrendGraph = ({
   return (
     <Card>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Text className="text-center">
+        <Text className="text-left text-xl font-extrabold text-dark dark:text-light mb-1">
           Financial Trends
         </Text>
-        <Text
-          className="text-center mb-4"
-        >
+        <Text className="text-left text-sm text-gray-500 dark:text-gray-400 mb-4">
           Select a metric and time range to analyze.
         </Text>
 

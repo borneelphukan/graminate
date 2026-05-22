@@ -15,6 +15,7 @@ import {
   useUserPreferences,
 } from "@/contexts/UserPreferencesContext";
 import * as SplashScreen from "expo-splash-screen";
+import { useColorScheme as useNativewindColorScheme } from "nativewind";
 import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -27,7 +28,12 @@ export const unstable_settings = {
 
 function ThemedApp() {
   const { darkMode, isPreferencesLoading } = useUserPreferences();
+  const { setColorScheme } = useNativewindColorScheme();
   const [splashAnimationFinished, setSplashAnimationFinished] = React.useState(false);
+
+  React.useEffect(() => {
+    setColorScheme(darkMode ? "dark" : "light");
+  }, [darkMode, setColorScheme]);
 
   const navigationTheme = darkMode
     ? {

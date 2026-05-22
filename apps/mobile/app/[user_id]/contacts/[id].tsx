@@ -248,7 +248,7 @@ Email: ${formData.email || "N/A"}
             <Appbar.Action
               icon={() => (
                 <Icon
-                  type={"dots-vertical" as any}
+                  type="dots-vertical"
                   size={22}
                   className="text-dark dark:text-light"
                 />
@@ -265,12 +265,12 @@ Email: ${formData.email || "N/A"}
             title="Delete Contact"
             leadingIcon={() => (
               <Icon
-                type={"delete" as any}
+                type="delete"
                 size={20}
                 className="text-red-200"
               />
             )}
-            titleClassName="text-red-200"
+            titleClassName="text-dark dark:text-light"
           />
           <Menu.Item
             onPress={() => {
@@ -280,11 +280,12 @@ Email: ${formData.email || "N/A"}
             title="Share Contact"
             leadingIcon={() => (
               <Icon
-                type={"share" as any}
+                type="share"
                 size={20}
                 className="text-gray-400"
               />
             )}
+            titleClassName="text-dark dark:text-light"
           />
         </Menu>
       </Appbar.Header>

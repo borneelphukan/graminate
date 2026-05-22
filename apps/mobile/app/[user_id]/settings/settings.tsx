@@ -263,7 +263,7 @@ const SettingsScreen = () => {
                 labelStyle={{
                   fontWeight: "bold",
                   fontSize: 24,
-                  color: "#2b7860",
+                  color: "#ffffff",
                 }}
               />
               <View className="ml-4 flex-1">

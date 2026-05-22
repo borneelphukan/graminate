@@ -133,13 +133,20 @@ const PlatformLayout = ({ children, showNavbar = true }: Props) => {
               onPress={() => setIsSidebarOpen(false)}
             >
               <Animated.View
-                className="flex-1 bg-black"
-                style={{ opacity: overlayOpacity }}
+                style={{
+                  flex: 1,
+                  backgroundColor: "black",
+                  opacity: overlayOpacity,
+                }}
               />
             </Pressable>
             <Animated.View
-              className="absolute top-0 left-0 bottom-0 z-50"
               style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                zIndex: 50,
                 width: SIDEBAR_WIDTH,
                 transform: [{ translateX: sidebarAnim }],
               }}

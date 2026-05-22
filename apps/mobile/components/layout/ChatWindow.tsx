@@ -290,7 +290,7 @@ const ChatWindow = ({ userId, onClose }: ChatWindowProps) => {
         >
           <View
             {...panResponder.panHandlers}
-            className="bg-gray-50 dark:bg-dark-surface pt-3 pb-2 items-center border-b border-gray-100 dark:border-gray-800"
+            className="bg-gray-50 dark:bg-dark-surface pt-3 pb-2 items-center border-b border-gray-400 dark:border-gray-700"
           >
             <View className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mb-3" />
             <View className="flex-row items-center w-full px-4 justify-between">

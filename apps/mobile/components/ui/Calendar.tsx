@@ -15,9 +15,6 @@ export type { DateData };
 export const Calendar = (props: any) => {
   const { darkMode } = useUserPreferences();
 
-  // Map the theme to the current darkMode state using global.css variables logic
-  // Since we can't use var() in the theme object directly for react-native-calendars,
-  // we use the values that correspond to the global.css definitions.
   const theme = {
     backgroundColor: 'transparent',
     calendarBackground: 'transparent',

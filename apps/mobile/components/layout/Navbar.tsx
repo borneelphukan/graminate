@@ -121,11 +121,11 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
   return (
     <>
       <Appbar.Header
-        className="bg-white dark:bg-dark-surface border-b border-gray-100 dark:border-gray-800 h-16"
+        className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 h-16"
         elevated={0}
       >
         <Appbar.Action
-          icon={() => <Icon type="menu" size={24} className="text-gray-700 dark:text-gray-300" />}
+          icon={() => <Icon type="menu" size={24} className="text-dark dark:text-light" />}
           onPress={toggleSidebar}
         />
         
@@ -133,13 +133,13 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
         </View>
 
         <Appbar.Action
-          icon={() => <Sparkles size={26} className="text-amber-500" />}
+          icon={() => <Sparkles size={26} className="text-dark dark:text-light" />}
           onPress={toggleChat}
         />
         
         <View>
           <Appbar.Action
-            icon={() => <Icon type="bell" size={22} className="text-gray-700 dark:text-gray-300" />}
+            icon={() => <Icon type="bell" size={22} className="text-dark dark:text-light" />}
             onPress={() => setNotificationBarOpen(true)}
           />
           {notifications.length > 0 && (
@@ -153,7 +153,7 @@ const Navbar = ({ toggleSidebar, toggleChat }: NavbarProps) => {
 
         <TouchableRipple
           onPress={navigateToSettings}
-          className="mr-3 ml-1 rounded-full p-0.5 border border-gray-100 dark:border-gray-800"
+          className="mr-3 ml-1 rounded-full"
           borderless
         >
           {user.name ? (
