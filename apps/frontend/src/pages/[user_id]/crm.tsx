@@ -45,8 +45,8 @@ type Company = {
 };
 
 type Contract = {
-  deal_id: number;
-  deal_name: string;
+  contract_id: number;
+  contract_name: string;
   partner: string;
   amount: number;
   stage: string;
@@ -298,10 +298,10 @@ const CRM = () => {
             "End Date",
           ],
           rows: fetchedData
-            .filter((item): item is Contract => "deal_id" in item)
+            .filter((item): item is Contract => "contract_id" in item)
             .map((item) => [
-              item.deal_id,
-              item.deal_name,
+              item.contract_id,
+              item.contract_name,
               item.partner,
               item.stage,
               item.category || "-",
@@ -436,8 +436,8 @@ const CRM = () => {
     } else if ("company_id" in dataItem) {
       idToNavigate = dataItem.company_id;
       path = `companies/${idToNavigate}`;
-    } else if ("deal_id" in dataItem) {
-      idToNavigate = dataItem.deal_id;
+    } else if ("contract_id" in dataItem) {
+      idToNavigate = dataItem.contract_id;
       path = `contracts/${idToNavigate}`;
     } else {
       return;
@@ -537,7 +537,7 @@ const CRM = () => {
                   return true;
                 if ("company_id" in item && item.company_id === itemId)
                   return true;
-                if ("deal_id" in item && item.deal_id === itemId) return true;
+                if ("contract_id" in item && item.contract_id === itemId) return true;
                 return false;
               });
 

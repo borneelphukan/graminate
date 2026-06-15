@@ -9,8 +9,8 @@ import axiosInstance from "@/lib/utils/axiosInstance";
 import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 type ContractData = {
-  deal_id: number;
-  deal_name: string;
+  contract_id: number;
+  contract_name: string;
   partner: string;
   amount: number;
   stage: string;
@@ -68,7 +68,7 @@ const ContractDetails = () => {
         const parsedContract = JSON.parse(data) as ContractData;
         setContract(parsedContract);
 
-        const initDealName = parsedContract.deal_name || "";
+        const initDealName = parsedContract.contract_name || "";
         const initPartnerClient = parsedContract.partner || "";
         const initAmount = parsedContract.amount?.toString() || "";
         const initStatus = parsedContract.stage || "";
@@ -125,8 +125,8 @@ const ContractDetails = () => {
     setSaving(true);
 
     const payload = {
-      id: contract.deal_id,
-      deal_name: contractName,
+      id: contract.contract_id,
+      contract_name: contractName,
       partner: partnerClient,
       amount: parseFloat(amount) || 0,
       stage: status,

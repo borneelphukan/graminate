@@ -313,7 +313,7 @@ const CRMForm: React.FC<CRMFormProps> = ({ userId, onClose, type }) => {
           endpoint = "/contracts/add";
           payload = {
             user_id: Number(userId),
-            deal_name: contractData.dealName,
+            contract_name: contractData.dealName,
             partner: contractData.dealPartner,
             amount: parseFloat(contractData.amountPaid),
             stage: contractData.status,
