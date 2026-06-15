@@ -112,6 +112,7 @@ const ProductDetailView = ({
                   <img
                     src={product.images[currentImgIdx]}
                     alt={product.name}
+                    onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {product.images.length > 1 && (
@@ -149,7 +150,7 @@ const ProductDetailView = ({
                       currentImgIdx === i ? "border-blue-500 ring-2 ring-blue-500/20" : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
                     }`}
                   >
-                    <img src={img} alt={`Thumb ${i}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Thumb ${i}`} onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

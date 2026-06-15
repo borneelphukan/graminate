@@ -34,10 +34,10 @@ export const contactsSchema = z.object({
   postal_code: z.string().optional().nullable(),
 });
 
-export const dealsSchema = z.object({
-  deal_id: z.number().int().optional(),
+export const contractsSchema = z.object({
+  contract_id: z.number().int().optional(),
   user_id: z.number().int().optional().nullable(),
-  deal_name: z.string().min(1),
+  contract_name: z.string().min(1),
   partner: z.string().min(1),
   amount: z.coerce.number(),
   stage: z.string().min(1),

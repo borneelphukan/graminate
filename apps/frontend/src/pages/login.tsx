@@ -238,6 +238,32 @@ const SignIn = () => {
     setUserEmailForOtp(registerData.email);
 
     try {
+      const existCheck = await axios.post(`${API_BASE_URL}/user/check-exists`, {
+        email: registerData.email,
+        phone_number: registerData.phone_number,
+      });
+
+      if (existCheck.data?.data?.exists) {
+        const reason = existCheck.data.data.reason;
+        let errorMessage = "User with the same email or same phone number already exists. Please use a different email or phone number.";
+        
+        if (reason === 'email') {
+          errorMessage = "A user with the same email already exists. Please use a different email";
+        } else if (reason === 'phone_number') {
+          errorMessage = "A user with the same phone number already exists. Please use a different phone number";
+        } else if (reason === 'both') {
+          errorMessage = "A user with the same email and phone number already exists. Please use a different email and phone number.";
+        }
+
+        setModalState({
+          isOpen: true,
+          title: "User already exists",
+          text: errorMessage,
+          variant: "error",
+        });
+        return;
+      }
+
       await axios.post(`${API_BASE_URL}/otp/send-otp`, {
         email: registerData.email,
       });

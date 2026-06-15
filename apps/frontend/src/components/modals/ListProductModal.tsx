@@ -14,7 +14,7 @@ const dataURLtoFile = (dataurl: string, filename: string) => {
     const bstr = atob(arr[arr.length - 1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-    while(n--) {
+    while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], filename, { type: mime });
@@ -197,16 +197,16 @@ const ListProductModal = ({
   const formatText = (type: 'bold' | 'italic' | 'list' | 'h') => {
     const el = descriptionRef.current;
     if (!el) return;
-    
+
     const start = el.selectionStart;
     const end = el.selectionEnd;
     const val = description;
     const selectedText = val.substring(start, end);
-    
+
     let newText = '';
     let newCursorPos = end;
 
-    switch(type) {
+    switch (type) {
       case 'bold':
         newText = val.substring(0, start) + `**${selectedText}**` + val.substring(end);
         newCursorPos = start + (selectedText ? 2 + selectedText.length + 2 : 2);
@@ -225,9 +225,9 @@ const ListProductModal = ({
         newCursorPos = start + (selectedText ? 4 + selectedText.length : 4);
         break;
     }
-    
+
     setDescription(newText);
-    
+
     setTimeout(() => {
       el.focus();
       el.setSelectionRange(newCursorPos, newCursorPos);
@@ -367,13 +367,13 @@ const ListProductModal = ({
                   selectedItem={
                     selectedInventoryId
                       ? (() => {
-                          const item = inventoryItems.find(
-                            (i) => i.inventory_id === selectedInventoryId
-                          );
-                          return item
-                            ? `${item.item_name} (${item.quantity} ${item.units})`
-                            : "";
-                        })()
+                        const item = inventoryItems.find(
+                          (i) => i.inventory_id === selectedInventoryId
+                        );
+                        return item
+                          ? `${item.item_name} (${item.quantity} ${item.units})`
+                          : "";
+                      })()
                       : ""
                   }
                   onSelect={(val) => {
@@ -445,8 +445,8 @@ const ListProductModal = ({
                     setUnitSuggestions(
                       units
                         ? UNITS.filter((u) =>
-                            u.toLowerCase().includes(units.toLowerCase())
-                          )
+                          u.toLowerCase().includes(units.toLowerCase())
+                        )
                         : UNITS
                     );
                     setShowUnitSuggestions(true);
@@ -491,42 +491,42 @@ const ListProductModal = ({
               <label className="text-dark dark:text-light font-medium text-sm">
                 Description
               </label>
-              <div className="flex flex-col border border-neutral-light-gray/40 dark:border-gray-600 rounded-lg overflow-hidden shadow-sm focus-within:ring-1 focus-within:ring-green-200 transition-all">
-                <div className="flex items-center gap-0.5 px-2 py-1.5 bg-gray-50 dark:bg-gray-900 border-b border-neutral-light-gray/40 dark:border-gray-700">
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
-                    icon={{ left: 'format_bold' }} 
+              <div className="flex flex-col border border-gray-400 dark:border-gray-600 rounded-lg overflow-hidden shadow-sm focus-within:border-green-200 transition-all">
+                <div className="flex items-center gap-0.5 px-2 py-1.5 bg-gray-50 dark:bg-gray-900 border-b border-gray-400 dark:border-gray-700">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    icon={{ left: 'format_bold' }}
                     onClick={() => formatText('bold')}
                     title="Bold"
                   />
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
-                    icon={{ left: 'format_italic' }} 
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    icon={{ left: 'format_italic' }}
                     onClick={() => formatText('italic')}
                     title="Italic"
                   />
                   <div className="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
-                    icon={{ left: 'format_list_bulleted' }} 
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    icon={{ left: 'format_list_bulleted' }}
                     onClick={() => formatText('list')}
                     title="Bullet List"
                   />
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700" 
-                    icon={{ left: 'format_h3' }} 
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    icon={{ left: 'format_h3' }}
                     onClick={() => formatText('h')}
                     title="Heading"
                   />

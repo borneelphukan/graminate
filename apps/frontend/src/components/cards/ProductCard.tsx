@@ -98,6 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={product.images[0]}
             alt={product.name}
+            onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (

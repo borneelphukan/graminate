@@ -107,18 +107,18 @@ model contacts {
   users          users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model deals {
-  deal_id    Int      @id @default(autoincrement())
-  user_id    Int?
-  deal_name  String   @db.VarChar(100)
-  partner    String   @db.VarChar(50)
-  amount     Decimal  @db.Decimal(10, 2)
-  stage      String   @db.VarChar(50)
-  end_date   DateTime @db.Date
-  start_date DateTime @db.Date
-  category   String?  @db.VarChar(100)
-  priority   String   @default("Medium") @db.VarChar(20)
-  users      users?   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+model contracts {
+  contract_id    Int      @id @default(autoincrement())
+  user_id        Int?
+  contract_name  String   @db.VarChar(100)
+  partner        String   @db.VarChar(50)
+  amount         Decimal  @db.Decimal(10, 2)
+  stage          String   @db.VarChar(50)
+  end_date       DateTime @db.Date
+  start_date     DateTime @db.Date
+  category       String?  @db.VarChar(100)
+  priority       String   @default("Medium") @db.VarChar(20)
+  users          users?   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model expenses {
@@ -497,7 +497,7 @@ model users {
   cattle_rearing          cattle_rearing[]
   companies               companies[]
   contacts                contacts[]
-  deals                   deals[]
+  contracts               contracts[]
   expenses                expenses[]
   floriculture            floriculture[]
   flower_watering         flower_watering[]

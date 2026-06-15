@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateContractDto, UpdateContractDto } from './contracts.dto';
-import { Prisma, deals } from '@prisma/client';
+import { Prisma, contracts } from '@prisma/client';
 
 @Injectable()
 export class ContractsRepository {
@@ -13,11 +13,11 @@ export class ContractsRepository {
     limit?: number,
   ): Promise<{
     status: number;
-    data: { contracts?: deals[]; error?: string };
+    data: { contracts?: contracts[]; error?: string };
   }> {
     try {
-      let contractsList: deals[];
-      const where: Prisma.dealsWhereInput = {};
+      let contractsList: contracts[];
+      const where: Prisma.contractsWhereInput = {};
       if (userId !== undefined) {
         if (isNaN(userId) || userId <= 0) {
           return { status: 400, data: { error: 'Invalid User ID parameter' } };
@@ -27,14 +27,14 @@ export class ContractsRepository {
 
       if (limit && page) {
         const offset = (page - 1) * limit;
-        contractsList = await this.prisma.deals.findMany({
+        contractsList = await this.prisma.contracts.findMany({
           where,
           orderBy: { start_date: 'desc' },
           take: limit,
           skip: offset,
         });
       } else {
-        contractsList = await this.prisma.deals.findMany({
+        contractsList = await this.prisma.contracts.findMany({
           where,
           orderBy: { start_date: 'desc' },
         });
@@ -49,11 +49,11 @@ export class ContractsRepository {
 
   async addContract(createContractDto: CreateContractDto): Promise<{
     status: number;
-    data: { message?: string; error?: string; contract?: deals };
+    data: { message?: string; error?: string; contract?: contracts };
   }> {
     const {
       user_id,
-      deal_name,
+      contract_name,
       partner,
       amount,
       stage,
@@ -64,10 +64,10 @@ export class ContractsRepository {
     } = createContractDto;
 
     try {
-      const newContract = await this.prisma.deals.create({
+      const newContract = await this.prisma.contracts.create({
         data: {
           user_id,
-          deal_name,
+          contract_name,
           partner,
           amount,
           stage,
@@ -92,23 +92,23 @@ export class ContractsRepository {
 
   async deleteContract(id: number): Promise<{
     status: number;
-    data: { message?: string; error?: string; contract?: deals };
+    data: { message?: string; error?: string; contract?: contracts };
   }> {
     if (isNaN(id) || id <= 0) {
       return { status: 400, data: { error: 'Invalid contract (deal) ID' } };
     }
 
     try {
-      const existing = await this.prisma.deals.findUnique({
-        where: { deal_id: id },
+      const existing = await this.prisma.contracts.findUnique({
+        where: { contract_id: id },
       });
 
       if (!existing) {
         return { status: 404, data: { error: 'Contract not found' } };
       }
 
-      const deletedContract = await this.prisma.deals.delete({
-        where: { deal_id: id },
+      const deletedContract = await this.prisma.contracts.delete({
+        where: { contract_id: id },
       });
 
       return {
@@ -126,11 +126,11 @@ export class ContractsRepository {
 
   async updateContract(updateContractDto: UpdateContractDto): Promise<{
     status: number;
-    data: { message?: string; error?: string; contract?: deals };
+    data: { message?: string; error?: string; contract?: contracts };
   }> {
     const {
       id,
-      deal_name,
+      contract_name,
       partner,
       amount,
       stage,
@@ -145,7 +145,7 @@ export class ContractsRepository {
     }
 
     const updateFields = [
-      deal_name,
+      contract_name,
       partner,
       amount,
       stage,
@@ -159,16 +159,16 @@ export class ContractsRepository {
     }
 
     try {
-      const existing = await this.prisma.deals.findUnique({
-        where: { deal_id: id },
+      const existing = await this.prisma.contracts.findUnique({
+        where: { contract_id: id },
       });
       if (!existing) {
         return { status: 404, data: { error: 'Contract not found' } };
       }
 
-      const updateData: Prisma.dealsUpdateInput = {};
+      const updateData: Prisma.contractsUpdateInput = {};
 
-      if (deal_name !== undefined) updateData.deal_name = deal_name;
+      if (contract_name !== undefined) updateData.contract_name = contract_name;
       if (partner !== undefined) updateData.partner = partner;
       if (amount !== undefined) updateData.amount = amount;
       if (stage !== undefined) updateData.stage = stage;
@@ -179,8 +179,8 @@ export class ContractsRepository {
       if (category !== undefined) updateData.category = category;
       if (priority !== undefined) updateData.priority = priority;
 
-      const updatedContract = await this.prisma.deals.update({
-        where: { deal_id: id },
+      const updatedContract = await this.prisma.contracts.update({
+        where: { contract_id: id },
         data: updateData,
       });
 
@@ -198,9 +198,9 @@ export class ContractsRepository {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.deals.deleteMany({});
+      await this.prisma.contracts.deleteMany({});
       return {
-        message: `Contracts (deals) table reset initiated by user ${userId}`,
+        message: `Contracts (contracts) table reset initiated by user ${userId}`,
       };
     } catch (error) {
       throw new InternalServerErrorException(

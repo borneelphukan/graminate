@@ -66,6 +66,10 @@ export class UserService {
     return this.userRepository.registerUser(body);
   }
 
+  async checkExists(email: string, phone_number: string): Promise<{ status: number; data: { exists: boolean, reason?: string } }> {
+    return this.userRepository.checkExists(email, phone_number);
+  }
+
   async deleteUser(
     id: string,
   ): Promise<{ status: number; data: { message?: string; error?: string } }> {

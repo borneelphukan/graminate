@@ -1,3 +1,12 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
+-- CreateEnum
+CREATE TYPE "marketplace_order_status" AS ENUM ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'RELEASED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "marketplace_product_status" AS ENUM ('DRAFT', 'PUBLISHED', 'SOLD_OUT', 'ARCHIVED');
+
 -- CreateEnum
 CREATE TYPE "payment_status" AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
 
@@ -115,10 +124,10 @@ CREATE TABLE "contacts" (
 );
 
 -- CreateTable
-CREATE TABLE "deals" (
-    "deal_id" SERIAL NOT NULL,
+CREATE TABLE "contracts" (
+    "contract_id" SERIAL NOT NULL,
     "user_id" INTEGER,
-    "deal_name" VARCHAR(100) NOT NULL,
+    "contract_name" VARCHAR(100) NOT NULL,
     "partner" VARCHAR(50) NOT NULL,
     "amount" DECIMAL(10,2) NOT NULL,
     "stage" VARCHAR(50) NOT NULL,
@@ -127,7 +136,7 @@ CREATE TABLE "deals" (
     "category" VARCHAR(100),
     "priority" VARCHAR(20) NOT NULL DEFAULT 'Medium',
 
-    CONSTRAINT "deals_pkey" PRIMARY KEY ("deal_id")
+    CONSTRAINT "contracts_pkey" PRIMARY KEY ("contract_id")
 );
 
 -- CreateTable
@@ -470,7 +479,7 @@ CREATE TABLE "users" (
     "first_name" VARCHAR(50) NOT NULL,
     "last_name" VARCHAR(50) NOT NULL,
     "email" VARCHAR(100) NOT NULL,
-    "phone_number" VARCHAR(15) NOT NULL,
+    "phone_number" VARCHAR(20) NOT NULL,
     "business_name" VARCHAR(100),
     "date_of_birth" DATE,
     "password" VARCHAR(255) NOT NULL,
@@ -538,7 +547,6 @@ CREATE TABLE "warehouse" (
     "country" VARCHAR(100),
     "contact_person" VARCHAR(100),
     "phone" VARCHAR(20),
-    "storage_capacity" DECIMAL(10,2),
     "category" VARCHAR(100),
 
     CONSTRAINT "warehouse_pkey" PRIMARY KEY ("warehouse_id")
@@ -566,12 +574,135 @@ CREATE TABLE "floriculture" (
     "user_id" INTEGER NOT NULL,
     "flower_name" TEXT NOT NULL,
     "flower_type" TEXT,
-    "area" DOUBLE PRECISION,
     "method" VARCHAR(50),
     "planting_date" DATE,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "plants" INTEGER,
 
     CONSTRAINT "floriculture_pkey" PRIMARY KEY ("flower_id")
+);
+
+-- CreateTable
+CREATE TABLE "flower_watering" (
+    "watering_id" SERIAL NOT NULL,
+    "flower_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "watering_date" DATE NOT NULL,
+    "watered" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "flower_watering_pkey" PRIMARY KEY ("watering_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_products" (
+    "product_id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "inventory_id" INTEGER,
+    "name" VARCHAR(255) NOT NULL,
+    "description" TEXT,
+    "category" VARCHAR(100) NOT NULL,
+    "price" DECIMAL(10,2) NOT NULL,
+    "units" VARCHAR(50) NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "images" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "status" "marketplace_product_status" NOT NULL DEFAULT 'DRAFT',
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "published_at" TIMESTAMP(6),
+
+    CONSTRAINT "marketplace_products_pkey" PRIMARY KEY ("product_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_favorites" (
+    "favorite_id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "marketplace_favorites_pkey" PRIMARY KEY ("favorite_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_wishlist" (
+    "wishlist_id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "marketplace_wishlist_pkey" PRIMARY KEY ("wishlist_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_cart" (
+    "cart_id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "marketplace_cart_pkey" PRIMARY KEY ("cart_id")
+);
+
+-- CreateTable
+CREATE TABLE "bank_details" (
+    "bank_id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "cardholder_name" VARCHAR(255) NOT NULL,
+    "card_number" VARCHAR(50) NOT NULL,
+    "expiry_date" VARCHAR(10) NOT NULL,
+    "card_type" VARCHAR(50),
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "bank_details_pkey" PRIMARY KEY ("bank_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_orders" (
+    "order_id" SERIAL NOT NULL,
+    "buyer_id" INTEGER NOT NULL,
+    "razorpay_order_id" VARCHAR(255) NOT NULL,
+    "razorpay_payment_id" VARCHAR(255),
+    "total_amount" DECIMAL(15,2) NOT NULL,
+    "cgst" DECIMAL(15,2) NOT NULL,
+    "sgst" DECIMAL(15,2) NOT NULL,
+    "status" "marketplace_order_status" NOT NULL DEFAULT 'PENDING',
+    "paid_at" TIMESTAMP(6),
+    "shipped_at" TIMESTAMP(6),
+    "delivered_at" TIMESTAMP(6),
+    "released_at" TIMESTAMP(6),
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "marketplace_orders_pkey" PRIMARY KEY ("order_id")
+);
+
+-- CreateTable
+CREATE TABLE "marketplace_order_items" (
+    "order_item_id" SERIAL NOT NULL,
+    "order_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "producer_id" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "unit_price" DECIMAL(10,2) NOT NULL,
+    "escrow_released" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "marketplace_order_items_pkey" PRIMARY KEY ("order_item_id")
+);
+
+-- CreateTable
+CREATE TABLE "waitlist" (
+    "id" SERIAL NOT NULL,
+    "first_name" VARCHAR(100) NOT NULL,
+    "last_name" VARCHAR(100) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "phone" VARCHAR(20),
+    "role" VARCHAR(50) NOT NULL,
+    "joined_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "waitlist_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -676,6 +807,57 @@ CREATE INDEX "idx_notifications_user_id" ON "notifications"("user_id");
 -- CreateIndex
 CREATE INDEX "kanban_columns_user_id_project_idx" ON "kanban_columns"("user_id", "project");
 
+-- CreateIndex
+CREATE INDEX "flower_watering_user_id_watering_date_idx" ON "flower_watering"("user_id", "watering_date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "flower_watering_flower_id_watering_date_key" ON "flower_watering"("flower_id", "watering_date");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_products_user_id" ON "marketplace_products"("user_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_products_category" ON "marketplace_products"("category");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_products_status" ON "marketplace_products"("status");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_favorites_user_id" ON "marketplace_favorites"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "marketplace_favorites_user_id_product_id_key" ON "marketplace_favorites"("user_id", "product_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_wishlist_user_id" ON "marketplace_wishlist"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "marketplace_wishlist_user_id_product_id_key" ON "marketplace_wishlist"("user_id", "product_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_cart_user_id" ON "marketplace_cart"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "marketplace_cart_user_id_product_id_key" ON "marketplace_cart"("user_id", "product_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "bank_details_user_id_key" ON "bank_details"("user_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_orders_buyer_id" ON "marketplace_orders"("buyer_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_orders_status" ON "marketplace_orders"("status");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_order_items_order_id" ON "marketplace_order_items"("order_id");
+
+-- CreateIndex
+CREATE INDEX "idx_marketplace_order_items_producer_id" ON "marketplace_order_items"("producer_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "waitlist_email_key" ON "waitlist"("email");
+
 -- AddForeignKey
 ALTER TABLE "apiculture" ADD CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -698,7 +880,7 @@ ALTER TABLE "companies" ADD CONSTRAINT "companies_user_id_fkey" FOREIGN KEY ("us
 ALTER TABLE "contacts" ADD CONSTRAINT "contacts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "deals" ADD CONSTRAINT "deals_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "contracts" ADD CONSTRAINT "contracts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "expenses" ADD CONSTRAINT "fk_user_expenses" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -783,3 +965,49 @@ ALTER TABLE "loans" ADD CONSTRAINT "loans_user_id_fkey" FOREIGN KEY ("user_id") 
 
 -- AddForeignKey
 ALTER TABLE "floriculture" ADD CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "flower_watering" ADD CONSTRAINT "fk_flower" FOREIGN KEY ("flower_id") REFERENCES "floriculture"("flower_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "flower_watering" ADD CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_products" ADD CONSTRAINT "marketplace_products_inventory_id_fkey" FOREIGN KEY ("inventory_id") REFERENCES "inventory"("inventory_id") ON DELETE SET NULL ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_products" ADD CONSTRAINT "marketplace_products_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_favorites" ADD CONSTRAINT "marketplace_favorites_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "marketplace_products"("product_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_favorites" ADD CONSTRAINT "marketplace_favorites_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_wishlist" ADD CONSTRAINT "marketplace_wishlist_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "marketplace_products"("product_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_wishlist" ADD CONSTRAINT "marketplace_wishlist_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_cart" ADD CONSTRAINT "marketplace_cart_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "marketplace_products"("product_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_cart" ADD CONSTRAINT "marketplace_cart_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "bank_details" ADD CONSTRAINT "bank_details_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_orders" ADD CONSTRAINT "marketplace_orders_buyer_id_fkey" FOREIGN KEY ("buyer_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_order_items" ADD CONSTRAINT "marketplace_order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "marketplace_orders"("order_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_order_items" ADD CONSTRAINT "marketplace_order_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "marketplace_products"("product_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "marketplace_order_items" ADD CONSTRAINT "marketplace_order_items_producer_id_fkey" FOREIGN KEY ("producer_id") REFERENCES "users"("user_id") ON DELETE CASCADE ON UPDATE NO ACTION;
+

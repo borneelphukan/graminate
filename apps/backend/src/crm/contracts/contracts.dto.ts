@@ -21,7 +21,7 @@ export class CreateContractDto {
   @IsNotEmpty({ message: 'Deal name is required' })
   @IsString()
   @MaxLength(150, { message: 'Deal name cannot exceed 150 characters' })
-  deal_name: string;
+  contract_name: string;
 
   @IsNotEmpty({ message: 'Partner name is required' })
   @IsString()
@@ -74,7 +74,7 @@ export class UpdateContractDto {
   @IsOptional()
   @IsString()
   @MaxLength(150, { message: 'Deal name cannot exceed 150 characters' })
-  deal_name?: string;
+  contract_name?: string;
 
   @IsOptional()
   @IsString()

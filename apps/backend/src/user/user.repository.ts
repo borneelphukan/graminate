@@ -273,6 +273,7 @@ export class UserRepository {
           ? new Date(subscription_expires_at)
           : null;
 
+      let newSubTypes: string[] = [];
       if (sub_type !== undefined) {
         const validSubTypes = [
           'Fishery',
@@ -284,6 +285,20 @@ export class UserRepository {
         const filteredSubTypes = Array.isArray(sub_type)
           ? sub_type.filter((t) => validSubTypes.includes(t))
           : [];
+
+        const existingSubTypes = Array.isArray(existing.sub_type)
+          ? existing.sub_type
+          : typeof existing.sub_type === 'string'
+            ? (existing.sub_type as string)
+                .replace(/[{}"]/g, '')
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean)
+            : [];
+
+        newSubTypes = filteredSubTypes.filter(
+          (t) => !existingSubTypes.includes(t),
+        );
         updateData.sub_type = filteredSubTypes;
       }
 
@@ -295,6 +310,27 @@ export class UserRepository {
         where: { user_id: userId },
         data: updateData,
       });
+
+      if (newSubTypes.length > 0) {
+        for (const newType of newSubTypes) {
+          await this.prisma.warehouse.create({
+            data: {
+              user_id: userId,
+              name: `Default ${newType} Warehouse`,
+              type: 'Owned',
+              category: newType,
+              address_line_1: city || existing.address_line_1 || '',
+              address_line_2: address_line_2 || existing.address_line_2 || '',
+              city: city || existing.city || '',
+              state: state || existing.state || '',
+              postal_code: postal_code || existing.postal_code || '',
+              country: country || existing.country || '',
+              contact_person: `${first_name || existing.first_name} ${last_name || existing.last_name}`,
+              phone: phone_number || existing.phone_number || '',
+            },
+          });
+        }
+      }
 
       const { admin_reason, admin_action } = body;
       if (admin_reason && admin_action && pending_plan_source === 'ADMIN') {
@@ -484,6 +520,25 @@ export class UserRepository {
       throw new InternalServerErrorException(
         err instanceof Error ? err.message : 'Failed to register user',
       );
+    }
+  }
+
+  async checkExists(email: string, phone_number: string): Promise<{ status: number; data: { exists: boolean, reason?: 'email' | 'phone_number' | 'both' } }> {
+    try {
+      const existingEmail = await this.prisma.users.findFirst({ where: { email } });
+      const existingPhone = await this.prisma.users.findFirst({ where: { phone_number } });
+      
+      if (existingEmail && existingPhone) {
+        return { status: 200, data: { exists: true, reason: 'both' } };
+      } else if (existingEmail) {
+        return { status: 200, data: { exists: true, reason: 'email' } };
+      } else if (existingPhone) {
+        return { status: 200, data: { exists: true, reason: 'phone_number' } };
+      }
+      return { status: 200, data: { exists: false } };
+    } catch (err) {
+      console.error('Error checking user existence:', err);
+      return { status: 500, data: { exists: false } };
     }
   }
 

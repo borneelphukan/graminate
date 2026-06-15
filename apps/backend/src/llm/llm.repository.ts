@@ -31,7 +31,7 @@ interface Company {
 }
 
 interface Contract {
-  deal_name: string;
+  contract_name: string;
   partner: string;
   stage: string;
   amount: number;
@@ -160,7 +160,7 @@ export class LlmRepository {
         function: {
           name: 'get_contracts',
           description:
-            'Get a list of all contracts or deals for the current user from the CRM system.',
+            'Get a list of all contracts or contracts for the current user from the CRM system.',
           parameters: { type: 'object', properties: {} },
         },
       },
@@ -365,7 +365,7 @@ export class LlmRepository {
             if (data.contracts && data.contracts.length > 0) {
               return JSON.stringify(
                 data.contracts.map((c) => ({
-                  deal_name: c.deal_name,
+                  contract_name: c.contract_name,
                   partner: c.partner,
                   stage: c.stage,
                   amount: c.amount,

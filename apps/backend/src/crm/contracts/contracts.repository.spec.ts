@@ -6,7 +6,7 @@ describe('ContractsRepository', () => {
   let repository: ContractsRepository;
 
   const mockPrisma = {
-    deals: {
+    contracts: {
       findMany: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
@@ -29,7 +29,7 @@ describe('ContractsRepository', () => {
 
   describe('getContracts', () => {
     it('resolves 200 code on standard call', async () => {
-      mockPrisma.deals.findMany.mockResolvedValue([]);
+      mockPrisma.contracts.findMany.mockResolvedValue([]);
       const res = await repository.getContracts();
       expect(res.status).toBe(200);
     });
