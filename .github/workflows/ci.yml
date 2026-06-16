@@ -1,0 +1,84 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# Security: Principle of least privilege. Prevent workflows from modifying repo contents.
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build, Lint, and Test
+    runs-on: ubuntu-latest
+    # Security: Prevent rogue/stuck processes from burning runner minutes
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: graminate_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/graminate_test
+      NODE_ENV: test
+      # Dummy values for CI to pass build steps that require these vars
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "dummy-key"
+      NEXT_PUBLIC_RAZORPAY_KEY_ID: "dummy-key"
+      NEXT_PUBLIC_API_URL: "http://localhost:3001/api"
+      GOOGLE_CLIENT_ID: "dummy-client-id"
+      GOOGLE_CLIENT_SECRET: "dummy-client-secret"
+      JWT_SECRET: "dummy-jwt-secret"
+      OPENAI_API_KEY: "dummy-openai-key"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8.15.3
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm --filter backend exec prisma generate
+
+      - name: Push DB Schema to Test Database
+        run: pnpm --filter backend exec prisma db push
+
+      - name: Run TurboRepo Lint & Build
+        run: pnpm turbo run lint build
