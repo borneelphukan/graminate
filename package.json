@@ -6,6 +6,7 @@
         "start": "pnpm --filter backend run start:prod",
         "dev": "turbo dev",
         "lint": "turbo lint",
+        "typecheck": "turbo typecheck",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "clean": "rm -rf node_modules"
     },
@@ -23,5 +24,8 @@
     },
     "dependencies": {
         "axios": "^1.15.2"
+    },
+    "engines": {
+        "node": ">=20"
     }
 }

@@ -80,5 +80,10 @@ jobs:
       - name: Push DB Schema to Test Database
         run: pnpm --filter backend exec prisma db push
 
-      - name: Run TurboRepo Lint & Build
-        run: pnpm turbo run lint build
+      - name: Run TurboRepo Lint, Typecheck & Build
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            pnpm turbo run lint typecheck build --filter=...[origin/main]
+          else
+            pnpm turbo run lint typecheck build
+          fi
