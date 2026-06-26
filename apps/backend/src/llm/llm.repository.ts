@@ -2,12 +2,14 @@ import {
   Injectable,
   BadRequestException,
   InternalServerErrorException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { LlmDto } from './llm.dto';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { PrismaService } from '../prisma/prisma.service';
 
 type Message = {
   sender: 'user' | 'bot';
@@ -119,6 +121,7 @@ export class LlmRepository {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    private readonly prisma: PrismaService,
   ) {
     this.llmClient = new OpenAI({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
@@ -132,6 +135,36 @@ export class LlmRepository {
 
     if (!history || !Array.isArray(history) || history.length === 0) {
       throw new BadRequestException('Invalid history');
+    }
+
+    const user = await this.prisma.users.findUnique({
+      where: { user_id: Number(userId) },
+      select: { plan: true, llm_queries_this_month: true, llm_queries_reset_at: true },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    let queriesThisMonth = user.llm_queries_this_month;
+    let resetAt = user.llm_queries_reset_at;
+    const now = new Date();
+
+    if (!resetAt || resetAt < now) {
+      queriesThisMonth = 0;
+      resetAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      await this.prisma.users.update({
+        where: { user_id: Number(userId) },
+        data: { llm_queries_this_month: 0, llm_queries_reset_at: resetAt },
+      });
+    }
+
+    if (user.plan === 'FREE') {
+      throw new ForbiddenException('LLM access is not available on the Free plan.');
+    } else if (user.plan === 'BASIC' && queriesThisMonth >= 100) {
+      throw new ForbiddenException('Monthly query limit of 100 reached for Basic plan.');
+    } else if (user.plan === 'PRO' && queriesThisMonth >= 300) {
+      throw new ForbiddenException('Monthly query limit of 300 reached for Pro plan.');
     }
 
     const nestApiUrl = this.configService.get<string>('NESTJS_API_URL');
@@ -270,10 +303,15 @@ export class LlmRepository {
     const currentDate = new Date().toString();
     const systemPrompt = `The current date and time is ${currentDate}. You are a helpful assistant for Graminate, an agricultural platform. You are an expert in agricultural sciences, also including Poultry, Animal Rearing and Bee Keeping. You can also help users by fetching their data, like contacts, companies, contracts, receipts, sales, expenses, poultry, warehouses, inventory, and employee (labour) data from the system using the provided tools. You can calculate financial metrics like total revenue, total expenses, and profit from this data. When asked about poultry eggs, remember that egg sizes (small, medium, large, extra-large) are based on Indian standards. When asked to fetch data, use the tools. For any other topics, politely decline and state your purpose. When presenting lists of data, format them clearly and always use markdown tables.`;
 
+    let recentHistory = history;
+    if (history.length > 15) {
+      recentHistory = history.slice(-15);
+    }
+
     const conversationHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
       [
         { role: 'system', content: systemPrompt },
-        ...history.map((message: Message & { name?: string }) => {
+        ...recentHistory.map((message: Message & { name?: string }) => {
           if (message.sender === 'user') {
             return {
               role: 'user',
@@ -300,6 +338,7 @@ export class LlmRepository {
         messages: conversationHistory,
         tools: tools,
         tool_choice: 'auto',
+        max_tokens: 1500,
       });
 
       const responseMessage = initialResponse.choices[0].message;
@@ -685,10 +724,21 @@ export class LlmRepository {
         const finalResponse = await this.llmClient.chat.completions.create({
           model: 'gpt-4o',
           messages: conversationHistory,
+          max_tokens: 1500,
+        });
+
+        await this.prisma.users.update({
+          where: { user_id: Number(userId) },
+          data: { llm_queries_this_month: { increment: 1 } },
         });
 
         return { answer: finalResponse.choices[0].message.content };
       } else {
+        await this.prisma.users.update({
+          where: { user_id: Number(userId) },
+          data: { llm_queries_this_month: { increment: 1 } },
+        });
+
         const answer = responseMessage.content?.trim();
         return { answer };
       }
