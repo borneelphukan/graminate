@@ -55,7 +55,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v6
         with:
           version: 8.15.3
 
