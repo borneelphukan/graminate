@@ -33,7 +33,22 @@ describe('LlmRepository', () => {
         LlmRepository,
         { provide: ConfigService, useValue: mockConfigService },
         { provide: HttpService, useValue: mockHttpService },
-        { provide: PrismaService, useValue: {} },
+        {
+          provide: PrismaService,
+          useValue: {
+            users: {
+              findUnique: jest.fn().mockResolvedValue({
+                plan: 'FREE',
+                llm_queries_this_month: 0,
+                llm_queries_reset_at: new Date(),
+              }),
+            },
+            llm_queries: {
+              create: jest.fn().mockResolvedValue({}),
+              update: jest.fn().mockResolvedValue({}),
+            },
+          },
+        },
       ],
     }).compile();
     repository = module.get<LlmRepository>(LlmRepository);
