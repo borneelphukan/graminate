@@ -15,6 +15,7 @@
     "predev": "npx prisma generate && mkdir -p dist/apps/backend/src && touch dist/apps/backend/src/main.js && ln -sf apps/backend/src/main.js dist/main.js",
     "dev": "pnpm run predev && nest start --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "pretest": "npx prisma generate",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

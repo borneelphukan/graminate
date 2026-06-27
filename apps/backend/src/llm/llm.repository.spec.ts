@@ -42,6 +42,7 @@ describe('LlmRepository', () => {
                 llm_queries_this_month: 0,
                 llm_queries_reset_at: new Date(),
               }),
+              update: jest.fn().mockResolvedValue({}),
             },
             llm_queries: {
               create: jest.fn().mockResolvedValue({}),
