@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
 
@@ -43,6 +43,7 @@ jobs:
         env:
           # This should be your production database URL stored in GitHub Secrets
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         run: pnpm --filter backend exec prisma migrate deploy
 
       - name: Trigger Webhook Deployment
@@ -53,4 +54,4 @@ jobs:
             echo "DEPLOY_HOOK_URL secret is not set, skipping webhook trigger."
             exit 0
           fi
-          curl -X POST $DEPLOY_HOOK_URL
+          curl -X POST "$DEPLOY_HOOK_URL"

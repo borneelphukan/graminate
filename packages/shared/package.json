@@ -20,7 +20,8 @@
     "dev": "vite build --watch",
     "type-check": "tsc --noEmit",
     "lint": "pnpm eslint",
-    "lint:fix": "pnpm eslint --fix"
+    "lint:fix": "pnpm eslint --fix",
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^3.22.4",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^6.3.5",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^1.6.0"
   }
 }
