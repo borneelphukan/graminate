@@ -2,7 +2,7 @@
     "name": "graminate",
     "private": true,
     "scripts": {
-        "build": "turbo build",
+        "build": "turbo build --concurrency=1",
         "start": "pnpm --filter backend run start:prod",
         "dev": "turbo dev",
         "lint": "turbo lint",
