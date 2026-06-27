@@ -48,7 +48,9 @@ export class UserController {
   }
 
   @Post('check-exists')
-  async checkExists(@Body() body: { email: string; phone_number: string }): Promise<any> {
+  async checkExists(
+    @Body() body: { email: string; phone_number: string },
+  ): Promise<any> {
     return this.userService.checkExists(body.email, body.phone_number);
   }
 

@@ -523,11 +523,21 @@ export class UserRepository {
     }
   }
 
-  async checkExists(email: string, phone_number: string): Promise<{ status: number; data: { exists: boolean, reason?: 'email' | 'phone_number' | 'both' } }> {
+  async checkExists(
+    email: string,
+    phone_number: string,
+  ): Promise<{
+    status: number;
+    data: { exists: boolean; reason?: 'email' | 'phone_number' | 'both' };
+  }> {
     try {
-      const existingEmail = await this.prisma.users.findFirst({ where: { email } });
-      const existingPhone = await this.prisma.users.findFirst({ where: { phone_number } });
-      
+      const existingEmail = await this.prisma.users.findFirst({
+        where: { email },
+      });
+      const existingPhone = await this.prisma.users.findFirst({
+        where: { phone_number },
+      });
+
       if (existingEmail && existingPhone) {
         return { status: 200, data: { exists: true, reason: 'both' } };
       } else if (existingEmail) {

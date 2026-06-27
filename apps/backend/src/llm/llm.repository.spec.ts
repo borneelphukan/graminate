@@ -38,7 +38,7 @@ describe('LlmRepository', () => {
           useValue: {
             users: {
               findUnique: jest.fn().mockResolvedValue({
-                plan: 'FREE',
+                plan: 'PRO',
                 llm_queries_this_month: 0,
                 llm_queries_reset_at: new Date(),
               }),

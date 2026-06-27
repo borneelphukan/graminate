@@ -139,7 +139,11 @@ export class LlmRepository {
 
     const user = await this.prisma.users.findUnique({
       where: { user_id: Number(userId) },
-      select: { plan: true, llm_queries_this_month: true, llm_queries_reset_at: true },
+      select: {
+        plan: true,
+        llm_queries_this_month: true,
+        llm_queries_reset_at: true,
+      },
     });
 
     if (!user) {
@@ -160,11 +164,17 @@ export class LlmRepository {
     }
 
     if (user.plan === 'FREE') {
-      throw new ForbiddenException('LLM access is not available on the Free plan.');
+      throw new ForbiddenException(
+        'LLM access is not available on the Free plan.',
+      );
     } else if (user.plan === 'BASIC' && queriesThisMonth >= 100) {
-      throw new ForbiddenException('Monthly query limit of 100 reached for Basic plan.');
+      throw new ForbiddenException(
+        'Monthly query limit of 100 reached for Basic plan.',
+      );
     } else if (user.plan === 'PRO' && queriesThisMonth >= 300) {
-      throw new ForbiddenException('Monthly query limit of 300 reached for Pro plan.');
+      throw new ForbiddenException(
+        'Monthly query limit of 300 reached for Pro plan.',
+      );
     }
 
     const nestApiUrl = this.configService.get<string>('NESTJS_API_URL');
