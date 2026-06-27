@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MarketplaceService } from './marketplace.service';
 import { PrismaService } from '@/prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('MarketplaceService', () => {
   let service: MarketplaceService;
@@ -20,6 +21,7 @@ describe('MarketplaceService', () => {
       providers: [
         MarketplaceService,
         { provide: PrismaService, useValue: mockPrisma },
+        { provide: ConfigService, useValue: { get: jest.fn() } },
       ],
     }).compile();
     service = module.get<MarketplaceService>(MarketplaceService);

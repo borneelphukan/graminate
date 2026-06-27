@@ -19,6 +19,7 @@ import { LlmRepository } from './llm.repository';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { of } from 'rxjs';
+import { PrismaService } from '@/prisma/prisma.service';
 
 describe('LlmRepository', () => {
   let repository: LlmRepository;
@@ -32,6 +33,7 @@ describe('LlmRepository', () => {
         LlmRepository,
         { provide: ConfigService, useValue: mockConfigService },
         { provide: HttpService, useValue: mockHttpService },
+        { provide: PrismaService, useValue: {} },
       ],
     }).compile();
     repository = module.get<LlmRepository>(LlmRepository);
