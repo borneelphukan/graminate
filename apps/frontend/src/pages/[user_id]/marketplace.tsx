@@ -450,12 +450,13 @@ const MarketplacePage = () => {
                   onClick={() => setViewingProduct(item.product)}
                   className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-400 dark:border-gray-800 flex gap-4 items-center cursor-pointer hover:shadow-md transition-shadow duration-200 group"
                 >
-                  <div className="w-20 h-20 rounded-lg bg-gray-400 dark:bg-gray-700 flex items-center justify-center text-3xl shrink-0 transition-colors group-hover:bg-gray-400 dark:group-hover:bg-gray-600 overflow-hidden">
-                    {item.product.images && item.product.images.length > 0 ? (
-                      <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
-                    ) : (
-                      "📦"
-                    )}
+                  <div className="w-20 h-20 rounded-lg bg-gray-400 dark:bg-gray-700 flex items-center justify-center shrink-0 transition-colors group-hover:bg-gray-400 dark:group-hover:bg-gray-600 overflow-hidden">
+                    <img
+                      src={item.product.images && item.product.images.length > 0 ? item.product.images[0] : "/images/placeholder.png"}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-dark dark:text-light truncate transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -565,7 +566,7 @@ const MarketplacePage = () => {
         value: "my_listings",
         label: `My Listings (${myProducts.length})`,
         content: (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             {myProducts.length > 0
               ? myProducts.map((p) => renderProductCard(p, "manage"))
               : renderEmptyState(
@@ -617,7 +618,7 @@ const MarketplacePage = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             {filteredBrowseProducts.length > 0
               ? filteredBrowseProducts.map((p) => renderProductCard(p, "browse"))
               : renderEmptyState(
@@ -638,7 +639,7 @@ const MarketplacePage = () => {
           label: `Favorites (${favoriteProducts.length})`,
           icon: "favorite" as any,
           content: (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
               {favoriteProducts.length > 0
                 ? favoriteProducts.map((p) => renderProductCard(p, "saved"))
                 : renderEmptyState("No favorite products yet.", "favorite_border")}
@@ -650,7 +651,7 @@ const MarketplacePage = () => {
           label: `Wishlist (${wishlistProducts.length})`,
           icon: "bookmark" as any,
           content: (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
               {wishlistProducts.length > 0
                 ? wishlistProducts.map((p) => renderProductCard(p, "saved"))
                 : renderEmptyState("Your wishlist is empty.", "bookmark_border")}

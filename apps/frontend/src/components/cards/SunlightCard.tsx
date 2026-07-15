@@ -41,7 +41,7 @@ interface WeatherData {
   };
 }
 
-const SunlightCard = ({ method, selectedFlowerName, plantingDate }: { method?: string; selectedFlowerName?: string; plantingDate?: string }) => {
+const SunlightCard = ({ method, selectedFlowerName, plantingDate, userId }: { method?: string; selectedFlowerName?: string; plantingDate?: string; userId?: string }) => {
   const unitLabel = "PAR (µmol·m⁻²·s⁻¹)";
   const unitScale = 180;
 
@@ -86,8 +86,8 @@ const SunlightCard = ({ method, selectedFlowerName, plantingDate }: { method?: s
               text: `Considering the scientific growth requirements of "${selectedFlowerName}", analyze the following forecasted solar patterns for the selected day: ${solarDataSummary}. What is the exact best sunlight period of the day for the flower today? Answer only in valid JSON format with the keys: "best_sunlight_period" (string with from/to hours like "10:00 AM - 02:00 PM").`
             }
           ],
-          userId: "anonymous",
-          token: typeof window !== "undefined" ? localStorage.getItem("token") || "test_token" : "test_token"
+          userId: userId || "0",
+          token: typeof window !== "undefined" ? localStorage.getItem("token") || "" : ""
         });
         const match = res.data?.answer?.match(/\{[\s\S]*?\}/);
         if (match && isMounted) {

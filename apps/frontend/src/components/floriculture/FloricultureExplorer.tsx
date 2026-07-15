@@ -22,8 +22,9 @@ const FloricultureExplorer = ({
   onEdit, 
   onRefresh,
   selectedFlowerId,
-  onSelectFlower
-}: FloricultureExplorerProps) => {
+  onSelectFlower,
+  userId
+}: FloricultureExplorerProps & { userId?: string }) => {
   const [localSelectedId, setLocalSelectedId] = useState<number | null>(null);
   const selectedId = selectedFlowerId !== undefined ? selectedFlowerId : localSelectedId;
   const setSelectedId = onSelectFlower !== undefined ? onSelectFlower : setLocalSelectedId;
@@ -83,8 +84,8 @@ const FloricultureExplorer = ({
             text: `Considering "${selectedRecord.flower_name}", provide its scientific name, a short description, 3 best practices for cultivation, and its ideal watering frequency in days. Respond in valid JSON only with keys: "scientific_name", "short_description", "best_practices" (array of strings), and "watering_frequency" (integer number of days). Do not use any extra text or format outside the JSON.`
           }
         ],
-        userId: "anonymous",
-        token: typeof window !== "undefined" ? localStorage.getItem("token") || "test_token" : "test_token"
+        userId: userId || "0",
+        token: typeof window !== "undefined" ? localStorage.getItem("token") || "" : ""
       });
       let parsed: any = null;
       if (res.data?.answer) {

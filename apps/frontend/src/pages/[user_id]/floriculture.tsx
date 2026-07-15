@@ -203,6 +203,7 @@ const Floriculture = () => {
                 }}
                 selectedFlowerId={selectedFlowerId}
                 onSelectFlower={setSelectedFlowerId}
+                userId={parsedUserId as string}
               />
             )}
           </div>
@@ -214,6 +215,7 @@ const Floriculture = () => {
               method={selectedMethod} 
               selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name || records[0]?.flower_name}
               plantingDate={records.find(r => r.flower_id === selectedFlowerId)?.planting_date || records[0]?.planting_date || undefined}
+              userId={parsedUserId as string}
             />
           </div>
           <div className="w-full">
