@@ -264,7 +264,18 @@ export class UserRepository {
         updateData.opening_balance = new Prisma.Decimal(opening_balance);
       if (entity_type !== undefined) updateData.entity_type = entity_type;
       if (business_size !== undefined) updateData.business_size = business_size;
-      if (plan !== undefined) updateData.plan = plan;
+      if (plan !== undefined) {
+        updateData.plan = plan;
+        if (
+          plan !== 'FREE' &&
+          subscription_expires_at === undefined &&
+          existing.plan === 'FREE'
+        ) {
+          const expiry = new Date();
+          expiry.setDate(expiry.getDate() + 30);
+          updateData.subscription_expires_at = expiry;
+        }
+      }
       if (pending_plan !== undefined) updateData.pending_plan = pending_plan;
       if (pending_plan_source !== undefined)
         updateData.pending_plan_source = pending_plan_source;

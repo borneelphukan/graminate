@@ -116,6 +116,13 @@ export const PAGINATION_ITEMS = ["25 per page", "50 per page", "100 per page"];
 export const PRIORITY_OPTIONS = ["High", "Medium", "Low"];
 
 // Occupation Specific constants
+export const MARKETPLACE_CATEGORIES = [
+  "Poultry",
+  "Apiculture",
+  "Cattle Rearing",
+  "Floriculture",
+];
+
 export const POULTRY_EXPENSE_CONFIG: ExpenseCategoryConfig = {
   detailedCategories: {
     "Goods & Services": ["Farm Utilities", "Agricultural Feeds", "Consulting"],

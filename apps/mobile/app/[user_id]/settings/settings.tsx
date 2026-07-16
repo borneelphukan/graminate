@@ -199,6 +199,13 @@ const SettingsScreen = () => {
             icon: "account-cog",
             iconColor: "#6366F1",
           },
+          {
+            label: "Marketplace Payment",
+            type: "navigate",
+            routeName: `/${user_id}/settings/marketplace`,
+            icon: "storefront-outline",
+            iconColor: "#04ad79",
+          },
         ],
       },
       {

@@ -923,7 +923,7 @@ export const BottomDrawer = ({
                   </View>
                 </ScrollView>
 
-                <View className={`p-6 bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-gray-800 ${Platform.OS === 'ios' ? 'pb-10' : 'pb-6'}`}>
+                <View className={`p-6 bg-white dark:bg-dark-surface border-t border-gray-400 dark:border-gray-800 ${Platform.OS === 'ios' ? 'pb-10' : 'pb-6'}`}>
                   <Button
                     mode="contained"
                     onPress={handleSubmit}

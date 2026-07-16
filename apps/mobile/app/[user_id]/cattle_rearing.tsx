@@ -395,7 +395,7 @@ const CattleRearingScreen = () => {
               All your cattle rearing tasks visualized
             </Text>
           </View>
-          <View className="bg-gray-800 rounded-3xl py-4 mx-4">
+          <View className="rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard
                 userId={numericUserId}

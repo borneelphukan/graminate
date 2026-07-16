@@ -133,6 +133,14 @@ const Sidebar = ({ closeSidebar, userId }: SidebarProps) => {
 
     base.push(
       {
+        icon: "storefront-outline",
+        label: "Marketplace",
+        section: "Marketplace",
+        route: `/${currentUserId}/marketplace`,
+        color: "#04ad79",
+        subItems: [],
+      },
+      {
         icon: "account-group",
         label: "Employees",
         section: "Employees",

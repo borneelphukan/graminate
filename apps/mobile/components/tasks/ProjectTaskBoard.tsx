@@ -399,7 +399,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerClassName="px-4 gap-4"
+      contentContainerClassName="px-4 gap-4 pb-20"
     >
       {columns.map((column) => {
         const columnTasks = filteredTasks.filter(
@@ -463,7 +463,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 
   const ListView = () => (
-    <View className="px-4 bg-transparent">
+    <View className="px-4 bg-transparent pb-20">
       {filteredTasks.map((task, index) => (
         <View key={task.task_id}>
           <TouchableOpacity
@@ -513,8 +513,8 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
   );
 
   return (
-    <View className="flex-1 mt-4 pb-20">
-      <View className="px-4 gap-3 mb-4">
+    <View className="bg-gray-50 dark:bg-gray-100 flex-1">
+      <View className="px-4 gap-3 mb-4 pt-4">
         <Searchbar
           placeholder="Search"
           onChangeText={setSearchQuery}

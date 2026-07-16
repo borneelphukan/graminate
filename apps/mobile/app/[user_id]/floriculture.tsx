@@ -392,7 +392,7 @@ const FloricultureScreen = () => {
               All your floriculture tasks visualized
             </Text>
           </View>
-          <View className="bg-gray-500/5 rounded-3xl py-4 mx-4">
+          <View className="rounded-3xl py-4 mx-4">
             {numericUserId > 0 && (
               <ProjectTaskBoard
                 userId={numericUserId}
