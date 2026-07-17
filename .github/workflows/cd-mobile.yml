@@ -38,6 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     # Security: Prevent rogue/stuck processes from burning runner minutes
     timeout-minutes: 30
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
       - name: Checkout Repository
@@ -53,6 +55,14 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Verify EXPO_TOKEN is available
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN secret is not set. Add it in repo Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "EXPO_TOKEN is set (length: ${#EXPO_TOKEN})."
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
