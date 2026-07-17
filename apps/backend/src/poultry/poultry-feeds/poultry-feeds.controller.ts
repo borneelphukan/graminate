@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   NotFoundException,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { PoultryFeedsService } from './poultry-feeds.service';
@@ -31,10 +32,14 @@ export class PoultryFeedsController {
   @Get(':userId')
   async getPoultryFeedRecords(
     @Param('userId') userId: string,
+    @Request() req: RequestWithUser,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('flockId') flockId?: string,
   ): Promise<{ records: poultry_feeds[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const records = await this.poultryFeedsService.findByUserIdWithFilters(
       Number(userId),
       {

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { LoansService } from './loans.service';
@@ -35,7 +36,11 @@ export class LoansController {
   @Get('user/:userId')
   async findAll(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<loans[]> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     return this.loansService.findAll(userId);
   }
 

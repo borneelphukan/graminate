@@ -16,9 +16,7 @@ const Footer = () => {
 
   const legalLinks = [
     { label: t("footer.legal.terms"), href: "/terms" },
-    { label: t("footer.legal.privacy"), href: "/privacy" },
-    { label: t("footer.legal.cookies"), href: "/cookies" },
-    { label: t("footer.legal.posh"), href: "/posh" },
+    { label: t("footer.legal.privacy"), href: "/privacy" }
   ];
 
   return (
@@ -121,10 +119,6 @@ const Footer = () => {
           <p className="text-xs text-gray-500">
             {t("footer.company_name")}
           </p>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-            <span>{t("footer.built_in_india")}</span>
-            <span className="text-sm" role="img" aria-label="India Flag">🇮🇳</span>
-          </div>
         </div>
 
       </div>

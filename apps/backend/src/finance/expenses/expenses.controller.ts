@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   ValidationPipe,
   BadRequestException,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 
@@ -35,7 +36,11 @@ export class ExpensesController {
   @Get('user/:userId')
   async getByUserId(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ expenses: expenses[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const expensesList = await this.expensesService.findByUserId(userId);
     return { expenses: expensesList };
   }

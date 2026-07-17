@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { Button, Input, Popup } from "@graminate/ui";
@@ -9,15 +9,43 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const AuthPage = () => {
   const router = useRouter();
+
+  // Force light mode on the auth page regardless of the global dark theme.
+  useEffect(() => {
+    const root = document.documentElement;
+    const hadDark = root.classList.contains("dark");
+    root.classList.remove("dark");
+    return () => {
+      if (hadDark) root.classList.add("dark");
+    };
+  }, []);
+
   const [isLoginView, setIsLoginView] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState("");
+  const [setupInitialized, setSetupInitialized] = useState(true);
   const [modalState, setModalState] = useState({
     isOpen: false,
     title: "",
     text: "",
     variant: "info" as "success" | "error" | "info" | "warning",
   });
+
+  useEffect(() => {
+    const checkSetup = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/setup-status`);
+        const result = await response.json();
+        if (result?.data?.initialized !== undefined) {
+          setSetupInitialized(result.data.initialized);
+        }
+      } catch {
+        // If the status check fails, default to showing the invite field
+        setSetupInitialized(true);
+      }
+    };
+    checkSetup();
+  }, []);
 
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -27,6 +55,7 @@ const AuthPage = () => {
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [regInviteCode, setRegInviteCode] = useState("");
 
   const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,6 +111,11 @@ const AuthPage = () => {
 
       if (result.data?.access_token && result.data?.admin_id) {
         localStorage.setItem("admin_token", result.data.access_token);
+        localStorage.setItem("admin_id", result.data.admin_id);
+        localStorage.setItem(
+          "admin_is_root",
+          result.data?.is_root ? "true" : "false"
+        );
 
         const adminName = `${result.data.first_name} ${result.data.last_name}`;
         localStorage.setItem("admin_name", adminName);
@@ -124,15 +158,39 @@ const AuthPage = () => {
       });
       return;
     }
+
+    if (regPassword.length < 8) {
+      setModalState({
+        isOpen: true,
+        title: "Registration Failed",
+        text: "Password must be at least 8 characters long.",
+        variant: "error",
+      });
+      return;
+    }
+
+    if (!setupInitialized && !regInviteCode.trim()) {
+      setModalState({
+        isOpen: true,
+        title: "Registration Failed",
+        text: "Invite code is required.",
+        variant: "error",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setLoginErrorMessage("");
 
-    const registrationData = {
+    const registrationData: Record<string, unknown> = {
       first_name: regFirstName,
       last_name: regLastName,
       email: regEmail,
       password: regPassword,
     };
+    if (setupInitialized) {
+      registrationData.inviteCode = regInviteCode;
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/admin/register`, {
@@ -146,6 +204,12 @@ const AuthPage = () => {
       const result = await response.json();
 
       if (!response.ok || result.status !== 201) {
+        if (response.status === 403) {
+          throw new Error(
+            result.message ||
+              "Invalid admin invite code. Please check and try again."
+          );
+        }
         if (response.status === 409 && result.message) {
           throw new Error(result.message);
         }
@@ -166,6 +230,7 @@ const AuthPage = () => {
       setRegEmail("");
       setRegPassword("");
       setRegConfirmPassword("");
+      setRegInviteCode("");
     } catch (err) {
       console.error("Registration error:", err);
       setModalState({
@@ -318,6 +383,24 @@ const AuthPage = () => {
                     disabled={isLoading}
                   />
                 </div>
+                {setupInitialized && (
+                  <div>
+                    <Input
+                      id="admin-reg-invite-code"
+                      label="Invite Code"
+                      placeholder="Enter your admin invite code"
+                      value={regInviteCode}
+                      onChange={(e) => setRegInviteCode(e.target.value)}
+                      disabled={isLoading}
+                    />
+                  </div>
+                )}
+                {!setupInitialized && (
+                  <p className="text-xs text-gray-500">
+                    No admins exist yet — you will be registered as the root
+                    admin. No invite code required.
+                  </p>
+                )}
                 <div>
                   <Button
                     label="Register Admin"

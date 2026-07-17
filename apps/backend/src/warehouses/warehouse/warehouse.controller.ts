@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 
@@ -32,7 +33,11 @@ export class WarehouseController {
   @Get('user/:userId')
   async getByUserId(
     @Param('userId') userId: string,
+    @Request() req: RequestWithUser,
   ): Promise<{ warehouses: warehouse[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const warehouses = await this.warehouseService.findByUserId(Number(userId));
     return { warehouses };
   }

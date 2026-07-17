@@ -111,7 +111,7 @@ export default function Waitlist() {
                 Join the Waitlist
               </h1>
               <p className="mt-3 text-slate-600 text-base">
-                Complete details below to reserve your access token.
+                Complete details below to reserve your place. We will contact you regarding rest of the onboarding.
               </p>
             </div>
 

@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
@@ -28,12 +29,16 @@ export class InventoryController {
   @Get(':userId')
   async getInventory(
     @Param('userId') userId: string,
+    @Request() req: RequestWithUser,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('item_group') itemGroup?: string,
     @Query('warehouse_id') warehouseId?: string,
     @Query('unassigned') unassigned?: string,
   ): Promise<{ items: inventory[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const items = await this.inventoryService.findByUserIdWithFilters(
       Number(userId),
       {

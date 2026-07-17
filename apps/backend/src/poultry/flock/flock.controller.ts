@@ -8,6 +8,7 @@ import {
   Param,
   HttpException,
   HttpStatus,
+  UnauthorizedException,
   UseGuards,
   ParseIntPipe,
   Request,
@@ -30,7 +31,10 @@ export class FlockController {
   @Get('user/:userId')
   async getByUserId(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ flocks: poultry_flock[] }> {
+    if (req.user.userId !== userId)
+      throw new UnauthorizedException('Access denied');
     const flocks = await this.flockService.findByUserId(userId);
     return { flocks };
   }
@@ -89,7 +93,8 @@ export class FlockController {
   @Post('reset-service')
   async resetService(
     @Body() resetDto: ResetFlockDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.flockService.resetForUser(resetDto.userId);
+    return this.flockService.resetForUser(req.user.userId!);
   }
 }

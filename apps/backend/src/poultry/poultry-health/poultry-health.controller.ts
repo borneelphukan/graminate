@@ -11,6 +11,7 @@ import {
   NotFoundException,
   UsePipes,
   ValidationPipe,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { PoultryHealthService } from './poultry-health.service';
@@ -33,10 +34,14 @@ export class PoultryHealthController {
   @Get(':userId')
   async getPoultryHealthRecords(
     @Param('userId') userId: string,
+    @Request() req: RequestWithUser,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
     @Query('flockId') flockId?: string,
   ): Promise<{ records: poultry_health[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const records = await this.poultryHealthService.findByUserIdWithFilters(
       Number(userId),
       {

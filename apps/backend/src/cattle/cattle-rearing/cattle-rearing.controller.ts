@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 
@@ -34,7 +35,11 @@ export class CattleRearingController {
   @Get('user/:userId')
   async getByUserId(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ cattleRearings: cattle_rearing[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const cattleRearings = await this.cattleRearingService.findByUserId(userId);
     return { cattleRearings };
   }

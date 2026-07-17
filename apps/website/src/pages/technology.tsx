@@ -54,7 +54,7 @@ export default function Technology() {
                   Graminate Stack
                 </span>
                 <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-[0.95] text-balance mb-6">
-                  The Advanced OS for <span className="text-emerald-600 font-medium">Precision</span> Agriculture in India.
+                  The Advanced OS for <span className="text-emerald-600 font-medium">Precision</span> Agriculture.
                 </h1>
                 <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-light max-w-2xl">
                   Graminate is built upon specialized diagnostic intelligence and resilient logistical infrastructure, consolidating disparate telemetry variables into actionable, high-yield workflows in real-time.
@@ -112,7 +112,7 @@ export default function Technology() {
               },
               {
                 icon: "egg",
-                title: "Poultry Farm Management",
+                title: "Poultry",
                 desc: "Track flock cycles, maintain climate controls, and automate egg production and distribution ledgers in unified views."
               },
               {
@@ -122,12 +122,12 @@ export default function Technology() {
               },
               {
                 icon: "hive",
-                title: "Apiculture Management",
+                title: "Apiculture",
                 desc: "Maintain apiary health logs, monitor extraction seasons, and coordinate hive placement for maximum efficiency."
               },
               {
                 icon: "local_florist",
-                title: "Floriculture Management",
+                title: "Floriculture",
                 desc: "Optimize greenhouse environments, manage germination schedules, and orchestrate delicate shipping timelines."
               },
               {
@@ -144,6 +144,11 @@ export default function Technology() {
                 icon: "storefront",
                 title: "Marketplace",
                 desc: "Directly trade harvests with verify-backed distributors, securing fair pricing via frictionless procurement layers."
+              },
+              {
+                icon: "cloud",
+                title: "Weather Forecast",
+                desc: "The AI studies the weather and climate forecast of your agriculture location and gives you personalized suggestions for your agricultural workflows."
               }
             ].map((feature, idx) => (
               <motion.div

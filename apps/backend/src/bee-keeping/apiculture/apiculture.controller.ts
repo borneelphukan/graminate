@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 
@@ -33,7 +34,11 @@ export class ApicultureController {
   @Get('user/:userId')
   async getByUserId(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ apiaries: ApicultureWithCount[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const apiaries = await this.apicultureService.findByUserId(userId);
     return { apiaries };
   }

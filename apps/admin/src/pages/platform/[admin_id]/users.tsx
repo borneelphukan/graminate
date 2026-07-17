@@ -404,7 +404,7 @@ const AdminUsersPage = () => {
               <section className="flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-dark dark:text-light opacity-80 uppercase tracking-widest text-[11px]">
-                    Waitlist Subscriptions
+                    Waitlist
                   </h2>
                 </div>
                 <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-400 dark:border-gray-800 overflow-hidden p-1">

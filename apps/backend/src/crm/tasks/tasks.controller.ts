@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Query,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -27,9 +28,13 @@ export class TasksController {
   @Get(':userId')
   async getTasks(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
     @Query('project') project?: string,
     @Query('deadlineDate') deadlineDate?: string,
   ): Promise<{ tasks: tasks[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const tasksList = await this.tasksService.getTasksByUser(
       userId,
       project,

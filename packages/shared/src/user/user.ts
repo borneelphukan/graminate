@@ -37,7 +37,8 @@ export const adminSchema = z.object({
   first_name: z.string().min(1),
   last_name: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(8),
+  inviteCode: z.string().min(1).optional(),
   created_at: z.coerce.date().optional().nullable(),
 });
 

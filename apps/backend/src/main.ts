@@ -39,6 +39,12 @@ async function bootstrap() {
 
   app.use(csrfMiddleware(allowedOrigins));
 
+  if (!process.env.ADMIN_INVITE_CODE) {
+    console.warn(
+      'ADMIN_INVITE_CODE is not set — admins can still be invited via root-generated invite codes.',
+    );
+  }
+
   const port = process.env.PORT || 3001;
   await app.listen(port);
 }

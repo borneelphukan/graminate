@@ -18,7 +18,7 @@
   "hero": {
     "badge": "Built for Indian Farms",
     "title": "Track Your Agricultural Growth",
-    "subtitle": "The first all-in-one ERP designed for the modern farmer. Combining specialized AI models with robust inventory, CRM, and livestock management tools.",
+    "subtitle": "The first all-in-one farm management platform designed for the modern farmer. Combining specialized AI models with robust inventory, CRM, and agriculture management tools.",
     "cta": "Start Your Free Trial",
     "explore": "Explore Features"
   },
@@ -96,11 +96,11 @@
       "badge": "Information Hub",
       "title": "Frequently Asked",
       "q1": "Is Graminate suitable for individual smallholders?",
-      "a1": "Absolutely. While enterprise-scalable, Graminate has lightweight entry modules designed specifically for managing independent farms efficiently.",
-      "q2": "Does the AI assistant require internet connection?",
-      "a2": "Certain forecasting and chat functionalities require a connection, however, localized tracking tools will synchronize automatically once you re-connect.",
+      "a1": "Absolutely. Graminate is built for small to medium sized agricultural enterprises ",
+      "q2": "How to access the AI assistant or the agentic features?",
+      "a2": "As we actively use external computing to power our AI assistant, the AI assistant or any other agentic features are only available under the PRO plan.",
       "q3": "Can I integrate with external IoT sensors?",
-      "a3": "Yes, our API supports major agricultural sensors for automated environmental condition logging directly into your ERP dashboard."
+      "a3": "We are currently in the process of developing the necessary infrastructure which you can use to integrate your IoT sensors that will help automate your agriculture better."
     },
     "cta": {
       "title": "Ready to scale your vision?",
@@ -118,8 +118,7 @@
     "tagline_short": "Helping farmers grow more with intelligent software.",
     "product_heading": "Product",
     "legal_heading": "Legal",
-    "built_in_india": "Built in India",
-    "company_name": "Graminate Technologies Private Limited",
+    "company_name": "Graminate Technologies LLC.",
     "rights": "All rights reserved.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
@@ -132,9 +131,7 @@
     },
     "legal": {
       "terms": "Terms and Conditions",
-      "privacy": "Privacy Policy",
-      "cookies": "Cookie Policy",
-      "posh": "POSH Policy"
+      "privacy": "Privacy Policy"
     },
     "links": {
       "erp": "Farm Management ERP",

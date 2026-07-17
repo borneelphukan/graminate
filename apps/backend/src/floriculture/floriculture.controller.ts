@@ -50,7 +50,11 @@ export class FloricultureController {
   @Get('user/:userId')
   findByUser(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ floricultures: floriculture[] }> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     return this.floricultureService.findByUser(userId);
   }
 
@@ -62,7 +66,11 @@ export class FloricultureController {
   @Get('watering/:userId')
   getWateringEvents(
     @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
   ): Promise<any[]> {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     return this.floricultureService.getWateringEvents(userId);
   }
 

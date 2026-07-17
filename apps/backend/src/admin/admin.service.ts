@@ -15,12 +15,14 @@ export class AdminService {
     last_name: string,
     email: string,
     password: string,
+    inviteCode: string,
   ) {
     return this.adminRepository.register(
       first_name,
       last_name,
       email,
       password,
+      inviteCode,
     );
   }
 
@@ -68,5 +70,17 @@ export class AdminService {
 
   async getUserBillingHistory(userId: string) {
     return this.adminRepository.getUserBillingHistory(userId);
+  }
+
+  async hasAnyAdmin() {
+    return this.adminRepository.hasAnyAdmin();
+  }
+
+  async createInviteCode() {
+    return this.adminRepository.createInviteCode();
+  }
+
+  async getAllAdmins() {
+    return this.adminRepository.getAllAdmins();
   }
 }

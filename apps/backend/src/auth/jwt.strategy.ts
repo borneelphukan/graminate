@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 export interface JwtPayload {
   isAdmin?: boolean;
   adminId?: string;
+  isRoot?: boolean;
   userId?: number;
 }
 
@@ -26,10 +27,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   validate(payload: JwtPayload): {
     isAdmin?: boolean;
     adminId?: string;
+    isRoot?: boolean;
     userId?: number;
   } {
     if (payload.isAdmin) {
-      return { isAdmin: true, adminId: payload.adminId };
+      return {
+        isAdmin: true,
+        adminId: payload.adminId,
+        isRoot: payload.isRoot,
+      };
     }
     if (payload.userId) {
       return { userId: payload.userId };

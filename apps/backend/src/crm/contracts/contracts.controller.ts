@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   ParseIntPipe,
   UseGuards,
+  UnauthorizedException,
   Request,
 } from '@nestjs/common';
 import { ContractsService } from './contracts.service';
@@ -30,7 +31,11 @@ export class ContractsController {
   async getContractsByUserId(
     @Param('userId', ParseIntPipe) userId: number,
     @Res() res: Response,
+    @Request() req: RequestWithUser,
   ) {
+    if (String(req.user.userId) !== String(userId)) {
+      throw new UnauthorizedException('Access denied');
+    }
     const result = await this.contractsService.getContracts(userId);
     return res.status(result.status).json(result.data);
   }

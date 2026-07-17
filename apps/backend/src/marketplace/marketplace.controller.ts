@@ -9,6 +9,7 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  UnauthorizedException,
   UseGuards,
   ParseIntPipe,
   ValidationPipe,
@@ -44,7 +45,12 @@ export class MarketplaceController {
 
   @UseGuards(JwtAuthGuard)
   @Get('products/user/:userId')
-  async getUserProducts(@Param('userId', ParseIntPipe) userId: number) {
+  async getUserProducts(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const products = await this.marketplaceService.findByUserId(userId);
     return { products };
   }
@@ -125,27 +131,47 @@ export class MarketplaceController {
 
   @UseGuards(JwtAuthGuard)
   @Get('favorites/user/:userId')
-  async getFavorites(@Param('userId', ParseIntPipe) userId: number) {
+  async getFavorites(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const products = await this.marketplaceService.getFavorites(userId);
     return { products };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('wishlist/user/:userId')
-  async getWishlist(@Param('userId', ParseIntPipe) userId: number) {
+  async getWishlist(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const products = await this.marketplaceService.getWishlist(userId);
     return { products };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('interactions/user/:userId')
-  async getUserInteractions(@Param('userId', ParseIntPipe) userId: number) {
+  async getUserInteractions(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     return this.marketplaceService.getUserInteractions(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('cart/user/:userId')
-  async getCart(@Param('userId', ParseIntPipe) userId: number) {
+  async getCart(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const items = await this.marketplaceService.getCart(userId);
     return { items };
   }
@@ -183,7 +209,12 @@ export class MarketplaceController {
 
   @UseGuards(JwtAuthGuard)
   @Get('bank/:userId')
-  async getBankDetails(@Param('userId', ParseIntPipe) userId: number) {
+  async getBankDetails(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const details = await this.marketplaceService.getBankDetails(userId);
     return { data: details };
   }
@@ -234,7 +265,12 @@ export class MarketplaceController {
 
   @UseGuards(JwtAuthGuard)
   @Get('orders/user/:userId')
-  async getOrdersByUser(@Param('userId', ParseIntPipe) userId: number) {
+  async getOrdersByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    if (String(req.user.userId) !== String(userId))
+      throw new UnauthorizedException('Access denied');
     const orders = await this.marketplaceService.getOrdersByUser(userId);
     return { orders };
   }

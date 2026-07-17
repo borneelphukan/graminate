@@ -30,6 +30,12 @@ export class AdminController {
     return this.adminService.getAdminProfile(req.user.adminId);
   }
 
+  @Get('setup-status')
+  async setupStatus() {
+    const initialized = await this.adminService.hasAnyAdmin();
+    return { status: 200, data: { initialized } };
+  }
+
   @UseZodSchema(adminSchema)
   @Post('register')
   async register(@Body() dto: CreateAdminDto) {
@@ -38,7 +44,24 @@ export class AdminController {
       dto.last_name,
       dto.email,
       dto.password,
+      dto.inviteCode,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('invite-code')
+  async createInviteCode(@Request() req: RequestWithUser) {
+    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+    if (!req.user?.isRoot) throw new UnauthorizedException('Root admins only');
+    return this.adminService.createInviteCode();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('admins')
+  async listAdmins(@Request() req: RequestWithUser) {
+    if (!req.user?.isAdmin) throw new UnauthorizedException('Admins only');
+    if (!req.user?.isRoot) throw new UnauthorizedException('Root admins only');
+    return this.adminService.getAllAdmins();
   }
 
   @Throttle({ default: { limit: 5, ttl: 60000 } })

@@ -13,6 +13,10 @@ const PlatformLayout = ({ children }: Props) => {
   const router = useRouter();
   const { admin_id } = router.query;
 
+  const isRoot =
+    typeof window !== "undefined" &&
+    localStorage.getItem("admin_is_root") === "true";
+
   const navItems = [
     {
       label: "Dashboard",
@@ -34,6 +38,15 @@ const PlatformLayout = ({ children }: Props) => {
       icon: "storefront",
       path: `/platform/${admin_id}/marketplace`,
     },
+    ...(isRoot
+      ? [
+          {
+            label: "Admins",
+            icon: "admin_panel_settings",
+            path: `/platform/${admin_id}/admins`,
+          },
+        ]
+      : []),
   ];
 
   useEffect(() => {
