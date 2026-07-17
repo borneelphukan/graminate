@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Text, Button, Appbar, ActivityIndicator, Badge, TextInput, SegmentedButtons, Surface } from "@/components/ui";
+import { Text, Button, Appbar, ActivityIndicator, TextInput, SegmentedButtons, Surface } from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import { BottomDrawer } from "@/components/form/BottomDrawer";
 import * as ImagePicker from "expo-image-picker";
@@ -18,7 +18,7 @@ import PlatformLayout from "@/components/layout/PlatformLayout";
 import axiosInstance from "@/lib/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { MARKETPLACE_CATEGORIES, UNITS } from "@/constants/options";
-import ProductCard, { MarketplaceProduct } from "@/components/marketplace/ProductCard";
+import { ProductCard, MarketplaceProduct } from "@/components/marketplace/ProductCard";
 import ProductDetailView from "@/components/marketplace/ProductDetailView";
 import ListProductModal from "@/components/marketplace/ListProductModal";
 
@@ -30,9 +30,6 @@ const orderStatusLabels: Record<string, string> = {
 };
 const orderStatusIcons: Record<string, string> = {
   PENDING: "cart", PAID: "credit-card", SHIPPED: "truck-delivery", DELIVERED: "package-variant-closed", RELEASED: "check-circle",
-};
-const orderStatusDates: Record<string, string> = {
-  PENDING: "created_at", PAID: "paid_at", SHIPPED: "shipped_at", DELIVERED: "delivered_at", RELEASED: "released_at",
 };
 
 const Marketplace = () => {
@@ -377,7 +374,7 @@ const Marketplace = () => {
     });
   }, [products, searchQuery]);
 
-  const renderProductCard = useCallback((product: MarketplaceProduct, mode: "browse" | "manage" | "saved") => (
+  const renderProductCard = (product: MarketplaceProduct, mode: "browse" | "manage" | "saved") => (
     <ProductCard
       key={product.product_id}
       product={product}
@@ -395,7 +392,7 @@ const Marketplace = () => {
       onUnpublish={handleUnpublish}
       onDelete={handleDelete}
     />
-  ), [favoriteIds, wishlistIds, isProducer]);
+  );
 
   const TabBar = () => (
     <View className="flex-row justify-center border-b border-gray-400 dark:border-gray-800">
@@ -484,7 +481,7 @@ const Marketplace = () => {
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center">
             <Icon type="cart-plus" size={48} className="text-gray-400" />
-            <Text className="text-gray-500 mt-2">You haven't listed any products yet.</Text>
+            <Text className="text-gray-500 mt-2">You haven&apos;t listed any products yet.</Text>
             <Button mode="contained" onPress={() => setIsModalOpen(true)} className="mt-4">
               List Product
             </Button>
@@ -755,10 +752,6 @@ const Marketplace = () => {
       default: return renderBrowse();
     }
   };
-
-  const availableYears = useMemo(() => {
-    return Array.from(new Set(orders.map((o) => o.created_at ? new Date(o.created_at).getFullYear().toString() : null).filter(Boolean))).sort((a, b) => Number(b) - Number(a)) as string[];
-  }, [orders]);
 
   if (viewingProduct) {
     return (

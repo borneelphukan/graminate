@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
-import { Text, Button, Badge } from "@/components/ui";
+import { Text, Button } from "@/components/ui";
 
 export type MarketplaceProduct = {
   product_id: number;

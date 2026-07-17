@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import {
   Alert,
-  Dimensions,
   Image,
   ScrollView,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Text, Button, Appbar, IconButton, ActivityIndicator } from "@/components/ui";
+import { Text, Button, Appbar, IconButton } from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
 import axiosInstance from "@/lib/axiosInstance";
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 type ProductDetailViewProps = {
   onBack: () => void;

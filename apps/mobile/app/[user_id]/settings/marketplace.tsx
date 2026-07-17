@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Alert, SafeAreaView, ScrollView, View, Platform } from "react-native";
+import { Alert, SafeAreaView, ScrollView, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text, Button, TextInput, Appbar, ActivityIndicator, Surface } from "@/components/ui";
 import { Icon } from "@/components/ui/Icon";
