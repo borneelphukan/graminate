@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Warehouses"
+  type: http
+  seq: 145
+}
+
+post {
+  url: {{baseUrl}}/api/warehouse/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

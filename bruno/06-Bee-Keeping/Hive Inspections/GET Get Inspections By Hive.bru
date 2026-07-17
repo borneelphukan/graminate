@@ -1,0 +1,15 @@
+meta {
+  name: "Get Inspections By Hive"
+  type: http
+  seq: 69
+}
+
+get {
+  url: {{baseUrl}}/api/hive-inspections/hive/:hiveId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

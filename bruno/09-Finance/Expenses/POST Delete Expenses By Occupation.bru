@@ -1,0 +1,21 @@
+meta {
+  name: "Delete Expenses By Occupation"
+  type: http
+  seq: 119
+}
+
+post {
+  url: {{baseUrl}}/api/expenses/delete-by-occupation
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "occupation": "poultry"
+  }
+}

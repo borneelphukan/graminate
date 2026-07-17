@@ -1,0 +1,23 @@
+meta {
+  name: "Add Hive"
+  type: http
+  seq: 56
+}
+
+post {
+  url: {{baseUrl}}/api/bee-hives/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Hive 1",
+    "apiaryId": 1,
+    "userId": 1
+  }
+}

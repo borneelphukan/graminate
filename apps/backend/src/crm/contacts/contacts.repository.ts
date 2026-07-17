@@ -100,7 +100,7 @@ export class ContactsRepository {
     }
   }
 
-  async deleteContact(id: string): Promise<{
+  async deleteContact(id: string, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
@@ -117,6 +117,10 @@ export class ContactsRepository {
 
       if (!existing) {
         return { status: 404, data: { error: 'Contact not found' } };
+      }
+
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
       }
 
       const deletedContact = await this.prisma.contacts.delete({
@@ -136,7 +140,7 @@ export class ContactsRepository {
     }
   }
 
-  async updateContact(body: Partial<contacts> & { id?: string }): Promise<{
+  async updateContact(body: Partial<contacts> & { id?: string }, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
@@ -169,6 +173,10 @@ export class ContactsRepository {
 
       if (!existing) {
         return { status: 404, data: { error: 'Contact not found' } };
+      }
+
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
       }
 
       const updatedContact = await this.prisma.contacts.update({
@@ -205,7 +213,7 @@ export class ContactsRepository {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.contacts.deleteMany({});
+      await this.prisma.contacts.deleteMany({ where: { user_id: userId } });
       return { message: `Contacts table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(

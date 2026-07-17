@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Health Record"
+  type: http
+  seq: 111
+}
+
+delete {
+  url: {{baseUrl}}/api/poultry-health/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

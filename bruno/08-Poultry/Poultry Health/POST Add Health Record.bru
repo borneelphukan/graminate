@@ -1,0 +1,24 @@
+meta {
+  name: "Add Health Record"
+  type: http
+  seq: 107
+}
+
+post {
+  url: {{baseUrl}}/api/poultry-health/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "flockId": 1,
+    "issue": "Mild cold",
+    "treatment": "Antibiotics",
+    "date": "2024-01-01"
+  }
+}

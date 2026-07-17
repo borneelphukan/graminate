@@ -130,7 +130,7 @@ export class PoultryFeedsService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.poultry_feeds.deleteMany({});
+      await this.prisma.poultry_feeds.deleteMany({ where: { user_id: userId } });
       return { message: `Poultry Feeds table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(

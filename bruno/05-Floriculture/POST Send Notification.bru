@@ -1,0 +1,23 @@
+meta {
+  name: "Send Notification"
+  type: http
+  seq: 48
+}
+
+post {
+  url: {{baseUrl}}/api/floriculture/notifications/user/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Reminder",
+    "message": "Water your plants",
+    "type": "reminder"
+  }
+}

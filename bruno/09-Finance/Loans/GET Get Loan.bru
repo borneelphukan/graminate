@@ -1,0 +1,15 @@
+meta {
+  name: "Get Loan"
+  type: http
+  seq: 129
+}
+
+get {
+  url: {{baseUrl}}/api/loans/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

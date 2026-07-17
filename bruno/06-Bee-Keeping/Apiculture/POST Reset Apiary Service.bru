@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Apiary Service"
+  type: http
+  seq: 54
+}
+
+post {
+  url: {{baseUrl}}/api/apiculture/reset-service
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

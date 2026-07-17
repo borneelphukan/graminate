@@ -1,0 +1,22 @@
+meta {
+  name: "Toggle Favorite"
+  type: http
+  seq: 190
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/favorites/toggle
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "productId": 1
+  }
+}

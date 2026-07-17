@@ -1,0 +1,23 @@
+meta {
+  name: "Verify Payment"
+  type: http
+  seq: 36
+}
+
+post {
+  url: {{baseUrl}}/api/payment/verify
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "razorpay_order_id": "order_xxx",
+    "razorpay_payment_id": "pay_xxx",
+    "razorpay_signature": "signature_xxx"
+  }
+}

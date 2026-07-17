@@ -1,0 +1,24 @@
+meta {
+  name: "Save Bank Details"
+  type: http
+  seq: 200
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/bank/save
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "accountNumber": "1234567890",
+    "ifscCode": "SBIN0001234",
+    "bankName": "SBI"
+  }
+}

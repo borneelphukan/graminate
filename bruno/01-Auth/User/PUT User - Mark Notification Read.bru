@@ -1,0 +1,21 @@
+meta {
+  name: "User - Mark Notification Read"
+  type: http
+  seq: 24
+}
+
+put {
+  url: {{baseUrl}}/api/user/:id/notifications/read
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "notificationId": "1"
+  }
+}

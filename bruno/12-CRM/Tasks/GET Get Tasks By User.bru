@@ -1,0 +1,15 @@
+meta {
+  name: "Get Tasks By User"
+  type: http
+  seq: 169
+}
+
+get {
+  url: {{baseUrl}}/api/tasks/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

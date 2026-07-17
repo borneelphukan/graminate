@@ -1,0 +1,23 @@
+meta {
+  name: "Add Flower"
+  type: http
+  seq: 38
+}
+
+post {
+  url: {{baseUrl}}/api/floriculture/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Rose",
+    "species": "Rosa",
+    "userId": 1
+  }
+}

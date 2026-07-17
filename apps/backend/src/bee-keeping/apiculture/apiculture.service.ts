@@ -159,9 +159,9 @@ export class ApicultureService {
     }
   }
 
-  async resetTable(): Promise<{ message: string }> {
+  async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.apiculture.deleteMany({});
+      await this.prisma.apiculture.deleteMany({ where: { user_id: userId } });
       return { message: 'Apiculture table has been completely reset.' };
     } catch (error) {
       throw new InternalServerErrorException(

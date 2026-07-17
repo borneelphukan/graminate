@@ -1,0 +1,15 @@
+meta {
+  name: "User - Available Sub Types"
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{baseUrl}}/api/user/:id/available-sub-types
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

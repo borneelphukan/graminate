@@ -1,0 +1,21 @@
+meta {
+  name: "Update Egg Record"
+  type: http
+  seq: 104
+}
+
+put {
+  url: {{baseUrl}}/api/poultry-eggs/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "count": 90
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Flock"
+  type: http
+  seq: 91
+}
+
+get {
+  url: {{baseUrl}}/api/flock/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

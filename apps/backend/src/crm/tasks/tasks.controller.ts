@@ -9,11 +9,15 @@ import {
   ParseIntPipe,
   UseGuards,
   Query,
+  Request,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, ResetTaskDto, UpdateTaskDto } from './tasks.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { tasks, kanban_columns } from '@prisma/client';
+import { kanbanColumnsSchema, taskSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('tasks')
 export class TasksController {
@@ -35,35 +39,42 @@ export class TasksController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(taskSchema)
   @Post('add')
-  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<tasks> {
+  async createTask(@Body() createTaskDto: CreateTaskDto, @Request() req: RequestWithUser): Promise<tasks> {
+    createTaskDto.user_id = req.user.userId!;
     const task = await this.tasksService.createTask(createTaskDto);
     return task;
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(taskSchema, { partial: true })
   @Put('update/:id')
   async updateTask(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
+    @Request() req: RequestWithUser,
   ): Promise<tasks> {
-    const task = await this.tasksService.updateTask(id, updateTaskDto);
+    const task = await this.tasksService.updateTask(id, updateTaskDto, req.user.userId!);
     return task;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
-  async deleteTask(@Param('id', ParseIntPipe) id: number): Promise<tasks> {
-    const task = await this.tasksService.deleteTask(id);
+  async deleteTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
+  ): Promise<tasks> {
+    const task = await this.tasksService.deleteTask(id, req.user.userId!);
     return task;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetInventory(
-    @Body() resetDto: ResetTaskDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.tasksService.resetTable(resetDto.userId);
+    return this.tasksService.resetTable(req.user.userId!);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -77,18 +88,19 @@ export class TasksController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(kanbanColumnsSchema)
   @Post('column/add')
   async addKanbanColumn(
+    @Request() req: RequestWithUser,
     @Body()
     body: {
-      userId: number;
       project: string;
       title: string;
       position: number;
     },
   ): Promise<kanban_columns> {
     const column = await this.tasksService.addKanbanColumn(
-      body.userId,
+      req.user.userId!,
       body.project,
       body.title,
       body.position,
@@ -97,15 +109,18 @@ export class TasksController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(kanbanColumnsSchema, { partial: true })
   @Put('column/update/:id')
   async updateKanbanColumn(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: { title?: string; position?: number },
+    @Request() req: RequestWithUser,
   ): Promise<kanban_columns> {
     const column = await this.tasksService.updateKanbanColumn(
       id,
       body.title,
       body.position,
+      req.user.userId!,
     );
     return column;
   }
@@ -114,8 +129,9 @@ export class TasksController {
   @Delete('column/delete/:id')
   async deleteKanbanColumn(
     @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
   ): Promise<kanban_columns> {
-    const column = await this.tasksService.deleteKanbanColumn(id);
+    const column = await this.tasksService.deleteKanbanColumn(id, req.user.userId!);
     return column;
   }
 }

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Hives By Apiary"
+  type: http
+  seq: 57
+}
+
+get {
+  url: {{baseUrl}}/api/bee-hives/apiary/:apiaryId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,25 @@
+meta {
+  name: "Add Product"
+  type: http
+  seq: 185
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/products/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Organic Eggs",
+    "description": "Farm fresh eggs",
+    "price": 120,
+    "category": "poultry",
+    "userId": 1
+  }
+}

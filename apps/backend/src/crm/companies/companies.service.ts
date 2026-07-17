@@ -24,20 +24,21 @@ export class CompaniesService {
     return this.companiesRepository.addCompany(body);
   }
 
-  async deleteCompany(id?: string): Promise<{
+  async deleteCompany(id?: string, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; company?: companies };
   }> {
-    return this.companiesRepository.deleteCompany(id);
+    return this.companiesRepository.deleteCompany(id, userId);
   }
 
   async updateCompany(
     body: Partial<companies> & { company_id: number },
+    userId?: number,
   ): Promise<{
     status: number;
     data: { message?: string; error?: string; company?: companies };
   }> {
-    return this.companiesRepository.updateCompany(body);
+    return this.companiesRepository.updateCompany(body, userId);
   }
 
   async resetTable(userId: number): Promise<{ message: string }> {

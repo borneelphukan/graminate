@@ -1,0 +1,15 @@
+meta {
+  name: "Get Payments By Labour"
+  type: http
+  seq: 138
+}
+
+get {
+  url: {{baseUrl}}/api/labour_payment/:labourId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

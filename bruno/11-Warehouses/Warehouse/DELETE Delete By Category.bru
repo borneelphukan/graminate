@@ -1,0 +1,15 @@
+meta {
+  name: "Delete By Category"
+  type: http
+  seq: 146
+}
+
+delete {
+  url: {{baseUrl}}/api/warehouse/delete-by-category/:category
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

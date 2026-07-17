@@ -11,11 +11,15 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Request,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { CreateReceiptDto, UpdateReceiptDto } from './receipts.dto';
 import { ReceiptsService } from './receipts.service';
+import { invoicesSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('receipts')
 export class ReceiptsController {
@@ -32,6 +36,7 @@ export class ReceiptsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(invoicesSchema)
   @Post('add')
   @UsePipes(
     new ValidationPipe({
@@ -42,8 +47,10 @@ export class ReceiptsController {
   )
   async addReceipt(
     @Body() createReceiptDto: CreateReceiptDto,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
+    createReceiptDto.user_id = req.user.userId!;
     const result = await this.receiptsService.addReceipt(createReceiptDto);
     return res.status(result.status).json(result.data);
   }
@@ -52,9 +59,10 @@ export class ReceiptsController {
   @Delete('delete/:id')
   async deleteReceipt(
     @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.receiptsService.deleteReceipt(id);
+    const result = await this.receiptsService.deleteReceipt(id, req.user.userId!);
     return res.status(result.status).json(result.data);
   }
 
@@ -69,15 +77,16 @@ export class ReceiptsController {
   )
   async updateReceipt(
     @Body() updateReceiptDto: UpdateReceiptDto,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.receiptsService.updateReceipt(updateReceiptDto);
+    const result = await this.receiptsService.updateReceipt(updateReceiptDto, req.user.userId!);
     return res.status(result.status).json(result.data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(@Body('userId', ParseIntPipe) userId: number) {
-    return this.receiptsService.resetTable(userId);
+  async reset(@Request() req: RequestWithUser) {
+    return this.receiptsService.resetTable(req.user.userId!);
   }
 }

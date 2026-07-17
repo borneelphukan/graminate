@@ -504,7 +504,7 @@ const ProjectTaskBoard = ({ userId, projectTitle }: Props) => {
       ))}
       {filteredTasks.length === 0 && (
         <View className="flex-1 justify-center items-center p-10">
-          <Text className="text-gray-400 dark:text-gray-600">
+          <Text className="text-dark dark:text-light">
             No tasks found matching your filters.
           </Text>
         </View>

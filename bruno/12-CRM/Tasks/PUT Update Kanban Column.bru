@@ -1,0 +1,22 @@
+meta {
+  name: "Update Kanban Column"
+  type: http
+  seq: 175
+}
+
+put {
+  url: {{baseUrl}}/api/tasks/column/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Done",
+    "position": 2
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: "Update Apiary"
+  type: http
+  seq: 52
+}
+
+put {
+  url: {{baseUrl}}/api/apiculture/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Updated Apiary"
+  }
+}

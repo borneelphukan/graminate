@@ -1,0 +1,23 @@
+meta {
+  name: "Verify Checkout Payment"
+  type: http
+  seq: 203
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/checkout/verify-payment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "razorpay_order_id": "order_xxx",
+    "razorpay_payment_id": "pay_xxx",
+    "razorpay_signature": "sig_xxx"
+  }
+}

@@ -1,0 +1,23 @@
+meta {
+  name: "Add Company"
+  type: http
+  seq: 151
+}
+
+post {
+  url: {{baseUrl}}/api/companies/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Acme Corp",
+    "industry": "Agriculture",
+    "userId": 1
+  }
+}

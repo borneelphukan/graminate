@@ -1,0 +1,15 @@
+meta {
+  name: "Get Receipt"
+  type: http
+  seq: 178
+}
+
+get {
+  url: {{baseUrl}}/api/receipts/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

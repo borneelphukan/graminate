@@ -1,0 +1,23 @@
+meta {
+  name: "Add Kanban Column"
+  type: http
+  seq: 174
+}
+
+post {
+  url: {{baseUrl}}/api/tasks/column/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "project": "operations",
+    "title": "In Progress",
+    "position": 1
+  }
+}

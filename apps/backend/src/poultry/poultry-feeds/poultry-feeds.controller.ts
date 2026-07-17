@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   NotFoundException,
+  Request,
 } from '@nestjs/common';
 import { PoultryFeedsService } from './poultry-feeds.service';
 import {
@@ -17,7 +18,10 @@ import {
   ResetPoultryFeedsDto,
 } from './poultry-feeds.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { poultry_feeds } from '@prisma/client';
+import { poultryFeedsSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('poultry-feeds')
 export class PoultryFeedsController {
@@ -55,15 +59,19 @@ export class PoultryFeedsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryFeedsSchema)
   @Post('add')
   async addPoultryFeedRecord(
     @Body() createDto: CreatePoultryFeedDto,
+    @Request() req: RequestWithUser,
   ): Promise<poultry_feeds> {
+    createDto.user_id = req.user.userId!;
     const newRecord = await this.poultryFeedsService.create(createDto);
     return newRecord;
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryFeedsSchema, { partial: true })
   @Put('update/:id')
   async updatePoultryFeedRecord(
     @Param('id') id: string,
@@ -94,8 +102,8 @@ export class PoultryFeedsController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetUserPoultryFeedRecords(
-    @Body() resetDto: ResetPoultryFeedsDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.poultryFeedsService.resetTable(resetDto.userId);
+    return this.poultryFeedsService.resetTable(req.user.userId!);
   }
 }

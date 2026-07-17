@@ -1,0 +1,23 @@
+meta {
+  name: "Add Honey Production"
+  type: http
+  seq: 62
+}
+
+post {
+  url: {{baseUrl}}/api/honey-production/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "hiveId": 1,
+    "quantity": 5.5,
+    "date": "2024-01-01"
+  }
+}

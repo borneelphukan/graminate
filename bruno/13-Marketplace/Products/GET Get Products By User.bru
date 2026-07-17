@@ -1,0 +1,15 @@
+meta {
+  name: "Get Products By User"
+  type: http
+  seq: 183
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/products/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

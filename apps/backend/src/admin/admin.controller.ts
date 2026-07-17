@@ -14,6 +14,9 @@ import { AdminService } from './admin.service';
 import { CreateAdminDto } from './admin.dto';
 import { RequestWithUser } from '@/common/types/request.type';
 import type { users } from '@prisma/client';
+import { Throttle } from '@nestjs/throttler';
+import { adminSchema, adminUpdateUserSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('admin')
 export class AdminController {
@@ -27,6 +30,7 @@ export class AdminController {
     return this.adminService.getAdminProfile(req.user.adminId);
   }
 
+  @UseZodSchema(adminSchema)
   @Post('register')
   async register(@Body() dto: CreateAdminDto) {
     return this.adminService.register(
@@ -37,6 +41,7 @@ export class AdminController {
     );
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('login')
   async login(
     @Body('email') email: string,
@@ -90,6 +95,7 @@ export class AdminController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(adminUpdateUserSchema, { partial: true })
   @Post('users/:id')
   async updateUser(
     @Param('id') userId: string,

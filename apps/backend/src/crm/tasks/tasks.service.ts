@@ -19,12 +19,12 @@ export class TasksService {
     return this.tasksRepository.getTasksByUser(userId, project, deadlineDate);
   }
 
-  async updateTask(taskId: number, dto: UpdateTaskDto): Promise<tasks> {
-    return this.tasksRepository.updateTask(taskId, dto);
+  async updateTask(taskId: number, dto: UpdateTaskDto, userId?: number): Promise<tasks> {
+    return this.tasksRepository.updateTask(taskId, dto, userId);
   }
 
-  async deleteTask(taskId: number): Promise<tasks> {
-    return this.tasksRepository.deleteTask(taskId);
+  async deleteTask(taskId: number, userId?: number): Promise<tasks> {
+    return this.tasksRepository.deleteTask(taskId, userId);
   }
 
   async resetTable(userId: number): Promise<{ message: string }> {
@@ -56,11 +56,12 @@ export class TasksService {
     columnId: number,
     title?: string,
     position?: number,
+    userId?: number,
   ): Promise<kanban_columns> {
-    return this.tasksRepository.updateKanbanColumn(columnId, title, position);
+    return this.tasksRepository.updateKanbanColumn(columnId, title, position, userId);
   }
 
-  async deleteKanbanColumn(columnId: number): Promise<kanban_columns> {
-    return this.tasksRepository.deleteKanbanColumn(columnId);
+  async deleteKanbanColumn(columnId: number, userId?: number): Promise<kanban_columns> {
+    return this.tasksRepository.deleteKanbanColumn(columnId, userId);
   }
 }

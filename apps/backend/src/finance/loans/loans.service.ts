@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateLoanDto, UpdateLoanDto } from './loans.dto';
 import { Prisma, loans } from '@prisma/client';
@@ -39,7 +39,17 @@ export class LoansService {
     return loan;
   }
 
-  async update(loanId: number, updateLoanDto: UpdateLoanDto): Promise<loans> {
+  async update(loanId: number, userId: number, updateLoanDto: UpdateLoanDto): Promise<loans> {
+    const existing = await this.prisma.loans.findUnique({
+      where: { loan_id: loanId },
+    });
+    if (!existing) {
+      throw new NotFoundException(`Loan with ID ${loanId} not found`);
+    }
+    if (existing.user_id !== userId) {
+      throw new ForbiddenException('You do not have access to this loan');
+    }
+
     const data: Prisma.loansUpdateInput = { ...updateLoanDto };
     if (updateLoanDto.start_date)
       data.start_date = new Date(updateLoanDto.start_date);
@@ -62,7 +72,17 @@ export class LoansService {
     }
   }
 
-  async remove(loanId: number): Promise<loans> {
+  async remove(loanId: number, userId: number): Promise<loans> {
+    const existing = await this.prisma.loans.findUnique({
+      where: { loan_id: loanId },
+    });
+    if (!existing) {
+      throw new NotFoundException(`Loan with ID ${loanId} not found`);
+    }
+    if (existing.user_id !== userId) {
+      throw new ForbiddenException('You do not have access to this loan');
+    }
+
     try {
       return await this.prisma.loans.delete({
         where: { loan_id: loanId },

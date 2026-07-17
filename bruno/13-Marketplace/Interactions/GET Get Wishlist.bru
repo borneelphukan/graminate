@@ -1,0 +1,15 @@
+meta {
+  name: "Get Wishlist"
+  type: http
+  seq: 193
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/wishlist/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

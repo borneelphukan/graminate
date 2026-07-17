@@ -1,0 +1,21 @@
+meta {
+  name: "User - Schedule Downgrade"
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{baseUrl}}/api/user/:id/schedule-downgrade
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "plan": "free"
+  }
+}

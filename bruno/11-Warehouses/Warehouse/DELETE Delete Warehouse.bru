@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Warehouse"
+  type: http
+  seq: 144
+}
+
+delete {
+  url: {{baseUrl}}/api/warehouse/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

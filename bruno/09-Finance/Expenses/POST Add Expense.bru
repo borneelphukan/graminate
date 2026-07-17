@@ -1,0 +1,25 @@
+meta {
+  name: "Add Expense"
+  type: http
+  seq: 113
+}
+
+post {
+  url: {{baseUrl}}/api/expenses/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "amount": 500,
+    "category": "feed",
+    "description": "Chicken feed",
+    "date": "2024-01-01"
+  }
+}

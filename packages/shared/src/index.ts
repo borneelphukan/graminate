@@ -6,3 +6,8 @@ export * from './finance/finance';
 export * from './floriculture/floriculture';
 export * from './poultry/poultry';
 export * from './general';
+export * from './payment/payment';
+export * from './llm/llm';
+export * from './waitlist/waitlist';
+export * from './password/password';
+export * from './email-verification/email-verification';

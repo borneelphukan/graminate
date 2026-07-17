@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Labour"
+  type: http
+  seq: 136
+}
+
+post {
+  url: {{baseUrl}}/api/labour/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

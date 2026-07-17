@@ -17,6 +17,8 @@ import { AuthService } from '../auth/auth.service';
 import { RequestWithUser } from '@/common/types/request.type';
 import { users } from '@prisma/client';
 import { usersSchema } from '@graminate/shared';
+import { Throttle } from '@nestjs/throttler';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('user')
 export class UserController {
@@ -25,26 +27,10 @@ export class UserController {
     private readonly authService: AuthService,
   ) {}
 
+  @UseZodSchema(usersSchema, { partial: true })
   @Post('register')
   async register(@Body() body: Partial<users>): Promise<any> {
-    try {
-      const parsed = usersSchema.partial().parse(body);
-      return await this.userService.registerUser(parsed as any);
-    } catch (err) {
-      console.error('Registration error in controller:', err);
-      if (err instanceof Error && err.name === 'ZodError') {
-        return {
-          status: 400,
-          data: { error: 'Validation failed', details: (err as any).errors },
-        };
-      }
-      return {
-        status: 500,
-        data: {
-          error: err instanceof Error ? err.message : 'Internal Server Error',
-        },
-      };
-    }
+    return await this.userService.registerUser(body as any);
   }
 
   @Post('check-exists')
@@ -54,6 +40,7 @@ export class UserController {
     return this.userService.checkExists(body.email, body.phone_number);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('login')
   async login(@Body() body: { email: string; password: string }): Promise<any> {
     return this.authService.login(body.email, body.password);

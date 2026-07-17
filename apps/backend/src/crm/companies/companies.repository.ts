@@ -139,7 +139,7 @@ export class CompaniesRepository {
     }
   }
 
-  async deleteCompany(id?: string): Promise<{
+  async deleteCompany(id?: string, userId?: number): Promise<{
     status: number;
     data: {
       message?: string;
@@ -164,6 +164,10 @@ export class CompaniesRepository {
         return { status: 404, data: { error: 'Company not found' } };
       }
 
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
+      }
+
       await this.prisma.companies.delete({ where: { company_id: companyId } });
 
       return {
@@ -179,7 +183,7 @@ export class CompaniesRepository {
     }
   }
 
-  async updateCompany(body: Partial<companies> & { id?: string }): Promise<{
+  async updateCompany(body: Partial<companies> & { id?: string }, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; company?: companies };
   }> {
@@ -198,6 +202,10 @@ export class CompaniesRepository {
 
       if (!existing) {
         return { status: 404, data: { error: 'Company not found' } };
+      }
+
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
       }
 
       const updatedCompany = await this.prisma.companies.update({
@@ -233,7 +241,7 @@ export class CompaniesRepository {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.companies.deleteMany({});
+      await this.prisma.companies.deleteMany({ where: { user_id: userId } });
       return { message: `Companies table reset for user ${userId}` };
     } catch (error) {
       console.error('Failed to reset companies table', error);

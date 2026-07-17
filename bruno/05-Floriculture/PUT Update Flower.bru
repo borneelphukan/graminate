@@ -1,0 +1,21 @@
+meta {
+  name: "Update Flower"
+  type: http
+  seq: 41
+}
+
+put {
+  url: {{baseUrl}}/api/floriculture/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Rose Updated"
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Expense"
+  type: http
+  seq: 117
+}
+
+delete {
+  url: {{baseUrl}}/api/expenses/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

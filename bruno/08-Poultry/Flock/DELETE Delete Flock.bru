@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Flock"
+  type: http
+  seq: 93
+}
+
+delete {
+  url: {{baseUrl}}/api/flock/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

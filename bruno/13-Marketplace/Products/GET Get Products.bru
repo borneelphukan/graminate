@@ -1,0 +1,15 @@
+meta {
+  name: "Get Products"
+  type: http
+  seq: 182
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/products
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

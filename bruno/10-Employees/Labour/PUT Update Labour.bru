@@ -1,0 +1,22 @@
+meta {
+  name: "Update Labour"
+  type: http
+  seq: 134
+}
+
+put {
+  url: {{baseUrl}}/api/labour/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "labour_id": 1,
+    "name": "Worker 1 Updated"
+  }
+}

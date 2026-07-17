@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { UserModule } from './user/user.module';
 import { OtpModule } from './otp/otp.module';
 import { PasswordModule } from './password/password.module';
@@ -17,10 +20,17 @@ import { PrismaModule } from './prisma/prisma.module';
 import { FloricultureModule } from './floriculture/floriculture.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { WaitlistModule } from './waitlist/waitlist.module';
+import { EmailVerificationModule } from './email-verification/email-verification.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 60,
+      },
+    ]),
     UserModule,
     OtpModule,
     CRMModule,
@@ -38,6 +48,13 @@ import { WaitlistModule } from './waitlist/waitlist.module';
     FloricultureModule,
     MarketplaceModule,
     WaitlistModule,
+    EmailVerificationModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

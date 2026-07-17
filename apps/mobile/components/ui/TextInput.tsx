@@ -152,7 +152,7 @@ export const Searchbar = ({
       <Icon
         type="magnify"
         size={20}
-        className="text-gray-200 dark:text-gray-300 mr-2"
+        className="text-dark dark:text-light mr-2"
       />
       <RNTextInput
         value={value}

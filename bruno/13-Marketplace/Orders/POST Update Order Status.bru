@@ -1,0 +1,21 @@
+meta {
+  name: "Update Order Status"
+  type: http
+  seq: 207
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/orders/:orderId/update-status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "status": "shipped"
+  }
+}

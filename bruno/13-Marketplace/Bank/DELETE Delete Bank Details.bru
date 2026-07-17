@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Bank Details"
+  type: http
+  seq: 201
+}
+
+delete {
+  url: {{baseUrl}}/api/marketplace/bank/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

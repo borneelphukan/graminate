@@ -14,12 +14,12 @@ export class ContractsService {
     return this.contractsRepository.addContract(createContractDto);
   }
 
-  async deleteContract(id: number) {
-    return this.contractsRepository.deleteContract(id);
+  async deleteContract(id: number, userId?: number) {
+    return this.contractsRepository.deleteContract(id, userId);
   }
 
-  async updateContract(updateContractDto: UpdateContractDto) {
-    return this.contractsRepository.updateContract(updateContractDto);
+  async updateContract(updateContractDto: UpdateContractDto, userId?: number) {
+    return this.contractsRepository.updateContract(updateContractDto, userId);
   }
 
   async resetTable(userId: number) {

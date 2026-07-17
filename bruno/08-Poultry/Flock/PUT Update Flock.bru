@@ -1,0 +1,21 @@
+meta {
+  name: "Update Flock"
+  type: http
+  seq: 92
+}
+
+put {
+  url: {{baseUrl}}/api/flock/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "count": 120
+  }
+}

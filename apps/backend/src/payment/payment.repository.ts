@@ -101,7 +101,20 @@ export class PaymentRepository {
       .update(body.toString())
       .digest('hex');
 
-    const signatureIsValid = expectedSignature === razorpay_signature;
+    const signatureBuffer = Buffer.from(expectedSignature, 'utf8');
+    const receivedBuffer = Buffer.from(razorpay_signature, 'utf8');
+    if (signatureBuffer.length !== receivedBuffer.length) {
+      await this.updatePaymentStatus(
+        razorpay_order_id,
+        'FAILED',
+        razorpay_payment_id,
+        razorpay_signature,
+      );
+      throw new BadRequestException(
+        'Payment verification failed: Invalid signature.',
+      );
+    }
+    const signatureIsValid = crypto.timingSafeEqual(signatureBuffer, receivedBuffer);
 
     if (!signatureIsValid) {
       await this.updatePaymentStatus(

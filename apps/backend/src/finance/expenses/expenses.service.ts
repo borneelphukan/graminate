@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateExpenseDto, UpdateExpenseDto } from './expenses.dto';
@@ -71,8 +72,12 @@ export class ExpensesService {
     }
   }
 
-  async update(id: number, updateDto: UpdateExpenseDto): Promise<expenses> {
+  async update(id: number, updateDto: UpdateExpenseDto, userId?: number): Promise<expenses> {
     const currentExpense = await this.findById(id);
+
+    if (userId !== undefined && currentExpense.user_id !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
 
     try {
       const updateData: Prisma.expensesUpdateInput = {};
@@ -111,8 +116,18 @@ export class ExpensesService {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: number, userId?: number): Promise<boolean> {
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.expenses.findUnique({
+          where: { expense_id: id },
+          select: { user_id: true },
+        });
+        if (!existing || existing.user_id !== userId) {
+          return false;
+        }
+      }
+
       await this.prisma.expenses.delete({ where: { expense_id: id } });
       return true;
     } catch {
@@ -122,7 +137,7 @@ export class ExpensesService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.expenses.deleteMany({});
+      await this.prisma.expenses.deleteMany({ where: { user_id: userId } });
       return {
         message: `Expenses table reset initiated by user ${userId}`,
       };

@@ -1,0 +1,21 @@
+meta {
+  name: "Update Hive"
+  type: http
+  seq: 59
+}
+
+put {
+  url: {{baseUrl}}/api/bee-hives/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Hive Updated"
+  }
+}

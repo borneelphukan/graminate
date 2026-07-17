@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Apiary"
+  type: http
+  seq: 53
+}
+
+delete {
+  url: {{baseUrl}}/api/apiculture/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

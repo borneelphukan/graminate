@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateSaleDto, UpdateSaleDto } from './sales.dto';
@@ -95,8 +96,12 @@ export class SalesService {
     }
   }
 
-  async update(id: number, updateDto: UpdateSaleDto): Promise<sales> {
+  async update(id: number, updateDto: UpdateSaleDto, userId?: number): Promise<sales> {
     const currentSale = await this.findById(id);
+
+    if (userId !== undefined && currentSale.user_id !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
 
     const finalItemsSold =
       updateDto.items_sold !== undefined
@@ -168,8 +173,18 @@ export class SalesService {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: number, userId?: number): Promise<boolean> {
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.sales.findUnique({
+          where: { sales_id: id },
+          select: { user_id: true },
+        });
+        if (!existing || existing.user_id !== userId) {
+          return false;
+        }
+      }
+
       await this.prisma.sales.delete({ where: { sales_id: id } });
       return true;
     } catch {
@@ -179,7 +194,7 @@ export class SalesService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.sales.deleteMany({});
+      await this.prisma.sales.deleteMany({ where: { user_id: userId } });
       return { message: `Sales table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(

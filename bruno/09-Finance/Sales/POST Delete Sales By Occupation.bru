@@ -1,0 +1,21 @@
+meta {
+  name: "Delete Sales By Occupation"
+  type: http
+  seq: 126
+}
+
+post {
+  url: {{baseUrl}}/api/sales/delete-by-occupation
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "occupation": "poultry"
+  }
+}

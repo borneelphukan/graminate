@@ -1,0 +1,15 @@
+meta {
+  name: "Get Production By Hive"
+  type: http
+  seq: 63
+}
+
+get {
+  url: {{baseUrl}}/api/honey-production/hive/:hiveId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

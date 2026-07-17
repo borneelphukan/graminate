@@ -1,0 +1,15 @@
+meta {
+  name: "Unpublish Product"
+  type: http
+  seq: 188
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/products/unpublish/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

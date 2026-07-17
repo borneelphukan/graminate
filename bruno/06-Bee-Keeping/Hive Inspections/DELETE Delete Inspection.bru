@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Inspection"
+  type: http
+  seq: 72
+}
+
+delete {
+  url: {{baseUrl}}/api/hive-inspections/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -9,11 +9,15 @@ import {
   UseGuards,
   ParseIntPipe,
   NotFoundException,
+  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { BeeHivesService, HiveWithInspection } from './bee-hives.service';
 import { CreateHiveDto, UpdateHiveDto, ResetHivesDto } from './bee-hives.dto';
+import { beeHivesSchema } from '@graminate/shared';
 import { bee_hives } from '@prisma/client';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('bee-hives')
 @UseGuards(JwtAuthGuard)
@@ -35,11 +39,13 @@ export class BeeHivesController {
     return this.hivesService.findById(id);
   }
 
+  @UseZodSchema(beeHivesSchema)
   @Post('add')
   async addHive(@Body() createDto: CreateHiveDto): Promise<bee_hives> {
     return this.hivesService.create(createDto);
   }
 
+  @UseZodSchema(beeHivesSchema, { partial: true })
   @Put('update/:id')
   async updateHive(
     @Param('id', ParseIntPipe) id: number,
@@ -62,7 +68,9 @@ export class BeeHivesController {
   }
 
   @Post('reset')
-  async reset(@Body() resetDto: ResetHivesDto): Promise<{ message: string }> {
-    return this.hivesService.resetTable(resetDto.userId);
+  async reset(
+    @Request() req: RequestWithUser,
+  ): Promise<{ message: string }> {
+    return this.hivesService.resetTable(req.user.userId!);
   }
 }

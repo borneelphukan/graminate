@@ -10,11 +10,15 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto, UpdateInventoryDto } from './inventory.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { inventory } from '@prisma/client';
+import { inventorySchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('inventory')
 export class InventoryController {
@@ -44,15 +48,19 @@ export class InventoryController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(inventorySchema)
   @Post('add')
   async addInventory(
     @Body() createDto: CreateInventoryDto,
+    @Request() req: RequestWithUser,
   ): Promise<inventory> {
+    createDto.user_id = req.user.userId!;
     const newItem = await this.inventoryService.create(createDto);
     return newItem;
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(inventorySchema, { partial: true })
   @Put('update/:id')
   async updateInventory(
     @Param('id') id: string,

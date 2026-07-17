@@ -1,0 +1,18 @@
+meta {
+  name: "User Check Exists"
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/api/user/check-exists
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "user@example.com",
+    "phone_number": "+1234567890"
+  }
+}

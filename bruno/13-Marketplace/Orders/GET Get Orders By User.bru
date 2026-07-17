@@ -1,0 +1,15 @@
+meta {
+  name: "Get Orders By User"
+  type: http
+  seq: 205
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/orders/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

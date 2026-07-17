@@ -122,9 +122,9 @@ export class FlockService {
     }
   }
 
-  async resetTable(): Promise<{ message: string }> {
+  async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.poultry_flock.deleteMany({});
+      await this.prisma.poultry_flock.deleteMany({ where: { user_id: userId } });
       return { message: 'Poultry flock table has been completely reset.' };
     } catch (error) {
       throw new InternalServerErrorException(

@@ -1,0 +1,23 @@
+meta {
+  name: "Add Warehouse"
+  type: http
+  seq: 141
+}
+
+post {
+  url: {{baseUrl}}/api/warehouse/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Main Warehouse",
+    "location": "Farm HQ",
+    "userId": 1
+  }
+}

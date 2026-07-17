@@ -1,0 +1,15 @@
+meta {
+  name: "Get Expenses By User"
+  type: http
+  seq: 114
+}
+
+get {
+  url: {{baseUrl}}/api/expenses/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

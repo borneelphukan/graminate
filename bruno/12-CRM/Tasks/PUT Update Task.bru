@@ -1,0 +1,21 @@
+meta {
+  name: "Update Task"
+  type: http
+  seq: 170
+}
+
+put {
+  url: {{baseUrl}}/api/tasks/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Task Updated"
+  }
+}

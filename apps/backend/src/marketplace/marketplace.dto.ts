@@ -190,6 +190,8 @@ export class VerifyPaymentDto {
   @IsNotEmpty()
   @IsString()
   razorpay_signature: string;
+
+  user_id?: number;
 }
 
 export class UpdateOrderStatusDto {

@@ -1,0 +1,15 @@
+meta {
+  name: "User - Get Profile"
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{baseUrl}}/api/user/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

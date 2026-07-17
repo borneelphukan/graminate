@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Hives"
+  type: http
+  seq: 61
+}
+
+post {
+  url: {{baseUrl}}/api/bee-hives/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Cattle"
+  type: http
+  seq: 78
+}
+
+delete {
+  url: {{baseUrl}}/api/cattle-rearing/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

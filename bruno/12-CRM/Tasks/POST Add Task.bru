@@ -1,0 +1,25 @@
+meta {
+  name: "Add Task"
+  type: http
+  seq: 168
+}
+
+post {
+  url: {{baseUrl}}/api/tasks/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Check inventory",
+    "description": "Verify stock levels",
+    "project": "operations",
+    "deadlineDate": "2024-01-15",
+    "userId": 1
+  }
+}

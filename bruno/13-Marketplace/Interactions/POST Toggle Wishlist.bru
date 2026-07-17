@@ -1,0 +1,22 @@
+meta {
+  name: "Toggle Wishlist"
+  type: http
+  seq: 191
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/wishlist/toggle
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "productId": 1
+  }
+}

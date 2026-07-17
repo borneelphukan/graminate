@@ -1,0 +1,21 @@
+meta {
+  name: "Update Cart Item"
+  type: http
+  seq: 197
+}
+
+put {
+  url: {{baseUrl}}/api/marketplace/cart/update/:cartId
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 3
+  }
+}

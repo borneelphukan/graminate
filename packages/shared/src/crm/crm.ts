@@ -46,3 +46,14 @@ export const contractsSchema = z.object({
   category: z.string().optional().nullable(),
   priority: z.string().default('Medium'),
 });
+
+export const taskSchema = z.object({
+  task_id: z.number().int().optional(),
+  user_id: z.number().int(),
+  project: z.string().min(1),
+  task: z.string().optional().nullable(),
+  status: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  priority: z.enum(['Low', 'Medium', 'High']).optional().nullable(),
+  deadline: z.coerce.date().optional().nullable(),
+});

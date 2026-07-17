@@ -11,11 +11,15 @@ import {
   ValidationPipe,
   ParseIntPipe,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ContractsService } from './contracts.service';
 import { Response } from 'express';
 import { CreateContractDto, UpdateContractDto } from './contracts.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
+import { contractsSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('contracts')
 export class ContractsController {
@@ -39,6 +43,7 @@ export class ContractsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(contractsSchema)
   @Post('add')
   @UsePipes(
     new ValidationPipe({
@@ -49,8 +54,10 @@ export class ContractsController {
   )
   async addContract(
     @Body() createContractDto: CreateContractDto,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
+    createContractDto.user_id = req.user.userId!;
     const result = await this.contractsService.addContract(createContractDto);
     if (result.status >= 500) {
       console.error(
@@ -65,9 +72,10 @@ export class ContractsController {
   @Delete('delete/:id')
   async deleteContract(
     @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.contractsService.deleteContract(id);
+    const result = await this.contractsService.deleteContract(id, req.user.userId!);
     return res.status(result.status).json(result.data);
   }
 
@@ -82,16 +90,17 @@ export class ContractsController {
   )
   async updateContract(
     @Body() updateContractDto: UpdateContractDto,
+    @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
     const result =
-      await this.contractsService.updateContract(updateContractDto);
+      await this.contractsService.updateContract(updateContractDto, req.user.userId!);
     return res.status(result.status).json(result.data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(@Body('userId') userId: number) {
-    return this.contractsService.resetTable(userId);
+  async reset(@Request() req: RequestWithUser) {
+    return this.contractsService.resetTable(req.user.userId!);
   }
 }

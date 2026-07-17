@@ -10,11 +10,14 @@ import {
 import { WaitlistService } from './waitlist.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RequestWithUser } from '@/common/types/request.type';
+import { waitlistSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('waitlist')
 export class WaitlistController {
   constructor(private readonly waitlistService: WaitlistService) {}
 
+  @UseZodSchema(waitlistSchema)
   @Post()
   async addToWaitlist(
     @Body()

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { otpStore } from '@/stores/store';
+import {
+  otpStore,
+  isOtpLocked,
+  recordOtpAttempt,
+  resetOtpAttempts,
+  OTP_LOCKOUT_DURATION_MS,
+} from '@/stores/store';
 import * as nodemailer from 'nodemailer';
 const mjml2html = require('mjml');
 
@@ -65,6 +71,17 @@ export class OtpRepository {
       };
     }
 
+    if (isOtpLocked(email)) {
+      const remainingMs = OTP_LOCKOUT_DURATION_MS;
+      const remainingMin = Math.ceil(remainingMs / 60000);
+      return {
+        status: 429,
+        data: {
+          error: `Account locked due to too many failed attempts. Try again in ${remainingMin} minutes.`,
+        },
+      };
+    }
+
     try {
       const otp = this.generateOtp();
       otpStore[email] = otp;
@@ -106,15 +123,29 @@ export class OtpRepository {
       };
     }
 
+    if (isOtpLocked(email)) {
+      const remainingMs = OTP_LOCKOUT_DURATION_MS;
+      const remainingMin = Math.ceil(remainingMs / 60000);
+      return {
+        status: 429,
+        data: {
+          success: false,
+          message: `Account locked due to too many failed attempts. Try again in ${remainingMin} minutes.`,
+        },
+      };
+    }
+
     await Promise.resolve();
 
     if (otpStore[email] && otpStore[email] === otp) {
       delete otpStore[email];
+      resetOtpAttempts(email);
       return {
         status: 200,
         data: { success: true, message: 'OTP verified successfully' },
       };
     } else {
+      recordOtpAttempt(email);
       return {
         status: 400,
         data: { success: false, message: 'Invalid OTP' },

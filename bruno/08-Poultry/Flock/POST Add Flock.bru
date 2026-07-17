@@ -1,0 +1,24 @@
+meta {
+  name: "Add Flock"
+  type: http
+  seq: 89
+}
+
+post {
+  url: {{baseUrl}}/api/flock/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Layer Flock 1",
+    "breed": "Leghorn",
+    "count": 100,
+    "userId": 1
+  }
+}

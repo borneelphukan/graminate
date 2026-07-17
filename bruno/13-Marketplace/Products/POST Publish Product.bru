@@ -1,0 +1,15 @@
+meta {
+  name: "Publish Product"
+  type: http
+  seq: 187
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/products/publish/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

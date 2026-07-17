@@ -1,0 +1,15 @@
+meta {
+  name: "Get Watering By Date"
+  type: http
+  seq: 46
+}
+
+get {
+  url: {{baseUrl}}/api/floriculture/watering/:userId/:date
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

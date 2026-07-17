@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Labour"
+  type: http
+  seq: 135
+}
+
+delete {
+  url: {{baseUrl}}/api/labour/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

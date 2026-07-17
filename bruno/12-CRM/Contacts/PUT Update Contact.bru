@@ -1,0 +1,22 @@
+meta {
+  name: "Update Contact"
+  type: http
+  seq: 160
+}
+
+put {
+  url: {{baseUrl}}/api/contacts/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "contact_id": 1,
+    "name": "Jane Smith Updated"
+  }
+}

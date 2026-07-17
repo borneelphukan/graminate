@@ -1,0 +1,24 @@
+meta {
+  name: "Add Receipt"
+  type: http
+  seq: 177
+}
+
+post {
+  url: {{baseUrl}}/api/receipts/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "invoiceNumber": "INV-001",
+    "amount": 5000,
+    "date": "2024-01-01",
+    "userId": 1
+  }
+}

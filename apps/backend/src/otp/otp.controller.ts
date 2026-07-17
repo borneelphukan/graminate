@@ -1,11 +1,13 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { OtpService } from './otp.service';
 import { Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('otp')
 export class OtpController {
   constructor(private readonly otpService: OtpService) {}
 
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @Post('send-otp')
   async sendOtp(
     @Body() body: { email: string },
@@ -15,6 +17,7 @@ export class OtpController {
     return res.status(result.status).json(result.data);
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @Post('verify-otp')
   async verifyOtp(
     @Body() body: { email: string; otp: string },

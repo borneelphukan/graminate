@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Milk Record"
+  type: http
+  seq: 86
+}
+
+delete {
+  url: {{baseUrl}}/api/cattle-milk/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -14,12 +14,12 @@ export class ReceiptsService {
     return this.receiptsRepository.addReceipt(createReceiptDto);
   }
 
-  async deleteReceipt(id: number) {
-    return this.receiptsRepository.deleteReceipt(id);
+  async deleteReceipt(id: number, userId?: number) {
+    return this.receiptsRepository.deleteReceipt(id, userId);
   }
 
-  async updateReceipt(updateReceiptDto: UpdateReceiptDto) {
-    return this.receiptsRepository.updateReceipt(updateReceiptDto);
+  async updateReceipt(updateReceiptDto: UpdateReceiptDto, userId?: number) {
+    return this.receiptsRepository.updateReceipt(updateReceiptDto, userId);
   }
 
   async resetTable(userId: number) {

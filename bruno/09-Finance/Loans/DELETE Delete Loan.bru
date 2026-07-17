@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Loan"
+  type: http
+  seq: 131
+}
+
+delete {
+  url: {{baseUrl}}/api/loans/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

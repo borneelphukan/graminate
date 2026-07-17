@@ -1,0 +1,15 @@
+meta {
+  name: "Get Egg Record"
+  type: http
+  seq: 103
+}
+
+get {
+  url: {{baseUrl}}/api/poultry-eggs/record/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

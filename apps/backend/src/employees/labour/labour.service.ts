@@ -359,7 +359,7 @@ export class LabourService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.labours.deleteMany({});
+      await this.prisma.labours.deleteMany({ where: { user_id: userId } });
       return { message: `Labours table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(

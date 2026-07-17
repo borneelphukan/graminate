@@ -9,14 +9,18 @@ import {
   UseGuards,
   ParseIntPipe,
   NotFoundException,
+  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { HiveInspectionService } from './hive-inspection.service';
 import {
   CreateInspectionDto,
   UpdateInspectionDto,
 } from './hive-inspection.dto';
+import { hiveInspectionSchema } from '@graminate/shared';
 import { hive_inspection } from '@prisma/client';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('hive-inspections')
 @UseGuards(JwtAuthGuard)
@@ -38,6 +42,7 @@ export class HiveInspectionController {
     return this.inspectionService.findById(id);
   }
 
+  @UseZodSchema(hiveInspectionSchema)
   @Post('add')
   async addInspection(
     @Body() createDto: CreateInspectionDto,
@@ -45,6 +50,7 @@ export class HiveInspectionController {
     return this.inspectionService.create(createDto);
   }
 
+  @UseZodSchema(hiveInspectionSchema, { partial: true })
   @Put('update/:id')
   async updateInspection(
     @Param('id', ParseIntPipe) id: number,
@@ -67,7 +73,9 @@ export class HiveInspectionController {
   }
 
   @Post('reset')
-  async reset(): Promise<{ message: string }> {
-    return this.inspectionService.resetTable();
+  async reset(
+    @Request() req: RequestWithUser,
+  ): Promise<{ message: string }> {
+    return this.inspectionService.resetTable(req.user.userId!);
   }
 }

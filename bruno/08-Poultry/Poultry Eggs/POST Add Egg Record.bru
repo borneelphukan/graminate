@@ -1,0 +1,23 @@
+meta {
+  name: "Add Egg Record"
+  type: http
+  seq: 101
+}
+
+post {
+  url: {{baseUrl}}/api/poultry-eggs/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "flockId": 1,
+    "count": 85,
+    "date": "2024-01-01"
+  }
+}

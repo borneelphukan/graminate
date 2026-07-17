@@ -11,6 +11,7 @@ import {
   NotFoundException,
   UsePipes,
   ValidationPipe,
+  Request,
 } from '@nestjs/common';
 import { PoultryHealthService } from './poultry-health.service';
 import {
@@ -19,7 +20,10 @@ import {
   ResetPoultryHealthDto,
 } from './poultry-health.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { poultry_health } from '@prisma/client';
+import { poultryHealthSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('poultry-health')
 export class PoultryHealthController {
@@ -57,15 +61,19 @@ export class PoultryHealthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryHealthSchema)
   @Post('add')
   async addPoultryHealthRecord(
     @Body() createDto: CreatePoultryHealthDto,
+    @Request() req: RequestWithUser,
   ): Promise<poultry_health> {
+    createDto.user_id = req.user.userId!;
     const newRecord = await this.poultryHealthService.create(createDto);
     return newRecord;
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryHealthSchema, { partial: true })
   @Put('update/:id')
   async updatePoultryHealthRecord(
     @Param('id') id: string,
@@ -97,8 +105,8 @@ export class PoultryHealthController {
   @Post('reset')
   @UsePipes(new ValidationPipe())
   async resetUserPoultryHealthRecords(
-    @Body() resetDto: ResetPoultryHealthDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.poultryHealthService.resetTable(resetDto.userId);
+    return this.poultryHealthService.resetTable(req.user.userId!);
   }
 }

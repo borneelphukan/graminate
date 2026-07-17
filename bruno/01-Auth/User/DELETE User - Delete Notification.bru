@@ -1,0 +1,15 @@
+meta {
+  name: "User - Delete Notification"
+  type: http
+  seq: 25
+}
+
+delete {
+  url: {{baseUrl}}/api/user/:id/notifications/:notificationId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

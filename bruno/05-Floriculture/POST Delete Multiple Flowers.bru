@@ -1,0 +1,21 @@
+meta {
+  name: "Delete Multiple Flowers"
+  type: http
+  seq: 43
+}
+
+post {
+  url: {{baseUrl}}/api/floriculture/delete-multiple
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "ids": [1,2,3]
+  }
+}

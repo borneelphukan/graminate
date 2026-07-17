@@ -1,0 +1,15 @@
+meta {
+  name: "Get Sales By User"
+  type: http
+  seq: 121
+}
+
+get {
+  url: {{baseUrl}}/api/sales/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

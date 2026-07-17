@@ -1,0 +1,22 @@
+meta {
+  name: "Update Contract"
+  type: http
+  seq: 165
+}
+
+put {
+  url: {{baseUrl}}/api/contracts/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "contract_id": 1,
+    "title": "Updated Agreement"
+  }
+}

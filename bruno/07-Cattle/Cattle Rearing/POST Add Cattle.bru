@@ -1,0 +1,23 @@
+meta {
+  name: "Add Cattle"
+  type: http
+  seq: 74
+}
+
+post {
+  url: {{baseUrl}}/api/cattle-rearing/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Bessie",
+    "breed": "Jersey",
+    "userId": 1
+  }
+}

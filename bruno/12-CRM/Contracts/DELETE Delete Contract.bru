@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Contract"
+  type: http
+  seq: 166
+}
+
+delete {
+  url: {{baseUrl}}/api/contracts/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

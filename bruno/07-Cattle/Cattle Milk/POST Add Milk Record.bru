@@ -1,0 +1,23 @@
+meta {
+  name: "Add Milk Record"
+  type: http
+  seq: 81
+}
+
+post {
+  url: {{baseUrl}}/api/cattle-milk/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "cattleId": 1,
+    "quantity": 10,
+    "date": "2024-01-01"
+  }
+}

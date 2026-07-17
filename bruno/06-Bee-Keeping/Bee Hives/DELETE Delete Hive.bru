@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Hive"
+  type: http
+  seq: 60
+}
+
+delete {
+  url: {{baseUrl}}/api/bee-hives/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

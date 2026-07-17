@@ -1,0 +1,21 @@
+meta {
+  name: "Reset Flock Service"
+  type: http
+  seq: 94
+}
+
+post {
+  url: {{baseUrl}}/api/flock/reset-service
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1
+  }
+}

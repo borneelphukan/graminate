@@ -1,0 +1,21 @@
+meta {
+  name: "Update Expense"
+  type: http
+  seq: 116
+}
+
+put {
+  url: {{baseUrl}}/api/expenses/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "amount": 600
+  }
+}

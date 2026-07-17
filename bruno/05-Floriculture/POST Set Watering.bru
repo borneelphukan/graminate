@@ -1,0 +1,24 @@
+meta {
+  name: "Set Watering"
+  type: http
+  seq: 47
+}
+
+post {
+  url: {{baseUrl}}/api/floriculture/watering
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "flowerId": 1,
+    "date": "2024-01-01",
+    "watered": true
+  }
+}

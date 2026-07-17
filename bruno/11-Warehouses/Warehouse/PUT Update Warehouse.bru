@@ -1,0 +1,21 @@
+meta {
+  name: "Update Warehouse"
+  type: http
+  seq: 143
+}
+
+put {
+  url: {{baseUrl}}/api/warehouse/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Updated Warehouse"
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: "Update Milk Record"
+  type: http
+  seq: 85
+}
+
+put {
+  url: {{baseUrl}}/api/cattle-milk/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 12
+  }
+}

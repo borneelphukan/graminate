@@ -90,7 +90,7 @@ export class ContractsRepository {
     }
   }
 
-  async deleteContract(id: number): Promise<{
+  async deleteContract(id: number, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; contract?: contracts };
   }> {
@@ -105,6 +105,10 @@ export class ContractsRepository {
 
       if (!existing) {
         return { status: 404, data: { error: 'Contract not found' } };
+      }
+
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
       }
 
       const deletedContract = await this.prisma.contracts.delete({
@@ -124,7 +128,7 @@ export class ContractsRepository {
     }
   }
 
-  async updateContract(updateContractDto: UpdateContractDto): Promise<{
+  async updateContract(updateContractDto: UpdateContractDto, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; contract?: contracts };
   }> {
@@ -166,6 +170,10 @@ export class ContractsRepository {
         return { status: 404, data: { error: 'Contract not found' } };
       }
 
+      if (userId !== undefined && existing.user_id !== userId) {
+        return { status: 403, data: { error: 'Access denied' } };
+      }
+
       const updateData: Prisma.contractsUpdateInput = {};
 
       if (contract_name !== undefined) updateData.contract_name = contract_name;
@@ -198,7 +206,7 @@ export class ContractsRepository {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.contracts.deleteMany({});
+      await this.prisma.contracts.deleteMany({ where: { user_id: userId } });
       return {
         message: `Contracts (contracts) table reset initiated by user ${userId}`,
       };

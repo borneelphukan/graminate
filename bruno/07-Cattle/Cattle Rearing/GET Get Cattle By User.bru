@@ -1,0 +1,15 @@
+meta {
+  name: "Get Cattle By User"
+  type: http
+  seq: 75
+}
+
+get {
+  url: {{baseUrl}}/api/cattle-rearing/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

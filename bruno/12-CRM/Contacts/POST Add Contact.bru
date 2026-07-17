@@ -1,0 +1,24 @@
+meta {
+  name: "Add Contact"
+  type: http
+  seq: 157
+}
+
+post {
+  url: {{baseUrl}}/api/contacts/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "phone": "+1234567890",
+    "userId": 1
+  }
+}

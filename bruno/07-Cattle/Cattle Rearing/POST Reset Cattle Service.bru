@@ -1,0 +1,21 @@
+meta {
+  name: "Reset Cattle Service"
+  type: http
+  seq: 79
+}
+
+post {
+  url: {{baseUrl}}/api/cattle-rearing/reset-service
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1
+  }
+}

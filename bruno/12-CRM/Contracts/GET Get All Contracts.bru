@@ -1,0 +1,15 @@
+meta {
+  name: "Get All Contracts"
+  type: http
+  seq: 164
+}
+
+get {
+  url: {{baseUrl}}/api/contracts
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

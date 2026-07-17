@@ -1,0 +1,21 @@
+meta {
+  name: "Update Honey Production"
+  type: http
+  seq: 65
+}
+
+put {
+  url: {{baseUrl}}/api/honey-production/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 6
+  }
+}

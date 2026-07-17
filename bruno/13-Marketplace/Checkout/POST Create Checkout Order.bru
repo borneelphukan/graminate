@@ -1,0 +1,22 @@
+meta {
+  name: "Create Checkout Order"
+  type: http
+  seq: 202
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/checkout/create-order
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "cartIds": [1,2]
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Animal Names"
+  type: http
+  seq: 87
+}
+
+get {
+  url: {{baseUrl}}/api/cattle-milk/animal-names/:cattleId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

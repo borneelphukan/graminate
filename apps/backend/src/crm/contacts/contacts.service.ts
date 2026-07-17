@@ -20,20 +20,21 @@ export class ContactsService {
     return this.contactsRepository.addContact(body);
   }
 
-  async deleteContact(id: string): Promise<{
+  async deleteContact(id: string, userId?: number): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
-    return this.contactsRepository.deleteContact(id);
+    return this.contactsRepository.deleteContact(id, userId);
   }
 
   async updateContact(
     body: Partial<contacts> & { contact_id: number },
+    userId?: number,
   ): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
-    return this.contactsRepository.updateContact(body);
+    return this.contactsRepository.updateContact(body, userId);
   }
 
   async resetTable(userId: number): Promise<{ message: string }> {

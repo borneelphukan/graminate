@@ -1,0 +1,15 @@
+meta {
+  name: "Admin - All Users"
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/admin/all-users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

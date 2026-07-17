@@ -1,0 +1,21 @@
+meta {
+  name: "Join Waitlist"
+  type: http
+  seq: 33
+}
+
+post {
+  url: {{baseUrl}}/api/waitlist
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "role": "farmer"
+  }
+}

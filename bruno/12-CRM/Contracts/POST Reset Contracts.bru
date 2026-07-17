@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Contracts"
+  type: http
+  seq: 167
+}
+
+post {
+  url: {{baseUrl}}/api/contracts/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

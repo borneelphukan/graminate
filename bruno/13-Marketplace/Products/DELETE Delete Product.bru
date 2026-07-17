@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Product"
+  type: http
+  seq: 189
+}
+
+delete {
+  url: {{baseUrl}}/api/marketplace/products/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

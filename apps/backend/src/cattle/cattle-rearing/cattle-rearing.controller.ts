@@ -10,9 +10,11 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { CattleRearingService } from './cattle-rearing.service';
 import {
   CreateCattleRearingDto,
@@ -22,6 +24,7 @@ import {
 import { cattle_rearing } from '@prisma/client';
 
 import { cattleRearingSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('cattle-rearing')
 export class CattleRearingController {
@@ -45,15 +48,18 @@ export class CattleRearingController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(cattleRearingSchema)
   @Post('add')
   async addCattleRearing(
     @Body() createDto: CreateCattleRearingDto,
+    @Request() req: RequestWithUser,
   ): Promise<cattle_rearing> {
-    const parsed = cattleRearingSchema.parse(createDto);
-    return this.cattleRearingService.create(parsed as any);
+    createDto.user_id = req.user.userId!;
+    return this.cattleRearingService.create(createDto as any);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(cattleRearingSchema, { partial: true })
   @Put('update/:id')
   async updateCattleRearing(
     @Param('id', ParseIntPipe) id: number,
@@ -87,7 +93,9 @@ export class CattleRearingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(): Promise<{ message: string }> {
-    return this.cattleRearingService.resetTable();
+  async reset(
+    @Request() req: RequestWithUser,
+  ): Promise<{ message: string }> {
+    return this.cattleRearingService.resetTable(req.user.userId!);
   }
 }

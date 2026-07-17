@@ -1,0 +1,15 @@
+meta {
+  name: "User - Get Notifications"
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{baseUrl}}/api/user/:id/notifications
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

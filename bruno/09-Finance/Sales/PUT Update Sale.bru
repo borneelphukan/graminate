@@ -1,0 +1,21 @@
+meta {
+  name: "Update Sale"
+  type: http
+  seq: 123
+}
+
+put {
+  url: {{baseUrl}}/api/sales/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "amount": 1200
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Contracts By User"
+  type: http
+  seq: 163
+}
+
+get {
+  url: {{baseUrl}}/api/contracts/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

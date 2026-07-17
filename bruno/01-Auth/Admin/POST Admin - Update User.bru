@@ -1,0 +1,23 @@
+meta {
+  name: "Admin - Update User"
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/admin/users/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "darkMode": false,
+    "admin_reason": "string",
+    "admin_action": "string"
+  }
+}

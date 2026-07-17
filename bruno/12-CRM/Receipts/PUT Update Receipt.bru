@@ -1,0 +1,22 @@
+meta {
+  name: "Update Receipt"
+  type: http
+  seq: 179
+}
+
+put {
+  url: {{baseUrl}}/api/receipts/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "receipt_id": 1,
+    "amount": 6000
+  }
+}

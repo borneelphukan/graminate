@@ -1,0 +1,22 @@
+meta {
+  name: "Update Labour Payment"
+  type: http
+  seq: 139
+}
+
+put {
+  url: {{baseUrl}}/api/labour_payment/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "payment_id": 1,
+    "salary_paid": 16000
+  }
+}

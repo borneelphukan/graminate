@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Inspections"
+  type: http
+  seq: 73
+}
+
+post {
+  url: {{baseUrl}}/api/hive-inspections/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

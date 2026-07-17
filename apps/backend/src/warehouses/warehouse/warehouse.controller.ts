@@ -9,9 +9,11 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { WarehouseService } from './warehouse.service';
 import {
   CreateWarehouseDto,
@@ -19,6 +21,8 @@ import {
   UpdateWarehouseDto,
 } from './warehouse.dto';
 import { warehouse } from '@prisma/client';
+import { warehouseSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -34,10 +38,13 @@ export class WarehouseController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(warehouseSchema)
   @Post('add')
   async addWarehouse(
     @Body() createDto: CreateWarehouseDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string; id: number }> {
+    createDto.user_id = req.user.userId!;
     const warehouseResult = await this.warehouseService.create(createDto);
     return {
       message: 'Warehouse created successfully',
@@ -46,6 +53,7 @@ export class WarehouseController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(warehouseSchema, { partial: true })
   @Put('update/:id')
   async updateWarehouse(
     @Param('id') id: string,
@@ -71,19 +79,19 @@ export class WarehouseController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetWarehouse(
-    @Body() resetDto: ResetWarehouseDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.warehouseService.resetTable(resetDto.userId);
+    return this.warehouseService.resetTable(req.user.userId!);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('delete-by-category/:userId/:category')
+  @Delete('delete-by-category/:category')
   async deleteByUserIdAndCategory(
-    @Param('userId') userId: string,
+    @Request() req: RequestWithUser,
     @Param('category') category: string,
   ): Promise<{ message: string }> {
     await this.warehouseService.deleteByUserIdAndCategory(
-      Number(userId),
+      req.user.userId!,
       category,
     );
     return { message: 'Warehouses deleted successfully by category' };

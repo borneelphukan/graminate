@@ -1,0 +1,15 @@
+meta {
+  name: "Release Order"
+  type: http
+  seq: 208
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/orders/:orderId/release
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,23 @@
+meta {
+  name: "Add Labour"
+  type: http
+  seq: 132
+}
+
+post {
+  url: {{baseUrl}}/api/labour/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Worker 1",
+    "role": "general",
+    "userId": 1
+  }
+}

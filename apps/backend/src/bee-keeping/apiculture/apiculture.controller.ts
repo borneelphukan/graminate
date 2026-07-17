@@ -10,9 +10,11 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { ApicultureService, ApicultureWithCount } from './apiculture.service';
 import {
   CreateApiaryDto,
@@ -21,6 +23,7 @@ import {
 } from './apiculture.dto';
 
 import { apicultureSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('apiculture')
 export class ApicultureController {
@@ -48,15 +51,18 @@ export class ApicultureController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(apicultureSchema)
   @Post('add')
   async addApiary(
     @Body() createDto: CreateApiaryDto,
+    @Request() req: RequestWithUser,
   ): Promise<ApicultureWithCount> {
-    const parsed = apicultureSchema.parse(createDto);
-    return this.apicultureService.create(parsed as any);
+    createDto.user_id = req.user.userId!;
+    return this.apicultureService.create(createDto as any);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(apicultureSchema, { partial: true })
   @Put('update/:id')
   async updateApiary(
     @Param('id', ParseIntPipe) id: number,
@@ -87,14 +93,16 @@ export class ApicultureController {
   @UseGuards(JwtAuthGuard)
   @Post('reset-service')
   async resetService(
-    @Body() resetDto: ResetApicultureDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.apicultureService.resetForUser(resetDto.userId);
+    return this.apicultureService.resetForUser(req.user.userId!);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(): Promise<{ message: string }> {
-    return this.apicultureService.resetTable();
+  async reset(
+    @Request() req: RequestWithUser,
+  ): Promise<{ message: string }> {
+    return this.apicultureService.resetTable(req.user.userId!);
   }
 }

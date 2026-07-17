@@ -12,7 +12,9 @@ import {
   UseGuards,
   ParseIntPipe,
   ValidationPipe,
+  Request,
 } from '@nestjs/common';
+import { RequestWithUser } from '@/common/types/request.type';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { MarketplaceService } from './marketplace.service';
@@ -58,7 +60,9 @@ export class MarketplaceController {
   async createProduct(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: CreateMarketplaceProductDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.create(dto);
   }
 
@@ -102,7 +106,9 @@ export class MarketplaceController {
   async toggleFavorite(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: ToggleFavoriteDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.toggleFavorite(dto.user_id, dto.product_id);
   }
 
@@ -111,7 +117,9 @@ export class MarketplaceController {
   async toggleWishlist(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: ToggleWishlistDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.toggleWishlist(dto.user_id, dto.product_id);
   }
 
@@ -147,7 +155,9 @@ export class MarketplaceController {
   async addToCart(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: AddToCartDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.addToCart(
       dto.user_id,
       dto.product_id,
@@ -183,7 +193,9 @@ export class MarketplaceController {
   async saveBankDetails(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: SaveBankDetailsDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     const result = await this.marketplaceService.saveBankDetails(dto);
     return { data: result, message: 'Bank details saved successfully' };
   }
@@ -199,7 +211,9 @@ export class MarketplaceController {
   async createCheckoutOrder(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: CreateCheckoutDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.createCheckoutOrder(dto.user_id);
   }
 
@@ -208,7 +222,9 @@ export class MarketplaceController {
   async verifyPayment(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     dto: VerifyPaymentDto,
+    @Request() req: RequestWithUser,
   ) {
+    dto.user_id = req.user.userId!;
     return this.marketplaceService.verifyPayment(
       dto.razorpay_order_id,
       dto.razorpay_payment_id,

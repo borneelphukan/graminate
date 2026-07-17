@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
@@ -62,7 +63,7 @@ export class TasksRepository {
     }
   }
 
-  async updateTask(taskId: number, dto: UpdateTaskDto): Promise<tasks> {
+  async updateTask(taskId: number, dto: UpdateTaskDto, userId?: number): Promise<tasks> {
     if (dto.priority && !['Low', 'Medium', 'High'].includes(dto.priority)) {
       throw new BadRequestException('Invalid priority value');
     }
@@ -81,6 +82,19 @@ export class TasksRepository {
     }
 
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.tasks.findUnique({
+          where: { task_id: taskId },
+          select: { user_id: true },
+        });
+        if (!existing) {
+          throw new NotFoundException(`Task with ID ${taskId} not found`);
+        }
+        if (existing.user_id !== userId) {
+          throw new ForbiddenException('Access denied');
+        }
+      }
+
       const updatedTask = await this.prisma.tasks.update({
         where: { task_id: taskId },
         data,
@@ -100,8 +114,21 @@ export class TasksRepository {
     }
   }
 
-  async deleteTask(taskId: number): Promise<tasks> {
+  async deleteTask(taskId: number, userId?: number): Promise<tasks> {
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.tasks.findUnique({
+          where: { task_id: taskId },
+          select: { user_id: true },
+        });
+        if (!existing) {
+          throw new NotFoundException(`Task with ID ${taskId} not found`);
+        }
+        if (existing.user_id !== userId) {
+          throw new ForbiddenException('Access denied');
+        }
+      }
+
       const deletedTask = await this.prisma.tasks.delete({
         where: { task_id: taskId },
       });
@@ -121,7 +148,7 @@ export class TasksRepository {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.tasks.deleteMany({});
+      await this.prisma.tasks.deleteMany({ where: { user_id: userId } });
       return { message: `Tasks table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(
@@ -194,8 +221,24 @@ export class TasksRepository {
     columnId: number,
     title?: string,
     position?: number,
+    userId?: number,
   ): Promise<kanban_columns> {
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.kanban_columns.findUnique({
+          where: { column_id: columnId },
+          select: { user_id: true },
+        });
+        if (!existing) {
+          throw new NotFoundException(
+            `Kanban column with ID ${columnId} not found`,
+          );
+        }
+        if (existing.user_id !== userId) {
+          throw new ForbiddenException('Access denied');
+        }
+      }
+
       const data: Prisma.kanban_columnsUpdateInput = {};
       if (title !== undefined) data.title = title;
       if (position !== undefined) data.position = position;
@@ -222,8 +265,23 @@ export class TasksRepository {
     }
   }
 
-  async deleteKanbanColumn(columnId: number): Promise<kanban_columns> {
+  async deleteKanbanColumn(columnId: number, userId?: number): Promise<kanban_columns> {
     try {
+      if (userId !== undefined) {
+        const existing = await this.prisma.kanban_columns.findUnique({
+          where: { column_id: columnId },
+          select: { user_id: true },
+        });
+        if (!existing) {
+          throw new NotFoundException(
+            `Kanban column with ID ${columnId} not found`,
+          );
+        }
+        if (existing.user_id !== userId) {
+          throw new ForbiddenException('Access denied');
+        }
+      }
+
       return await this.prisma.kanban_columns.delete({
         where: { column_id: columnId },
       });

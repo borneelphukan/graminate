@@ -1,0 +1,15 @@
+meta {
+  name: "Get Milk By Cattle"
+  type: http
+  seq: 83
+}
+
+get {
+  url: {{baseUrl}}/api/cattle-milk/cattle/:cattleId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

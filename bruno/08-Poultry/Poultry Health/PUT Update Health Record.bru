@@ -1,0 +1,21 @@
+meta {
+  name: "Update Health Record"
+  type: http
+  seq: 110
+}
+
+put {
+  url: {{baseUrl}}/api/poultry-health/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "treatment": "Updated treatment"
+  }
+}

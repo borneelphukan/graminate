@@ -1,0 +1,25 @@
+meta {
+  name: "Add Contract"
+  type: http
+  seq: 162
+}
+
+post {
+  url: {{baseUrl}}/api/contracts/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Supply Agreement",
+    "value": 50000,
+    "startDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "userId": 1
+  }
+}

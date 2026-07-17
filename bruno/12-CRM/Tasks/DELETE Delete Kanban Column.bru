@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Kanban Column"
+  type: http
+  seq: 176
+}
+
+delete {
+  url: {{baseUrl}}/api/tasks/column/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

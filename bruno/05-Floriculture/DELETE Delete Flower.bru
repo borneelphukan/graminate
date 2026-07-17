@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Flower"
+  type: http
+  seq: 42
+}
+
+delete {
+  url: {{baseUrl}}/api/floriculture/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

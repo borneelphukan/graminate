@@ -7,12 +7,22 @@ datasource db {
 }
 
 model admin {
-  admin_id   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  first_name String    @db.VarChar(100)
-  last_name  String    @db.VarChar(100)
-  email      String    @unique @db.VarChar(255)
-  password   String
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+  admin_id    String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name  String       @db.VarChar(100)
+  last_name   String       @db.VarChar(100)
+  email       String       @unique @db.VarChar(255)
+  password    String
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  role_id     Int?
+  status      String       @default("PENDING") @db.VarChar(20)
+  admin_roles admin_roles? @relation(fields: [role_id], references: [role_id], onUpdate: NoAction)
+}
+
+model admin_roles {
+  role_id     Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(50)
+  permissions String[]
+  admin       admin[]
 }
 
 model apiculture {
@@ -494,6 +504,7 @@ model users {
   entity_type             String?                 @db.VarChar(50)
   pending_plan            user_plan_type?
   pending_plan_source     String?
+  email_verified          Boolean                 @default(false)
   apiculture              apiculture[]
   cattle_milk             cattle_milk[]
   cattle_rearing          cattle_rearing[]

@@ -12,9 +12,11 @@ import {
   ParseIntPipe,
   ValidationPipe,
   BadRequestException,
+  Request,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { SalesService } from './sales.service';
 import {
   CreateSaleDto,
@@ -23,6 +25,8 @@ import {
   ResetSalesDto,
 } from './sales.dto';
 import { sales } from '@prisma/client';
+import { salesSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('sales')
 export class SalesController {
@@ -44,12 +48,15 @@ export class SalesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(salesSchema)
   @Post('add')
   async addSale(
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     createDto: CreateSaleDto,
+    @Request() req: RequestWithUser,
   ): Promise<sales> {
     try {
+      createDto.user_id = req.user.userId!;
       return await this.salesService.create(createDto);
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -65,9 +72,10 @@ export class SalesController {
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
     updateDto: UpdateSaleDto,
+    @Request() req: RequestWithUser,
   ): Promise<sales> {
     try {
-      const updatedSale = await this.salesService.update(id, updateDto);
+      const updatedSale = await this.salesService.update(id, updateDto, req.user.userId!);
       return updatedSale;
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -87,8 +95,9 @@ export class SalesController {
   @Delete('delete/:id')
   async deleteSale(
     @Param('id', ParseIntPipe) id: number,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    const deleted = await this.salesService.delete(id);
+    const deleted = await this.salesService.delete(id, req.user.userId!);
     if (!deleted) {
       throw new HttpException(
         'Sale not found or could not be deleted',
@@ -101,9 +110,9 @@ export class SalesController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetInventory(
-    @Body() resetDto: ResetSalesDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.salesService.resetTable(resetDto.userId);
+    return this.salesService.resetTable(req.user.userId!);
   }
 
   @UseGuards(JwtAuthGuard)

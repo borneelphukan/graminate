@@ -1,0 +1,23 @@
+meta {
+  name: "Add To Cart"
+  type: http
+  seq: 196
+}
+
+post {
+  url: {{baseUrl}}/api/marketplace/cart/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "productId": 1,
+    "quantity": 2
+  }
+}

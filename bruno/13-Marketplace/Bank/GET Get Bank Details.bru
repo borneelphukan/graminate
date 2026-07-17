@@ -1,0 +1,15 @@
+meta {
+  name: "Get Bank Details"
+  type: http
+  seq: 199
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/bank/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

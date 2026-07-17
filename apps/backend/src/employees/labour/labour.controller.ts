@@ -8,11 +8,15 @@ import {
   Body,
   Res,
   UseGuards,
+  Request,
 } from '@nestjs/common';
+import { laboursSchema } from '@graminate/shared';
 import { LabourService } from './labour.service';
 import { Response } from 'express';
 import { CreateOrUpdateLabourDto } from './labour.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
+import { RequestWithUser } from '@/common/types/request.type';
 
 @Controller('labour')
 export class LabourController {
@@ -26,13 +30,16 @@ export class LabourController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(laboursSchema)
   @Post('add')
-  async addLabour(@Body() body: CreateOrUpdateLabourDto, @Res() res: Response) {
+  async addLabour(@Body() body: CreateOrUpdateLabourDto, @Request() req: RequestWithUser, @Res() res: Response) {
+    body.user_id = req.user.userId!;
     const result = await this.labourService.addLabour(body);
     return res.status(result.status).json(result.data);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(laboursSchema, { partial: true })
   @Put('update')
   async updateLabour(
     @Body() body: CreateOrUpdateLabourDto,
@@ -51,7 +58,7 @@ export class LabourController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(@Body('userId') userId: number) {
-    return this.labourService.resetTable(userId);
+  async reset(@Request() req: RequestWithUser) {
+    return this.labourService.resetTable(req.user.userId!);
   }
 }

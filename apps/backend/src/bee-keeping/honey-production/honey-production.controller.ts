@@ -9,14 +9,18 @@ import {
   UseGuards,
   ParseIntPipe,
   NotFoundException,
+  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { HoneyProductionService } from './honey-production.service';
 import {
   CreateHoneyProductionDto,
   UpdateHoneyProductionDto,
 } from './honey-production.dto';
+import { honeyProductionSchema } from '@graminate/shared';
 import { honey_production } from '@prisma/client';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('honey-production')
 @UseGuards(JwtAuthGuard)
@@ -38,6 +42,7 @@ export class HoneyProductionController {
     return this.productionService.findById(id);
   }
 
+  @UseZodSchema(honeyProductionSchema)
   @Post('add')
   async addHarvest(
     @Body() createDto: CreateHoneyProductionDto,
@@ -45,6 +50,7 @@ export class HoneyProductionController {
     return this.productionService.create(createDto);
   }
 
+  @UseZodSchema(honeyProductionSchema, { partial: true })
   @Put('update/:id')
   async updateHarvest(
     @Param('id', ParseIntPipe) id: number,
@@ -67,7 +73,9 @@ export class HoneyProductionController {
   }
 
   @Post('reset')
-  async reset(): Promise<{ message: string }> {
-    return this.productionService.resetTable();
+  async reset(
+    @Request() req: RequestWithUser,
+  ): Promise<{ message: string }> {
+    return this.productionService.resetTable(req.user.userId!);
   }
 }

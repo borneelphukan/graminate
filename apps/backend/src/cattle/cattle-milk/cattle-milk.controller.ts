@@ -10,9 +10,13 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 
+import { cattleMilkSchema } from '@graminate/shared';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
+import { RequestWithUser } from '@/common/types/request.type';
 import { CattleMilkService } from './cattle-milk.service';
 import {
   CreateCattleMilkDto,
@@ -50,14 +54,18 @@ export class CattleMilkController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(cattleMilkSchema)
   @Post('add')
   async addRecord(
     @Body() createDto: CreateCattleMilkDto,
+    @Request() req: RequestWithUser,
   ): Promise<cattle_milk> {
+    createDto.user_id = req.user.userId!;
     return this.cattleMilkService.create(createDto);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(cattleMilkSchema, { partial: true })
   @Put('update/:id')
   async updateRecord(
     @Param('id', ParseIntPipe) id: number,
@@ -94,8 +102,8 @@ export class CattleMilkController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetWarehouse(
-    @Body() resetDto: ResetCattleMilkDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.cattleMilkService.resetTable(resetDto.userId);
+    return this.cattleMilkService.resetTable(req.user.userId!);
   }
 }

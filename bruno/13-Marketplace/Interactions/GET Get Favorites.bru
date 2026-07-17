@@ -1,0 +1,15 @@
+meta {
+  name: "Get Favorites"
+  type: http
+  seq: 192
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/favorites/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

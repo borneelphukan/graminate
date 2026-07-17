@@ -1,0 +1,24 @@
+meta {
+  name: "Add Loan"
+  type: http
+  seq: 127
+}
+
+post {
+  url: {{baseUrl}}/api/loans
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "amount": 50000,
+    "interestRate": 8.5,
+    "tenure": 12
+  }
+}

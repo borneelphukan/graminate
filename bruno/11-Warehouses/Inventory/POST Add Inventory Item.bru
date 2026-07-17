@@ -1,0 +1,25 @@
+meta {
+  name: "Add Inventory Item"
+  type: http
+  seq: 147
+}
+
+post {
+  url: {{baseUrl}}/api/inventory/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Corn Feed",
+    "quantity": 500,
+    "unit": "kg",
+    "warehouseId": 1,
+    "userId": 1
+  }
+}

@@ -10,14 +10,17 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { FlockService } from './flock.service';
 import { CreateFlockDto, UpdateFlockDto, ResetFlockDto } from './flock.dto';
 import { poultry_flock } from '@prisma/client';
 
 import { poultryFlockSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('flock')
 export class FlockController {
@@ -43,13 +46,18 @@ export class FlockController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryFlockSchema)
   @Post('add')
-  async addFlock(@Body() createDto: CreateFlockDto): Promise<poultry_flock> {
-    const parsed = poultryFlockSchema.parse(createDto);
-    return this.flockService.create(parsed as any);
+  async addFlock(
+    @Body() createDto: CreateFlockDto,
+    @Request() req: RequestWithUser,
+  ): Promise<poultry_flock> {
+    createDto.user_id = req.user.userId!;
+    return this.flockService.create(createDto as any);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryFlockSchema, { partial: true })
   @Put('update/:id')
   async updateFlock(
     @Param('id', ParseIntPipe) id: number,

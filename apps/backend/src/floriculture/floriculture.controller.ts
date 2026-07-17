@@ -16,6 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { floriculture } from '@prisma/client';
 import { floricultureSchema } from '@graminate/shared';
 import { UserService } from '../user/user.service';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 import { RequestWithUser } from '@/common/types/request.type';
 
 @UseGuards(JwtAuthGuard)
@@ -26,17 +27,14 @@ export class FloricultureController {
     private readonly userService: UserService,
   ) {}
 
+  @UseZodSchema(floricultureSchema, { partial: true })
   @Post('add')
-  create(@Body() body: Partial<floriculture>): Promise<floriculture> {
-    if (
-      body &&
-      ((body as any).planting_date === '' ||
-        (body as any).planting_date === 'Invalid Date')
-    ) {
-      (body as any).planting_date = null;
-    }
-    const parsed = floricultureSchema.partial().parse(body);
-    return this.floricultureService.create(parsed);
+  create(
+    @Body() body: Partial<floriculture>,
+    @Request() req: RequestWithUser,
+  ): Promise<floriculture> {
+    body.user_id = req.user.userId!;
+    return this.floricultureService.create(body as any);
   }
 
   @Post('notifications/user/:id')
@@ -85,28 +83,23 @@ export class FloricultureController {
       date: string;
       watered: boolean;
     },
+    @Request() req: RequestWithUser,
   ): Promise<any> {
     return this.floricultureService.updateWatering(
-      body.userId,
+      req.user.userId!,
       body.flowerId,
       body.date,
       body.watered,
     );
   }
 
+  @UseZodSchema(floricultureSchema, { partial: true })
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: any,
   ): Promise<floriculture> {
-    if (
-      body &&
-      (body.planting_date === '' || body.planting_date === 'Invalid Date')
-    ) {
-      body.planting_date = null;
-    }
-    const parsed = floricultureSchema.partial().parse(body);
-    return this.floricultureService.update(id, parsed);
+    return this.floricultureService.update(id, body);
   }
 
   @Delete('delete/:id')
@@ -120,7 +113,8 @@ export class FloricultureController {
   }
 
   @Post('reset-service')
-  async reset(@Body('userId') userId: number): Promise<{ message: string }> {
+  async reset(@Request() req: RequestWithUser): Promise<{ message: string }> {
+    const userId = req.user.userId!;
     await this.floricultureService.reset(userId);
     return { message: `Floriculture table reset for user ${userId}` };
   }

@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   NotFoundException,
+  Request,
 } from '@nestjs/common';
 import { PoultryEggsService } from './poultry-eggs.service';
 import {
@@ -17,7 +18,10 @@ import {
   ResetPoultryEggDto,
 } from './poultry-eggs.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { RequestWithUser } from '@/common/types/request.type';
 import { poultry_eggs } from '@prisma/client';
+import { poultryEggsSchema } from '@graminate/shared';
+import { UseZodSchema } from '@/common/decorators/use-zod-schema.decorator';
 
 @Controller('poultry-eggs')
 export class PoultryEggsController {
@@ -55,15 +59,19 @@ export class PoultryEggsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryEggsSchema)
   @Post('add')
   async addPoultryEggRecord(
     @Body() createDto: CreatePoultryEggDto,
+    @Request() req: RequestWithUser,
   ): Promise<poultry_eggs> {
+    createDto.user_id = req.user.userId!;
     const newRecord = await this.poultryEggsService.create(createDto);
     return newRecord;
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseZodSchema(poultryEggsSchema, { partial: true })
   @Put('update/:id')
   async updatePoultryEggRecord(
     @Param('id') id: string,
@@ -94,8 +102,8 @@ export class PoultryEggsController {
   @UseGuards(JwtAuthGuard)
   @Post('reset')
   async resetUserPoultryEggRecords(
-    @Body() resetDto: ResetPoultryEggDto,
+    @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    return this.poultryEggsService.resetTable(resetDto.userId);
+    return this.poultryEggsService.resetTable(req.user.userId!);
   }
 }

@@ -1,0 +1,21 @@
+meta {
+  name: "Send LLM Prompt"
+  type: http
+  seq: 37
+}
+
+post {
+  url: {{baseUrl}}/api/llm
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "prompt": "Hello, how can you help me?"
+  }
+}

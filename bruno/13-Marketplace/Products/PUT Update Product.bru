@@ -1,0 +1,21 @@
+meta {
+  name: "Update Product"
+  type: http
+  seq: 186
+}
+
+put {
+  url: {{baseUrl}}/api/marketplace/products/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "price": 150
+  }
+}

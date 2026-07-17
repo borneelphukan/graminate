@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Contact"
+  type: http
+  seq: 161
+}
+
+delete {
+  url: {{baseUrl}}/api/contacts/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

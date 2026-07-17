@@ -1,0 +1,25 @@
+meta {
+  name: "Add Sale"
+  type: http
+  seq: 120
+}
+
+post {
+  url: {{baseUrl}}/api/sales/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "amount": 1000,
+    "item": "Eggs",
+    "quantity": 100,
+    "date": "2024-01-01"
+  }
+}

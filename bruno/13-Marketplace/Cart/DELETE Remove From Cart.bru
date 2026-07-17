@@ -1,0 +1,15 @@
+meta {
+  name: "Remove From Cart"
+  type: http
+  seq: 198
+}
+
+delete {
+  url: {{baseUrl}}/api/marketplace/cart/remove/:cartId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get All Orders"
+  type: http
+  seq: 204
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/orders
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Feeds By User"
+  type: http
+  seq: 96
+}
+
+get {
+  url: {{baseUrl}}/api/poultry-feeds/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

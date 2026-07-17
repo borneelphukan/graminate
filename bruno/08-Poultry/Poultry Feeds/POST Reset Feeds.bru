@@ -1,0 +1,15 @@
+meta {
+  name: "Reset Feeds"
+  type: http
+  seq: 100
+}
+
+post {
+  url: {{baseUrl}}/api/poultry-feeds/reset
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

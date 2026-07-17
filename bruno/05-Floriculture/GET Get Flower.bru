@@ -1,0 +1,15 @@
+meta {
+  name: "Get Flower"
+  type: http
+  seq: 40
+}
+
+get {
+  url: {{baseUrl}}/api/floriculture/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

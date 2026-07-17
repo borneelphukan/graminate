@@ -1,0 +1,20 @@
+meta {
+  name: "Graminate API"
+  version: "1.0.0"
+}
+
+env {
+  name: "Local"
+  variables {
+    baseUrl: "http://localhost:3000"
+    token: ""
+  }
+}
+
+env {
+  name: "Production"
+  variables {
+    baseUrl: "https://api.graminate.com"
+    token: ""
+  }
+}

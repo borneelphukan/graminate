@@ -1,0 +1,23 @@
+meta {
+  name: "Add Apiary"
+  type: http
+  seq: 49
+}
+
+post {
+  url: {{baseUrl}}/api/apiculture/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Main Apiary",
+    "location": "Farm A",
+    "userId": 1
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: "Update Loan"
+  type: http
+  seq: 130
+}
+
+patch {
+  url: {{baseUrl}}/api/loans/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "amount": 60000
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: "Get Honey Production"
+  type: http
+  seq: 64
+}
+
+get {
+  url: {{baseUrl}}/api/honey-production/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

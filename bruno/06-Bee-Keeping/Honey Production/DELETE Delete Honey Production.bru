@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Honey Production"
+  type: http
+  seq: 66
+}
+
+delete {
+  url: {{baseUrl}}/api/honey-production/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

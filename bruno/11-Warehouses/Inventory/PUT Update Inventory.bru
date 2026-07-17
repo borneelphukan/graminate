@@ -1,0 +1,21 @@
+meta {
+  name: "Update Inventory"
+  type: http
+  seq: 149
+}
+
+put {
+  url: {{baseUrl}}/api/inventory/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 600
+  }
+}

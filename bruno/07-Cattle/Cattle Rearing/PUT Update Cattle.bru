@@ -1,0 +1,21 @@
+meta {
+  name: "Update Cattle"
+  type: http
+  seq: 77
+}
+
+put {
+  url: {{baseUrl}}/api/cattle-rearing/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Bessie Updated"
+  }
+}

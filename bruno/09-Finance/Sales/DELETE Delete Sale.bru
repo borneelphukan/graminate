@@ -1,0 +1,15 @@
+meta {
+  name: "Delete Sale"
+  type: http
+  seq: 124
+}
+
+delete {
+  url: {{baseUrl}}/api/sales/delete/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

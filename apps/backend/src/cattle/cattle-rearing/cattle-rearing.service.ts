@@ -129,9 +129,9 @@ export class CattleRearingService {
     }
   }
 
-  async resetTable(): Promise<{ message: string }> {
+  async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.cattle_rearing.deleteMany({});
+      await this.prisma.cattle_rearing.deleteMany({ where: { user_id: userId } });
       return { message: 'Cattle Rearing table has been completely reset.' };
     } catch (error) {
       throw new InternalServerErrorException(

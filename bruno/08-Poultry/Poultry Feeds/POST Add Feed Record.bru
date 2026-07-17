@@ -1,0 +1,24 @@
+meta {
+  name: "Add Feed Record"
+  type: http
+  seq: 95
+}
+
+post {
+  url: {{baseUrl}}/api/poultry-feeds/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "flockId": 1,
+    "feedType": "corn",
+    "quantity": 50,
+    "date": "2024-01-01"
+  }
+}

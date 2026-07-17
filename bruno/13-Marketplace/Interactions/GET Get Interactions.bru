@@ -1,0 +1,15 @@
+meta {
+  name: "Get Interactions"
+  type: http
+  seq: 194
+}
+
+get {
+  url: {{baseUrl}}/api/marketplace/interactions/user/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

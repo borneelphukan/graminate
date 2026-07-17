@@ -1,0 +1,22 @@
+meta {
+  name: "User - Update Profile"
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{baseUrl}}/api/user/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "darkMode": false,
+    "widgets": "string"
+  }
+}

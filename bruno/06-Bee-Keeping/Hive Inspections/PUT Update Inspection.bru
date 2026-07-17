@@ -1,0 +1,21 @@
+meta {
+  name: "Update Inspection"
+  type: http
+  seq: 71
+}
+
+put {
+  url: {{baseUrl}}/api/hive-inspections/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "notes": "Updated notes"
+  }
+}

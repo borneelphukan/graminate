@@ -1,0 +1,22 @@
+meta {
+  name: "Update Company"
+  type: http
+  seq: 154
+}
+
+put {
+  url: {{baseUrl}}/api/companies/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "company_id": 1,
+    "name": "Acme Corp Updated"
+  }
+}

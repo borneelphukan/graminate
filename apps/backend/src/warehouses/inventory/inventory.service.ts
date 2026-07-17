@@ -141,7 +141,7 @@ export class InventoryService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.inventory.deleteMany({});
+      await this.prisma.inventory.deleteMany({ where: { user_id: userId } });
       return { message: `Inventory table reset for user ${userId}` };
     } catch (error) {
       throw new InternalServerErrorException(

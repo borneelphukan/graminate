@@ -1,0 +1,23 @@
+meta {
+  name: "Add Inspection"
+  type: http
+  seq: 68
+}
+
+post {
+  url: {{baseUrl}}/api/hive-inspections/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "hiveId": 1,
+    "notes": "Looks healthy",
+    "date": "2024-01-01"
+  }
+}

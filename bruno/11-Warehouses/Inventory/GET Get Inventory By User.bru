@@ -1,0 +1,15 @@
+meta {
+  name: "Get Inventory By User"
+  type: http
+  seq: 148
+}
+
+get {
+  url: {{baseUrl}}/api/inventory/:userId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

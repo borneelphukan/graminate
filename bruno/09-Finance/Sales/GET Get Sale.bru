@@ -1,0 +1,15 @@
+meta {
+  name: "Get Sale"
+  type: http
+  seq: 122
+}
+
+get {
+  url: {{baseUrl}}/api/sales/:id
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,21 @@
+meta {
+  name: "Update Feed Record"
+  type: http
+  seq: 98
+}
+
+put {
+  url: {{baseUrl}}/api/poultry-feeds/update/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "quantity": 60
+  }
+}

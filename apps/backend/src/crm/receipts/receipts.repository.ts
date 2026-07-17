@@ -166,7 +166,7 @@ export class ReceiptsRepository {
     }
   }
 
-  async deleteReceipt(id: number) {
+  async deleteReceipt(id: number, userId?: number) {
     try {
       return await this.prisma.$transaction(async (tx) => {
         const deletedInvoice = await tx.invoices.findUnique({
@@ -175,6 +175,10 @@ export class ReceiptsRepository {
 
         if (!deletedInvoice) {
           return { status: 404, data: { error: 'Receipt not found' } };
+        }
+
+        if (userId !== undefined && deletedInvoice.user_id !== userId) {
+          return { status: 403, data: { error: 'Access denied' } };
         }
 
         await tx.invoices.delete({ where: { invoice_id: id } });
@@ -200,7 +204,7 @@ export class ReceiptsRepository {
     }
   }
 
-  async updateReceipt(updateReceiptDto: UpdateReceiptDto) {
+  async updateReceipt(updateReceiptDto: UpdateReceiptDto, userId?: number) {
     const {
       invoice_id,
       user_id,
@@ -235,6 +239,10 @@ export class ReceiptsRepository {
             status: 404,
             data: { error: 'Receipt not found for update.' },
           };
+        }
+
+        if (userId !== undefined && currentInvoice.user_id !== userId) {
+          return { status: 403, data: { error: 'Access denied' } };
         }
 
         const old_linked_sale_id = currentInvoice.sales_id;
