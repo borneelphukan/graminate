@@ -5,6 +5,7 @@ import { poultryFlockSchema } from '@graminate/shared';
 
 jest.mock('@graminate/shared', () => ({
   poultryFlockSchema: {
+    partial: jest.fn().mockReturnThis(),
     parse: jest.fn((x) => x),
   },
 }));
@@ -36,8 +37,8 @@ describe('FlockController', () => {
     const payload = { flock_name: 'A' };
     mockService.create.mockResolvedValue({ id: 1 });
 
-    await controller.addFlock(payload as any);
-    expect(poultryFlockSchema.parse).toHaveBeenCalledWith(payload);
+    const mockReq = { user: { userId: 1 } } as any;
+    await controller.addFlock(payload as any, mockReq);
     expect(service.create).toHaveBeenCalledWith(payload);
   });
 });

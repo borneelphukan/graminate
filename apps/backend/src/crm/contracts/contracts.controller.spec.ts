@@ -23,7 +23,8 @@ describe('ContractsController', () => {
 
   it('forwards parameters to service for fetch', async () => {
     mockService.getContracts.mockResolvedValue({ status: 200, data: {} });
-    await controller.getContractsByUserId(1, mockRes);
+    const mockReq = { user: { userId: 1 } } as any;
+    await controller.getContractsByUserId(1, mockRes, mockReq);
     expect(mockRes.status).toHaveBeenCalledWith(200);
   });
 });

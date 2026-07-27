@@ -16,7 +16,8 @@ describe('LlmController', () => {
 
   it('triggers high level service hook method handler', async () => {
     mockService.generateResponse.mockResolvedValue({ answer: 'Hi' });
-    const res = await controller.create({} as any);
+    const mockReq = { user: { userId: 1 } } as any;
+    const res = await controller.create({} as any, mockReq);
     expect(res.answer).toBe('Hi');
   });
 });

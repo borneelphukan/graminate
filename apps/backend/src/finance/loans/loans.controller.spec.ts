@@ -19,7 +19,8 @@ describe('LoansController', () => {
 
   it('gets full loan list without wrapper modifications', async () => {
     mockService.findAll.mockResolvedValue([]);
-    const result = await controller.findAll(1);
+    const mockReq = { user: { userId: 1 } } as any;
+    const result = await controller.findAll(1, mockReq);
     expect(result).toEqual([]);
   });
 });

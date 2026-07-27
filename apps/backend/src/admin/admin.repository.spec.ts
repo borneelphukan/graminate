@@ -24,6 +24,7 @@ const prismaMock = {
   admin: {
     findUnique: jest.fn(),
     create: jest.fn(),
+    count: jest.fn().mockResolvedValue(0),
   },
   login_history: {
     findMany: jest.fn(),
@@ -111,6 +112,7 @@ describe('AdminRepository', () => {
         'Admin',
         'new@admin.com',
         'pass123',
+        'code',
       );
       expect(result.status).toBe(201);
       expect(result.data.message).toBe('Admin registered');
@@ -119,7 +121,7 @@ describe('AdminRepository', () => {
     it('should throw ConflictException when email exists', async () => {
       prisma.admin.findUnique.mockResolvedValue(mockAdmin);
       await expect(
-        repo.register('X', 'Y', 'admin@example.com', 'p'),
+        repo.register('X', 'Y', 'admin@example.com', 'p', 'code'),
       ).rejects.toThrow(ConflictException);
     });
   });
@@ -132,10 +134,12 @@ describe('AdminRepository', () => {
       const result = await repo.login('admin@example.com', 'password');
       expect(result.status).toBe(200);
       expect(result.data.access_token).toBe('admin-jwt');
-      expect(jwtService.sign).toHaveBeenCalledWith({
-        isAdmin: true,
-        adminId: 'admin-uuid',
-      });
+      expect(jwtService.sign).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isAdmin: true,
+          adminId: 'admin-uuid',
+        }),
+      );
     });
 
     it('should throw UnauthorizedException when admin not found', async () => {

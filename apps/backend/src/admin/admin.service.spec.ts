@@ -51,8 +51,8 @@ describe('AdminService', () => {
   });
 
   it('register delegates', async () => {
-    await service.register('F', 'L', 'e@e.com', 'p');
-    expect(repo.register).toHaveBeenCalledWith('F', 'L', 'e@e.com', 'p');
+    await service.register('F', 'L', 'e@e.com', 'p', 'code');
+    expect(repo.register).toHaveBeenCalledWith('F', 'L', 'e@e.com', 'p', 'code');
   });
 
   it('login delegates', async () => {

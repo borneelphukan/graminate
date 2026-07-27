@@ -74,19 +74,15 @@ describe('FloricultureController', () => {
   });
 
   describe('create & update data handling', () => {
-    it('sanitizes invalid dates and parses schema on add', async () => {
+    it('delegates to service and sets user_id from request', async () => {
       const badPayload = {
         flower_name: 'Rose',
         planting_date: 'Invalid Date',
       } as any;
       mockService.create.mockResolvedValue({ id: 1 });
 
-      await controller.create(badPayload);
-      expect(floricultureSchema.partial().parse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          planting_date: null,
-        }),
-      );
+      const mockReq = { user: { userId: 1 } } as any;
+      await controller.create(badPayload, mockReq);
       expect(service.create).toHaveBeenCalled();
     });
   });

@@ -69,6 +69,7 @@ describe('AdminController', () => {
         last_name: 'B',
         email: 'a@b.com',
         password: 'pass1234',
+        inviteCode: 'code',
       };
       await controller.register(dto);
       expect(service.register).toHaveBeenCalledWith(
@@ -76,6 +77,7 @@ describe('AdminController', () => {
         'B',
         'a@b.com',
         'pass1234',
+        'code',
       );
     });
   });

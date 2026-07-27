@@ -22,7 +22,8 @@ describe('ExpensesController', () => {
 
   it('delegates param processing down to service correctly', async () => {
     mockService.findByUserId.mockResolvedValue([]);
-    const res = await controller.getByUserId(1);
+    const mockReq = { user: { userId: 1 } } as any;
+    const res = await controller.getByUserId(1, mockReq);
     expect(res).toEqual({ expenses: [] });
   });
 });

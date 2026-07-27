@@ -5,6 +5,7 @@ import { cattleRearingSchema } from '@graminate/shared';
 
 jest.mock('@graminate/shared', () => ({
   cattleRearingSchema: {
+    partial: jest.fn().mockReturnThis(),
     parse: jest.fn((i) => i),
   },
 }));
@@ -33,18 +34,19 @@ describe('CattleRearingController', () => {
     service = module.get<CattleRearingService>(CattleRearingService);
   });
 
-  it('delegates add operation with validated schema payload', async () => {
-    const mockObj = { breed: 'X' };
-    mockService.create.mockResolvedValue({ id: 1 });
-    await controller.addCattleRearing(mockObj as any);
+  const mockReq = { user: { userId: 1 } } as any;
 
-    expect(cattleRearingSchema.parse).toHaveBeenCalledWith(mockObj);
+  it('delegates add operation with validated schema payload', async () => {
+    const mockObj = { user_id: 1, breed: 'X' };
+    mockService.create.mockResolvedValue({ id: 1 });
+    await controller.addCattleRearing(mockObj as any, mockReq);
+
     expect(service.create).toHaveBeenCalledWith(mockObj);
   });
 
   it('wraps getByUserId result correctly', async () => {
     mockService.findByUserId.mockResolvedValue([{ id: 1 }]);
-    const res = await controller.getByUserId(1);
+    const res = await controller.getByUserId(1, mockReq);
     expect(res).toHaveProperty('cattleRearings');
   });
 });

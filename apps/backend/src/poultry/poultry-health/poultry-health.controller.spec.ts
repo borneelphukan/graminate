@@ -26,8 +26,8 @@ describe('PoultryHealthController', () => {
   });
 
   it('queries route parameter string mappings correctly into service numeric payloads', async () => {
-    mockService.findByUserIdWithFilters.mockResolvedValue([]);
-    await controller.getPoultryHealthRecords('10');
+    const mockReq = { user: { userId: 10 } } as any;
+    await controller.getPoultryHealthRecords('10', mockReq);
     expect(service.findByUserIdWithFilters).toHaveBeenCalledWith(10, {
       limit: undefined,
       offset: undefined,

@@ -26,8 +26,8 @@ describe('PoultryFeedsController', () => {
   });
 
   it('forwards filters via parsed integers to underlying service', async () => {
-    mockService.findByUserIdWithFilters.mockResolvedValue([]);
-    await controller.getPoultryFeedRecords('1', '5', undefined, '10');
+    const mockReq = { user: { userId: 1 } } as any;
+    await controller.getPoultryFeedRecords('1', mockReq, '5', undefined, '10');
     expect(service.findByUserIdWithFilters).toHaveBeenCalledWith(1, {
       limit: 5,
       offset: undefined,

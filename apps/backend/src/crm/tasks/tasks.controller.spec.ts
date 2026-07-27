@@ -22,7 +22,8 @@ describe('TasksController', () => {
 
   it('handles fetch request by resolving straight payload', async () => {
     mockService.getTasksByUser.mockResolvedValue([]);
-    const result = await controller.getTasks(1);
+    const mockReq = { user: { userId: 1 } } as any;
+    const result = await controller.getTasks(1, mockReq);
     expect(result.tasks).toEqual([]);
   });
 });

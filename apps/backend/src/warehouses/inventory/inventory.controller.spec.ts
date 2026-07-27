@@ -22,7 +22,8 @@ describe('InventoryController', () => {
 
   it('hands over payload with simple array mapping wrapped object', async () => {
     mockService.findByUserIdWithFilters.mockResolvedValue([]);
-    const result = await controller.getInventory('1');
+    const mockReq = { user: { userId: 1 } } as any;
+    const result = await controller.getInventory('1', mockReq);
     expect(result).toEqual({ items: [] });
   });
 });

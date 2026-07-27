@@ -64,16 +64,17 @@ describe('UserController', () => {
       expect(result).toEqual({ status: 201, data: { message: 'OK' } });
     });
 
-    it('should return 500 on unexpected error', async () => {
+    it('should throw on unexpected error', async () => {
       mockUserService.registerUser.mockRejectedValue(new Error('boom'));
-      const result = await controller.register({
-        first_name: 'J',
-        last_name: 'D',
-        email: 'j@e.com',
-        phone_number: '123',
-        password: 'pass',
-      } as any);
-      expect(result.status).toBe(500);
+      await expect(
+        controller.register({
+          first_name: 'J',
+          last_name: 'D',
+          email: 'j@e.com',
+          phone_number: '123',
+          password: 'pass',
+        } as any),
+      ).rejects.toThrow('boom');
     });
   });
 

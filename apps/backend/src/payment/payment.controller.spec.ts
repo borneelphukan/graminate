@@ -18,7 +18,8 @@ describe('PaymentController', () => {
 
   it('delegates endpoint hit to createOrder service method', async () => {
     mockService.createOrder.mockResolvedValue({ payload: 'data' });
-    const res = await controller.createOrder({} as any);
+    const mockReq = { user: { userId: 1 } } as any;
+    const res = await controller.createOrder({} as any, mockReq);
     expect(res.payload).toBe('data');
   });
 });

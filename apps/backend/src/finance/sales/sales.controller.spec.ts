@@ -22,7 +22,8 @@ describe('SalesController', () => {
 
   it('triggers correct handler method pass-through mapping', async () => {
     mockService.findByUserId.mockResolvedValue([]);
-    const res = await controller.getByUserId(1);
+    const mockReq = { user: { userId: 1 } } as any;
+    const res = await controller.getByUserId(1, mockReq);
     expect(res).toEqual({ sales: [] });
   });
 });

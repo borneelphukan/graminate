@@ -26,8 +26,8 @@ describe('PoultryEggsController', () => {
   });
 
   it('handles cast queries dynamically and safely maps them to service param', async () => {
-    mockService.findByUserIdWithFilters.mockResolvedValue([]);
-    await controller.getPoultryEggRecords('1', '10', '5', '200');
+    const mockReq = { user: { userId: 1 } } as any;
+    await controller.getPoultryEggRecords('1', mockReq, '10', '5', '200');
     expect(service.findByUserIdWithFilters).toHaveBeenCalledWith(1, {
       limit: 10,
       offset: 5,

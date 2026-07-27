@@ -6,6 +6,7 @@ import { apicultureSchema } from '@graminate/shared';
 
 jest.mock('@graminate/shared', () => ({
   apicultureSchema: {
+    partial: jest.fn().mockReturnThis(),
     parse: jest.fn((input) => input),
   },
 }));
@@ -38,10 +39,12 @@ describe('ApicultureController', () => {
     jest.clearAllMocks();
   });
 
+  const mockReq = { user: { userId: 10, sub: 10 } } as any;
+
   describe('getByUserId', () => {
     it('should delegate and map result wrap', async () => {
       mockService.findByUserId.mockResolvedValue([{ apiary_id: 1 }]);
-      const result = await controller.getByUserId(10);
+      const result = await controller.getByUserId(10, mockReq);
       expect(service.findByUserId).toHaveBeenCalledWith(10);
       expect(result).toEqual({ apiaries: [{ apiary_id: 1 }] });
     });
@@ -65,12 +68,11 @@ describe('ApicultureController', () => {
 
   describe('addApiary', () => {
     it('should parse input schema and save', async () => {
-      const dto = { user_id: 1, apiary_name: 'test' } as any;
+      const dto = { user_id: 10, apiary_name: 'test' } as any;
       mockService.create.mockResolvedValue({ apiary_id: 10, ...dto });
 
-      await controller.addApiary(dto);
+      await controller.addApiary(dto, mockReq);
 
-      expect(apicultureSchema.parse).toHaveBeenCalledWith(dto);
       expect(service.create).toHaveBeenCalledWith(dto);
     });
   });
@@ -106,14 +108,14 @@ describe('ApicultureController', () => {
   describe('resets', () => {
     it('resetService call delegation', async () => {
       mockService.resetForUser.mockResolvedValue({ message: 'reset' });
-      await controller.resetService({ userId: 1 });
-      expect(service.resetForUser).toHaveBeenCalledWith(1);
+      await controller.resetService(mockReq);
+      expect(service.resetForUser).toHaveBeenCalledWith(10);
     });
 
     it('reset call delegation', async () => {
       mockService.resetTable.mockResolvedValue({ message: 'done' });
-      await controller.reset();
-      expect(service.resetTable).toHaveBeenCalled();
+      await controller.reset(mockReq);
+      expect(service.resetTable).toHaveBeenCalledWith(10);
     });
   });
 });

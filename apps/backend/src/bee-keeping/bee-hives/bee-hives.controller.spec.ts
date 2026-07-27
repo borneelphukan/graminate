@@ -78,7 +78,7 @@ describe('BeeHivesController', () => {
   describe('reset', () => {
     it('calls underlying handler', async () => {
       mockService.resetTable.mockResolvedValue({ message: 'ok' });
-      await controller.reset({ userId: 5 });
+      await controller.reset({ user: { userId: 5 } } as any);
       expect(service.resetTable).toHaveBeenCalledWith(5);
     });
   });

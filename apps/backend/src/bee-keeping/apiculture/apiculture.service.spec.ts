@@ -149,7 +149,7 @@ describe('ApicultureService', () => {
 
     it('resetTable should clear all', async () => {
       prisma.apiculture.deleteMany.mockResolvedValue({ count: 5 });
-      const result = await service.resetTable();
+      const result = await service.resetTable(1);
       expect(result.message).toContain('completely reset');
     });
   });

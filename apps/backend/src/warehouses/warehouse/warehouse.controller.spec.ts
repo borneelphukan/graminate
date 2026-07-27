@@ -18,7 +18,8 @@ describe('WarehouseController', () => {
 
   it('responds direct resolve flow from service lookup', async () => {
     mockService.findByUserId.mockResolvedValue([]);
-    const rows = await controller.getByUserId('1');
+    const mockReq = { user: { userId: 1 } } as any;
+    const rows = await controller.getByUserId('1', mockReq);
     expect(rows).toEqual({ warehouses: [] });
   });
 });
