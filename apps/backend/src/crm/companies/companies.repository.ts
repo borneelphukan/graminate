@@ -139,7 +139,10 @@ export class CompaniesRepository {
     }
   }
 
-  async deleteCompany(id?: string, userId?: number): Promise<{
+  async deleteCompany(
+    id?: string,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: {
       message?: string;
@@ -183,7 +186,10 @@ export class CompaniesRepository {
     }
   }
 
-  async updateCompany(body: Partial<companies> & { id?: string }, userId?: number): Promise<{
+  async updateCompany(
+    body: Partial<companies> & { id?: string },
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; company?: companies };
   }> {

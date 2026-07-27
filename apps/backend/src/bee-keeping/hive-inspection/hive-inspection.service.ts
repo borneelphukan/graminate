@@ -177,7 +177,9 @@ export class HiveInspectionService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.hive_inspection.deleteMany({ where: { bee_hives: { apiculture: { user_id: userId } } } });
+      await this.prisma.hive_inspection.deleteMany({
+        where: { bee_hives: { apiculture: { user_id: userId } } },
+      });
       return { message: 'Hive Inspections table has been reset' };
     } catch (error) {
       throw new InternalServerErrorException(

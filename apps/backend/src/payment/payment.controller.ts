@@ -1,4 +1,12 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto, VerifyPaymentDto } from './payment.dto';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
@@ -14,7 +22,10 @@ export class PaymentController {
   @UseZodSchema(createPaymentSchema)
   @Post('create-order')
   @HttpCode(HttpStatus.CREATED)
-  async createOrder(@Body() createPaymentDto: CreatePaymentDto, @Request() req: RequestWithUser): Promise<any> {
+  async createOrder(
+    @Body() createPaymentDto: CreatePaymentDto,
+    @Request() req: RequestWithUser,
+  ): Promise<any> {
     createPaymentDto.userId = req.user.userId!;
     return await this.paymentService.createOrder(createPaymentDto);
   }

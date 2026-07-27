@@ -1,11 +1,10 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input, TextArea } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { POULTRY_TYPES, HOUSING_TYPES } from "@/constants/options";
-import TextArea from "@/components/ui/TextArea";
 
 type FlockData = {
   flock_id?: number;
@@ -409,8 +408,8 @@ const FlockForm = ({
                   label="Notes (Optional)"
                   placeholder="e.g. Aggression, pecking order, stress indicators"
                   value={flockData.notes}
-                  onChange={(val: string) => {
-                    setFlockData({ ...flockData, notes: val });
+                  onChange={(e) => {
+                    setFlockData({ ...flockData, notes: e.target.value });
                   }}
                   rows={4}
                 />

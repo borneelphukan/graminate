@@ -24,7 +24,10 @@ export class CompaniesService {
     return this.companiesRepository.addCompany(body);
   }
 
-  async deleteCompany(id?: string, userId?: number): Promise<{
+  async deleteCompany(
+    id?: string,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; company?: companies };
   }> {

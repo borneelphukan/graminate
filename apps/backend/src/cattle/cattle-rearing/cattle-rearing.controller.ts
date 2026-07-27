@@ -98,9 +98,7 @@ export class CattleRearingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(
-    @Request() req: RequestWithUser,
-  ): Promise<{ message: string }> {
+  async reset(@Request() req: RequestWithUser): Promise<{ message: string }> {
     return this.cattleRearingService.resetTable(req.user.userId!);
   }
 }

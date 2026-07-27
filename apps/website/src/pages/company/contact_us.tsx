@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import TextArea from "@/components/ui/TextArea";
 import { ContactInfo, ContactErrors } from "@/lib/types";
 import DefaultLayout from "@/layout/DefaultLayout";
-import { Button, Input, Dropdown } from "@graminate/ui";
+import { Button, Input, Dropdown, TextArea } from "@graminate/ui";
 import emailjs from "@emailjs/browser";
 import Toast from "@/components/ui/Toast";
 import { triggerToast } from "@/stores/toast";
@@ -206,8 +205,8 @@ export default function ContactUs() {
                     label="Message"
                     placeholder="Your Message"
                     value={contactInfo.message}
-                    onChange={(val: string) =>
-                      setContactInfo({ ...contactInfo, message: val })
+                    onChange={(e) =>
+                      setContactInfo({ ...contactInfo, message: e.target.value })
                     }
                   />
                   {errors.message && (

@@ -80,7 +80,11 @@ export class SalesController {
     @Request() req: RequestWithUser,
   ): Promise<sales> {
     try {
-      const updatedSale = await this.salesService.update(id, updateDto, req.user.userId!);
+      const updatedSale = await this.salesService.update(
+        id,
+        updateDto,
+        req.user.userId,
+      );
       return updatedSale;
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -102,7 +106,7 @@ export class SalesController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    const deleted = await this.salesService.delete(id, req.user.userId!);
+    const deleted = await this.salesService.delete(id, req.user.userId);
     if (!deleted) {
       throw new HttpException(
         'Sale not found or could not be deleted',

@@ -20,7 +20,10 @@ export class ContactsService {
     return this.contactsRepository.addContact(body);
   }
 
-  async deleteContact(id: string, userId?: number): Promise<{
+  async deleteContact(
+    id: string,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {

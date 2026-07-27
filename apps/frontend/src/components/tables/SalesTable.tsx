@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import TableSkeleton from "../skeletons/TableSkeleton";
 import SearchBar from "@/components/ui/SearchBar";
-import { Dropdown, Checkbox, Button, Popup } from "@graminate/ui";
+import { Dropdown, Checkbox, Button, Popup, TableSkeleton } from "@graminate/ui";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";

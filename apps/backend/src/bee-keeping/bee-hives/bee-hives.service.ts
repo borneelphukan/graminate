@@ -186,7 +186,9 @@ export class BeeHivesService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.bee_hives.deleteMany({ where: { apiculture: { user_id: userId } } });
+      await this.prisma.bee_hives.deleteMany({
+        where: { apiculture: { user_id: userId } },
+      });
       return { message: `Bee Hives table reset for user ${userId}` };
     } catch {
       throw new InternalServerErrorException('Failed to reset bee hives table');

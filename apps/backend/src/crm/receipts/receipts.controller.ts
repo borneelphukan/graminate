@@ -62,7 +62,10 @@ export class ReceiptsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.receiptsService.deleteReceipt(id, req.user.userId!);
+    const result = await this.receiptsService.deleteReceipt(
+      id,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 
@@ -80,7 +83,10 @@ export class ReceiptsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.receiptsService.updateReceipt(updateReceiptDto, req.user.userId!);
+    const result = await this.receiptsService.updateReceipt(
+      updateReceiptDto,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 

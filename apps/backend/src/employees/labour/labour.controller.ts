@@ -32,7 +32,11 @@ export class LabourController {
   @UseGuards(JwtAuthGuard)
   @UseZodSchema(laboursSchema)
   @Post('add')
-  async addLabour(@Body() body: CreateOrUpdateLabourDto, @Request() req: RequestWithUser, @Res() res: Response) {
+  async addLabour(
+    @Body() body: CreateOrUpdateLabourDto,
+    @Request() req: RequestWithUser,
+    @Res() res: Response,
+  ) {
     body.user_id = req.user.userId!;
     const result = await this.labourService.addLabour(body);
     return res.status(result.status).json(result.data);

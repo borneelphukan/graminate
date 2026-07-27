@@ -1,4 +1,4 @@
-import { Dropdown, Button, Input } from "@graminate/ui";
+import { Dropdown, Button, Input, ProfileSkeleton } from "@graminate/ui";
 import { CONTRACT_STATUS, PRIORITY_OPTIONS } from "@/constants/options";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 type ContractData = {
   contract_id: number;
@@ -104,7 +103,7 @@ const ContractDetails = () => {
     }
   }, [data]);
 
-  if (isLoading) return <ProfileSkeleton showAvatar={false} />;
+  if (isLoading) return <ProfileSkeleton Layout={PlatformLayout} showAvatar={false} />;
 
   const hasChanges =
     contractName !== initialFormData.contractName ||

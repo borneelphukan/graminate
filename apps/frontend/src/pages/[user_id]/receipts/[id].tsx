@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Input } from "@graminate/ui";
-import TextArea from "@/components/ui/TextArea";
+import { Button, Input, TextArea } from "@graminate/ui";
 import CustomTable from "@/components/tables/CustomTable";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { triggerToast } from "@/stores/toast";
@@ -454,8 +453,8 @@ const ReceiptDetails = () => {
               </div>
               <TextArea
                 label="Notes / Comments"
-                value={notes}
-                onChange={setNotes}
+                value={notes || ""}
+                onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional notes for the customer..."
               />
             </div>

@@ -68,9 +68,7 @@ export class BeeHivesController {
   }
 
   @Post('reset')
-  async reset(
-    @Request() req: RequestWithUser,
-  ): Promise<{ message: string }> {
+  async reset(@Request() req: RequestWithUser): Promise<{ message: string }> {
     return this.hivesService.resetTable(req.user.userId!);
   }
 }

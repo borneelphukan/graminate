@@ -1,12 +1,9 @@
-import { Dropdown, Icon, Button, Popup } from "@graminate/ui";
+import { Dropdown, Icon, Button, Popup, KanbanCardSkeleton, TextArea } from "@graminate/ui";
 import React, { useState, useMemo } from "react";
-import KanbanCardSkeleton from "@/components/skeletons/KanbanCardSkeleton";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-
-import TextArea from "@/components/ui/TextArea";
 import SortableItem from "./SortableItem";
 import TaskCard from "./TaskCard";
 import { Column, Id, Task } from "@/types/types";
@@ -162,7 +159,7 @@ const ColumnContainer = ({
                 <TextArea
                   placeholder="What needs to be done?"
                   value={newTaskTitle}
-                  onChange={setNewTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
                 />
               </div>
 

@@ -114,7 +114,10 @@ export class PaymentRepository {
         'Payment verification failed: Invalid signature.',
       );
     }
-    const signatureIsValid = crypto.timingSafeEqual(signatureBuffer, receivedBuffer);
+    const signatureIsValid = crypto.timingSafeEqual(
+      signatureBuffer,
+      receivedBuffer,
+    );
 
     if (!signatureIsValid) {
       await this.updatePaymentStatus(

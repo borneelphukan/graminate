@@ -125,7 +125,9 @@ export class HoneyProductionService {
 
   async resetTable(userId: number): Promise<{ message: string }> {
     try {
-      await this.prisma.honey_production.deleteMany({ where: { bee_hives: { apiculture: { user_id: userId } } } });
+      await this.prisma.honey_production.deleteMany({
+        where: { bee_hives: { apiculture: { user_id: userId } } },
+      });
       return { message: 'Honey Production table has been reset' };
     } catch {
       throw new InternalServerErrorException(

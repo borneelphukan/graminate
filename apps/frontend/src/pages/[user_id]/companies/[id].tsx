@@ -1,4 +1,4 @@
-import { Popup, Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Popup, Dropdown, Icon, Button, Input, ProfileSkeleton } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import { COMPANY_TYPES, INDUSTRY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 
 type Company = {
   company_id: string;
@@ -252,7 +251,7 @@ const CompanyDetails = () => {
     }
   };
 
-  if (isLoading) return <ProfileSkeleton />;
+  if (isLoading) return <ProfileSkeleton Layout={PlatformLayout} />;
 
   const hasChanges =
     Object.keys(formData).some(

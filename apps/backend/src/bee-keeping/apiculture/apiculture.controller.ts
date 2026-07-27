@@ -105,9 +105,7 @@ export class ApicultureController {
 
   @UseGuards(JwtAuthGuard)
   @Post('reset')
-  async reset(
-    @Request() req: RequestWithUser,
-  ): Promise<{ message: string }> {
+  async reset(@Request() req: RequestWithUser): Promise<{ message: string }> {
     return this.apicultureService.resetTable(req.user.userId!);
   }
 }

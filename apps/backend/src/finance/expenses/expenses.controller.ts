@@ -79,7 +79,11 @@ export class ExpensesController {
     @Request() req: RequestWithUser,
   ): Promise<expenses> {
     try {
-      const updatedExpense = await this.expensesService.update(id, updateDto, req.user.userId!);
+      const updatedExpense = await this.expensesService.update(
+        id,
+        updateDto,
+        req.user.userId,
+      );
       return updatedExpense;
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -101,7 +105,7 @@ export class ExpensesController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req: RequestWithUser,
   ): Promise<{ message: string }> {
-    const deleted = await this.expensesService.delete(id, req.user.userId!);
+    const deleted = await this.expensesService.delete(id, req.user.userId);
     if (!deleted) {
       throw new HttpException(
         'Expense not found or could not be deleted',

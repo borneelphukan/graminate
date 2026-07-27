@@ -43,7 +43,11 @@ export class ContactsController {
   @UseZodSchema(contactsSchema)
   @Post('add')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async addContact(@Body() body: CreateContactDto, @Request() req: RequestWithUser, @Res() res: Response) {
+  async addContact(
+    @Body() body: CreateContactDto,
+    @Request() req: RequestWithUser,
+    @Res() res: Response,
+  ) {
     body.user_id = req.user.userId!;
     const result = await this.contactsService.addContact(body);
     return res.status(result.status).json(result.data);
@@ -56,7 +60,10 @@ export class ContactsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.contactsService.deleteContact(id, req.user.userId!);
+    const result = await this.contactsService.deleteContact(
+      id,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 
@@ -68,7 +75,10 @@ export class ContactsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.contactsService.updateContact(body, req.user.userId!);
+    const result = await this.contactsService.updateContact(
+      body,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 }

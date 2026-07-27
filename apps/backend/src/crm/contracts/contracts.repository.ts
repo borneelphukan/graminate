@@ -90,7 +90,10 @@ export class ContractsRepository {
     }
   }
 
-  async deleteContract(id: number, userId?: number): Promise<{
+  async deleteContract(
+    id: number,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; contract?: contracts };
   }> {
@@ -128,7 +131,10 @@ export class ContractsRepository {
     }
   }
 
-  async updateContract(updateContractDto: UpdateContractDto, userId?: number): Promise<{
+  async updateContract(
+    updateContractDto: UpdateContractDto,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; contract?: contracts };
   }> {

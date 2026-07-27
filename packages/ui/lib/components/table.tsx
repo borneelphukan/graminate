@@ -2,14 +2,14 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Popup } from "../popup";
+import { Popup } from "./popup";
 
-import { Dropdown } from "../dropdown";
-import { Icon } from "../icon";
-import { Checkbox } from "../checkbox";
-import { Button } from "../button";
-import { SearchBar } from "../searchbar";
-import { TableSkeleton } from "../skeleton";
+import { Dropdown } from "./dropdown";
+import { Icon } from "./icon";
+import { Checkbox } from "./checkbox";
+import { Button } from "./button";
+import { SearchBar } from "./searchbar";
+import { TableSkeleton } from "./skeleton";
 
 export type RowType = unknown[];
 

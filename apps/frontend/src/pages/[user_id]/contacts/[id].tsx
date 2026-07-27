@@ -1,10 +1,9 @@
-import { Popup, Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Popup, Dropdown, Icon, Button, Input, ProfileSkeleton } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { triggerToast } from "@/stores/toast";
 import { CONTACT_TYPES } from "@/constants/options";
-import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import Head from "next/head";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
@@ -289,7 +288,7 @@ const ContactDetails = () => {
     }
   };
 
-  if (isLoading) return <ProfileSkeleton />;
+  if (isLoading) return <ProfileSkeleton Layout={PlatformLayout} />;
 
   const hasChanges =
     Object.keys(formData).some(

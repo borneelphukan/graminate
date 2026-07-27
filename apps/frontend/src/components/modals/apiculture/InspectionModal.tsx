@@ -1,6 +1,5 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input, TextArea } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
-import TextArea from "@/components/ui/TextArea";
 
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { format } from "date-fns";
@@ -473,12 +472,12 @@ const InspectionModal = ({
           <TextArea
             label="Actions Taken"
             value={formData.actions_taken}
-            onChange={(val) => handleInputChange("actions_taken", val)}
+            onChange={(e) => handleInputChange("actions_taken", e.target.value)}
           />
           <TextArea
             label="General Inspection Notes (Optional)"
             value={formData.notes}
-            onChange={(val) => handleInputChange("notes", val)}
+            onChange={(e) => handleInputChange("notes", e.target.value)}
           />
           {errors.notes && (
             <p className="text-red-500 text-xs mt-1">{errors.notes}</p>

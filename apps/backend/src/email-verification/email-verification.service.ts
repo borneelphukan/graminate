@@ -63,7 +63,9 @@ export class EmailVerificationService {
     if (!user) {
       return {
         status: 200,
-        data: { message: 'If the email exists, a verification link has been sent' },
+        data: {
+          message: 'If the email exists, a verification link has been sent',
+        },
       };
     }
 

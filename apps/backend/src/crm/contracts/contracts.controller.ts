@@ -80,7 +80,10 @@ export class ContractsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.contractsService.deleteContract(id, req.user.userId!);
+    const result = await this.contractsService.deleteContract(
+      id,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 
@@ -98,8 +101,10 @@ export class ContractsController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result =
-      await this.contractsService.updateContract(updateContractDto, req.user.userId!);
+    const result = await this.contractsService.updateContract(
+      updateContractDto,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 

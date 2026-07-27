@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateLoanDto, UpdateLoanDto } from './loans.dto';
 import { Prisma, loans } from '@prisma/client';
@@ -39,7 +43,11 @@ export class LoansService {
     return loan;
   }
 
-  async update(loanId: number, userId: number, updateLoanDto: UpdateLoanDto): Promise<loans> {
+  async update(
+    loanId: number,
+    userId: number,
+    updateLoanDto: UpdateLoanDto,
+  ): Promise<loans> {
     const existing = await this.prisma.loans.findUnique({
       where: { loan_id: loanId },
     });

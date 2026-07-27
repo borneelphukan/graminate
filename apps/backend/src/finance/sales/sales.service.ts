@@ -96,7 +96,11 @@ export class SalesService {
     }
   }
 
-  async update(id: number, updateDto: UpdateSaleDto, userId?: number): Promise<sales> {
+  async update(
+    id: number,
+    updateDto: UpdateSaleDto,
+    userId?: number,
+  ): Promise<sales> {
     const currentSale = await this.findById(id);
 
     if (userId !== undefined && currentSale.user_id !== userId) {

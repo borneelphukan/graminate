@@ -63,7 +63,11 @@ export class TasksRepository {
     }
   }
 
-  async updateTask(taskId: number, dto: UpdateTaskDto, userId?: number): Promise<tasks> {
+  async updateTask(
+    taskId: number,
+    dto: UpdateTaskDto,
+    userId?: number,
+  ): Promise<tasks> {
     if (dto.priority && !['Low', 'Medium', 'High'].includes(dto.priority)) {
       throw new BadRequestException('Invalid priority value');
     }
@@ -265,7 +269,10 @@ export class TasksRepository {
     }
   }
 
-  async deleteKanbanColumn(columnId: number, userId?: number): Promise<kanban_columns> {
+  async deleteKanbanColumn(
+    columnId: number,
+    userId?: number,
+  ): Promise<kanban_columns> {
     try {
       if (userId !== undefined) {
         const existing = await this.prisma.kanban_columns.findUnique({

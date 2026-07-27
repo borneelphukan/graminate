@@ -174,14 +174,16 @@ export class AdminRepository {
 
   async getAllAdmins(): Promise<{
     status: number;
-    data: { admins: Array<{
-      admin_id: string;
-      first_name: string;
-      last_name: string;
-      email: string;
-      is_root: boolean;
-      created_at: Date | null;
-    }> };
+    data: {
+      admins: Array<{
+        admin_id: string;
+        first_name: string;
+        last_name: string;
+        email: string;
+        is_root: boolean;
+        created_at: Date | null;
+      }>;
+    };
   }> {
     const admins = await this.prisma.admin.findMany({
       select: {

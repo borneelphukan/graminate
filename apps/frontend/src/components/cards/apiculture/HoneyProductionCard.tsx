@@ -19,7 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input, Popup, Spinner } from "@graminate/ui";
+import { Dropdown, Button, Table, Input, Popup, Spinner, TextArea } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -89,14 +89,7 @@ interface HoneyProductionCardProps {
   hiveId?: string;
 }
 
-type TextAreaProps = {
-  label?: string;
-  isDisabled?: boolean;
-  type?: "disabled" | "";
-  placeholder?: string;
-  value: string;
-  onChange: (val: string) => void;
-};
+
 
 const mapSupportedLanguageToLocale = (lang: SupportedLanguage): string => {
   switch (lang) {
@@ -111,47 +104,6 @@ const mapSupportedLanguageToLocale = (lang: SupportedLanguage): string => {
   }
 };
 
-const TextArea = ({
-  label = "",
-  isDisabled = false,
-  type = "",
-  placeholder = "",
-  value,
-  onChange,
-}: TextAreaProps) => {
-  const getFieldClass = () => {
-    switch (type) {
-      case "disabled":
-        return "border border-gray-400 opacity-50 text-gray-100 placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-red-200";
-      default:
-        return "border border-gray-400 dark:border-gray-200 text-dark dark:text-light placeholder-gray-300 text-sm rounded-md block w-full p-2.5 focus:outline-none focus:ring-1 focus:ring-green-200 dark:bg-gray-700";
-    }
-  };
-
-  return (
-    <div className="w-full">
-      {label && (
-        <label
-          htmlFor="textarea"
-          className="block mb-1 text-sm font-medium text-gray-200 dark:text-gray-300"
-        >
-          {label}
-        </label>
-      )}
-      <div className="relative flex items-start">
-        <textarea
-          id="textarea"
-          className={`${getFieldClass()} py-2 px-4 rounded`}
-          disabled={isDisabled}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={3}
-        ></textarea>
-      </div>
-    </div>
-  );
-};
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -797,7 +749,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               <TextArea
                 label="Notes (Optional)"
                 value={formData.harvest_notes}
-                onChange={(val) => handleFormChange("harvest_notes", val)}
+                onChange={(e) => handleFormChange("harvest_notes", e.target.value)}
                 placeholder="Add any relevant notes..."
               />
               <div className="flex justify-end gap-2 pt-4">

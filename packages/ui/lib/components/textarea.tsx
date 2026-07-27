@@ -4,8 +4,8 @@ import { cn } from "../utils";
 import { Layout } from "./layout";
 
 type TextareaProps = React.ComponentPropsWithoutRef<"textarea"> & {
-  id: string;
-  label: string;
+  id?: string;
+  label?: string;
   hideLabel?: boolean;
   hint?: string;
   error?: string;
@@ -16,18 +16,23 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     { className, id, label, hideLabel, hint, error, placeholder, ...props },
     ref
   ) => {
+    const generatedId = React.useId();
+    const textareaId = id || generatedId;
+
     return (
       <Layout className="disabled:cursor-not-allowed disabled:opacity-50">
         <label className="flex flex-col gap-1.5 group/input disabled:pointer-events-none">
-          <span
-            className={
-              hideLabel
-                ? "sr-only"
-                : "text-dark dark:text-light font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
-            }
-          >
-            {label}
-          </span>
+          {label && (
+            <span
+              className={
+                hideLabel
+                  ? "sr-only"
+                  : "text-dark dark:text-light font-medium text-sm group-focus-within/input:text-neutral-dark-gray"
+              }
+            >
+              {label}
+            </span>
+          )}
 
           <div
             className={cn(
@@ -42,8 +47,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           >
             <textarea
               className="border-none text-dark dark:text-light px-0.5 w-full placeholder-gray-300 focus:outline-none focus:placeholder-gray-300 text-sm min-h-16 field-sizing-content"
-              id={id}
-              name={id}
+              id={textareaId}
+              name={textareaId}
               ref={ref}
               placeholder={placeholder}
               {...props}

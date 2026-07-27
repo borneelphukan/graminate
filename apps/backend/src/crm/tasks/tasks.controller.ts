@@ -46,7 +46,10 @@ export class TasksController {
   @UseGuards(JwtAuthGuard)
   @UseZodSchema(taskSchema)
   @Post('add')
-  async createTask(@Body() createTaskDto: CreateTaskDto, @Request() req: RequestWithUser): Promise<tasks> {
+  async createTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @Request() req: RequestWithUser,
+  ): Promise<tasks> {
     createTaskDto.user_id = req.user.userId!;
     const task = await this.tasksService.createTask(createTaskDto);
     return task;
@@ -60,7 +63,11 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Request() req: RequestWithUser,
   ): Promise<tasks> {
-    const task = await this.tasksService.updateTask(id, updateTaskDto, req.user.userId!);
+    const task = await this.tasksService.updateTask(
+      id,
+      updateTaskDto,
+      req.user.userId,
+    );
     return task;
   }
 
@@ -70,7 +77,7 @@ export class TasksController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req: RequestWithUser,
   ): Promise<tasks> {
-    const task = await this.tasksService.deleteTask(id, req.user.userId!);
+    const task = await this.tasksService.deleteTask(id, req.user.userId);
     return task;
   }
 
@@ -125,7 +132,7 @@ export class TasksController {
       id,
       body.title,
       body.position,
-      req.user.userId!,
+      req.user.userId,
     );
     return column;
   }
@@ -136,7 +143,10 @@ export class TasksController {
     @Param('id', ParseIntPipe) id: number,
     @Request() req: RequestWithUser,
   ): Promise<kanban_columns> {
-    const column = await this.tasksService.deleteKanbanColumn(id, req.user.userId!);
+    const column = await this.tasksService.deleteKanbanColumn(
+      id,
+      req.user.userId,
+    );
     return column;
   }
 }

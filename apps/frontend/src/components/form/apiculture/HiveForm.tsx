@@ -1,9 +1,8 @@
-import { Dropdown, Icon, Button, Input } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input, TextArea } from "@graminate/ui";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { SidebarProp } from "@/types/card-props";
 import { useAnimatePanel, useClickOutside } from "@/hooks/forms";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import TextArea from "@/components/ui/TextArea";
 
 export type HiveData = {
   hive_id?: number;
@@ -351,7 +350,7 @@ const HiveForm = ({
                 <TextArea
                   label="Notes (Optional)"
                   value={hiveData.notes}
-                  onChange={(val) => handleInputChange("notes", val)}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
                 />
               </div>
             </section>

@@ -73,9 +73,7 @@ export class HoneyProductionController {
   }
 
   @Post('reset')
-  async reset(
-    @Request() req: RequestWithUser,
-  ): Promise<{ message: string }> {
+  async reset(@Request() req: RequestWithUser): Promise<{ message: string }> {
     return this.productionService.resetTable(req.user.userId!);
   }
 }

@@ -19,7 +19,11 @@ export class TasksService {
     return this.tasksRepository.getTasksByUser(userId, project, deadlineDate);
   }
 
-  async updateTask(taskId: number, dto: UpdateTaskDto, userId?: number): Promise<tasks> {
+  async updateTask(
+    taskId: number,
+    dto: UpdateTaskDto,
+    userId?: number,
+  ): Promise<tasks> {
     return this.tasksRepository.updateTask(taskId, dto, userId);
   }
 
@@ -58,10 +62,18 @@ export class TasksService {
     position?: number,
     userId?: number,
   ): Promise<kanban_columns> {
-    return this.tasksRepository.updateKanbanColumn(columnId, title, position, userId);
+    return this.tasksRepository.updateKanbanColumn(
+      columnId,
+      title,
+      position,
+      userId,
+    );
   }
 
-  async deleteKanbanColumn(columnId: number, userId?: number): Promise<kanban_columns> {
+  async deleteKanbanColumn(
+    columnId: number,
+    userId?: number,
+  ): Promise<kanban_columns> {
     return this.tasksRepository.deleteKanbanColumn(columnId, userId);
   }
 }

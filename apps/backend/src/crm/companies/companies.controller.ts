@@ -54,7 +54,11 @@ export class CompaniesController {
   @UseZodSchema(companiesSchema)
   @Post('add')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async addCompany(@Body() body: CreateCompanyDto, @Request() req: RequestWithUser, @Res() res: Response) {
+  async addCompany(
+    @Body() body: CreateCompanyDto,
+    @Request() req: RequestWithUser,
+    @Res() res: Response,
+  ) {
     body.user_id = req.user.userId!;
     const result = await this.companiesService.addCompany(body);
     return res.status(result.status).json(result.data);
@@ -67,7 +71,10 @@ export class CompaniesController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.companiesService.deleteCompany(id, req.user.userId!);
+    const result = await this.companiesService.deleteCompany(
+      id,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 
@@ -79,7 +86,10 @@ export class CompaniesController {
     @Request() req: RequestWithUser,
     @Res() res: Response,
   ) {
-    const result = await this.companiesService.updateCompany(body, req.user.userId!);
+    const result = await this.companiesService.updateCompany(
+      body,
+      req.user.userId,
+    );
     return res.status(result.status).json(result.data);
   }
 

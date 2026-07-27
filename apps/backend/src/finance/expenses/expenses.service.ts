@@ -72,7 +72,11 @@ export class ExpensesService {
     }
   }
 
-  async update(id: number, updateDto: UpdateExpenseDto, userId?: number): Promise<expenses> {
+  async update(
+    id: number,
+    updateDto: UpdateExpenseDto,
+    userId?: number,
+  ): Promise<expenses> {
     const currentExpense = await this.findById(id);
 
     if (userId !== undefined && currentExpense.user_id !== userId) {

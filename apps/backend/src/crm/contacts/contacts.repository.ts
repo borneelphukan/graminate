@@ -100,7 +100,10 @@ export class ContactsRepository {
     }
   }
 
-  async deleteContact(id: string, userId?: number): Promise<{
+  async deleteContact(
+    id: string,
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
@@ -140,7 +143,10 @@ export class ContactsRepository {
     }
   }
 
-  async updateContact(body: Partial<contacts> & { id?: string }, userId?: number): Promise<{
+  async updateContact(
+    body: Partial<contacts> & { id?: string },
+    userId?: number,
+  ): Promise<{
     status: number;
     data: { message?: string; error?: string; contact?: contacts };
   }> {
