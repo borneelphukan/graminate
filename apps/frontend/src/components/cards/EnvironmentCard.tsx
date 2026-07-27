@@ -1,6 +1,5 @@
-import { Icon, cn } from "@graminate/ui";
+import { Icon, cn, Spinner } from "@graminate/ui";
 import React from "react";
-import Loader from "@/components/ui/Loader";
 
 export type Metric = {
   icon: string;
@@ -57,7 +56,7 @@ const EnvironmentCard = ({
 
       {loading ? (
         <div className="flex flex-1 items-center justify-center py-8">
-          <Loader />
+          <Spinner />
         </div>
       ) : (
         <div className={`grid flex-1 ${gridConfig}`}>

@@ -1,4 +1,4 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Spinner } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
@@ -9,7 +9,6 @@ import {
   subDays,
   differenceInDays,
 } from "date-fns";
-import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 type ItemRecord = {
@@ -245,7 +244,7 @@ const PoultryFeedCard = ({
     if (loadingStockItems || loadingPerItemMetrics) {
       return (
         <div className="flex justify-center items-center h-full min-h-[200px]">
-          <Loader />
+          <Spinner />
         </div>
       );
     }
@@ -351,7 +350,7 @@ const PoultryFeedCard = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
           <FeedStatItem
             icon={"restaurant"}
-            value={loadingStockItems ? <Loader /> : feedingStatusValue}
+            value={loadingStockItems ? <Spinner /> : feedingStatusValue}
             label="Times Fed Today"
             valueClassName={feedingStatusColor}
           />

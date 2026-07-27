@@ -1,7 +1,6 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Spinner } from "@graminate/ui";
 import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../ui/Loader";
 
 type ItemRecord = {
   inventory_id: number;
@@ -88,7 +87,7 @@ const InventoryStockCard = ({
       </h2>
       {loading && (
         <div className="flex-grow flex items-center justify-center">
-          <Loader />
+          <Spinner />
         </div>
       )}
       {error && (

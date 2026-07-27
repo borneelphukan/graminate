@@ -2,8 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Loader from "@/components/ui/Loader";
-import { Button, Icon, Popup, Tabs, SearchBar, Badge, Dropdown, Stepper, StepperItem, StepperIndicator, StepperContent, StepperTitle } from "@graminate/ui";
+import { Button, Icon, Popup, Tabs, SearchBar, Badge, Dropdown, Stepper, StepperItem, StepperIndicator, StepperContent, StepperTitle, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import ListProductModal from "@/components/modals/ListProductModal";
@@ -815,7 +814,7 @@ const MarketplacePage = () => {
         <main className="min-h-screen bg-light dark:bg-gray-900 p-4">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader />
+              <Spinner />
             </div>
           ) : (
             <>

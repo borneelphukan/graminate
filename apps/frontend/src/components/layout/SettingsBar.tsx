@@ -1,11 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button } from "@graminate/ui";
+import { Button, Spinner } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { getTranslator, translations } from "@/translations";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 
 type SettingsSubItem = {
   label: string;
@@ -160,7 +159,7 @@ const SettingsBar = () => {
       <div className="px-4">
         {isLoadingUserDetails && !userType && !subTypes.length && (
           <div className="flex justify-center py-4">
-            <Loader />
+            <Spinner />
           </div>
         )}
         {settingsMenu.map((menu, index) => (

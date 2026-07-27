@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button, SegmentedControl } from "@graminate/ui";
+import { Dropdown, Icon, Button, SegmentedControl, Spinner } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -27,7 +27,6 @@ import {
   min as minDateFn,
   addDays as addDaysDateFns,
 } from "date-fns";
-import Loader from "@/components/ui/Loader";
 
 
 
@@ -335,7 +334,7 @@ const PoultryEggCard = ({
     if (loading && eggCollectionLineData.datasets.length === 0) {
       return (
         <div className="flex justify-center items-center h-full min-h-[300px]">
-          <Loader />
+          <Spinner />
         </div>
       );
     }
@@ -428,7 +427,7 @@ const PoultryEggCard = ({
               <div className="relative h-full min-h-[250px] sm:min-h-[280px] md:min-h-[320px]">
                 {loading && (
                   <div className="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex justify-center items-center z-10">
-                    <Loader />
+                    <Spinner />
                   </div>
                 )}
                 <Line options={finalOptions} data={eggCollectionLineData} />

@@ -7,8 +7,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Popup, Button, Table, Alert, Icon } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Popup, Button, Table, Alert, Icon, Spinner } from "@graminate/ui";
 import axios from "axios";
 import ApicultureForm from "@/components/form/apiculture/ApicultureForm";
 import { useTableActions } from "@/hooks/useTableActions";
@@ -402,7 +401,7 @@ const ApicultureDetailPage = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-4 md:mb-0">
               {loadingApiaryData ? (
-                <Loader />
+                <Spinner />
               ) : selectedApiaryData ? (
                 <>
                   <h1 className="text-2xl font-bold">
@@ -449,7 +448,7 @@ const ApicultureDetailPage = () => {
 
           {loadingApiaryData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700 flex justify-center items-center h-full min-h-[150px]">
-              <Loader />
+              <Spinner />
             </div>
           ) : selectedApiaryData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700">

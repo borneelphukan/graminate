@@ -1,10 +1,9 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Spinner } from "@graminate/ui";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import jsPDF from "jspdf";
 
 type PoultryHealthRecord = {
@@ -203,7 +202,7 @@ const PoultryHealthDetails = () => {
     return (
       <PlatformLayout>
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-150px)]">
-          <Loader />
+          <Spinner />
         </div>
       </PlatformLayout>
     );

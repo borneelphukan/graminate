@@ -1,7 +1,6 @@
-import { Icon, cn, Button, type IconType } from "@graminate/ui";
+import { Icon, cn, Button, type IconType, Spinner } from "@graminate/ui";
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
-import Loader from "@/components/ui/Loader";
 import ReactMarkdown from 'react-markdown';
 import { useLocationName } from "@/hooks/weather";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
@@ -336,7 +335,7 @@ const WeatherModal = ({
 
         {loading && !data ? (
           <div className="flex-1 flex items-center justify-center p-20">
-            <Loader />
+            <Spinner />
           </div>
         ) : error ? (
           <div className="flex-1 flex items-center justify-center p-20 text-red-500 text-center flex-col gap-4">
@@ -346,7 +345,7 @@ const WeatherModal = ({
         ) : !data && (!effectiveLat || !effectiveLon) ? (
           <div className="flex-1 flex items-center justify-center p-20 text-dark dark:text-light opacity-60 text-center">
             <div className="flex flex-col items-center gap-6">
-              <Loader />
+              <Spinner />
               <div className="space-y-2">
                 <p className="text-xs font-black uppercase tracking-[0.2em] animate-pulse">Detecting Location...</p>
                 <p className="text-[10px] opacity-50">Please ensure GPS is enabled for weather insights.</p>
@@ -355,7 +354,7 @@ const WeatherModal = ({
           </div>
         ) : !data ? (
           <div className="flex-1 flex items-center justify-center p-20">
-            <Loader />
+            <Spinner />
           </div>
         ) : (
           <div className="flex-1 overflow-hidden flex flex-col relative">

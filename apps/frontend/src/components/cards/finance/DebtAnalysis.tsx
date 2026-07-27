@@ -20,10 +20,9 @@ import type {
   Chart,
 } from "chart.js";
 import { format, startOfMonth, endOfMonth, subMonths, addMonths, addWeeks, subDays, isBefore, isValid as isValidDate } from "date-fns";
-import { Dropdown, Input, Button } from "@graminate/ui";
+import { Dropdown, Input, Button, Spinner } from "@graminate/ui";
 import LoanModal from "@/components/modals/LoanModal";
 import { DailyFinancialEntry } from "@/hooks/finance";
-import Loader from "@/components/ui/Loader";
 
 export type Loan = {
   loan_id: number;
@@ -320,7 +319,7 @@ const DebtAnalysis = ({
   if (isLoadingData) {
     return (
       <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
-        <Loader />
+        <Spinner />
       </div>
     );
   }

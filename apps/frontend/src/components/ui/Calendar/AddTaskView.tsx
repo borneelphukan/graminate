@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Dropdown, Button, Input } from "@graminate/ui";
+import { Dropdown, Button, Input, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../Loader";
 
 
 type AddTaskViewProps = {
@@ -113,7 +112,7 @@ const AddTaskView = ({
           {showSuggestions &&
             (isLoadingSuggestions ? (
               <div className="absolute z-10 mt-1 w-full rounded-md bg-white dark:bg-dark-100 py-1 text-xs p-2 text-gray-400 dark:text-gray-200 shadow-lg">
-                <Loader />
+                <Spinner />
               </div>
             ) : (
               suggestions.length > 0 && (

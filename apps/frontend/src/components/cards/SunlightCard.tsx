@@ -3,8 +3,7 @@ import axios from "axios";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Line } from "react-chartjs-2";
-import { Icon, Tabs } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Icon, Tabs, Spinner } from "@graminate/ui";
 import {
   Chart as ChartJS,
   Tooltip,
@@ -328,7 +327,7 @@ const SunlightCard = ({ method, selectedFlowerName, plantingDate, userId }: { me
 
       {loading ? (
         <div className="flex-1 flex flex-col items-center justify-center py-12">
-          <Loader />
+          <Spinner />
         </div>
       ) : !weatherData ? (
         <p className="text-center text-sm py-12">Weather data unavailable</p>

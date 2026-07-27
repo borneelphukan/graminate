@@ -3,8 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import { Button, Icon, Badge, Popup, Dropdown } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Button, Icon, Badge, Popup, Dropdown, Spinner } from "@graminate/ui";
 
 type OrderItem = {
   order_item_id: number;
@@ -215,7 +214,7 @@ const AdminMarketplacePage = () => {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center py-12"><Loader /></div>
+            <div className="flex justify-center py-12"><Spinner /></div>
           ) : filteredOrders.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-20 h-20 rounded-full bg-gray-400 dark:bg-gray-200 flex items-center justify-center mb-4">

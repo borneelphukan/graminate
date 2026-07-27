@@ -1,6 +1,5 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Spinner } from "@graminate/ui";
 import React from "react";
-import Loader from "@/components/ui/Loader";
 
 type VeterinaryCardProps = {
   birdsVaccinated: number | null;
@@ -60,7 +59,7 @@ const VeterinaryCard = ({
 
       {loading ? (
         <div className="flex-grow flex justify-center items-center py-8">
-          <Loader />
+          <Spinner />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 flex-grow">

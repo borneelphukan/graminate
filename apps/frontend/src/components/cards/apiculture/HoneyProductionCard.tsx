@@ -19,8 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input, Popup } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Dropdown, Button, Table, Input, Popup, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -901,7 +900,7 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
               <canvas ref={barChartRef}></canvas>
               {isLoading && (
                 <div className="absolute inset-0 flex justify-center items-center bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 z-10">
-                  <Loader />
+                  <Spinner />
                 </div>
               )}
               {!isLoading && currentIntervalDates.length === 0 && (

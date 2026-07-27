@@ -1,11 +1,10 @@
 import React, { useState, useEffect, JSX } from "react";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Button, Input } from "@graminate/ui";
+import { Button, Input, Spinner } from "@graminate/ui";
 import { showToast, toastMessage } from "@/stores/toast";
 import axios from "axios";
 import PasswordModal from "@/components/modals/PasswordModal";
@@ -310,7 +309,7 @@ const AddServicePage = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader />
+        <Spinner />
       </div>
     );
   }

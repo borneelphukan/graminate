@@ -1,7 +1,6 @@
-import { Icon, Dropdown, Button, Input, Popup } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup, Spinner } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../ui/Loader";
 
 type ExpenseModalProps = {
   isOpen: boolean;
@@ -229,7 +228,7 @@ const ExpenseModal = ({
                 {isLoadingSubTypes ? (
                   <div className="flex flex-col">
                     <div className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center h-[42px] bg-gray-50 dark:bg-gray-700">
-                      <Loader />
+                      <Spinner />
                     </div>
                   </div>
                 ) : (

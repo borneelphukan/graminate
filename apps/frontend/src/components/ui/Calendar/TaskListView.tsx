@@ -1,8 +1,7 @@
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Spinner } from "@graminate/ui";
 import React from "react";
 import { DisplayTask } from "./Calendar";
 
-import Loader from "../Loader";
 
 type TaskListViewProps = {
   selectedDate: Date;
@@ -84,7 +83,7 @@ const TaskListView = ({
         {isLoading ? (
           <div className="text-center text-gray-500 dark:text-gray-400">
             <Icon type={"progress_activity"}  size="lg" className="mr-2 animate- animate-spin" />
-            <Loader />
+            <Spinner />
           </div>
         ) : tasks.length === 0 ? (
           <p className="text-center text-sm text-gray-300 py-4">

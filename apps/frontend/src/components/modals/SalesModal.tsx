@@ -1,7 +1,6 @@
-import { Icon, Dropdown, Button, Input, Popup } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup, Spinner } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import { UNITS } from "@/constants/options";
 
 type SalesModalProps = {
@@ -287,7 +286,7 @@ const SalesModal = ({
               {isLoadingSubTypes ? (
                 <div className="flex flex-col">
                   <div className="p-2.5 border border-gray-400 dark:border-gray-600 rounded-md flex items-center justify-center h-[42px] bg-gray-50 dark:bg-gray-700">
-                    <Loader />
+                    <Spinner />
                   </div>
                 </div>
               ) : (

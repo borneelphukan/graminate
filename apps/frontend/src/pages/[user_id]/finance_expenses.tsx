@@ -2,8 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Loader from "@/components/ui/Loader";
-import { Button, Icon, Popup } from "@graminate/ui";
+import { Button, Icon, Popup, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
@@ -208,7 +207,7 @@ const Expenses = () => {
         <main className="min-h-screen bg-light dark:bg-gray-900 p-4">
           {isLoading && !expensesData.length ? (
             <div className="flex justify-center items-center h-64">
-              <Loader />
+              <Spinner />
             </div>
           ) : (
             <>

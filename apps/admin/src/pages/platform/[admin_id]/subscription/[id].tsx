@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Table, TableData, Button } from "@graminate/ui";
+import { Table, TableData, Button, Spinner } from "@graminate/ui";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Loader from "@/components/ui/Loader";
 import { format } from "date-fns";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -174,7 +173,7 @@ const SubscriptionBillingPage = () => {
         <div className="p-4 sm:p-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-96">
-              <Loader />
+              <Spinner />
             </div>
           ) : error ? (
             <div className="p-4 text-sm text-red-800 rounded-xl bg-red-50 border border-red-100">

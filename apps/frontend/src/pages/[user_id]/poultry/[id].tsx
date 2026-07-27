@@ -35,9 +35,8 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button, Alert } from "@graminate/ui";
+import { Button, Alert, Spinner } from "@graminate/ui";
 import FlockForm from "@/components/form/poultry/FlockForm";
-import Loader from "@/components/ui/Loader";
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
 import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
 import WeatherModal from "@/components/modals/WeatherModal";
@@ -1011,7 +1010,7 @@ const PoultryDetail = () => {
 
           {loadingFlockData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-600 flex justify-center items-center h-full min-h-[150px]">
-              <Loader />
+              <Spinner />
             </div>
           ) : selectedFlockData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-600">

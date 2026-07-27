@@ -30,8 +30,7 @@ import {
   addDays as addDaysDateFns,
   isValid as isValidDate,
 } from "date-fns";
-import { Dropdown, Button, Input } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Dropdown, Button, Input, Spinner } from "@graminate/ui";
 import { DailyFinancialEntry } from "@/hooks/finance";
 
 ChartJS.register(
@@ -453,7 +452,7 @@ const WorkingCapital = ({
   if (isLoadingData) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg h-[500px] flex items-center justify-center">
-        <Loader />
+        <Spinner />
       </div>
     );
   }

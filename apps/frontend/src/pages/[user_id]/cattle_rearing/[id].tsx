@@ -8,8 +8,7 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button, Alert } from "@graminate/ui";
-import Loader from "@/components/ui/Loader";
+import { Button, Alert, Spinner } from "@graminate/ui";
 import axios from "axios";
 import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 import CattleForm, { CattleRearingData } from "@/components/form/CattleForm";
@@ -390,7 +389,7 @@ const CattleDetailPage = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div className="mb-4 md:mb-0">
               {loadingCattleData ? (
-                <Loader />
+                <Spinner />
               ) : selectedCattleData ? (
                 <>
                   <h1 className="text-2xl font-bold">
@@ -431,7 +430,7 @@ const CattleDetailPage = () => {
 
           {loadingCattleData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700 flex justify-center items-center h-full min-h-[150px]">
-              <Loader />
+              <Spinner />
             </div>
           ) : selectedCattleData ? (
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-700">

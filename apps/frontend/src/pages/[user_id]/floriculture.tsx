@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Icon, Button } from "@graminate/ui";
+import { Icon, Button, Spinner } from "@graminate/ui";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { FLORICULTURE_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import FloricultureForm, { FloricultureData } from "@/components/form/FloricultureForm";
@@ -172,7 +171,7 @@ const Floriculture = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
                 {Array(5).fill(0).map((_, i) => (
                   <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center animate-pulse">
-                    <Loader />
+                    <Spinner />
                   </div>
                 ))}
               </div>
@@ -188,7 +187,7 @@ const Floriculture = () => {
           <div className="flex flex-col gap-6">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
-                <Loader />
+                <Spinner />
                 <p className="mt-4 text-gray-500 animate-pulse">Loading flowers...</p>
               </div>
             ) : (

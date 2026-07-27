@@ -1,4 +1,4 @@
-import { Popup, Icon, Button, Table, Alert } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Alert, Spinner } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -8,7 +8,6 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import Loader from "@/components/ui/Loader";
 import HiveForm, { HiveData } from "@/components/form/apiculture/HiveForm";
 import axios from "axios";
 import { useTableActions } from "@/hooks/useTableActions";
@@ -568,7 +567,7 @@ const HiveDetailsPage = () => {
     return (
       <PlatformLayout>
         <div className="flex justify-center items-center h-screen">
-          <Loader />
+          <Spinner />
         </div>
       </PlatformLayout>
     );

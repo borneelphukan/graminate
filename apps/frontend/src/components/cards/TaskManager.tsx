@@ -1,8 +1,7 @@
-import { Dropdown, Icon, Checkbox, Button, Input } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox, Button, Input, Spinner } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../ui/Loader";
 
 type Priority = "High" | "Medium" | "Low" | "";
 type TaskStatus = "To Do" | "In Progress" | "Checks" | "Completed";
@@ -207,7 +206,7 @@ const TaskManager = ({ userId, projectType }: Props) => {
       <div className="flex-grow overflow-hidden">
         {isLoading ? (
           <div className="flex-grow flex items-center justify-center h-full">
-            <Loader />
+            <Spinner />
           </div>
         ) : error ? (
           <div className="flex-grow flex items-center justify-center h-full">

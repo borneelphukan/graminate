@@ -2,14 +2,14 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Popup } from "../popup/popup";
+import { Popup } from "../popup";
 
-import { Dropdown } from "../dropdown/dropdown";
-import { Icon } from "../icon/icon";
-import { Checkbox } from "../checkbox/checkbox";
-import { Button } from "../button/button";
-import { SearchBar } from "../searchbar/searchbar";
-import { TableSkeleton } from "./table-skeleton";
+import { Dropdown } from "../dropdown";
+import { Icon } from "../icon";
+import { Checkbox } from "../checkbox";
+import { Button } from "../button";
+import { SearchBar } from "../searchbar";
+import { TableSkeleton } from "../skeleton";
 
 export type RowType = unknown[];
 
@@ -210,9 +210,9 @@ const Table = ({
 
   const handleDeleteSelected = async () => {
     if (!onDeleteRows) return;
-    
+
     const selectedRowsData = sortedAndPaginatedRows.filter((_, idx) => selectedRows[idx]);
-    
+
     if (selectedRowsData.length === 0) {
       setPopup({
         isOpen: true,
@@ -299,42 +299,42 @@ const Table = ({
             </div>
           )}
         </div>
-          {download && (
-            <div className="relative" ref={dropdownRef}>
-              <Button
-                variant="secondary"
-                size="sm"
-                label="Download"
-                icon={{ right: "download" }}
-                disabled={filteredRows.length === 0}
-                onClick={() => setShowExportDropdown(!showExportDropdown)}
-              />
-              {showExportDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-700 border dark:border-gray-200 rounded-xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                  <button
-                    className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 transition-colors"
-                    onClick={() => {
-                      exportTableData("pdf");
-                      setShowExportDropdown(false);
-                    }}
-                  >
-                    <Icon type="picture_as_pdf" size={18} />
-                    Export as PDF
-                  </button>
-                  <button
-                    className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 border-t border-gray-400 dark:border-gray-600 transition-colors"
-                    onClick={() => {
-                      exportTableData("xlsx");
-                      setShowExportDropdown(false);
-                    }}
-                  >
-                    <Icon type="table_chart" size={18} />
-                    Export as Excel
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+        {download && (
+          <div className="relative" ref={dropdownRef}>
+            <Button
+              variant="secondary"
+              size="sm"
+              label="Download"
+              icon={{ right: "download" }}
+              disabled={filteredRows.length === 0}
+              onClick={() => setShowExportDropdown(!showExportDropdown)}
+            />
+            {showExportDropdown && (
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-700 border dark:border-gray-200 rounded-xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                <button
+                  className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 transition-colors"
+                  onClick={() => {
+                    exportTableData("pdf");
+                    setShowExportDropdown(false);
+                  }}
+                >
+                  <Icon type="picture_as_pdf" size={18} />
+                  Export as PDF
+                </button>
+                <button
+                  className="w-full text-left text-sm px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300 border-t border-gray-400 dark:border-gray-600 transition-colors"
+                  onClick={() => {
+                    exportTableData("xlsx");
+                    setShowExportDropdown(false);
+                  }}
+                >
+                  <Icon type="table_chart" size={18} />
+                  Export as Excel
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {effectiveLoading ? (
@@ -371,9 +371,9 @@ const Table = ({
                   >
                     <div className="flex items-center gap-1.5 justify-start">
                       <span>{column}</span>
-                      <Icon 
-                        type={sortColumn === index ? (sortOrder === "asc" ? "arrow_drop_up" : "arrow_drop_down") : "unfold_more"} 
-                        size={14} 
+                      <Icon
+                        type={sortColumn === index ? (sortOrder === "asc" ? "arrow_drop_up" : "arrow_drop_down") : "unfold_more"}
+                        size={14}
                         className={`transition-opacity duration-200 ${sortColumn === index ? "opacity-100 text-primary-500" : "opacity-0 group-hover:opacity-40"}`}
                       />
                     </div>
@@ -385,11 +385,10 @@ const Table = ({
               {sortedAndPaginatedRows.map((row, rowIndex) => (
                 <tr
                   key={`row-${rowIndex}-${(row as any[])[0]}`}
-                  className={`group cursor-pointer transition-all duration-200 ${
-                    selectedRows[rowIndex]
-                      ? "bg-primary-50/40 dark:bg-primary-900/10"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-600"
-                  } border-b border-neutral-200 dark:border-gray-700 relative`}
+                  className={`group cursor-pointer transition-all duration-200 ${selectedRows[rowIndex]
+                    ? "bg-primary-50/40 dark:bg-primary-900/10"
+                    : "hover:bg-gray-50 dark:hover:bg-gray-600"
+                    } border-b border-neutral-200 dark:border-gray-700 relative`}
                   style={{ zIndex: sortedAndPaginatedRows.length - rowIndex }}
                   onClick={(e) => {
                     if (
@@ -418,19 +417,18 @@ const Table = ({
                   {(row as any[]).map((cell, cellIndex) => data.columns[cellIndex] !== "#" && (
                     <td
                       key={cellIndex}
-                      className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-dark dark:text-light max-w-[240px] ${
-                        view === "subscriptions" && data.columns[cellIndex] === "Action" ? "" : "truncate"
-                      }`}
+                      className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-dark dark:text-light max-w-[240px] ${view === "subscriptions" && data.columns[cellIndex] === "Action" ? "" : "truncate"
+                        }`}
                       title={
                         Array.isArray(cell)
                           ? cell.join(", ")
                           : typeof cell === "string" || typeof cell === "number"
-                          ? String(cell)
-                          : undefined
+                            ? String(cell)
+                            : undefined
                       }
                     >
                       {view === "inventory" &&
-                      data.columns[cellIndex] === "Status" ? (
+                        data.columns[cellIndex] === "Status" ? (
                         <div className="flex gap-[2px] text-sm">
                           {(() => {
                             const quantityIndex =
@@ -483,7 +481,7 @@ const Table = ({
                           {(() => {
                             const currentPlan = (row as any[])[data.columns.indexOf("Plan")];
                             let items: string[] = [];
-                            
+
                             if (currentPlan === "FREE") {
                               items = ["Allow Basic Access", "Allow Pro Access"];
                             } else if (currentPlan === "BASIC") {
@@ -553,7 +551,7 @@ const Table = ({
               />
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 order-1 sm:order-2">
             <Button
               label="Prev"

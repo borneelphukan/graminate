@@ -1,10 +1,9 @@
-import { Popup, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Spinner } from "@graminate/ui";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Loader from "@/components/ui/Loader";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import { useTableActions } from "@/hooks/useTableActions";
@@ -324,7 +323,7 @@ const Apiculture = () => {
                       key={index}
                       className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center animate-pulse"
                     >
-                      <Loader />
+                      <Spinner />
                     </div>
                   ))}
               </div>

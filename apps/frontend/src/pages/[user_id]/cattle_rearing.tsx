@@ -1,4 +1,4 @@
-import { Popup, Icon, Button, Table } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Spinner } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -6,7 +6,6 @@ import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { PAGINATION_ITEMS, POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import { useTableActions } from "@/hooks/useTableActions";
 import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
@@ -280,7 +279,7 @@ const CattleRearing = () => {
                       key={index}
                       className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center animate-pulse"
                     >
-                      <Loader />
+                      <Spinner />
                     </div>
                   ))}
               </div>

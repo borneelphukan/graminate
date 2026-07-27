@@ -1,4 +1,4 @@
-import { Dropdown, Button, Input } from "@graminate/ui";
+import { Dropdown, Button, Input, Spinner } from "@graminate/ui";
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -7,7 +7,6 @@ import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
 
 import { LANGUAGES, TIME_FORMAT, UNITS } from "@/constants/options";
-import Loader from "@/components/ui/Loader";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import {
   useUserPreferences,
@@ -248,7 +247,7 @@ const General = () => {
               />
               {isLoadingPageData ? (
                 <div className="flex justify-center items-center h-64">
-                  <Loader />
+                  <Spinner />
                 </div>
               ) : (
                 <section className="py-6">

@@ -1,7 +1,6 @@
-import { Icon, Dropdown, Button, Input, Popup, SegmentedControl, TextArea, Upload } from "@graminate/ui";
+import { Icon, Dropdown, Button, Input, Popup, SegmentedControl, TextArea, Upload, Spinner } from "@graminate/ui";
 import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 import { UNITS } from "@/constants/options";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 
@@ -352,7 +351,7 @@ const ListProductModal = ({
             <div className="mb-6">
               {isLoadingInventory ? (
                 <div className="flex justify-center py-4">
-                  <Loader />
+                  <Spinner />
                 </div>
               ) : inventoryItems.length === 0 ? (
                 <p className="text-sm text-dark dark:text-light">

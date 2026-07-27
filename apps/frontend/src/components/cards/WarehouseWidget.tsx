@@ -1,8 +1,7 @@
-import { Icon } from "@graminate/ui";
+import { Icon, Spinner } from "@graminate/ui";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "../ui/Loader";
 
 type WarehouseRecord = {
   warehouse_id: number;
@@ -81,7 +80,7 @@ const WarehouseWidget = ({ serviceName }: WarehouseWidgetProps) => {
     fetchData();
   }, [parsedUserId, serviceName]);
 
-  if (loading) return <div className="flex justify-center p-4"><Loader /></div>;
+  if (loading) return <div className="flex justify-center p-4"><Spinner /></div>;
   if (warehouses.length === 0) return null;
 
   return (

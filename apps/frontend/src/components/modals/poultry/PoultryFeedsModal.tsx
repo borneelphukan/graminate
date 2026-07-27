@@ -1,7 +1,6 @@
-import { Dropdown, Icon, Button, Input, Popup } from "@graminate/ui";
+import { Dropdown, Icon, Button, Input, Popup, Spinner } from "@graminate/ui";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 
 import { UNITS } from "@/constants/options";
 
@@ -313,7 +312,7 @@ const PoultryFeedsModal = ({
 
           {loadingInventoryFeedItems ? (
             <div className="flex items-center justify-center h-10">
-              <Loader />
+              <Spinner />
               <span className="ml-2 text-sm text-dark dark:text-light">
                 Loading feed items...
               </span>

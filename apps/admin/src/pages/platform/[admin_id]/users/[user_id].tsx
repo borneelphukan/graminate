@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import PlatformLayout from "@/layout/PlatformLayout";
-import Loader from "@/components/ui/Loader";
-import { Button } from "@graminate/ui";
+import { Button, Spinner } from "@graminate/ui";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -106,7 +105,7 @@ const AdminUserDetailsPage = () => {
         <div className="mx-auto min-h-screen bg-neutral-light/30">
           {isLoading ? (
             <div className="flex justify-center items-center h-96">
-              <Loader />
+              <Spinner />
             </div>
           ) : error ? (
             <div

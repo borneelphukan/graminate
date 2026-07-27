@@ -18,8 +18,7 @@ import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
 import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import OpeningBalanceModal from "@/components/modals/OpeningBalanceModal";
-import Loader from "@/components/ui/Loader";
-import { Button, Popup } from "@graminate/ui";
+import { Button, Popup, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 const FINANCIAL_METRICS = [
@@ -566,7 +565,7 @@ const Finance = () => {
                     key={index}
                     className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-36 flex items-center justify-center"
                   >
-                    <Loader />
+                    <Spinner />
                   </div>
                 ))}
             </div>

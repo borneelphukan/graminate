@@ -3,9 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
 import SettingsBar from "@/components/layout/SettingsBar";
-import { Button, Input, Icon, Popup } from "@graminate/ui";
+import { Button, Input, Icon, Popup, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 
 type CardDetails = {
   bank_id: number;
@@ -165,7 +164,7 @@ const MarketplaceSettings = () => {
 
             {isLoading ? (
               <div className="flex justify-center py-12">
-                <Loader />
+                <Spinner />
               </div>
             ) : showForm ? (
               <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 max-w-2xl border border-gray-400 dark:border-gray-700">

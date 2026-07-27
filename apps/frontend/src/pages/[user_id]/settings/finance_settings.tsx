@@ -4,9 +4,8 @@ import { useRouter } from "next/router";
 import SettingsBar from "@/components/layout/SettingsBar";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
-import { Button, Input, Popup } from "@graminate/ui";
+import { Button, Input, Popup, Spinner } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import Loader from "@/components/ui/Loader";
 
 const FinanceSettings = () => {
   const router = useRouter();
@@ -101,7 +100,7 @@ const FinanceSettings = () => {
 
               {isLoading ? (
                 <div className="flex justify-center items-center h-64">
-                    <Loader />
+                    <Spinner />
                 </div>
               ) : (
                 <div className="space-y-6">
