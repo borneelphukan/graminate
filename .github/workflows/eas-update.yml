@@ -48,4 +48,6 @@ jobs:
 
       - name: Publish EAS Update
         working-directory: ./apps/mobile
-        run: eas update --branch main --message "${{ github.event.inputs.message || github.event.head_commit.message || 'Auto-update from CI' }}" --non-interactive
+        run: |
+          eas init --account borneelphukan --non-interactive
+          eas update --branch main --message "${{ github.event.inputs.message || github.event.head_commit.message || 'Auto-update from CI' }}" --non-interactive

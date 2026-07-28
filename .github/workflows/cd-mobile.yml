@@ -75,4 +75,6 @@ jobs:
 
       - name: Build Mobile App
         working-directory: ./apps/mobile
-        run: eas build --platform ${{ github.event.inputs.platform || 'all' }} --profile ${{ github.event.inputs.profile || 'production' }} --non-interactive
+        run: |
+          eas init --account borneelphukan --non-interactive
+          eas build --platform ${{ github.event.inputs.platform || 'all' }} --profile ${{ github.event.inputs.profile || 'production' }} --non-interactive
