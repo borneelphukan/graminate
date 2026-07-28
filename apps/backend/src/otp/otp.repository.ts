@@ -8,7 +8,7 @@ import {
   resetOtpAttempts,
   OTP_LOCKOUT_DURATION_MS,
 } from '@/stores/store';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 const mjml2html = require('mjml');
 
 @Injectable()
@@ -47,18 +47,9 @@ export class OtpRepository {
     }
   }
 
-  private transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: (process.env.EMAIL_USER || '').trim(),
-      pass: (process.env.EMAIL_PASS || '').trim(),
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+  private getResend(): Resend {
+    return new Resend(process.env.RESEND_API_KEY || 'graminate');
+  }
 
   async sendOtp(email: string): Promise<{
     status: number;
@@ -88,13 +79,21 @@ export class OtpRepository {
 
       const emailHTML = this.generateOtpEmailHTML(otp);
 
-      await this.transporter.sendMail({
-        from: '"Graminate" <no-reply@graminate.com>',
+      const { error } = await this.getResend().emails.send({
+        from: 'Graminate <no-reply@graminate.com>',
         to: email,
         subject: 'Verify your Email',
         html: emailHTML,
         text: `OTP for Email Verification: ${otp}`,
       });
+
+      if (error) {
+        console.error('Resend API error:', error);
+        return {
+          status: 500,
+          data: { error: error.message || 'Failed to send OTP email' },
+        };
+      }
 
       return {
         status: 200,

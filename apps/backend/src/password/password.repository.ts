@@ -4,24 +4,15 @@ import * as argon2 from 'argon2';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 const mjml2html = require('mjml');
 
 @Injectable()
 export class PasswordRepository {
-  constructor(private readonly prisma: PrismaService) {}
-  private transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: (process.env.EMAIL_USER || '').trim(),
-      pass: (process.env.EMAIL_PASS || '').trim(),
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
+  constructor(private readonly prisma: PrismaService) { }
+  private getResend(): Resend {
+    return new Resend(process.env.RESEND_API_KEY || 'graminate');
+  }
 
   private generateEmailHTML(resetLink: string, firstName: string): string {
     const templatePath = path.resolve('src/templates/resetPasswordEmail.mjml');
@@ -67,11 +58,20 @@ export class PasswordRepository {
       const resetLink = `http://localhost:3000/reset_password?token=${resetToken}&email=${email}`;
       const emailHTML = this.generateEmailHTML(resetLink, firstName);
 
-      await this.transporter.sendMail({
+      const { error } = await this.getResend().emails.send({
+        from: 'Graminate <no-reply@graminate.com>',
         to: email,
         subject: 'Reset Your Graminate Password',
         html: emailHTML,
       });
+
+      if (error) {
+        console.error('Resend API error:', error);
+        return {
+          status: 500,
+          data: { error: error.message || 'Failed to send password reset email' },
+        };
+      }
 
       return {
         status: 200,

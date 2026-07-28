@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OtpRepository } from './otp.repository';
 import { otpStore } from '@/stores/store';
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn().mockReturnValue({
-    sendMail: jest.fn().mockResolvedValue({}),
-  }),
+jest.mock('resend', () => ({
+  Resend: jest.fn().mockImplementation(() => ({
+    emails: {
+      send: jest.fn().mockResolvedValue({ data: {}, error: null }),
+    },
+  })),
 }));
 
 jest.mock('mjml', () => jest.fn().mockReturnValue({ html: '<p>OTP</p>' }));

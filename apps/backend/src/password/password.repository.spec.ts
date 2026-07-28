@@ -10,10 +10,12 @@ jest.mock('argon2', () => ({
   argon2id: 2,
 }));
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn().mockReturnValue({
-    sendMail: jest.fn().mockResolvedValue({}),
-  }),
+jest.mock('resend', () => ({
+  Resend: jest.fn().mockImplementation(() => ({
+    emails: {
+      send: jest.fn().mockResolvedValue({ data: {}, error: null }),
+    },
+  })),
 }));
 
 jest.mock('mjml', () => jest.fn().mockReturnValue({ html: '<p>Reset</p>' }));
