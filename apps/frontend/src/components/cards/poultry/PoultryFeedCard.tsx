@@ -1,4 +1,4 @@
-import { Icon, Spinner } from "@graminate/ui";
+import { Icon, Spinner, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
@@ -78,9 +78,8 @@ const FeedStatItem = ({
       aria-hidden="true"
     />
     <p
-      className={`text-lg font-semibold text-dark dark:text-light break-all ${
-        valueClassName || ""
-      }`}
+      className={`text-lg font-semibold text-dark dark:text-light break-all ${valueClassName || ""
+        }`}
       aria-label={`${label} value`}
     >
       {value}
@@ -157,7 +156,9 @@ const PoultryFeedCard = ({
     setLoadingPerItemMetrics(true);
     const thirtyDaysAgo = startOfDay(subDays(today, 29));
 
-    const calculatedMetrics: FeedItemMetrics[] = stockFeedItems.map(
+    const onlyFeedItems = stockFeedItems.filter((item) => item.feed === true);
+
+    const calculatedMetrics: FeedItemMetrics[] = onlyFeedItems.map(
       (stockItem) => {
         const consumptionForThisItem = allFeedConsumptionRecords.filter(
           (record) =>
@@ -176,8 +177,8 @@ const PoultryFeedCard = ({
         const earliestRecordDateForItemInPeriod =
           consumptionForThisItem.length > 0
             ? minDateFn(
-                consumptionForThisItem.map((r) => parseISO(r.feed_date))
-              )
+              consumptionForThisItem.map((r) => parseISO(r.feed_date))
+            )
             : thirtyDaysAgo;
 
         const daysInPeriodWithDataForItem = Math.max(
@@ -188,7 +189,7 @@ const PoultryFeedCard = ({
         const avgDailyConsumptionKgForItem =
           consumptionForThisItem.length > 0
             ? totalKgConsumedForItemLast30Days /
-              Math.min(30, daysInPeriodWithDataForItem)
+            Math.min(30, daysInPeriodWithDataForItem)
             : 0;
 
         const currentStockKg = convertAmountToKg(
@@ -197,18 +198,17 @@ const PoultryFeedCard = ({
         );
         const estimatedDurationDays =
           avgDailyConsumptionKgForItem > 0 &&
-          isFinite(avgDailyConsumptionKgForItem)
+            isFinite(avgDailyConsumptionKgForItem)
             ? currentStockKg / avgDailyConsumptionKgForItem
             : currentStockKg > 0
-            ? Infinity
-            : 0;
+              ? Infinity
+              : 0;
 
         return {
           itemName: stockItem.item_name,
           currentStockKg: currentStockKg,
-          currentStockDisplay: `${stockItem.quantity.toLocaleString()} ${
-            stockItem.units
-          }`,
+          currentStockDisplay: `${stockItem.quantity.toLocaleString()} ${stockItem.units
+            }`,
           avgDailyConsumptionKg: avgDailyConsumptionKgForItem,
           estimatedDurationDays: estimatedDurationDays,
           units: stockItem.units,
@@ -237,8 +237,8 @@ const PoultryFeedCard = ({
   const feedingStatusColor = isFeedingComplete
     ? "text-green-200"
     : timesFedToday > 0
-    ? "text-yellow-200"
-    : "text-red-200";
+      ? "text-yellow-200"
+      : "text-red-200";
 
   const renderMetricsView = () => {
     if (loadingStockItems || loadingPerItemMetrics) {
@@ -249,7 +249,7 @@ const PoultryFeedCard = ({
       );
     }
 
-    if (stockFeedItems.length === 0 && !loadingStockItems) {
+    if (perFeedItemMetrics.length === 0 && !loadingStockItems) {
       return (
         <div className="flex-grow flex flex-col items-center justify-center text-center min-h-[200px] py-4">
           <Icon
@@ -267,7 +267,7 @@ const PoultryFeedCard = ({
     }
 
     return (
-      <div className="mt-3 flex flex-col">
+      <div className="mt-3 flex-1 flex flex-col justify-between">
         <div className="overflow-y-auto max-h-[280px] space-y-3 pr-2 custom-scrollbar-sm mb-1">
           {perFeedItemMetrics.map((metric) => {
             const durationColorClass = getFeedLevelColor(
@@ -347,7 +347,7 @@ const PoultryFeedCard = ({
             );
           })}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 mt-auto">
           <FeedStatItem
             icon={"restaurant"}
             value={loadingStockItems ? <Spinner /> : feedingStatusValue}
@@ -356,11 +356,10 @@ const PoultryFeedCard = ({
           />
           <div
             onClick={!loadingStockItems ? handleManageFeedClick : undefined}
-            className={`${
-              !loadingStockItems && userId && flockId
-                ? "cursor-pointer"
-                : "cursor-not-allowed opacity-70"
-            }`}
+            className={`${!loadingStockItems && userId && flockId
+              ? "cursor-pointer"
+              : "cursor-not-allowed opacity-70"
+              }`}
           >
             <FeedStatItem
               icon={"list_alt"}
@@ -374,14 +373,16 @@ const PoultryFeedCard = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-700 p-4 md:p-6 rounded-xl shadow-lg flex flex-col h-full">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
-        <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
+    <Card className="bg-white dark:bg-gray-700 shadow-lg flex flex-col h-full">
+      <CardHeader className="p-0 flex flex-col sm:flex-row justify-between items-center">
+        <CardTitle className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
           Feed Status & Consumption
-        </h2>
-      </div>
-      {renderMetricsView()}
-    </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0 flex-1 flex flex-col">
+        {renderMetricsView()}
+      </CardContent>
+    </Card>
   );
 };
 

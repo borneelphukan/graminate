@@ -35,13 +35,19 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button, Alert, Spinner } from "@graminate/ui";
+import { Button, Alert, Spinner, Card, CardHeader, CardTitle, CardContent, Icon, cn } from "@graminate/ui";
 import FlockForm from "@/components/form/poultry/FlockForm";
 import PoultryEggCard from "@/components/cards/poultry/PoultryEggCard";
-import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
 import WeatherModal from "@/components/modals/WeatherModal";
 import EggModal from "@/components/modals/poultry/EggModal";
 import { getCoordsFromCity } from "@/lib/utils/loadWeather";
+
+type Metric = {
+  icon: string;
+  value: string | React.ReactNode;
+  label: string;
+  valueClassName?: string;
+};
 
 ChartJS.register(
   CategoryScale,
@@ -490,8 +496,8 @@ const PoultryDetail = () => {
             brokenPercentage:
               (latestRecord.total_eggs || 0) > 0
                 ? ((latestRecord.broken_eggs || 0) /
-                    (latestRecord.total_eggs || 1)) *
-                  100
+                  (latestRecord.total_eggs || 1)) *
+                100
                 : 0,
             smallEggs: latestRecord.small_eggs || 0,
             mediumEggs: latestRecord.medium_eggs || 0,
@@ -757,14 +763,14 @@ const PoultryDetail = () => {
         const newWeatherData = {
           temperature: Math.round(response.data.current.temperature2m),
           humidity: Math.round(response.data.current.relativeHumidity2m),
-            lightHours:
-              typeof response.data.daily.daylightDuration?.[0] === "number"
-                ? response.data.daily.daylightDuration[0] / 3600
-                : null,
-            lat,
-            lon,
-            timestamp: Date.now(),
-          };
+          lightHours:
+            typeof response.data.daily.daylightDuration?.[0] === "number"
+              ? response.data.daily.daylightDuration[0] / 3600
+              : null,
+          lat,
+          lon,
+          timestamp: Date.now(),
+        };
         localStorage.setItem("weatherData", JSON.stringify(newWeatherData));
         setTemperature(newWeatherData.temperature);
         setHumidity(newWeatherData.humidity);
@@ -1016,45 +1022,45 @@ const PoultryDetail = () => {
             <div className="mt-4 pt-4 border-t border-gray-400 dark:border-gray-600">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-700 dark:text-gray-300">
                 <div className="flex items-center">
-              
+
                   <div>
                     <span className="font-semibold block">Total Birds</span>
                     {selectedFlockData.quantity !== undefined &&
-                    selectedFlockData.quantity !== null
+                      selectedFlockData.quantity !== null
                       ? selectedFlockData.quantity.toLocaleString()
                       : "N/A"}
                   </div>
                 </div>
                 <div className="flex items-center">
-     
+
                   <div>
                     <span className="font-semibold block">Flock Type</span>
                     {selectedFlockData.flock_type || "N/A"}
                   </div>
                 </div>
                 <div className="flex items-center">
-       
+
                   <div>
                     <span className="font-semibold block">Flock Age</span>
                     {flockAge}
                   </div>
                 </div>
                 <div className="flex items-center">
-           
+
                   <div>
                     <span className="font-semibold block">Breed</span>
                     {selectedFlockData.breed || "N/A"}
                   </div>
                 </div>
                 <div className="flex items-center">
-          
+
                   <div>
                     <span className="font-semibold block">Housing Type</span>
                     {selectedFlockData.housing_type || "N/A"}
                   </div>
                 </div>
                 <div className="flex items-center">
-            
+
                   <div>
                     <span className="font-semibold block">Source</span>
                     {selectedFlockData.source || "N/A"}
@@ -1062,7 +1068,7 @@ const PoultryDetail = () => {
                 </div>
                 {selectedFlockData.notes && (
                   <div className="flex items-center">
-        
+
                     <div>
                       <span className="font-semibold block">Notes</span>
                       {selectedFlockData.notes}
@@ -1070,7 +1076,7 @@ const PoultryDetail = () => {
                   </div>
                 )}
                 <div className="flex items-center">
-          
+
                   <div>
                     <span className="font-semibold block">Created On</span>
                     {formattedDateOverview(selectedFlockData.created_at)}
@@ -1099,13 +1105,44 @@ const PoultryDetail = () => {
             onManageClick={handleManageHealthRecordsClick}
             loading={latestPoultryHealthData.loading}
           />
-          <EnvironmentCard
-            title="Environmental Conditions"
-            loading={isLoadingEnvironment}
-            metrics={environmentMetrics}
-            gridConfig="grid-cols-3 gap-4"
-            onMetricClick={handleMetricClick}
-          />
+          <Card className="bg-white dark:bg-gray-700 relative flex h-full flex-col shadow-md ">
+            <CardHeader className="mb-4 flex items-start justify-between p-0">
+              <CardTitle className="text-xl font-semibold">
+                Environmental Conditions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 flex-1">
+              {isLoadingEnvironment ? (
+                <div className="flex flex-1 items-center justify-center py-8">
+                  <Spinner />
+                </div>
+              ) : (
+                <div className="grid flex-1 grid-cols-3 gap-4">
+                  {environmentMetrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      onClick={() => handleMetricClick()}
+                      className={cn(
+                        "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-600 cursor-pointer active:scale-95"
+                      )}
+                    >
+                      <Icon
+                        type={metric.icon}
+                        className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
+                        aria-hidden="true"
+                      />
+                      <p
+                        className={`text-2xl font-semibold text-dark dark:text-light ${metric.valueClassName || ""}`}
+                      >
+                        {metric.value}
+                      </p>
+                      <p className="text-sm text-dark dark:text-light">{metric.label}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
           {selectedFlockData &&
             EGG_LAYING_FLOCK_TYPES.includes(selectedFlockData.flock_type) && (
               <PoultryEggCard

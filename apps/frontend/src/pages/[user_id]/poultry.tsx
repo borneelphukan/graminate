@@ -1,4 +1,4 @@
-import { Popup, Icon, Button, Table, Spinner } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Spinner, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -8,7 +8,6 @@ import { PAGINATION_ITEMS, POULTRY_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import FlockForm from "@/components/form/poultry/FlockForm";
 import { useTableActions } from "@/hooks/useTableActions";
-import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 
@@ -276,13 +275,12 @@ const Poultry = () => {
               />
             </div>
           </div>
-          
+
           <div
-            className={`overflow-hidden transition-all duration-500 ease-in-out ${
-              showFinancials
-                ? "max-h-[600px] opacity-100"
-                : "max-h-0 opacity-0"
-            }`}
+            className={`overflow-hidden transition-all duration-500 ease-in-out ${showFinancials
+              ? "max-h-[600px] opacity-100"
+              : "max-h-0 opacity-0"
+              }`}
           >
             {isLoadingFinancials ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
@@ -298,17 +296,36 @@ const Poultry = () => {
                   ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 {poultryCardData.map((card, index) => (
-                  <BudgetCard
+                  <Card
                     key={index}
-                    title={card.title}
-                    value={card.value}
-                    date={currentDate}
-                    icon={card.icon}
-                    bgColor={card.bgColor}
-                    iconValueColor={card.iconValueColor}
-                  />
+                    className={`${card.bgColor} rounded-lg shadow-md transition-shadow duration-300 ease-in-out flex flex-col`}
+                  >
+                    <CardHeader className="flex flex-row items-center">
+                      <Icon
+                        type={card.icon}
+                        className={`${card.iconValueColor} text-xl opacity-80`}
+                      />
+                      <CardTitle className="text-sm font-medium text-dark dark:text-light uppercase">
+                        {card.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 flex-1 flex flex-col">
+                      <p className={`text-xl font-semibold ${card.iconValueColor}`}>
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "INR",
+                        }).format(card.value)}
+                      </p>
+                      <p className="mt-auto pt-1 text-xs text-dark dark:text-light opacity-90">
+                        {currentDate.toLocaleString("default", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             )}

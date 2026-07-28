@@ -2,14 +2,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
-import { Button, Icon, Popup, Spinner } from "@graminate/ui";
+import { Button, Icon, Popup, Spinner, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import SalesTable, {
   RowType as TableRowType,
   TableData as TableDataFormat,
 } from "@/components/tables/SalesTable";
 import ExpenseModal from "@/components/modals/ExpenseModal";
-import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { POULTRY_EXPENSE_CONFIG } from "@/constants/options";
@@ -248,15 +247,34 @@ const Expenses = () => {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-2">
                     {expenseCardData.map((card, index) => (
-                      <BudgetCard
+                      <Card
                         key={index}
-                        title={card.title}
-                        value={card.value}
-                        date={currentDate}
-                        icon={card.icon}
-                        bgColor={card.bgColor}
-                        iconValueColor={card.iconValueColor}
-                      />
+                        className={`${card.bgColor} py-4 px-3 rounded-lg shadow-md transition-shadow duration-300 ease-in-out flex flex-col gap-1`}
+                      >
+                        <CardHeader className="p-0 flex flex-row items-center gap-2">
+                          <Icon
+                            type={card.icon}
+                            className={`${card.iconValueColor} text-xl opacity-80`}
+                          />
+                          <CardTitle className="text-sm font-medium text-dark dark:text-light uppercase">
+                            {card.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0 flex-1 flex flex-col">
+                          <p className={`text-xl font-semibold ${card.iconValueColor}`}>
+                            {new Intl.NumberFormat("en-US", {
+                              style: "currency",
+                              currency: "INR",
+                            }).format(card.value)}
+                          </p>
+                          <p className="mt-auto pt-1 text-xs text-dark dark:text-light opacity-90">
+                            {currentDate.toLocaleString("default", {
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Button, SegmentedControl, Spinner } from "@graminate/ui";
+import { Dropdown, Icon, Button, SegmentedControl, Spinner, Card, CardHeader, CardTitle, CardContent, CardAction } from "@graminate/ui";
 import { Line } from "react-chartjs-2";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -85,9 +85,8 @@ const MetricItem = ({
   className,
 }: MetricItemProps) => (
   <div
-    className={`flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-600 rounded-lg space-y-1 shadow-sm hover:shadow-md transition duration-200 h-full ${
-      className || ""
-    }`}
+    className={`flex flex-col items-center justify-center text-center p-4 bg-light dark:bg-gray-600 rounded-lg space-y-1 shadow-sm hover:shadow-md transition duration-200 h-full ${className || ""
+      }`}
   >
     <Icon
       type={icon}
@@ -177,7 +176,7 @@ const PoultryEggCard = ({
     if (earliestDataDate) {
       const earliestDateObj = new Date(earliestDataDate);
       const { viewStartDate } = currentInterval;
-      
+
       let prevPeriodEndDate: Date;
       if (selectedTimeRange === "Weekly") {
         // End of the previous week
@@ -383,11 +382,10 @@ const PoultryEggCard = ({
           />
           <div
             onClick={!loading ? onManageClick : undefined}
-            className={`${
-              !loading
+            className={`${!loading
                 ? "cursor-pointer hover:shadow-lg"
                 : "cursor-not-allowed opacity-50"
-            } transition-shadow duration-200`}
+              } transition-shadow duration-200`}
           >
             <MetricItem
               icon={"add_circle"}
@@ -463,37 +461,40 @@ const PoultryEggCard = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg flex flex-col h-full">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
-        <h2 className="text-xl font-semibold text-dark dark:text-light text-center sm:text-left mb-2 sm:mb-0">
+    <Card className="bg-white dark:bg-gray-700 p-6 shadow-lg flex flex-col h-full">
+      <CardHeader className="p-0 mb-1">
+        <CardTitle className="text-xl font-semibold text-dark dark:text-light">
           Egg Collection
-        </h2>
-        <SegmentedControl
-          defaultValue={activeView === "graphs" ? "first" : "second"}
-          options={{
-            first: {
-              value: "graphs",
-              label: "Graphs",
-              icon: "show_chart",
-              onClick: () => setActiveView("graphs"),
-            },
-            second: {
-              value: "metrics",
-              label: "Metrics",
-              icon: "grid_view",
-              onClick: () => setActiveView("metrics"),
-            },
-          }}
-        />
-      </div>
-
-      {activeView === "graphs" && (
-        <div className="flex flex-col sm:flex-row justify-end items-center my-3 gap-2">
-          <div className="w-full sm:w-auto"></div>
-        </div>
-      )}
-      {renderContent()}
-    </div>
+        </CardTitle>
+        <CardAction>
+          <SegmentedControl
+            defaultValue={activeView === "graphs" ? "first" : "second"}
+            options={{
+              first: {
+                value: "graphs",
+                label: "Graphs",
+                icon: "show_chart",
+                onClick: () => setActiveView("graphs"),
+              },
+              second: {
+                value: "metrics",
+                label: "Metrics",
+                icon: "grid_view",
+                onClick: () => setActiveView("metrics"),
+              },
+            }}
+          />
+        </CardAction>
+      </CardHeader>
+      <CardContent className="p-0 flex-1 flex flex-col">
+        {activeView === "graphs" && (
+          <div className="flex flex-col sm:flex-row justify-end items-center my-3 gap-2">
+            <div className="w-full sm:w-auto"></div>
+          </div>
+        )}
+        {renderContent()}
+      </CardContent>
+    </Card>
   );
 };
 

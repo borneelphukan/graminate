@@ -8,13 +8,19 @@ import {
   useUserPreferences,
   SupportedLanguage,
 } from "@/contexts/UserPreferencesContext";
-import { Button, Alert, Spinner } from "@graminate/ui";
+import { Button, Alert, Spinner, Card, CardHeader, CardTitle, CardContent, Icon, cn } from "@graminate/ui";
 import axios from "axios";
 import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 import CattleForm, { CattleRearingData } from "@/components/form/CattleForm";
 import MilkCard from "@/components/cards/cattle_rearing/MilkCard";
-import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
 import WeatherModal from "@/components/modals/WeatherModal";
+
+type Metric = {
+  icon: string;
+  value: string | React.ReactNode;
+  label: string;
+  valueClassName?: string;
+};
 
 type CattleRearingDetail = {
   cattle_id: number;
@@ -294,17 +300,17 @@ const CattleDetailPage = () => {
       {
         label: "Number of Animals",
         value: String(selectedCattleData.number_of_animals),
- 
+
       },
       {
         label: "Purpose",
         value: selectedCattleData.purpose || "N/A",
-   
+
       },
       {
         label: "Herd Created On",
         value: formattedDateOverview(selectedCattleData.created_at),
-      
+
       },
     ];
   }, [selectedCattleData, formattedDateOverview]);
@@ -440,7 +446,7 @@ const CattleDetailPage = () => {
                     key={item.label}
                     className="flex items-start p-2 rounded"
                   >
-    
+
                     <div>
                       <span className="font-semibold block text-gray-700 dark:text-gray-300">
                         {item.label}
@@ -469,13 +475,44 @@ const CattleDetailPage = () => {
             </div>
           )}
           <div>
-            <EnvironmentCard
-              title="Environmental Conditions"
-              loading={weatherLoading}
-              metrics={environmentMetrics}
-              gridConfig="grid-cols-2 md:grid-cols-3 gap-4"
-              onMetricClick={() => setIsWeatherModalOpen(true)}
-            />
+            <Card className="bg-white dark:bg-gray-700 relative flex h-full flex-col shadow-md ">
+              <CardHeader className="mb-2 flex items-start justify-between p-0">
+                <CardTitle className="text-xl font-semibold">
+                  Environmental Conditions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 flex-1">
+                {weatherLoading ? (
+                  <div className="flex flex-1 items-center justify-center py-8">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid flex-1 grid-cols-2 md:grid-cols-3 gap-4">
+                    {environmentMetrics.map((metric) => (
+                      <div
+                        key={metric.label}
+                        onClick={() => setIsWeatherModalOpen(true)}
+                        className={cn(
+                          "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-600 cursor-pointer active:scale-95"
+                        )}
+                      >
+                        <Icon
+                          type={metric.icon}
+                          className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
+                          aria-hidden="true"
+                        />
+                        <p
+                          className={`text-2xl font-semibold text-dark dark:text-light ${metric.valueClassName || ""}`}
+                        >
+                          {metric.value}
+                        </p>
+                        <p className="text-sm text-dark dark:text-light">{metric.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -490,7 +527,7 @@ const CattleDetailPage = () => {
           }}
         />
       )}
-      <WeatherModal 
+      <WeatherModal
         isOpen={isWeatherModalOpen}
         onClose={() => setIsWeatherModalOpen(false)}
         lat={coords?.lat || null}

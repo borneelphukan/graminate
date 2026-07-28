@@ -3,7 +3,7 @@ import axios from "axios";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import { Line } from "react-chartjs-2";
-import { Icon, Tabs, Spinner } from "@graminate/ui";
+import { Icon, Tabs, Spinner, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@graminate/ui";
 import {
   Chart as ChartJS,
   Tooltip,
@@ -40,7 +40,7 @@ interface WeatherData {
   };
 }
 
-const SunlightCard = ({ method, selectedFlowerName, plantingDate, userId }: { method?: string; selectedFlowerName?: string; plantingDate?: string; userId?: string }) => {
+const Sunlight = ({ method, selectedFlowerName, plantingDate, userId }: { method?: string; selectedFlowerName?: string; plantingDate?: string; userId?: string }) => {
   const unitLabel = "PAR (µmol·m⁻²·s⁻¹)";
   const unitScale = 180;
 
@@ -314,65 +314,67 @@ const SunlightCard = ({ method, selectedFlowerName, plantingDate, userId }: { me
   }, [tabItems, selectedDayIndex]);
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-3xl border border-gray-400 dark:border-gray-700 p-6 flex flex-col gap-6 shadow-sm">
-      <div className="flex justify-between items-center">
+    <Card className="rounded-3xl border-gray-400 dark:border-gray-700 p-6 flex flex-col gap-6 shadow-sm">
+      <CardHeader className="p-0 flex justify-between items-center">
         <div>
-          <h3 className="text-lg font-bold text-dark dark:text-light flex items-center gap-2">
+          <CardTitle className="text-lg font-bold text-dark dark:text-light flex items-center gap-2">
             <Icon type="wb_sunny" className="text-amber-500" />
             Sunlight Metrics
-          </h3>
-          <p className="text-xs text-dark dark:text-light">Current daylight and hourly solar tracking</p>
+          </CardTitle>
+          <CardDescription className="text-xs text-dark dark:text-light">Current daylight and hourly solar tracking</CardDescription>
         </div>
-      </div>
+      </CardHeader>
 
-      {loading ? (
-        <div className="flex-1 flex flex-col items-center justify-center py-12">
-          <Spinner />
-        </div>
-      ) : !weatherData ? (
-        <p className="text-center text-sm py-12">Weather data unavailable</p>
-      ) : (
-        <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
-              <span className="text-xs font-bold text-dark dark:text-light">Actual Duration</span>
-              <span className="text-xl font-black text-red-200 dark:text-amber-400">{sunshineHours} h</span>
+      <CardContent className="p-0 flex-1 flex flex-col gap-6">
+        {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-12">
+            <Spinner />
+          </div>
+        ) : !weatherData ? (
+          <p className="text-center text-sm py-12">Weather data unavailable</p>
+        ) : (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
+                <span className="text-xs font-bold text-dark dark:text-light">Actual Duration</span>
+                <span className="text-xl font-black text-red-200 dark:text-amber-400">{sunshineHours} h</span>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
+                <span className="text-xs font-bold text-dark dark:text-light">Sunrise</span>
+                <span className="text-xl font-black text-red-200 dark:text-orange-400">{sunTimes.sunrise}</span>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
+                <span className="text-xs font-bold text-dark dark:text-light">Sunset</span>
+                <span className="text-xl font-black text-red-200 dark:text-rose-400">{sunTimes.sunset}</span>
+              </div>
+              {isPro && selectedFlowerName && (
+                <div className="bg-green-50 dark:bg-green-900/30 rounded-2xl p-3 border border-green-200 dark:border-green-700/50 flex flex-col gap-1 justify-between sm:col-span-3 animate-in fade-in duration-300">
+                  <span className="text-xs font-bold text-green-700 dark:text-green-400">Best Sunlight Period (AI Recommended)</span>
+                  <span className="text-sm font-black text-green-800 dark:text-green-300">
+                    {bestSunlightPeriod || "Loading..."}
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
-              <span className="text-xs font-bold text-dark dark:text-light">Sunrise</span>
-              <span className="text-xl font-black text-red-200 dark:text-orange-400">{sunTimes.sunrise}</span>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-600 rounded-2xl p-3 border border-gray-400 dark:border-gray-700 flex flex-col gap-1 justify-between">
-              <span className="text-xs font-bold text-dark dark:text-light">Sunset</span>
-              <span className="text-xl font-black text-red-200 dark:text-rose-400">{sunTimes.sunset}</span>
-            </div>
-            {isPro && selectedFlowerName && (
-              <div className="bg-green-50 dark:bg-green-900/30 rounded-2xl p-3 border border-green-200 dark:border-green-700/50 flex flex-col gap-1 justify-between sm:col-span-3 animate-in fade-in duration-300">
-                <span className="text-xs font-bold text-green-700 dark:text-green-400">Best Sunlight Period (AI Recommended)</span>
-                <span className="text-sm font-black text-green-800 dark:text-green-300">
-                  {bestSunlightPeriod || "Loading..."}
-                </span>
+
+            {tabItems.length > 0 && (
+              <div className="border-t border-gray-400 dark:border-gray-700 pt-4">
+                <Tabs
+                  tabs={tabItems}
+                  activeTab={String(selectedDayIndex)}
+                  onTabChange={(val) => setSelectedDayIndex(Number(val))}
+                />
               </div>
             )}
-          </div>
 
-          {tabItems.length > 0 && (
-            <div className="border-t border-gray-400 dark:border-gray-700 pt-4">
-              <Tabs
-                tabs={tabItems}
-                activeTab={String(selectedDayIndex)}
-                onTabChange={(val) => setSelectedDayIndex(Number(val))}
-              />
+            <div className="h-[250px] w-full bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-400 dark:border-gray-700 relative mt-2">
+              <Line data={chartData} options={options} />
             </div>
-          )}
-
-          <div className="h-[250px] w-full bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-400 dark:border-gray-700 relative mt-2">
-            <Line data={chartData} options={options} />
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
-export default SunlightCard;
+export default Sunlight;

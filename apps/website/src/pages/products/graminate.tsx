@@ -3,8 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import PriceCard from "@/components/cards/company/PriceCard";
-import { Icon } from "@graminate/ui";
+import { Icon, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@graminate/ui";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Link from "next/link";
 
@@ -657,21 +656,66 @@ export default function GraminateERP() {
             >
               {pricing.tiers.map((tier) => (
                 <motion.div key={tier.id} variants={scrollStaggerItem}>
-                  <PriceCard
-                    label={content[tier.nameKey as keyof typeof content]}
-                    description={
-                      content[tier.descriptionKey as keyof typeof content]
-                    }
-                    price={tier.price[frequency.value]}
-                    priceSuffix={frequency.priceSuffix}
-                    points={tier.featuresKeys.map(
-                      (key) => content[key as keyof typeof content]
-                    )}
-                    href={tier.href}
-                    popular={tier.mostPopular}
-                    isSelected={selectedTier.id === tier.id}
+                  <Card
                     onClick={() => setSelectedTier(tier)}
-                  />
+                    className={`transform cursor-pointer rounded-3xl p-8 transition-transform duration-200 hover:scale-105 xl:p-10 ${
+                      selectedTier.id === tier.id ? "ring-2 ring-green-200" : "ring-gray-400"
+                    }`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        setSelectedTier(tier);
+                      }
+                    }}
+                  >
+                    <CardHeader className="p-0">
+                      <div className="flex items-center justify-between gap-x-4">
+                        <CardTitle className="text-lg leading-8 font-semibold text-dark">
+                          {content[tier.nameKey as keyof typeof content]}
+                        </CardTitle>
+                        {tier.mostPopular && (
+                          <span className="rounded-full bg-blue-500 px-2.5 py-1 text-xs leading-5 font-semibold text-white">
+                            Most Popular
+                          </span>
+                        )}
+                      </div>
+                      <CardDescription className="mt-4 text-sm leading-6 text-gray-300">
+                        {content[tier.descriptionKey as keyof typeof content]}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <p className="mt-6 flex items-baseline gap-x-1">
+                        <span className="text-4xl font-semibold tracking-tight text-black">
+                          {tier.price[frequency.value]}
+                        </span>
+                        <span className="text-sm leading-6 font-semibold text-gray-300">
+                          {frequency.priceSuffix}
+                        </span>
+                      </p>
+                      <a
+                        href={tier.href}
+                        className={`mt-6 block rounded-md px-3 py-2 text-center text-sm leading-6 font-semibold focus-visible:outline focus-visible:outline-offset-2 ${
+                          selectedTier.id === tier.id
+                            ? "bg-green-200 text-white shadow-sm hover:bg-green-800"
+                            : "bg-gray-400 text-black hover:bg-gray-300 focus-visible:outline-white"
+                        }`}
+                      >
+                        Buy Plan
+                      </a>
+                      <ul
+                        role="list"
+                        className="mt-8 space-y-3 text-sm leading-6 text-gray-300 xl:mt-10"
+                      >
+                        {tier.featuresKeys.map((key, index) => (
+                          <li key={index} className="flex gap-x-3">
+                            <span className="text-gray-100">✔</span>
+                            {content[key as keyof typeof content]}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </motion.div>

@@ -1,4 +1,4 @@
-import { Popup, Icon, Button, Table, Alert, Spinner } from "@graminate/ui";
+import { Popup, Icon, Button, Table, Alert, Spinner, Card, CardHeader, CardTitle, CardContent, cn } from "@graminate/ui";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import PlatformLayout from "@/layout/PlatformLayout";
 import Head from "next/head";
@@ -17,8 +17,14 @@ import { getCoordsFromCity } from "@/lib/utils/loadWeather";
 import InspectionModal, {
   InspectionData,
 } from "@/components/modals/apiculture/InspectionModal";
-import EnvironmentCard, { Metric } from "@/components/cards/EnvironmentCard";
-import HoneyProductionCard from "@/components/cards/apiculture/HoneyProductionCard";
+import Honey from "@/components/cards/apiculture/Honey";
+
+type Metric = {
+  icon: string;
+  value: string | React.ReactNode;
+  label: string;
+  valueClassName?: string;
+};
 
 type AlertMessage = {
   id: string;
@@ -664,12 +670,43 @@ const HiveDetailsPage = () => {
               </div>
             )}
           </div>
-          <EnvironmentCard
-            title="Hive Conditions"
-            loading={weatherLoading}
-            metrics={environmentMetrics}
-            gridConfig="grid-cols-2 gap-4"
-          />
+          <Card className="relative flex h-full flex-col shadow-md dark:bg-gray-700">
+            <CardHeader className="mb-4 flex items-start justify-between p-0">
+              <CardTitle className="text-xl font-semibold">
+                Hive Conditions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 flex-1">
+              {weatherLoading ? (
+                <div className="flex flex-1 items-center justify-center py-8">
+                  <Spinner />
+                </div>
+              ) : (
+                <div className="grid flex-1 grid-cols-2 gap-4">
+                  {environmentMetrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      className={cn(
+                        "flex h-full flex-col items-center justify-center space-y-1 rounded-lg bg-light p-4 text-center shadow-sm transition-all duration-200 hover:shadow-md dark:bg-gray-600"
+                      )}
+                    >
+                      <Icon
+                        type={metric.icon}
+                        className="mb-2 h-6 w-6 text-blue-200 dark:text-blue-300"
+                        aria-hidden="true"
+                      />
+                      <p
+                        className={`text-2xl font-semibold text-dark dark:text-light ${metric.valueClassName || ""}`}
+                      >
+                        {metric.value}
+                      </p>
+                      <p className="text-sm text-dark dark:text-light">{metric.label}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -738,7 +775,7 @@ const HiveDetailsPage = () => {
           </div>
           {/* Honey Production */}
           {hiveId && userId && (
-            <HoneyProductionCard
+            <Honey
               userId={userId as string}
               hiveId={hiveId as string}
             />

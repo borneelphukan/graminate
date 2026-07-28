@@ -19,7 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input, Popup, Spinner } from "@graminate/ui";
+import { Dropdown, Button, Table, Input, Popup, Spinner, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -487,16 +487,16 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             (selectedTimeRange === "1 Month" ||
               selectedTimeRange === "3 Months" ||
               isCustomDateRangeActive)
-          ? "d"
-          : "EEE d"
+            ? "d"
+            : "EEE d"
       )
     );
     const recordsToConsider =
       selectedAnimalFilter === ALL_ANIMALS_FILTER
         ? allMilkRecords
         : allMilkRecords.filter(
-            (record) => record.animal_name === selectedAnimalFilter
-          );
+          (record) => record.animal_name === selectedAnimalFilter
+        );
     const milkProducedData = currentIntervalDates.map((intervalDate) => {
       const recordsForDate = recordsToConsider.filter((record) =>
         isSameDay(record.date_collected, intervalDate)
@@ -531,7 +531,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
       else if (currentIntervalDates.length <= 31)
         maxTicksLimit = Math.ceil(
           currentIntervalDates.length /
-            (currentIntervalDates.length > 15 ? 2 : 1)
+          (currentIntervalDates.length > 15 ? 2 : 1)
         );
       else maxTicksLimit = 15;
     } else {
@@ -872,11 +872,11 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
       default:
         return (
           <>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 text-center sm:text-left">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 text-center sm:text-left">
               Select a time range or specify a custom date range for an
               overview.
             </p>
-            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 my-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-3 sm:gap-4 mb-4">
               <div className="w-full sm:w-auto sm:min-w-[180px] md:min-w-[200px]">
                 <Input
                   id="start-date"
@@ -976,14 +976,13 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-xl shadow-lg flex flex-col h-full">
-      <div className="mb-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
-          <div className="flex items-center text-lg font-semibold text-dark dark:text-light">
-
+    <Card className="bg-white dark:bg-gray-700 p-4 sm:p-6 shadow-lg flex flex-col h-full">
+      <CardHeader className="p-0 mb-2">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-1 gap-2">
+          <CardTitle className="flex items-center text-lg font-semibold text-dark dark:text-light">
             Milk Production
             {activeView === "table" && " Logs"}
-          </div>
+          </CardTitle>
           <div className="flex items-center gap-2">
             {activeView !== "chart" && (
               <Button
@@ -1014,8 +1013,10 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
             )}
           </div>
         </div>
-      </div>
-      {renderContent()}
+      </CardHeader>
+      <CardContent className="p-0 flex-1 flex flex-col">
+        {renderContent()}
+      </CardContent>
       <Popup
         isOpen={popup.isOpen}
         onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
@@ -1023,7 +1024,7 @@ const MilkCard = ({ userId, cattleId }: MilkCardProps) => {
         text={popup.text}
         variant={popup.variant}
       />
-    </div>
+    </Card>
   );
 };
 

@@ -26,7 +26,7 @@ function getUVPosition(uv: number): string {
 
 const UVScale = ({ uvIndex }: Props) => {
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto py-3 relative">
+    <div className="flex flex-col items-center w-full max-w-md mx-auto py-0 relative">
       <div className="relative w-full h-2 flex rounded-md overflow-hidden bg-gradient-to-r">
         {uvLevels.map((level, i) => (
           <div

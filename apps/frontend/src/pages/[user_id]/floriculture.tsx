@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Icon, Button, Spinner } from "@graminate/ui";
+import { Icon, Button, Spinner, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import PlatformLayout from "@/layout/PlatformLayout";
 import { FLORICULTURE_EXPENSE_CONFIG } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
-import BudgetCard from "@/components/cards/finance/BudgetCard";
 import { useSubTypeFinancialData, DailyFinancialEntry } from "@/hooks/finance";
 import FloricultureForm, { FloricultureData } from "@/components/form/FloricultureForm";
 import TaskBoard from "@/components/tasks/TaskBoard";
 import WarehouseWidget from "@/components/cards/WarehouseWidget";
 import WaterCalendar from "@/components/floriculture/WaterCalendar";
 import FloricultureExplorer from "@/components/floriculture/FloricultureExplorer";
-import SunlightCard from "@/components/cards/SunlightCard";
+import Sunlight from "@/components/cards/Sunlight";
 
 type View = "floriculture";
 
@@ -178,7 +177,34 @@ const Floriculture = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 py-2">
                 {financialCardData.map((card, i) => (
-                  <BudgetCard key={i} title={card.title} value={card.value} date={currentDate} icon={card.icon} bgColor={card.bgColor} iconValueColor={card.iconValueColor} />
+                  <Card
+                    key={i}
+                    className={`${card.bgColor} py-4 px-3 rounded-lg shadow-md transition-shadow duration-300 ease-in-out flex flex-col gap-1`}
+                  >
+                    <CardHeader className="p-0 flex flex-row items-center gap-2">
+                      <Icon
+                        type={card.icon}
+                        className={`${card.iconValueColor} text-xl opacity-80`}
+                      />
+                      <CardTitle className="text-sm font-medium text-dark dark:text-light uppercase">
+                        {card.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 flex-1 flex flex-col">
+                      <p className={`text-xl font-semibold ${card.iconValueColor}`}>
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "INR",
+                        }).format(card.value)}
+                      </p>
+                      <p className="mt-auto pt-1 text-xs text-dark dark:text-light opacity-90">
+                        {currentDate.toLocaleString("default", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             )}
@@ -210,7 +236,7 @@ const Floriculture = () => {
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="w-full">
-            <SunlightCard 
+            <Sunlight 
               method={selectedMethod} 
               selectedFlowerName={records.find(r => r.flower_id === selectedFlowerId)?.flower_name || records[0]?.flower_name}
               plantingDate={records.find(r => r.flower_id === selectedFlowerId)?.planting_date || records[0]?.planting_date || undefined}

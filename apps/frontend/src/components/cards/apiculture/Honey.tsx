@@ -19,7 +19,7 @@ import {
   Chart,
   CartesianScaleOptions,
 } from "chart.js";
-import { Dropdown, Button, Table, Input, Popup, Spinner, TextArea } from "@graminate/ui";
+import { Dropdown, Button, Table, Input, Popup, Spinner, TextArea, Card, CardHeader, CardTitle, CardContent } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 import { useTableActions } from "@/hooks/useTableActions";
 import {
@@ -84,7 +84,7 @@ type ProcessedHoneyRecord = {
   harvest_notes: string | null;
 };
 
-interface HoneyProductionCardProps {
+interface HoneyProps {
   userId?: string;
   hiveId?: string;
 }
@@ -108,7 +108,7 @@ const mapSupportedLanguageToLocale = (lang: SupportedLanguage): string => {
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
+const Honey = ({ userId, hiveId }: HoneyProps) => {
   const { timeFormat, language: currentLanguage } = useUserPreferences();
 
   const [activeView, setActiveView] = useState<"chart" | "form" | "table">(
@@ -887,14 +887,13 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg flex flex-col h-full">
-      <div className="mb-4">
+    <Card className="p-4 sm:p-6 shadow-lg flex flex-col h-full">
+      <CardHeader className="p-0 mb-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
-          <div className="flex items-center text-lg font-semibold text-dark dark:text-light">
-        
+          <CardTitle className="flex items-center text-lg font-semibold text-dark dark:text-light">
             Honey Production
             {activeView === "table" && " Logs"}
-          </div>
+          </CardTitle>
           <div className="flex items-center gap-2">
             {activeView !== "chart" && (
               <Button
@@ -925,8 +924,10 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
             )}
           </div>
         </div>
-      </div>
-      {renderContent()}
+      </CardHeader>
+      <CardContent className="p-0 flex-1 flex flex-col">
+        {renderContent()}
+      </CardContent>
       <Popup
         isOpen={popup.isOpen}
         onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
@@ -934,8 +935,8 @@ const HoneyProductionCard = ({ userId, hiveId }: HoneyProductionCardProps) => {
         text={popup.text}
         variant={popup.variant}
       />
-    </div>
+    </Card>
   );
 };
 
-export default HoneyProductionCard;
+export default Honey;

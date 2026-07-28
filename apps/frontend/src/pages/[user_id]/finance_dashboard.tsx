@@ -12,13 +12,12 @@ import {
 } from "date-fns";
 
 import PlatformLayout from "@/layout/PlatformLayout";
-import BudgetCard from "@/components/cards/finance/BudgetCard";
 import TrendGraph from "@/components/cards/finance/TrendGraph";
 import CompareGraph from "@/components/cards/finance/CompareGraph";
 import WorkingCapital from "@/components/cards/finance/WorkingCapital";
 import DebtAnalysis from "@/components/cards/finance/DebtAnalysis";
 import OpeningBalanceModal from "@/components/modals/OpeningBalanceModal";
-import { Button, Popup, Spinner } from "@graminate/ui";
+import { Button, Popup, Spinner, Card, CardHeader, CardTitle, CardContent, Icon } from "@graminate/ui";
 import axiosInstance from "@/lib/utils/axiosInstance";
 
 const FINANCIAL_METRICS = [
@@ -572,15 +571,34 @@ const Finance = () => {
           ) : (
             <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {currentMonthCardData.map((card, index) => (
-                <BudgetCard
+                <Card
                   key={index}
-                  title={card.title}
-                  value={card.value}
-                  date={currentDate}
-                  icon={card.icon}
-                  bgColor={card.bgColor}
-                  iconValueColor={card.iconValueColor}
-                />
+                  className={`${card.bgColor} py-4 px-3 rounded-lg shadow-md transition-shadow duration-300 ease-in-out flex flex-col gap-1`}
+                >
+                  <CardHeader className="p-0 flex flex-row items-center gap-2">
+                    <Icon
+                      type={card.icon}
+                      className={`${card.iconValueColor} text-xl opacity-80`}
+                    />
+                    <CardTitle className="text-sm font-medium text-dark dark:text-light uppercase">
+                      {card.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0 flex-1 flex flex-col">
+                    <p className={`text-xl font-semibold ${card.iconValueColor}`}>
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "INR",
+                      }).format(card.value)}
+                    </p>
+                    <p className="mt-auto pt-1 text-xs text-dark dark:text-light opacity-90">
+                      {currentDate.toLocaleString("default", {
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
