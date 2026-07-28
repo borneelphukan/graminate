@@ -60,7 +60,7 @@ describe('UserController', () => {
         email: 'j@e.com',
         phone_number: '123',
         password: 'pass',
-      } as any);
+      });
       expect(result).toEqual({ status: 201, data: { message: 'OK' } });
     });
 

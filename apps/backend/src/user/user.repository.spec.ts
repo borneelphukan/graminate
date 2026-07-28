@@ -289,7 +289,7 @@ describe('UserRepository', () => {
       prisma.users.update.mockResolvedValue({});
 
       await repo.updateUser('1', {
-        sub_type: ['Poultry', 'InvalidType'] as any,
+        sub_type: ['Poultry', 'InvalidType'],
       });
       const updateCall = prisma.users.update.mock.calls[0][0];
       expect(updateCall.data.sub_type).toEqual(['Poultry']);
@@ -302,8 +302,8 @@ describe('UserRepository', () => {
       prisma.notifications.create.mockResolvedValue({});
 
       await repo.updateUser('1', {
-        plan: 'PRO' as any,
-        pending_plan_source: 'ADMIN' as any,
+        plan: 'PRO',
+        pending_plan_source: 'ADMIN',
         admin_reason: 'Upgraded by admin',
         admin_action: 'Allow Pro Access',
       });

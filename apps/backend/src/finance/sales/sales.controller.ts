@@ -92,7 +92,7 @@ export class SalesController {
       }
       if (
         error instanceof HttpException &&
-        error.getStatus() === (HttpStatus.NOT_FOUND as number)
+        error.getStatus() === Number(HttpStatus.NOT_FOUND)
       ) {
         throw error;
       }

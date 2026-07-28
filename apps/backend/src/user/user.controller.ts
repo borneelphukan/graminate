@@ -30,7 +30,7 @@ export class UserController {
   @UseZodSchema(usersSchema, { partial: true })
   @Post('register')
   async register(@Body() body: Partial<users>): Promise<any> {
-    return await this.userService.registerUser(body as any);
+    return await this.userService.registerUser(body);
   }
 
   @Post('check-exists')

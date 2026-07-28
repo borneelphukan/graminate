@@ -28,7 +28,7 @@ describe('InventoryService', () => {
 
   it('gets inventory list resolving correctly', async () => {
     mockPrisma.inventory.findMany.mockResolvedValue([]);
-    const res = await service.findByUserIdWithFilters(1, {} as any);
+    const res = await service.findByUserIdWithFilters(1, {});
     expect(res).toEqual([]);
   });
 });

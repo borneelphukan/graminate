@@ -57,7 +57,7 @@ export class FlockController {
     @Request() req: RequestWithUser,
   ): Promise<poultry_flock> {
     createDto.user_id = req.user.userId!;
-    return this.flockService.create(createDto as any);
+    return this.flockService.create(createDto);
   }
 
   @UseGuards(JwtAuthGuard)

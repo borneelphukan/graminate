@@ -60,7 +60,7 @@ export class CattleRearingController {
     @Request() req: RequestWithUser,
   ): Promise<cattle_rearing> {
     createDto.user_id = req.user.userId!;
-    return this.cattleRearingService.create(createDto as any);
+    return this.cattleRearingService.create(createDto);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -49,7 +49,7 @@ describe('ContactsRepository', () => {
         city: 'city',
         state: 'state',
         postal_code: '123',
-      } as any);
+      });
       expect(res.status).toBe(201);
     });
   });

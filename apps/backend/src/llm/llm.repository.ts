@@ -326,18 +326,18 @@ export class LlmRepository {
             return {
               role: 'user',
               content: message.text,
-            } as OpenAI.Chat.Completions.ChatCompletionUserMessageParam;
+            };
           } else if (message.sender === 'bot' && message.name) {
             return {
               role: 'tool',
               tool_call_id: message.name,
               content: message.text,
-            } as OpenAI.Chat.Completions.ChatCompletionToolMessageParam;
+            };
           } else {
             return {
               role: 'assistant',
               content: message.text,
-            } as OpenAI.Chat.Completions.ChatCompletionAssistantMessageParam;
+            };
           }
         }),
       ];

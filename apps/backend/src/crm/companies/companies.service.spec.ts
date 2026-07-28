@@ -35,7 +35,7 @@ describe('CompaniesService', () => {
     );
 
     mockRepo.addCompany.mockResolvedValue({ status: 201, data: {} });
-    await service.addCompany({ company_name: 'test' } as any);
+    await service.addCompany({ company_name: 'test' });
     expect(mockRepo.addCompany).toHaveBeenCalled();
   });
 });

@@ -50,7 +50,7 @@ describe('ReceiptsRepository', () => {
       bill_to: 'User',
       due_date: '2025',
       items: [{ description: 'A', quantity: 1, rate: 10 }],
-    } as any);
+    });
     expect(res.status).toBe(201);
     expect(mockPrisma.$transaction).toHaveBeenCalled();
     expect(mockPrisma.invoices.create).toHaveBeenCalled();

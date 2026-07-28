@@ -87,7 +87,7 @@ describe('ApicultureController', () => {
 
     it('should return updated data', async () => {
       mockService.update.mockResolvedValue({ apiary_id: 1, name: 'u' });
-      const res = await controller.updateApiary(1, { apiary_name: 'u' } as any);
+      const res = await controller.updateApiary(1, { apiary_name: 'u' });
       expect(res).toEqual({ apiary_id: 1, name: 'u' });
     });
   });

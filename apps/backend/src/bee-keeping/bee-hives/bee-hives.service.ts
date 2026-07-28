@@ -45,7 +45,7 @@ export class BeeHivesService {
           queen_introduced_date: lastInspection?.queen_introduced_date || null,
           brood_pattern: lastInspection?.brood_pattern || null,
           symptoms: lastInspection?.symptoms || null,
-        } as HiveWithInspection;
+        };
       });
     } catch (error) {
       console.error('Error in BeeHivesService.findByApiaryId:', error);
@@ -84,7 +84,7 @@ export class BeeHivesService {
         brood_pattern: lastInspection?.brood_pattern || null,
         last_inspection_notes: lastInspection?.notes || null,
         symptoms: lastInspection?.symptoms || null,
-      } as HiveWithInspection;
+      };
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       console.error('Error in BeeHivesService.findById:', error);
@@ -141,9 +141,7 @@ export class BeeHivesService {
       if (updateDto.bee_species !== undefined)
         updateData.bee_species = updateDto.bee_species;
       if (updateDto.installation_date !== undefined)
-        updateData.installation_date = new Date(
-          updateDto.installation_date as string | number | Date,
-        );
+        updateData.installation_date = new Date(updateDto.installation_date);
       if (updateDto.honey_capacity !== undefined)
         updateData.honey_capacity = updateDto.honey_capacity;
       if (updateDto.unit !== undefined) updateData.unit = updateDto.unit;

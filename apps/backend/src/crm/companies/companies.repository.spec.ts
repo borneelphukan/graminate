@@ -62,7 +62,7 @@ describe('CompaniesRepository', () => {
         city: 'e',
         state: 'f',
         postal_code: '1', // short
-      } as any);
+      });
       expect(res.status).toBe(400);
     });
 
@@ -79,7 +79,7 @@ describe('CompaniesRepository', () => {
         city: 'c',
         state: 's',
         postal_code: '123456',
-      } as any);
+      });
       expect(res.status).toBe(400);
       expect(res.data.error).toContain('exists');
     });

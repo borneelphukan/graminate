@@ -63,7 +63,7 @@ export class ApicultureController {
     @Request() req: RequestWithUser,
   ): Promise<ApicultureWithCount> {
     createDto.user_id = req.user.userId!;
-    return this.apicultureService.create(createDto as any);
+    return this.apicultureService.create(createDto);
   }
 
   @UseGuards(JwtAuthGuard)

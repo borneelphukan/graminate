@@ -57,7 +57,7 @@ describe('BeeHivesController', () => {
   describe('updateHive', () => {
     it('propagates final data result', async () => {
       mockService.update.mockResolvedValue({ id: 1, changed: true });
-      const out = await controller.updateHive(1, { hive_name: 'c' } as any);
+      const out = await controller.updateHive(1, { hive_name: 'c' });
       expect(out).toHaveProperty('changed', true);
     });
   });

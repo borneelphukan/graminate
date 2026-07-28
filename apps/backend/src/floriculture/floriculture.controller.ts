@@ -34,7 +34,7 @@ export class FloricultureController {
     @Request() req: RequestWithUser,
   ): Promise<floriculture> {
     body.user_id = req.user.userId!;
-    return this.floricultureService.create(body as any);
+    return this.floricultureService.create(body);
   }
 
   @Post('notifications/user/:id')
