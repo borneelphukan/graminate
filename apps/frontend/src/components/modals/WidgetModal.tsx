@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
+import FlowerIcon from "@/icons/FlowerIcon";
 
 interface WidgetModalProps {
   isOpen: boolean;
@@ -60,6 +61,16 @@ const ALL_AVAILABLE_WIDGETS = [
     name: "Cattle Rearing Storage & Inventory",
     requiredSubType: "Cattle Rearing",
   },
+  {
+    id: "Floriculture Task Manager",
+    name: "Floriculture Task Manager",
+    requiredSubType: "Floriculture",
+  },
+  {
+    id: "Floriculture Inventory Stock",
+    name: "Floriculture Storage & Inventory",
+    requiredSubType: "Floriculture",
+  },
 ];
 
 const WidgetModal = ({
@@ -105,6 +116,7 @@ const WidgetModal = ({
       "Poultry",
       "Cattle Rearing",
       "Apiculture",
+      "Floriculture",
     ];
     const orderedGroups: Record<string, typeof availableWidgets> = {};
     for (const categoryName of categoryOrder) {
@@ -121,6 +133,7 @@ const WidgetModal = ({
     Poultry: PoultryIcon,
     "Cattle Rearing": CattleIcon,
     Apiculture: BeeIcon,
+    Floriculture: FlowerIcon,
   };
 
   useEffect(() => {

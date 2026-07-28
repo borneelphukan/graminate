@@ -463,6 +463,7 @@ const DashboardScreen = () => {
       "Poultry",
       "Cattle Rearing",
       "Apiculture",
+      "Floriculture",
     ];
     const orderedGroups: Record<string, typeof availableWidgets> = {};
     for (const categoryName of categoryOrder) {
@@ -479,6 +480,7 @@ const DashboardScreen = () => {
     Poultry: "egg",
     "Cattle Rearing": CattleIcon,
     Apiculture: "bee",
+    Floriculture: "flower",
   };
 
   const handleToggleWidget = (widgetId: string) => {

@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import { Icon, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@graminate/ui";
+import { Icon, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@graminate/ui";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Link from "next/link";
 

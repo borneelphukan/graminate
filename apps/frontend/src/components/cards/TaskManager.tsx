@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Checkbox, Button, Input, Spinner } from "@graminate/ui";
+import { Dropdown, Icon, Checkbox, Button, Input, Spinner, Card, CardHeader, CardTitle, CardContent, CardAction, CardDescription } from "@graminate/ui";
 import { useState, useEffect, useCallback } from "react";
 import { PRIORITY_OPTIONS } from "@/constants/options";
 import axiosInstance from "@/lib/utils/axiosInstance";
@@ -160,25 +160,34 @@ const TaskManager = ({ userId, projectType }: Props) => {
     projectType.charAt(0).toUpperCase() + projectType.slice(1);
 
   return (
-    <div className="dark:bg-gray-800 p-6 rounded-lg shadow-md h-80 flex flex-col">
-      <div className="flex justify-between items-center gap-2 mb-4">
-        <h2 className="text-xl font-semibold dark:text-light">
-          {projectName} Task List
-        </h2>
-        <button
-          onClick={() => {
-            const newAsc = !prioritySortAsc;
-            setPrioritySortAsc(newAsc);
-            setTaskList((prevList) => sortTasks(prevList, newAsc));
-          }}
-          className="text-sm bg-gray-500 dark:bg-gray-700 text-dark dark:text-light px-2 py-1 rounded hover:bg-gray-400 dark:hover:bg-dark flex items-center cursor-pointer"
-        >
-          Priority
-          <Icon
-            type={prioritySortAsc ? "expand_less" : "expand_more"}
-          />
-        </button>
-      </div>
+    <Card className="p-4 transition-all hover:shadow-md bg-white dark:bg-gray-700 min-h-[400px] flex flex-col">
+      <CardHeader className="p-0 mb-4 flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+            {projectName} Task List
+          </CardTitle>
+          <CardDescription className="text-xs text-dark dark:text-light">
+            Manage your {projectType.toLowerCase()} tasks
+          </CardDescription>
+        </div>
+        <CardAction>
+          <button
+            onClick={() => {
+              const newAsc = !prioritySortAsc;
+              setPrioritySortAsc(newAsc);
+              setTaskList((prevList) => sortTasks(prevList, newAsc));
+            }}
+            className="text-sm bg-gray-500 dark:bg-gray-700 text-dark dark:text-light px-2 py-1 rounded hover:bg-gray-400 dark:hover:bg-dark flex items-center cursor-pointer"
+          >
+            Priority
+            <Icon
+              type={prioritySortAsc ? "expand_less" : "expand_more"}
+            />
+          </button>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent className="p-0 flex-grow flex flex-col overflow-hidden">
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0 mb-4">
         <Input
@@ -240,11 +249,10 @@ const TaskManager = ({ userId, projectType }: Props) => {
                     </td>
                     <td className="py-2 px-2 align-middle">
                       <span
-                        className={`block truncate max-w-[150px] sm:max-w-none ${
-                          task.status === "Completed"
+                        className={`block truncate max-w-[150px] sm:max-w-none ${task.status === "Completed"
                             ? "line-through text-gray-300"
                             : "text-dark dark:text-gray-300"
-                        }`}
+                          }`}
                       >
                         {task.task}
                       </span>
@@ -288,7 +296,8 @@ const TaskManager = ({ userId, projectType }: Props) => {
           </div>
         )}
       </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
