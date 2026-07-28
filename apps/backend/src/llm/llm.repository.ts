@@ -324,18 +324,18 @@ export class LlmRepository {
         ...recentHistory.map((message: Message & { name?: string }) => {
           if (message.sender === 'user') {
             return {
-              role: 'user',
+              role: 'user' as const,
               content: message.text,
             };
           } else if (message.sender === 'bot' && message.name) {
             return {
-              role: 'tool',
+              role: 'tool' as const,
               tool_call_id: message.name,
               content: message.text,
             };
           } else {
             return {
-              role: 'assistant',
+              role: 'assistant' as const,
               content: message.text,
             };
           }
