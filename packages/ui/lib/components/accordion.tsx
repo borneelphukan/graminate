@@ -174,7 +174,7 @@ function AccordionTrigger({
         <Icon
           type="keyboard_arrow_down"
           className={joinClasses(
-            "text-gray-400 pointer-events-none size-5 shrink-0 translate-y-0.5 transition-transform duration-300 ease-in-out",
+            "text-dark dark:text-light pointer-events-none size-5 shrink-0 translate-y-0.5 transition-transform duration-300 ease-in-out",
             isOpen ? "rotate-180" : ""
           )}
         />
