@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import PlatformLayout from "@/layout/PlatformLayout";
-import ReactMarkdown from "react-markdown";
 import BeeIcon from "@/icons/BeeIcon";
 import PoultryIcon from "@/icons/PoultryIcon";
 import CattleIcon from "@/icons/CattleIcon";
 import FlowerIcon from "@/icons/FlowerIcon";
 import Head from "next/head";
-import { Icon, Spinner, Button } from "@graminate/ui";
+import { Icon, Spinner, Button, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@graminate/ui";
 import { useUserPreferences } from "@/contexts/UserPreferencesContext";
 import axios from "axios";
 import axiosInstance from "@/lib/utils/axiosInstance";
+import { triggerToast } from "@/stores/toast";
 
 type WeatherData = {
   current: {
@@ -38,7 +38,7 @@ type AIResponseFormat = {
 const DisasterManagement = () => {
   const router = useRouter();
   const { user_id } = router.query;
-  const { subTypes, language, plan, temperatureScale, city } = useUserPreferences();
+  const { subTypes, language, plan, temperatureScale, city, timeFormat } = useUserPreferences();
 
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -48,6 +48,8 @@ const DisasterManagement = () => {
   const [aiAdvisories, setAiAdvisories] = useState<AIResponseFormat | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [addingTask, setAddingTask] = useState<string | null>(null);
 
   // Eagerly load cached AI advisories on mount
   useEffect(() => {
@@ -60,6 +62,7 @@ const DisasterManagement = () => {
         const parsed = JSON.parse(cached);
         if (new Date().getTime() - parsed.timestamp < 3600000) {
           setAiAdvisories(parsed.data);
+          setLastUpdated(new Date(parsed.timestamp));
         }
       } catch (e) {
         console.error("Failed to parse AI cache on mount:", e);
@@ -152,6 +155,7 @@ const DisasterManagement = () => {
           const parsed = JSON.parse(cached);
           if (new Date().getTime() - parsed.timestamp < 3600000) {
             setAiAdvisories(parsed.data);
+            setLastUpdated(new Date(parsed.timestamp));
             return;
           }
         } catch (e) {
@@ -205,20 +209,41 @@ Language: ${language}.`;
       }
 
       const parsedJson = JSON.parse(answer) as AIResponseFormat;
+      const timestamp = new Date().getTime();
       setAiAdvisories(parsedJson);
+      setLastUpdated(new Date(timestamp));
       localStorage.setItem(cacheKey, JSON.stringify({
         data: parsedJson,
-        timestamp: new Date().getTime(),
+        timestamp,
       }));
     } catch (err) {
       console.error("AI fetch error or JSON parse error:", err);
-      if (!aiAdvisories) {
-        setAiError("Unable to load AI advisories at this time. Please try again.");
-      }
+      setAiError("Failed to fetch accurate advisories. Please try again.");
     } finally {
       setLoadingAI(false);
     }
-  }, [weatherData, subTypes, language, user_id, plan, aiAdvisories, temperatureScale]);
+  }, [plan, language, temperatureScale, subTypes, weatherData, city, user_id]);
+
+  const handleAddTask = async (serviceName: string, task: string, id: string) => {
+    try {
+      setAddingTask(id);
+      await axiosInstance.post("/tasks/add", {
+        user_id: parseInt(user_id as string, 10),
+        project: serviceName,
+        task,
+        status: "To Do",
+        priority: "High",
+      });
+      setAddingTask(`success-${id}`);
+      triggerToast(`Task added to ${serviceName}`, "success");
+      setTimeout(() => setAddingTask(null), 2000);
+    } catch (e) {
+      console.error("Failed to add task:", e);
+      setAddingTask(`error-${id}`);
+      triggerToast("Failed to add task. Please try again.", "error");
+      setTimeout(() => setAddingTask(null), 2000);
+    }
+  };
 
   useEffect(() => {
     if (weatherData && subTypes.length > 0 && !aiAdvisories && !loadingAI && plan === "PRO" && !aiError) {
@@ -245,127 +270,156 @@ Language: ${language}.`;
 
         <div className="space-y-6">
           {/* Weather Advisories Section */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-dark dark:text-light flex items-center gap-2">
-                <Icon type="warning" className="text-yellow-500" />
-                Weather Advisories
-              </h2>
-              {plan === "PRO" && (
-                <Button
-                  onClick={() => fetchAIAdvisories(true)}
-                  disabled={loadingAI || loading}
-                  variant="ghost"
-                  icon={{ left: "refresh" }}
-                  title="Refresh Advisories"
-                />
-              )}
-            </div>
-
-            {/* AI Advisories Display */}
-            {plan !== "PRO" ? (
-              <div className="p-10 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-800 flex flex-col items-center justify-center space-y-6 text-center mb-6">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-yellow-400 blur-2xl rounded-full animate-pulse opacity-40" />
-                  <Icon type="workspace_premium" className="size-16 text-yellow-500 relative z-10" />
-                </div>
-                <div className="space-y-2 max-w-lg">
-                  <h4 className="text-lg font-black uppercase tracking-widest text-dark dark:text-light">Pro Feature</h4>
-                  <p className="text-sm text-dark dark:text-light opacity-60 leading-relaxed">
-                    Upgrade to Graminate Pro to unlock hyper-local AI disaster management advisories tailored specifically to your farm's services and active weather conditions.
-                  </p>
-                </div>
-                <Button
-                  label="Upgrade Now"
-                  variant="primary"
-                  onClick={() => window.open(`/${user_id}/pricing`, '_blank')}
-                />
-              </div>
-            ) : subTypes.length === 0 ? (
-              <div className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-600 dark:text-blue-400 flex items-start gap-3 mb-6">
-                <Icon type="info" className="shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-bold">No Services Opted</p>
-                  <p className="text-sm opacity-80 mt-1">Please add services (like Poultry, Cattle Rearing, etc.) to receive targeted weather advisories.</p>
+          <Accordion type="single" collapsible defaultValue="advisories" className="w-full">
+            <AccordionItem value="advisories" className="border-none !border-b-0">
+              <div className="flex items-center justify-between mb-4">
+                <AccordionTrigger className="hover:bg-transparent !py-0 !px-0 flex-1 flex items-center gap-2 !font-bold text-xl text-dark dark:text-light justify-start [&_div]:!no-underline [&>i.material-symbols-outlined]:hidden group">
+                  <div className="flex items-center gap-2 w-full text-left relative hover:cursor-pointer">
+                    <Icon type="warning" className="text-yellow-500" />
+                    Weather Advisories
+                  </div>
+                </AccordionTrigger>
+                <div className="flex items-center gap-4 z-10 relative">
+                  {lastUpdated && plan === "PRO" && (
+                    <span className="text-xs text-dark dark:text-light">
+                      Updated at: {lastUpdated.toLocaleTimeString(language === "English" ? "en-US" : "en-IN", { hour: '2-digit', minute: '2-digit', hour12: timeFormat === "12-hour" })}
+                    </span>
+                  )}
+                  {plan === "PRO" && (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fetchAIAdvisories(true);
+                      }}
+                      disabled={loadingAI || loading}
+                      variant="ghost"
+                      icon={{ left: "refresh" }}
+                      title="Refresh Advisories"
+                    />
+                  )}
                 </div>
               </div>
-            ) : aiAdvisories && aiAdvisories.services ? (
-              <div className="space-y-4 mb-6 relative">
-                {loadingAI && (
-                  <div className="absolute -top-12 right-12 flex items-center gap-2 text-yellow-500">
-                    <Spinner />
-                    <span className="text-xs font-bold uppercase tracking-widest opacity-60 animate-pulse">Updating...</span>
-                  </div>
-                )}
-                {loading && !loadingAI && (
-                  <div className="absolute -top-12 right-12 flex items-center gap-2 text-dark dark:text-light opacity-40">
-                    <Icon type="history" className="size-4" />
-                    <span className="text-xs font-bold uppercase tracking-widest">Cached Version</span>
-                  </div>
-                )}
 
-                {aiAdvisories.services.map((service, idx) => (
-                  <div key={idx} className="bg-white/5 border border-gray-400 dark:border-gray-800 rounded-2xl p-6 transition-all duration-300 hover:bg-white/10">
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-black uppercase tracking-widest text-dark dark:text-light flex items-center gap-2 mb-4">
-                          <div className="w-6 h-6 text-yellow-500 shrink-0 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current">
-                            {service.name.toLowerCase().includes("poultry") ? (
-                              <PoultryIcon />
-                            ) : service.name.toLowerCase().includes("cattle") || service.name.toLowerCase().includes("animal") ? (
-                              <CattleIcon />
-                            ) : service.name.toLowerCase().includes("api") || service.name.toLowerCase().includes("bee") ? (
-                              <BeeIcon />
-                            ) : service.name.toLowerCase().includes("flora") || service.name.toLowerCase().includes("flower") ? (
-                              <FlowerIcon />
-                            ) : (
-                              <Icon type="agriculture" className="text-yellow-500" />
-                            )}
-                          </div>
-                          {service.name}
-                        </h3>
-                        <ul className="list-disc pl-5 space-y-2">
-                          {service.advisories.map((adv, i) => (
-                            <li key={i} className="text-sm text-dark dark:text-light/90 marker:text-yellow-500 leading-relaxed font-medium">
-                              {adv}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Highlight the weather condition that caused this advice adjacent to the service */}
-                      <div className="shrink-0 md:border-l border-gray-400 dark:border-gray-700 md:pl-8 flex flex-col items-center justify-center min-w-[150px]">
-                        <div className="size-12 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-3">
-                          <Icon type={service.metricIcon || "explore"} className="size-6" />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-50 text-dark dark:text-light text-center mb-1">
-                          Trigger Condition
-                        </span>
-                        <span className="text-lg font-black text-dark dark:text-light text-center">
-                          {service.relevantMetric}
-                        </span>
-                      </div>
+              <AccordionContent className="!p-0 border-none">
+                {/* AI Advisories Display */}
+                {plan !== "PRO" ? (
+                  <div className="p-10 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-800 flex flex-col items-center justify-center space-y-6 text-center mb-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-yellow-400 blur-2xl rounded-full animate-pulse opacity-40" />
+                      <Icon type="workspace_premium" className="size-16 text-green-200 relative z-10" />
+                    </div>
+                    <div className="space-y-2 max-w-lg">
+                      <h4 className="text-lg font-black uppercase tracking-widest text-dark dark:text-light">Pro Feature</h4>
+                      <p className="text-sm text-dark dark:text-light opacity-60 leading-relaxed">
+                        Upgrade to Graminate Pro to unlock hyper-local AI disaster management advisories tailored specifically to your farm's services and active weather conditions.
+                      </p>
+                    </div>
+                    <Button
+                      label="Upgrade Now"
+                      variant="primary"
+                      onClick={() => window.open(`/${user_id}/pricing`, '_blank')}
+                    />
+                  </div>
+                ) : subTypes.length === 0 ? (
+                  <div className="p-6 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-600 dark:text-blue-400 flex items-start gap-3 mb-6">
+                    <Icon type="info" className="shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold">No Services Opted</p>
+                      <p className="text-sm opacity-80 mt-1">Please add services (like Poultry, Cattle Rearing, etc.) to receive targeted weather advisories.</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : aiError ? (
-              <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 flex items-start gap-3 mb-6">
-                <Icon type="error" className="shrink-0 mt-0.5" />
-                <p>{aiError}</p>
-              </div>
-            ) : loadingAI || loading ? (
-              <div className="p-10 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-800 flex flex-col items-center justify-center space-y-4 mb-6">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-yellow-400 blur-xl rounded-full animate-pulse opacity-20" />
-                  <Icon type="auto_awesome" className="size-10 text-yellow-500 relative z-10 animate-bounce" />
-                </div>
-                <p className="text-sm font-bold text-dark dark:text-light uppercase tracking-widest animate-pulse opacity-60">
-                  {loading ? "Waiting for live weather data..." : "Analyzing weather & generating advisories..."}
-                </p>
-              </div>
-            ) : null}
-          </section>
+                ) : aiAdvisories && aiAdvisories.services ? (
+                  <div className="space-y-4 mb-6 relative">
+                    {loadingAI && (
+                      <div className="absolute -top-12 right-12 flex items-center gap-2 text-green-200">
+                        <Spinner />
+                        <span className="text-xs font-bold uppercase tracking-widest opacity-60 animate-pulse">Updating...</span>
+                      </div>
+                    )}
+                    {loading && !loadingAI && (
+                      <div className="absolute -top-12 right-12 flex items-center gap-2 text-dark dark:text-light opacity-40">
+                        <Icon type="history" className="size-4" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Cached Version</span>
+                      </div>
+                    )}
+
+                    {aiAdvisories.services.map((service, idx) => (
+                      <div key={idx} className="bg-white/5 border border-gray-400 dark:border-gray-800 rounded-xl p-4 transition-all duration-300 hover:bg-white/10">
+                        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                          <div className="flex-1">
+                            <h3 className="text-base font-black uppercase tracking-widest text-dark dark:text-light flex items-center gap-2 mb-2">
+                              <div className="w-6 h-6 text-green-200 shrink-0 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current">
+                                {service.name.toLowerCase().includes("poultry") ? (
+                                  <PoultryIcon />
+                                ) : service.name.toLowerCase().includes("cattle") || service.name.toLowerCase().includes("animal") ? (
+                                  <CattleIcon />
+                                ) : service.name.toLowerCase().includes("api") || service.name.toLowerCase().includes("bee") ? (
+                                  <BeeIcon />
+                                ) : service.name.toLowerCase().includes("flora") || service.name.toLowerCase().includes("flower") ? (
+                                  <FlowerIcon />
+                                ) : (
+                                  <Icon type="agriculture" className="text-green-200" />
+                                )}
+                              </div>
+                              {service.name}
+                            </h3>
+                            <ul className="list-disc pl-5 space-y-2">
+                              {service.advisories.map((adv, i) => (
+                                <li key={i} className="text-sm text-dark dark:text-light/90 marker:text-yellow-500 leading-relaxed font-medium group/adv relative pr-24 py-1">
+                                  <span>{adv}</span>
+                                  <div className={`absolute right-0 top-0 transition-all duration-300 ${
+                                    addingTask?.includes(`${service.name}-${i}`) ? 'opacity-100' : 'opacity-0 group-hover/adv:opacity-100'
+                                  }`}>
+                                    <Button
+                                      variant="primary"
+                                      size="sm"
+                                      onClick={() => handleAddTask(service.name, adv, `${service.name}-${i}`)}
+                                      disabled={addingTask === `${service.name}-${i}` || addingTask === `success-${service.name}-${i}`}
+                                      isLoading={addingTask === `${service.name}-${i}`}
+                                      label={addingTask === `success-${service.name}-${i}` ? "Added" : addingTask === `error-${service.name}-${i}` ? "Error" : "Add to Task"}
+                                      icon={{ left: addingTask === `success-${service.name}-${i}` ? "check" : addingTask === `error-${service.name}-${i}` ? "error" : "add_task" }}
+                                    />
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Highlight the weather condition that caused this advice adjacent to the service */}
+                          <div className="shrink-0 md:border-l border-gray-400 dark:border-gray-700 md:pl-4 flex flex-col items-center justify-center min-w-[120px]">
+                            <div className="size-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-2">
+                              <Icon type={service.metricIcon || "explore"} className="size-5" />
+                            </div>
+                            <span className="text-[9px] font-black uppercase tracking-widest opacity-50 text-dark dark:text-light text-center">
+                              Trigger Condition
+                            </span>
+                            <span className="text-base font-black text-dark dark:text-light text-center mt-1">
+                              {service.relevantMetric}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : aiError ? (
+                  <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 flex items-start gap-3 mb-6">
+                    <Icon type="error" className="shrink-0 mt-0.5" />
+                    <p>{aiError}</p>
+                  </div>
+                ) : loadingAI || loading ? (
+                  <div className="p-10 bg-white/5 rounded-2xl border border-gray-400 dark:border-gray-800 flex flex-col items-center justify-center space-y-4 mb-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-yellow-400 blur-xl rounded-full animate-pulse opacity-20" />
+                      <Icon type="auto_awesome" className="size-10 text-yellow-500 relative z-10 animate-bounce" />
+                    </div>
+                    <p className="text-sm font-bold text-dark dark:text-light uppercase tracking-widest animate-pulse opacity-60">
+                      {loading ? "Waiting for live weather data..." : "Analyzing weather & generating advisories..."}
+                    </p>
+                  </div>
+                ) : null}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           {/* Additional Disaster Management sections */}
           <section className="opacity-50 pointer-events-none mt-10">
