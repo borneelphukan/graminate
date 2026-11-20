@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './auth.repository';
 import { UserService } from '../user/user.service';
 import { PrismaService } from '@/prisma/prisma.service';
+import { OtpService } from '@/otp/otp.service';
 import * as argon2 from 'argon2';
 
 jest.mock('argon2');
@@ -23,6 +24,7 @@ describe('AuthRepository', () => {
   let userService: UserService;
   let jwtService: JwtService;
   let prisma: PrismaService;
+  let otpService: OtpService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,7 +47,15 @@ describe('AuthRepository', () => {
           useValue: {
             login_history: {
               create: jest.fn(),
+              update: jest.fn(),
             },
+          },
+        },
+        {
+          provide: OtpService,
+          useValue: {
+            sendOtp: jest.fn(),
+            verifyOtp: jest.fn(),
           },
         },
       ],
@@ -55,6 +65,7 @@ describe('AuthRepository', () => {
     userService = module.get<UserService>(UserService);
     jwtService = module.get<JwtService>(JwtService);
     prisma = module.get<PrismaService>(PrismaService);
+    otpService = module.get<OtpService>(OtpService);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -90,14 +101,76 @@ describe('AuthRepository', () => {
   });
 
   describe('login', () => {
-    it('should return access_token, login_id, and user data on success', async () => {
+    it('should send OTP and return login_id on success', async () => {
       (userService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
       (argon2.verify as jest.Mock).mockResolvedValue(true);
       (prisma.login_history.create as jest.Mock).mockResolvedValue({
         login_id: 'login-uuid-123',
       });
+      (otpService.sendOtp as jest.Mock).mockResolvedValue({
+        status: 200,
+        data: { message: 'OTP sent successfully.' },
+      });
 
       const result = await repo.login('john@example.com', 'password');
+
+      expect(result).toEqual({
+        success: true,
+        login_id: 'login-uuid-123',
+        message: 'OTP sent successfully. Please verify to complete login.',
+        user: {
+          user_id: 1,
+          first_name: 'John',
+          last_name: 'Doe',
+          email: 'john@example.com',
+        },
+      });
+      expect(prisma.login_history.create).toHaveBeenCalledWith({
+        data: { user_id: 1 },
+        select: { login_id: true },
+      });
+      expect(otpService.sendOtp).toHaveBeenCalledWith('john@example.com');
+    });
+
+    it('should throw error when OTP sending fails', async () => {
+      (userService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
+      (argon2.verify as jest.Mock).mockResolvedValue(true);
+      (prisma.login_history.create as jest.Mock).mockResolvedValue({
+        login_id: 'login-uuid-123',
+      });
+      (otpService.sendOtp as jest.Mock).mockResolvedValue({
+        status: 500,
+        data: { error: 'Email service unavailable' },
+      });
+
+      await expect(repo.login('john@example.com', 'password')).rejects.toThrow(
+        'Failed to send OTP: Email service unavailable',
+      );
+    });
+
+    it('should propagate UnauthorizedException from validateUser', async () => {
+      (userService.findByEmail as jest.Mock).mockResolvedValue(null);
+
+      await expect(repo.login('bad@example.com', 'pass')).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+  });
+
+  describe('loginVerify', () => {
+    it('should verify OTP and return access_token on success', async () => {
+      (otpService.verifyOtp as jest.Mock).mockResolvedValue({
+        status: 200,
+        data: { success: true, message: 'OTP verified successfully' },
+      });
+      (userService.findByEmail as jest.Mock).mockResolvedValue(mockUser);
+      (prisma.login_history.update as jest.Mock).mockResolvedValue({});
+
+      const result = await repo.loginVerify(
+        'john@example.com',
+        '123456',
+        'login-uuid-123',
+      );
 
       expect(result).toEqual({
         access_token: 'jwt_token',
@@ -111,19 +184,38 @@ describe('AuthRepository', () => {
           business_name: 'Farm Co',
         },
       });
+      expect(otpService.verifyOtp).toHaveBeenCalledWith(
+        'john@example.com',
+        '123456',
+      );
       expect(jwtService.sign).toHaveBeenCalledWith({ userId: 1 });
-      expect(prisma.login_history.create).toHaveBeenCalledWith({
-        data: { user_id: 1 },
-        select: { login_id: true },
+      expect(prisma.login_history.update).toHaveBeenCalledWith({
+        where: { login_id: 'login-uuid-123' },
+        data: { logged_in_at: expect.any(Date) },
       });
     });
 
-    it('should propagate UnauthorizedException from validateUser', async () => {
+    it('should throw UnauthorizedException when OTP is invalid', async () => {
+      (otpService.verifyOtp as jest.Mock).mockResolvedValue({
+        status: 400,
+        data: { success: false, message: 'Invalid OTP' },
+      });
+
+      await expect(
+        repo.loginVerify('john@example.com', 'wrong', 'login-uuid-123'),
+      ).rejects.toThrow(new UnauthorizedException('Invalid OTP'));
+    });
+
+    it('should throw UnauthorizedException when user not found after OTP verification', async () => {
+      (otpService.verifyOtp as jest.Mock).mockResolvedValue({
+        status: 200,
+        data: { success: true, message: 'OTP verified successfully' },
+      });
       (userService.findByEmail as jest.Mock).mockResolvedValue(null);
 
-      await expect(repo.login('bad@example.com', 'pass')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        repo.loginVerify('john@example.com', '123456', 'login-uuid-123'),
+      ).rejects.toThrow(new UnauthorizedException('User not found'));
     });
   });
 });
