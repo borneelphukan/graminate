@@ -56,6 +56,8 @@ const SignIn = () => {
 
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [userEmailForOtp, setUserEmailForOtp] = useState("");
+  const [loginId, setLoginId] = useState<string | null>(null);
+  const [otpContext, setOtpContext] = useState<"login" | "register">("register");
   const [modalState, setModalState] = useState({
     isOpen: false,
     title: "",
@@ -125,6 +127,20 @@ const SignIn = () => {
     return phoneRegex.test(phone);
   };
 
+  const calculateAge = (dobString: string): number => {
+    const dob = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < dob.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoginErrorMessage("");
@@ -135,23 +151,21 @@ const SignIn = () => {
     }
 
     try {
+      // Step 1: Submit credentials, receive login_id (no JWT yet)
       const response = await axios.post<{
-        access_token: string;
+        success: boolean;
+        login_id: string;
+        message: string;
         user: { user_id: string };
       }>(`${API_BASE_URL}/user/login`, loginData);
-      const { access_token, user } = response.data;
-      localStorage.setItem("token", access_token);
-      localStorage.setItem("user_id", user.user_id);
-      
-      const callbackUrl = router.query.callbackUrl as string;
-      if (callbackUrl) {
-        const url = new URL(callbackUrl);
-        url.searchParams.set("token", access_token);
-        url.searchParams.set("user_id", user.user_id);
-        window.location.href = url.toString();
-      } else {
-        router.push(`/${user.user_id}`);
-      }
+
+      const { login_id, user } = response.data;
+
+      // Step 2: Store login_id and open OTP modal
+      setLoginId(login_id);
+      setUserEmailForOtp(loginData.email);
+      setOtpContext("login");
+      setIsOtpModalOpen(true);
     } catch (err: unknown) {
       let status: number | undefined;
       let serverMessage: string | undefined = "An unknown error occurred.";
@@ -181,6 +195,68 @@ const SignIn = () => {
           variant: "error",
         });
       }
+    }
+  };
+
+  const handleLoginOtpValidation = async (otp: string) => {
+    if (!loginId) {
+      setModalState({
+        isOpen: true,
+        title: "Error",
+        text: "Login session expired. Please try again.",
+        variant: "error",
+      });
+      return;
+    }
+
+    try {
+      // Step 3: Verify OTP and receive JWT
+      const response = await axios.post<{
+        access_token: string;
+        login_id: string;
+        user: { user_id: string };
+      }>(`${API_BASE_URL}/user/login-verify`, {
+        email: userEmailForOtp,
+        otp,
+        loginId,
+      });
+
+      const { access_token, user } = response.data;
+
+      // Step 4: Store JWT and redirect
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user_id", user.user_id);
+      localStorage.setItem("login_id", loginId);
+
+      setIsOtpModalOpen(false);
+
+      const callbackUrl = router.query.callbackUrl as string;
+      if (callbackUrl) {
+        const url = new URL(callbackUrl);
+        url.searchParams.set("token", access_token);
+        url.searchParams.set("user_id", user.user_id);
+        window.location.href = url.toString();
+      } else {
+        router.push(`/${user.user_id}`);
+      }
+    } catch (err: unknown) {
+      let status: number | undefined;
+      let serverMessage: string | undefined = "Invalid OTP.";
+
+      if (axios.isAxiosError(err)) {
+        status = err.response?.status;
+        serverMessage =
+          err.response?.data?.message || err.message || serverMessage;
+      } else if (err instanceof Error) {
+        serverMessage = err.message;
+      }
+
+      setModalState({
+        isOpen: true,
+        title: "OTP Verification Failed",
+        text: serverMessage || "Invalid OTP. Please try again.",
+        variant: "error",
+      });
     }
   };
 
@@ -222,6 +298,15 @@ const SignIn = () => {
     }
     if (!registerData.date_of_birth.trim()) {
       newFieldErrors.date_of_birth = true;
+      hasError = true;
+    } else if (calculateAge(registerData.date_of_birth) < 18) {
+      newFieldErrors.date_of_birth = true;
+      setModalState({
+        isOpen: true,
+        title: "Age Restriction",
+        text: "You need to be atleast 18 years to be able eto create an account in Graminate",
+        variant: "error",
+      });
       hasError = true;
     }
     if (!validatePassword(registerData.password)) {
@@ -268,6 +353,7 @@ const SignIn = () => {
         email: registerData.email,
       });
 
+      setOtpContext("register");
       setIsOtpModalOpen(true);
     } catch (error: unknown) {
       let errorMessage = "Failed to send OTP. Please try again.";
@@ -288,6 +374,15 @@ const SignIn = () => {
   };
 
   const handleOtpValidation = async (otp: string) => {
+    // Route to the appropriate handler based on context
+    if (otpContext === "login") {
+      await handleLoginOtpValidation(otp);
+    } else {
+      await handleRegisterOtpValidation(otp);
+    }
+  };
+
+  const handleRegisterOtpValidation = async (otp: string) => {
     try {
       const verifyResponse = await axios.post<{ success: boolean }>(
         `${API_BASE_URL}/otp/verify-otp`,

@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { UserModule } from '../user/user.module';
+import { OtpModule } from '../otp/otp.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
@@ -17,6 +18,7 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
     forwardRef(() => UserModule),
+    forwardRef(() => OtpModule),
   ],
   providers: [AuthService, AuthRepository, JwtStrategy],
   exports: [AuthService],

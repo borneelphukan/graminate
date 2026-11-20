@@ -12,4 +12,8 @@ export class AuthService {
   async login(email: string, pass: string) {
     return this.authRepository.login(email, pass);
   }
+
+  async loginVerify(email: string, otp: string, loginId: string) {
+    return this.authRepository.loginVerify(email, otp, loginId);
+  }
 }
