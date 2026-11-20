@@ -1,25 +1,27 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+    branches: [main]
 
-# Security: Principle of least privilege. Prevent workflows from modifying repo contents.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   build-and-test:
-    name: Build, Lint, and Test
+    name: Build, Lint & Test
     runs-on: ubuntu-latest
-    # Security: Prevent rogue/stuck processes from burning runner minutes
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
@@ -35,56 +37,46 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:password@localhost:5432/graminate_test
       NODE_ENV: test
-      # Dummy values for CI to pass build steps that require these vars
-      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "dummy-key"
-      NEXT_PUBLIC_RAZORPAY_KEY_ID: "dummy-key"
-      NEXT_PUBLIC_API_URL: "http://localhost:3001/api"
-      GOOGLE_CLIENT_ID: "dummy-client-id"
-      GOOGLE_CLIENT_SECRET: "dummy-client-secret"
-      JWT_SECRET: "dummy-jwt-secret"
-      OPENAI_API_KEY: "dummy-openai-key"
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: dummy-key
+      NEXT_PUBLIC_RAZORPAY_KEY_ID: dummy-key
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+      GOOGLE_CLIENT_ID: dummy-client-id
+      GOOGLE_CLIENT_SECRET: dummy-client-secret
+      JWT_SECRET: dummy-jwt-secret
+      OPENAI_API_KEY: dummy-openai-key
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8.15.3
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
+      - name: Generate Prisma client
         run: pnpm --filter backend exec prisma generate
 
-      - name: Push DB Schema to Test Database
+      - name: Push schema to test database
         run: pnpm --filter backend exec prisma db push
 
-      - name: Run TurboRepo Lint, Typecheck, Test & Build
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            pnpm turbo run lint typecheck test build --filter=...[origin/main]
-          else
-            pnpm turbo run lint typecheck test build
-          fi
+      - name: Lint
+        run: pnpm turbo lint ${{ github.event_name == 'pull_request' && '--filter=...[origin/main]' || '' }}
+
+      - name: Typecheck
+        run: pnpm turbo typecheck
+
+      - name: Test
+        run: pnpm turbo test
+
+      - name: Build
+        run: pnpm turbo build
