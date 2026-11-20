@@ -46,6 +46,14 @@ export class UserController {
     return this.authService.login(body.email, body.password);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Post('login-verify')
+  async loginVerify(
+    @Body() body: { email: string; otp: string; loginId: string },
+  ): Promise<any> {
+    return this.authService.loginVerify(body.email, body.otp, body.loginId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(

@@ -15,7 +15,7 @@
         "turbo": "^2.10.9",
         "typescript": "^5.9.3"
     },
-    "packageManager": "pnpm@8.15.3",
+    "packageManager": "pnpm@9.15.5",
     "pnpm": {
         "overrides": {
             "react": "19.1.0",
@@ -26,6 +26,6 @@
         "axios": "^1.19.0"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=22"
     }
 }

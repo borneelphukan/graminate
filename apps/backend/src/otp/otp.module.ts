@@ -6,5 +6,6 @@ import { OtpRepository } from './otp.repository';
 @Module({
   controllers: [OtpController],
   providers: [OtpService, OtpRepository],
+  exports: [OtpService],
 })
 export class OtpModule {}
